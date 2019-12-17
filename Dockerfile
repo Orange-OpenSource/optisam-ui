@@ -1,6 +1,10 @@
 FROM dockerfactory-unstable-iva.si.francetelecom.fr/optisam/nginx:latest
 
 COPY nginx.conf /etc/nginx/nginx.conf
-
+USER root
 WORKDIR /usr/share/nginx/html
-COPY ${CI_PROJECT_DIR}/ui_service/dist/ .
+RUN mkdir dist
+RUN mkdir dist/assets
+COPY dist/assets/ dist/assets
+COPY dist/ .
+
