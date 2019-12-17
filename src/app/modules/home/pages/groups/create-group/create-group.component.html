@@ -1,0 +1,70 @@
+<div fxLayout="row" fxLayoutAlign="center center" class="login-main">
+
+  <mat-card class="card">
+    <div style="position: center;" *ngIf="showMsg">
+      <div class="col-xs-12">
+        <p class="alert alert-warning">
+          <strong>Group Created Succesfully!!!</strong>
+        </p>
+      </div>
+    </div>
+    <div style="position: center;" *ngIf="showErrorMsg">
+        <div class="col-xs-12">
+          <p class="alert alert-warning">
+            <strong>{{errorMsg}}!!!</strong>
+          </p>
+        </div>
+      </div>
+    <mat-card-header>
+      <mat-card-title>Create Group</mat-card-title>
+    </mat-card-header>
+    <mat-card-content fxLayout="column">
+      <form [formGroup]="groupForm" (ngSubmit)="createGroup()">
+        <mat-form-field appearance="outline">
+          <mat-label>Name</mat-label>
+          <input matInput placeholder="Placeholder" formControlName="name">
+        </mat-form-field>
+        <mat-error *ngIf="name.invalid && !name.pristine">
+          Name is required in ^[a-zA-Z0-9_]*$ format.
+        </mat-error>
+        <!-- <p *ngIf="name.invalid && !name.pristine">Name is required in ^[a-zA-Z0-9_]*$ format.</p> -->
+        <div style="color:blue;">{{fully_qualified_name}}</div>
+        <mat-form-field appearance="outline">
+            <mat-label>Parent Name</mat-label>
+          <input matInput [disabled]='true' formControlName="groupName">
+
+        </mat-form-field>
+
+        <div >
+
+          <!-- <h2>{{selectedGroup.name | uppercase}} Details</h2> -->
+
+          <!-- <div>
+            <label>name:
+              <input [(ngModel)]="selectedHero.name" placeholder="name"/>
+            </label>
+          </div> -->
+        </div>
+        <mat-form-field>
+            <mat-select placeholder="Group" placeholder="Scope" [formControl]="scopes" multiple>
+              <mat-select-trigger >
+                {{scopes.value ? scopes.value[0] : ''}}
+                <span *ngIf="scopes.value?.length > 1" class="example-additional-selection">
+                  (+{{scopes.value.length - 1}} {{scopes.value?.length === 2 ? 'other' : 'others'}})
+                </span>
+              </mat-select-trigger>
+              <mat-option *ngFor="let scope of data.scopes" [value]="scope">{{scope}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        <mat-error *ngIf="scopes.invalid && !scopes.pristine && scopes.touched">
+          Scopes are required to select!!! </mat-error>
+      </form>
+    </mat-card-content>
+    <mat-card-actions align="center">
+        <button style="margin: 10px;" mat-raised-button color="primary" [mat-dialog-close]="1">{{'CANCEL'|translate}}</button>
+      <button mat-raised-button color="primary" [disabled]="!groupForm.valid"
+        (click)="createGroup()">Create</button>
+    </mat-card-actions>
+
+  </mat-card>
+</div>

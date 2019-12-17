@@ -1,0 +1,72 @@
+.mat-card{
+    width: 60%;
+    margin: 28px auto;
+    border: 1px solid #ccc;
+}
+    .mat-card-actions{
+        text-align: center;
+    }
+.swidtabs{
+    display: flex;
+    align-items: center;
+    // justify-content: center;
+}
+.left, .right {
+    width: 46%;
+    border: 1px solid;
+    border-radius: 5px 5px 0px 0px;
+}
+.right{
+    // margin-left: 2%;
+}
+.transtitle{
+    // color: #fff;
+    padding: 7px;
+    margin-bottom: 0;
+}
+.left .transtitle{
+    background-color: #ccc
+}
+.left{ border-color: #ccc}
+.right .transtitle{
+    background-color: #ccc
+}
+.right{ border-color: #ccc}
+.right .body, .left .body{
+    height: 200px;
+    overflow-y: auto;
+}
+.trans-icon{
+    width: 8%;
+    text-align: center;
+}
+.list-item{
+    display: flex;
+    align-items: center;
+    padding: 5px;
+    border-bottom: 1px solid #ccc;
+}
+    span{
+        width: 90%;
+        word-break: break-all;
+    }
+    .add{
+        color: #007bff;
+        cursor: pointer;
+    }
+    .cancel{
+        color: #dc3545;
+        cursor: pointer;
+    }
+.save-btn{
+    min-width: 100px;
+}
+    .spinner-border{
+        height: 20px;
+        width: 20px;
+    }
+.width-clearfix{
+    clear: both;
+    width: 20px;
+}
+.horizontal{display: flex;}

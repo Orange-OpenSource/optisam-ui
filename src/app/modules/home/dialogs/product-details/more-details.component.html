@@ -1,0 +1,116 @@
+<h1 mat-dialog-title></h1>
+<mat-dialog-content >
+ <div class="container-fluid">
+      <div class="row">
+          <div class="col-lg-12 page-heading"><h4>{{'Product' | translate}}:<span>{{this.pName}}</span> &#62; {{'Details' | translate}}</h4></div>
+          <!-- &#62; -->
+          <div class="col-lg-12">
+              <div class="product-tabs">
+                  <nav>
+                      <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                        <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">{{'Information' | translate}}</a>
+                        <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">{{'Options' | translate}}</a>
+                        <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false">{{'Acquired rights' | translate}}</a>
+                      </div>
+                   </nav>
+
+                    <div class="tab-content" id="nav-tabContent">
+
+                      <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                          <div class="tab-content-inner">
+
+
+
+
+                              <p><strong>{{'SWIDtag' | translate}}:</strong> {{productdetails.productInfo.swidTag}} <br>
+                                  <strong>{{'Editor' | translate}}:</strong> {{productdetails.productInfo.editor}} <br>
+                                  <strong>{{'Edition' | translate}}:</strong>{{productdetails.productInfo.edition}}
+                              </p>
+                              <!-- <p><strong>{{'Equipment using the product' | translate}}:</strong> 6 <br>
+                                <button type="button" class="btn btn-primary btn-sm">{{'view the list' | translate}}</button>
+                              </p>
+                              <p><strong>{{'Application containing the product' | translate}}:</strong> 3 <br>
+                                   <button type="button" class="btn btn-primary btn-sm">{{'view the list' | translate}}</button>
+                              </p> -->
+                          </div>
+                      </div>
+
+                      <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+                        <div class="tab-content-inner">
+                          <p><strong>{{'Options list' | translate}}</strong>
+                            <br>
+                              <strong>{{'Number of options' | translate}} :</strong>{{productdetails.productOptions.numOfOptions||0}}
+                              <br>
+                          </p>
+                               <div class="table-responsive">
+                                <table class="table table-bordered table-striped">
+                                  <thead>
+                                    <tr>
+                                      <th>{{'SWIDTag' | translate}}</th>
+                                      <th>{{'Product name' | translate}}</th>
+                                      <th>{{'Editor' | translate}}</th>
+                                      <th>{{'Edition' | translate}}</th>
+                                      <th>{{'Release' | translate}}</th>
+                                      <th>{{'Total Cost(€)' | translate}}</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                      <tr *ngFor="let item of productdetails.productOptions.optioninfo">
+                                      <td>{{item.swidTag||0}}</td>
+                                      <td><a>{{item.Name}}</a></td>
+                                      <td>{{item.editor}}</td>
+                                      <td>{{item.edition}}</td>
+                                      <td>{{item.version||0}}</td>
+                                      <td>{{0}}</td>
+                                    </tr>
+                                      <tr>
+                                  </tbody>
+                                </table>
+                               </div>
+                        </div>
+                      </div>
+
+                      <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
+                          <div class="tab-content-inner">
+                              <div class="table-responsive">
+                                <table class="table table-bordered table-striped">
+                      <thead>
+                        <tr>
+                          <th>{{'SKU' | translate}}</th>
+                          <th>{{'Metrics' | translate}}</th>
+                          <th>{{'Computed licenses' | translate}}</th>
+                          <th>{{'Acquired Licenses' | translate}}</th>
+                          <th>{{'Delta(Number)' | translate}}</th>
+                          <th>{{'Delta(€)' | translate}}</th>
+                          <th>{{'Total Cost(€)' | translate}}</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                          <tr *ngFor="let item of acquireRight.acq_rights">
+                      <td>{{item.SKU}}</td>
+                          <td>{{item.metric}}</td>
+                          <td>{{item.numCptLicences}}</td>
+                          <td>{{item.numAcqLicences}}</td>
+                          <td>{{item.deltaNumber}}</td>
+                          <td>{{item.deltaCost}}</td>
+                          <td>{{item.totalCost}}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                              </div>
+                          </div>
+                      </div>
+
+                    </div>
+
+
+              </div>
+          </div>
+
+          </div>
+      </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="center">
+    <button mat-raised-button mat-dialog-close>{{'Cancel' | translate}}</button>
+  </mat-dialog-actions>

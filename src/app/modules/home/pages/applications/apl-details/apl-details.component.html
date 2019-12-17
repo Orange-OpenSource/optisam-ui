@@ -1,0 +1,81 @@
+<mat-card>
+        <div class="container-fluid page-content-header">
+          <div class="row">
+            <div class="col-md-9 page-heading">
+              <h4><span><a routerLink="/optisam/apl/applications">{{'Application'|translate}}</a>:{{this.aplName}} </span> &#62;{{'Products'|translate}}
+              </h4>
+            </div>
+            <div class="col-md-3"></div>
+
+          </div>
+        </div>
+
+    <mat-card-content>
+    <div class="mat-elevation-z8">
+
+      <mat-table [dataSource]="MyDataSource" matSort (matSortChange)="sortData($event)">
+        <ng-container matColumnDef="swidTag">
+          <mat-header-cell *matHeaderCellDef mat-sort-header="name"> {{'SWIDtag' | translate}} </mat-header-cell>
+          <mat-cell *matCellDef="let product"> {{product.swidTag}} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="name">
+          <mat-header-cell *matHeaderCellDef mat-sort-header="application_owner">{{'Product name' | translate}}</mat-header-cell>
+          <mat-cell *matCellDef="let product">
+              <a mat-icon-button color="primary" matTooltip="Click here to see Product Details" (click)="openDialog(product.swidTag,product.name)">{{product.name}}</a>
+          </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="Editor" >
+          <mat-header-cell *matHeaderCellDef mat-sort-header="numofProducts">{{'Editor name'| translate}}</mat-header-cell>
+          <mat-cell *matCellDef="let product">
+                  {{product.Editor}}
+           </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="numOfInstances">
+          <mat-header-cell *matHeaderCellDef mat-sort-header="numOfInstances">{{'Number of instances' | translate}}</mat-header-cell>
+          <mat-cell *matCellDef="let product">
+              <!-- <a mat-icon-button color="primary" > -->
+                  {{product.numOfInstances}} 
+                <!-- </a> -->
+              </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="Edition">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>{{'Edition'| translate}}</mat-header-cell>
+          <mat-cell *matCellDef="let product">
+                  {{product.Edition}}
+              </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="Version">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>{{'Release'|translate}}</mat-header-cell>
+          <mat-cell *matCellDef="let product"> {{product.Version}}
+             </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="totalCost">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>{{'Total cost(€)'|translate}}</mat-header-cell>
+            <mat-cell *matCellDef="let product"> {{product.totalCost}}
+               </mat-cell>
+          </ng-container>
+
+            <ng-container matColumnDef="numofEquipments">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>{{'Number of equipment'|translate}}</mat-header-cell>
+                    <mat-cell *matCellDef="let product">
+                        <!-- <a mat-icon-button color="primary" > -->
+                            {{product.numofEquipments}}
+                          <!-- </a> -->
+                        </mat-cell>
+              </ng-container>
+
+          <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+      </mat-table>
+      <!-- <app-loading-spinner *ngIf="_loading"></app-loading-spinner> -->
+      <mat-paginator #paginator [length]="length" [pageSize]="page_size" [pageSizeOptions]="[10,20,30,50]"showFirstLastButtons>
+      </mat-paginator>
+    </div>
+    </mat-card-content>
+  </mat-card>

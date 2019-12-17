@@ -1,0 +1,75 @@
+
+  .mat-card{
+    width: 500px !important;
+    box-sizing: border-box;
+    margin: 50px auto 8px auto;
+    padding: 30px;
+  text-transform: capitalize;
+  }
+//   .mat-card-content{
+//     margin-left: 110px;
+//   }
+.mat-card-title{
+  margin-left: 110px;
+}
+.mat-card-header .mat-card-title {
+  font-size: 32px;
+  margin-left: 83px;
+}
+.mat-raised-button {
+  box-sizing: initial;
+}
+.selectAll-option mat-pseudo-checkbox{
+  display: none;
+}
+.select-checkbox label{
+  margin-bottom: 0px;
+}
+
+
+.inputfile {
+	width: 0.1px;
+	height: 0.1px;
+	opacity: 0;
+	overflow: hidden;
+	position: absolute;
+	z-index: -1;
+}
+
+.inputfile + label {
+    color: white;
+    background-color: #dc3545;
+    display: inline-block;
+    font-weight: 400;
+    text-align: center;
+    border: 1px solid transparent;
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    border-radius: .25rem;
+}
+
+.inputfile:focus + label,
+.inputfile + label:hover {
+    background-color: #c82333;
+}
+.inputfile + label {
+	cursor: pointer; /* "hand" cursor */
+}
+
+.browselabel{
+    margin: 0;
+    height: 36px;
+}
+.upload-div{
+    padding: 10px 20px;
+    display: flex;
+    background-color: #F5F5F5;
+}
+.filename {
+    margin-left: 8px;
+}
+.fileerror{color: #dc3545; font-style: italic;}
+.spinner-border-sm{
+  height: 1rem !important;
+}

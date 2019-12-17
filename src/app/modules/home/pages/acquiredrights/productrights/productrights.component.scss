@@ -1,0 +1,42 @@
+// .mat-cell:nth-child(1),
+// .mat-header-cell:nth-child(1){
+//   flex: 0 0 8%;
+// }
+
+// .mat-cell:nth-child(4),
+// .mat-header-cell:nth-child(4){
+//   flex: 0 0 3%;
+// }
+
+.mat-cell:nth-child(6),
+.mat-header-cell:nth-child(6){
+  flex: 0 0 12%;
+}
+mat-menu-item {
+  border: solid 1px #d1d8de !important;
+  width:260px !important;
+  height:41px !important;
+  text-align: center !important;
+  .mat-menu-item-checked{
+    background-color: #ffffff !important;
+    font-weight: bold !important;
+  }
+  .mat-menu-item-toggle{
+    width:50% !important;
+    font-size: 15px !important;
+  }
+}
+
+  //  background:#ececec;
+    // min-height:14px;
+    // // font-family:Verdana,sans-serif;:Verdana,sans-serif;
+    // font-size:13px;
+    // margin-bottom:5px;
+
+
+
+    // // font-family:Verdana,sans-serif;:Verdana,sans-serif;
+    // // font-family:Verdana,sans-serif;:Verdana,sans-serif;
+    // font-size:11px;
+
+

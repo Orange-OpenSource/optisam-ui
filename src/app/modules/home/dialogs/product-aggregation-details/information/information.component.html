@@ -1,0 +1,21 @@
+<div *ngIf="productDetails">
+  <p>
+    <strong>{{'Aggregation name' | translate}} :</strong> 
+    <span class="margin-left">{{productDetails.name}}</span> <br>
+
+    <strong>SWIDTags :</strong> 
+    <span class="margin-left">{{(productDetails.products) ? productDetails.products.join(', ') : '-'}}</span> <br>
+
+    <strong>{{'Editor' | translate}} :</strong> 
+    <span class="margin-left">{{productDetails.editor}}</span> <br>
+
+    <strong>{{'Edition' | translate}} :</strong>
+    <span class="margin-left">{{(productDetails.editions) ? productDetails.editions.join(', ') : '-'}}</span> <br>
+    
+    <strong>{{'Equipments using the product' | translate}} :</strong> 
+    <span class="margin-left">{{productDetails.num_equipments || 0}}</span> <br>
+
+    <strong>{{'Applications containing the product' | translate}} :</strong>
+    <span class="margin-left">{{productDetails.num_applications || 0}}</span>
+  </p>
+</div>

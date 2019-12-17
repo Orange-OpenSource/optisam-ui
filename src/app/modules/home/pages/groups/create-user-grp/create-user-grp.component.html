@@ -1,0 +1,85 @@
+<div fxLayout="row" fxLayoutAlign="center center" class="login-main">
+
+    <mat-card class="card">
+      <div style="position: center;" *ngIf="showMsg">
+        <div class="col-xs-12">
+          <p class="alert alert-warning">
+            <strong>User Added Succesfully!!!</strong>
+          </p>
+        </div>
+      </div>
+      <div style="position: center;" *ngIf="showErrorMsg">
+          <div class="col-xs-12">
+            <p class="alert alert-warning">
+              <strong>{{errorMsg}}!!!</strong>
+            </p>
+          </div>
+        </div>
+      <mat-card-header>
+        <mat-card-title>Add User</mat-card-title>
+      </mat-card-header>
+      <mat-card-content fxLayout="column">
+        <form [formGroup]="groupForm" (ngSubmit)="createGroup()">
+          <mat-form-field appearance="outline">
+            <mat-label>Name</mat-label>
+            <input matInput placeholder="Name" formControlName="first_name">
+          </mat-form-field>
+          <mat-error *ngIf="first_name.invalid && !first_name.pristine">
+            Name is required in ^[a-zA-Z0-9_]*$ format.
+          </mat-error>
+          <mat-form-field appearance="outline">
+              <mat-label>Surname</mat-label>
+              <input matInput placeholder="Surname" formControlName="last_name">
+            </mat-form-field>
+            <mat-error *ngIf="last_name.invalid && !last_name.pristine">
+              Name is required in ^[a-zA-Z0-9_]*$ format.
+            </mat-error>
+            <mat-form-field  appearance="outline">
+                <mat-label>Email</mat-label>
+              <input matInput placeholder="Email" [formControl]="user_id"
+                    >
+              <mat-hint>Errors appear instantly!</mat-hint>
+              <mat-error *ngIf="user_id.hasError('email') && !user_id.hasError('required')">
+                Please enter a valid email address
+              </mat-error>
+              <mat-error *ngIf="user_id.hasError('required')">
+                Email is <strong>required</strong>
+              </mat-error>
+            </mat-form-field>
+          <!-- <p *ngIf="name.invalid && !name.pristine">Name is required in ^[a-zA-Z0-9_]*$ format.</p> -->
+
+
+
+          <mat-form-field>
+            <mat-select placeholder="Group" [formControl]="toppings" (selectionChange)="selectGroup($event.value)" multiple>
+              <mat-select-trigger >
+                {{toppings.value ? toppings.value[0] : ''}}
+                <span *ngIf="toppings.value?.length > 1" class="example-additional-selection">
+                  (+{{toppings.value.length - 1}} {{toppings.value?.length === 2 ? 'other' : 'others'}})
+                </span>
+              </mat-select-trigger>
+              <mat-option matTooltip="{{topping.fully_qualified_name}}" *ngFor="let topping of groups" [value]="topping.name">{{topping.name}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>Roles</mat-label>
+            <mat-select (selectionChange)="selectRole($event.value)">
+              <mat-option *ngFor="let role of roles"  [value]="role">
+                {{role}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+
+
+        </form>
+      </mat-card-content>
+      <mat-card-actions align="center">
+        <button mat-raised-button color="primary" [disabled]="!((groupForm.valid) && (selectedRole == 'ADMIN'  || selectedRole == 'USER'))"
+          (click)="createGroup()">Create</button>
+      </mat-card-actions>
+
+    </mat-card>
+  </div>
+

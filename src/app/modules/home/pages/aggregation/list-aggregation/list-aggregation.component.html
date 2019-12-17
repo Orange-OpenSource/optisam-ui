@@ -1,0 +1,80 @@
+  <mat-card class="example-card" style="z-index: 0;">
+
+    <div class="container-fluid page-content-header">
+      <div class="row">
+        <div class="col-md-7 page-heading">
+          <h4>{{'AGGREGATIONS.TEXTS.SWIDTAGS_AGGREGATION'|translate}} </h4>
+        </div>
+        <div class="col-md-2" class="add-btn">
+          <a mat-raised-button color="primary" [routerLink]="['/optisam/ag/create-aggregation']" *ngIf="(role === 'ADMIN') || ((role === 'SUPER_ADMIN'))">
+            <mat-icon>add</mat-icon>
+            {{'AGGREGATIONS.ACTIONS.ADD_AGGREGATION'|translate}}
+          </a>
+        </div>
+        <div class="col-md-3 search-div">
+          <app-advance-search [hideAdvanceToggle]="true" [advanceSearchModel]="advanceSearchModel" (advFilterEvent)="advSearchTrigger($event)"></app-advance-search>       
+        </div>
+      </div>
+    </div>
+  
+    <mat-card-content>
+      <div class="mat-elevation-z8">
+  
+        <mat-table [dataSource]="aggregationData" matSort (matSortChange)="sortData($event)">
+          <ng-container matColumnDef="name">
+            <mat-header-cell *matHeaderCellDef > {{'AGGREGATIONS.TEXTS.AGG_NAME' | translate}}
+            </mat-header-cell>
+            <mat-cell *matCellDef="let aggregation"> {{aggregation.name}} </mat-cell>
+          </ng-container>
+  
+          <ng-container matColumnDef="product">
+            <mat-header-cell *matHeaderCellDef >{{'AGGREGATIONS.TEXTS.PRODUCT' | translate}}
+            </mat-header-cell>
+            <mat-cell *matCellDef="let aggregation">{{aggregation.product}}
+            </mat-cell>
+          </ng-container>
+  
+          <ng-container matColumnDef="editor">
+            <mat-header-cell *matHeaderCellDef >{{'AGGREGATIONS.TEXTS.EDITOR'| translate}}
+            </mat-header-cell>
+            <mat-cell *matCellDef="let aggregation">
+                {{aggregation.editor}} 
+            </mat-cell>
+          </ng-container>
+  
+          <ng-container matColumnDef="metric">
+            <mat-header-cell *matHeaderCellDef >{{'AGGREGATIONS.TEXTS.METRICS' | translate}}
+            </mat-header-cell>
+            <mat-cell *matCellDef="let aggregation">
+                {{aggregation.metric}} 
+            </mat-cell>
+          </ng-container>
+  
+          <ng-container matColumnDef="numofSwidTags">
+            <mat-header-cell *matHeaderCellDef >{{'AGGREGATIONS.TEXTS.NUMBER_OF_SWIDTAGS'| translate}}</mat-header-cell>
+            <mat-cell *matCellDef="let aggregation">
+                <span matTooltip="{{aggregation.products.join(', ')}}"> {{aggregation.products.length}} </span>
+            </mat-cell>
+          </ng-container>
+
+          <!-- <ng-container matColumnDef="action">
+            <mat-header-cell *matHeaderCellDef >{{'Action'| translate}}</mat-header-cell>
+            <mat-cell *matCellDef="let aggregation">
+                <mat-icon (click)="editSwid()">edit</mat-icon>
+                <mat-icon (click)="deleteSwid()">delete</mat-icon>
+            </mat-cell>
+          </ng-container> -->
+    
+          <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        </mat-table>
+        <div class="no-data" *ngIf="aggregationData && aggregationData.length == 0;">{{'AGGREGATIONS.TEXTS.NO_AGGREGATION'| translate}}</div>
+        <!-- <app-loading-spinner *ngIf="_loading"></app-loading-spinner> -->
+        <!-- <mat-paginator #paginator [pageSize]="7" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons> -->
+        <!-- <mat-paginator [length]="totalRecords" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions"
+          (page)="getPaginatorData($event)" showFirstLastButtons>
+        </mat-paginator> -->
+      </div>
+    </mat-card-content>
+  </mat-card>
+  

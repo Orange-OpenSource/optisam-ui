@@ -1,0 +1,33 @@
+<router-outlet></router-outlet>
+<mat-card>
+  <div class="form add-btn-bx" *ngIf="(role === 'ADMIN') || (role === 'SUPER_ADMIN')">
+    <button mat-raised-button (click)="addNew()" color="primary">
+      <mat-icon color="panel">add</mat-icon> {{'Add Metric' | translate}}
+    </button>
+
+  </div>
+
+    <div class="mat-elevation-z8">
+      <mat-table #table [dataSource]="MyDataSource" matSort>
+        <ng-container matColumnDef="type">
+          <mat-header-cell *matHeaderCellDef>{{'Metric Type' | translate}}</mat-header-cell>
+          <mat-cell *matCellDef="let row"> {{row.type||0}}</mat-cell>
+        </ng-container>
+      
+        <ng-container matColumnDef="name">
+          <mat-header-cell *matHeaderCellDef>{{'Name' | translate}}</mat-header-cell>
+          <mat-cell *matCellDef="let row"> {{row.name||0}}</mat-cell>
+        </ng-container>
+      
+        <ng-container matColumnDef="description">
+          <mat-header-cell *matHeaderCellDef>{{'Description' | translate}}</mat-header-cell>
+          <mat-cell *matCellDef="let row"> {{row.description||0}}</mat-cell>
+        </ng-container>
+      
+      
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+      </mat-table>
+    </div>
+
+</mat-card>

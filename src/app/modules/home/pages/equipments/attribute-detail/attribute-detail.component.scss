@@ -1,0 +1,135 @@
+/*
+.mat-cell:nth-child(1),
+.mat-header-cell:nth-child(1){
+  flex: 0 0 15%;
+}
+
+.mat-cell:nth-child(2),
+.mat-header-cell:nth-child(2){
+  flex: 0 0 25%;
+}
+
+.mat-cell:nth-child(3),
+.mat-header-cell:nth-child(3){
+  flex: 0 0 12%;
+}
+
+.mat-cell:nth-child(4),
+.mat-header-cell:nth-child(4){
+  flex: 0 0 10%;
+}
+.mat-cell:nth-child(5),
+.mat-header-cell:nth-child(5){
+  flex: 0 0 8%;
+}
+.mat-cell:nth-child(6),
+.mat-header-cell:nth-child(6){
+  flex: 0 0 10%;
+}
+.mat-cell:nth-child(7),
+.mat-header-cell:nth-child(7){
+  flex: 0 0 10%;
+}
+ */
+// .mat-table {
+//   .mat-row, .mat-header-row, .mat-footer-row {
+//     padding-left: 24px;
+//     padding-right: 24px;
+//   }
+// }
+mat-menu-item {
+  border: solid 1px #d1d8de !important;
+  width:260px !important;
+  height:41px !important;
+  text-align: center !important;
+  .mat-menu-item-checked{
+    background-color: #ffffff !important;
+    font-weight: bold !important;
+  }
+  .mat-menu-item-toggle{
+    width:50% !important;
+    font-size: 15px !important;
+  }
+}
+
+/* mat-header-cell, mat-header-row, .mat-header-cell-def{
+    background:#f2f4f7;
+    // min-height:14px;
+    // font-family:Verdana,sans-serif;:Verdana,sans-serif;
+    font-weight:bold;
+    font-size:13px;
+    color: #1a084c;
+    // margin-bottom:5px;
+     top: 0;
+    position: sticky;
+    z-index: 1;
+    flex-wrap: wrap;
+    //word-break: break-word;
+} */
+
+.mat-form-field {
+  width: 100%;
+}
+.mat-header-row {
+  width:100%;
+}
+
+/* mat-row{
+    min-height:20px;
+    // font-family:Verdana,sans-serif;:Verdana,sans-serif;
+    // font-size:11px;
+    color: #1a084c;
+    }
+mat-cell{
+    // height:20px;
+    // font-family:Verdana,sans-serif;:Verdana,sans-serif;
+    // font-size:11px;
+    color: #1a084c;
+} */
+
+.tab {
+  overflow: hidden;
+  border: 1px solid #ccc;
+  background-color: #f1f1f1;
+}
+
+/* Style the buttons that are used to open the tab content */
+.tab button {
+  background-color: inherit;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  transition: 0.3s;
+}
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+  background-color: #ddd;
+}
+
+/* Create an active/current tablink class */
+.tab button.active {
+  background-color: #ccc;
+}
+.mat-column-userId {
+  flex: 0 0 100px;
+}
+/* Style the tab content */
+.tabcontent {
+  display: none;
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  border-top: none;
+}
+
+/* 09-08-2019 */
+.tab-content-inner { /* max-height: 500px; overflow: scroll; */ }
+.mat-dialog-content { max-height: inherit !important; }
+.custome-card { box-shadow: none !important; padding: 0 !important;}
+.popup-tab-row { margin-bottom: 20px; }
+.popup-tab-row .popup-tab-title { padding-left: 0; }
+.popup-tab-row .search-div { padding-right: 5px; }
+.server-tab { border: solid 1px #dee2e6; }
+

@@ -1,0 +1,41 @@
+<div fxLayout="row" fxLayoutAlign="center center" class="login-main">
+  <mat-card class="card">
+    <div style="position: center;" *ngIf="showMsg">
+      <div class="col-xs-12">
+        <p class="alert alert-success">
+          <strong>File Uploaded Succesfully!!!</strong>
+        </p>
+      </div>
+    </div>
+    <div style="position: center;" *ngIf="showErrorMsg">
+      <div class="col-xs-12">
+        <p class="alert alert-warning">
+          <strong>Some Error Occurend! Error: {{errorMsg}}</strong>
+        </p>
+      </div>
+    </div>
+    <mat-card-header>
+      <mat-card-title>Upload Data File</mat-card-title>
+    </mat-card-header>
+    <mat-card-content fxLayout="column">
+      <form [formGroup]="uploadForm">
+        <span>Select the files to upload. File must be a zip file only.</span>
+        <div class="upload-div">
+          <!-- <mat-label>Old Password</mat-label> -->
+          <input #fileInput class="inputfile" id="file" type="file" name="files" accept="application/x-zip-compressed" (click)="fileInput.value = null" (change)="onFileSelect($event)" />
+          <label class="browselabel" for="file">Browse</label>
+          <span class="filename" *ngIf="filename"><mat-icon>insert_drive_file</mat-icon> {{filename}}</span>
+        </div>
+        <span *ngIf="showFileErrorMessage" class="fileerror">* File type must be only zip</span>
+        
+      </form>
+    </mat-card-content>
+    <mat-card-actions align="center">
+      <button mat-raised-button color="primary" [disabled]="!uploadForm.valid" (click)="uploadFile()">
+        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" *ngIf="loading"></span>       
+        Submit
+      </button>
+    </mat-card-actions>
+
+  </mat-card>
+</div>

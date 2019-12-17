@@ -1,0 +1,9 @@
+<mat-card class="mat-elevation-8">
+  <nav mat-tab-nav-bar>
+      <a mat-tab-link class="tab-anchor" *ngFor="let menu of tabMenus" [routerLink]="menu.link" routerLinkActive="active" (click)="activeLink = menu.link" [active]="activeLink == menu.link"> {{menu.title | translate}} </a>
+      <!-- <a mat-tab-link [routerLink]="'/optisam/pr/products'" routerLinkActive="active" #rla1="routerLinkActive" [active]="rla1.isActive"> Individual </a> -->
+      <!-- <a mat-tab-link [routerLink]="'/optisam/pr/products/aggregaion'" routerLinkActive="active"> Aggregations </a> -->
+    </nav>
+  </mat-card>
+  
+  <router-outlet></router-outlet>

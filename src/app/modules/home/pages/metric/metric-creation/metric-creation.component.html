@@ -1,0 +1,203 @@
+
+<mat-card>
+      <mat-card-title color="primary">
+        <h2>{{'Add New Metric'|translate}}</h2>
+      </mat-card-title>
+      
+      <mat-card-content>
+      <div class="row create-equipment">
+            <div class="col-md-3 equipments">
+              <mat-form-field class="demo-full-width" appearance="outline">
+                <input matInput (keydown)="search($event)" [value]="typeName" (keyup)="search($event)"
+                  placeholder="{{'Type Name'|translate}}" id="type">
+                <mat-error>
+                  {{'Type Name is required in ^[-_,A-Za-z0-9]+$ format.' | translate}}
+                </mat-error>
+              </mat-form-field>
+
+              <mat-error *ngIf="TypeNameMsg">
+                {{'Type Name Already Exist ' | translate }}
+              </mat-error>
+            </div>
+            
+            <!-- <label>{{'Source'|translate}}</label> -->
+            <div class="col-md-3 equipments">
+              <mat-form-field appearance="outline">
+                <mat-label>{{'Metric Type' | translate}}</mat-label>
+                <mat-select placeholder="{{'Metric Type'|translate}}" [(value)]="metricTypRe">
+                  <!-- <mat-option  (onSelectionChange)="filterAttributes($event)" [value]="select">
+                                    Select Metric type </mat-option> -->
+                  <mat-option *ngFor="let type of metricType" (onSelectionChange)="onChangeMetricType($event,type.name)"
+                    [value]="type.name">
+                    {{type.name }}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-3 equipments">
+              <mat-form-field class="example-full-width">
+                <textarea matInput [value]="typeDescription" disabled></textarea>
+              </mat-form-field>
+            </div>
+            <!-- textarea disabled -->
+     </div>
+
+      <div *ngIf="type_id == 'Oracle_Processor'" class="row create-equipment">
+          <div class="col-md-3 equipments">
+            <mat-form-field appearance="outline">
+              <mat-label>{{'First Equipment' | translate}}</mat-label>
+              <mat-select [(value)]="firstEqui">
+                <mat-option *ngFor="let equiment of types" (onSelectionChange)="onChangefirstEqui($event,equiment)"
+                  [value]="equiment.type">
+                  {{equiment.type }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <div class="col-md-3 equipments">
+            <mat-form-field appearance="outline">
+              <mat-label>{{'Reference Equipment' | translate}}</mat-label>
+              <mat-select [disabled]="refEquStatus" placeholder="{{'Reference Equipment'|translate}}" [(value)]="refEqui">
+                <!-- <mat-option  (onSelectionChange)="filterAttributes($event)" [value]="select">
+                                  Select Metric type </mat-option> -->
+                <mat-option *ngFor="let refEquiment of refEquArr " (onSelectionChange)="onChangeRefEqui($event,refEquiment)"
+                  [value]="refEquiment.type">
+                  {{refEquiment.type }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-error *ngIf="reqAttri">
+              {{'Should have three attribute with (INT/Float)  ' | translate }}
+            </mat-error>
+          </div>
+          
+          <div class="col-md-3 equipments">
+            <mat-form-field appearance="outline">
+              <mat-label>Core</mat-label>
+              <mat-select [(value)]="coreAttri">
+                <!-- <mat-option  (onSelectionChange)="filterAttributes($event)" [value]="select">
+                                Select Metric type </mat-option> -->
+                <mat-option *ngFor="let core of coreArr" (onSelectionChange)="onCoreChange($event, core)" [value]="core.name">
+                  {{core.name }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <div class="col-md-3 equipments">
+            <mat-form-field appearance="outline">
+              <mat-label>CPU</mat-label>
+              <mat-select [(value)]="cpuAtrri">
+                <!-- <mat-option  (onSelectionChange)="filterAttributes($event)" [value]="select">
+                                Select Metric type </mat-option> -->
+                <mat-option *ngFor="let type of cpuArr" (onSelectionChange)="onCpuChange($event, type)" [value]="type.name">
+                  {{type.name }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <div class="col-md-3 equipments">
+            <mat-form-field appearance="outline">
+              <mat-label>Corefactor</mat-label>
+              <mat-select [(value)]="coreFacAttri">
+                <!-- <mat-option  (onSelectionChange)="filterAttributes($event)" [value]="select">
+                                Select Metric type </mat-option> -->
+                <mat-option *ngFor="let factor of coreFact" (onSelectionChange)="onCoreFactorChange($event, factor)"
+                  [value]="factor.name">
+                  {{factor.name }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <div class="col-md-3 equipments">
+            <mat-form-field appearance="outline">
+              <mat-label>{{'Aggregation level' | translate}}</mat-label>
+              <mat-select placeholder="{{'Aggregation level'|translate}}" [(value)]="aggreLvl">
+                <!-- <mat-option  (onSelectionChange)="filterAttributes($event)" [value]="select">
+                                  Select Metric type </mat-option> -->
+                <mat-option *ngFor="let aggR of aggArr" (onSelectionChange)="onChangeAggrLvl($event, aggR)" [value]="aggR.type">
+                  {{aggR.type }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <div class="col-md-3 equipments">
+            <mat-form-field appearance="outline">
+              <mat-label>{{'Last Equipment' | translate}}</mat-label>
+              <mat-select placeholder="{{'Last Equipment'|translate}}" [(value)]="lastEquiVal">
+                <!-- <mat-option  (onSelectionChange)="filterAttributes($event)" [value]="select">
+                                  Select Metric type </mat-option> -->
+                <mat-option *ngFor="let lastEqui of lastEquiArr" (onSelectionChange)="onChangeLastEqui($event, lastEqui)"
+                  [value]="lastEqui.type">
+                  {{lastEqui.type }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+      </div>
+
+      <div *ngIf="(type_id == 'SAG_Processor') || (type_id == 'IBM_PVU')" class="row create-equipment">
+        <div class="col-md-3 equipments">
+          <mat-form-field appearance="outline">
+            <mat-label>Reference Equipment</mat-label>
+            <mat-select placeholder="{{'Reference Equipment'|translate}}" [(value)]="refEqui">
+              <mat-option *ngFor="let refEquiment of types " (onSelectionChange)="onChangeRefEqui($event,refEquiment)"
+                [value]="refEquiment.type">
+                {{refEquiment.type }}</mat-option>
+            </mat-select>
+            </mat-form-field>
+            <mat-error *ngIf="reqAttri">
+              {{'Should have three attribute with (INT/Float)  ' | translate }}
+            </mat-error>
+        </div>
+
+        <div class="col-md-3 equipments">
+          <mat-form-field appearance="outline">
+            <mat-label>Core</mat-label>
+            <mat-select [(value)]="coreAttri">
+              <!-- <mat-option  (onSelectionChange)="filterAttributes($event)" [value]="select">
+                            Select Metric type </mat-option> -->
+              <mat-option *ngFor="let core of coreArr" (onSelectionChange)="onCoreChange($event, core)" [value]="core.name">
+                {{core.name }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <!-- <mat-form-field appearance="outline" class="col-md-3">
+        <mat-label>CPU</mat-label>
+        <mat-select  [(value)]="cpuAtrri">
+            <!-- <mat-option  (onSelectionChange)="filterAttributes($event)" [value]="select">
+                Select Metric type </mat-option>
+          <mat-option *ngFor="let type of cpuArr" (onSelectionChange)="onCpuChange($event, type)" [value]="type.name">
+            {{type.name }}</mat-option>
+        </mat-select>
+      </mat-form-field> -->
+
+      <div class="col-md-3 equipments">
+        <mat-form-field appearance="outline">
+          <mat-label>Corefactor</mat-label>
+          <mat-select [(value)]="coreFacAttri">
+            <!-- <mat-option  (onSelectionChange)="filterAttributes($event)" [value]="select">
+                          Select Metric type </mat-option> -->
+            <mat-option *ngFor="let factor of cpuArr" (onSelectionChange)="onCoreFactorChange($event, factor)"
+              [value]="factor.name">
+              {{factor.name }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>  
+
+      </div>
+      
+
+      <div class="row cta-button-bx" *ngIf="(type_id == 'SAG_Processor') || (type_id == 'IBM_PVU') || (type_id == 'Oracle_Processor')">
+        <div class="col-md-12 btn-col">
+          <button style="margin: 10px 10px 10px 0;" mat-raised-button color="primary" [mat-dialog-close]="1">{{'CANCEL'|translate}}</button>
+          <button style="margin: 10px;" mat-raised-button color="primary" (click)="onFormReset()">{{'RESET'|translate}}</button>
+          <button type="submit" style="margin: 10px;" [disabled]="creatBtnVis"  mat-raised-button color="primary" [mat-dialog-close]="1"
+          (click)="onSubmit()">{{'CREATE'|translate}}</button>
+        </div>
+
+        <!-- <div class="col-md-6 right-btn"> </div> -->
+        
+      </div>
+      <!-- End Call to action button -->
+
+  </mat-card-content>
+</mat-card>

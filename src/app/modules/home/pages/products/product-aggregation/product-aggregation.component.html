@@ -1,0 +1,99 @@
+<mat-card class="example-card">
+    <div class="container-fluid page-content-header">
+      <div class="row">
+        <div class="col-md-9 page-heading">
+          <h4>{{'List of Inventoried Products'|translate}} </h4>
+        </div>
+        <div class="col-md-3 search-div">
+          <app-advance-search [advanceSearchModel]="advanceSearchModel" (advFilterEvent)="advSearchTrigger($event)">
+          </app-advance-search>
+        </div>
+      </div>
+    </div>
+    <mat-card-content>
+      <div class="mat-elevation-z8">
+        <mat-table class="main-table" [dataSource]="productAggregationData" matSort (matSortChange)="sortData($event)" multiTemplateDataRows>
+  
+          <ng-container matColumnDef="{{column}}" *ngFor="let column of displayedColumns">
+            <div *ngIf="sortColumn.indexOf(column) !== -1">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> {{tableKeyLabelMap[column]}} </mat-header-cell>
+            </div>
+            <div *ngIf="sortColumn.indexOf(column) === -1">
+              <mat-header-cell *matHeaderCellDef> {{tableKeyLabelMap[column]}} </mat-header-cell>
+            </div>
+              <mat-cell *matCellDef="let product"> 
+                <div [ngSwitch]="column">
+
+                  <span *ngSwitchCase="'swidTag'" matTooltip="{{getSwidTags(product.products)}}">{{getSwidTags(product.products)}}</span>
+
+                  <div *ngSwitchCase="'aggregateName'">
+                      <mat-icon *ngIf="expandedRow !== product" class="expand-icon" (click)="expandedRow = (expandedRow === product ? null : product)">add_box</mat-icon>
+                      <mat-icon *ngIf="expandedRow === product" class="expand-icon" (click)="expandedRow = null">indeterminate_check_box</mat-icon>
+                      <a mat-icon-button color="primary" matTooltip="Click here to see Aggregation Details"
+                        (click)="openAggregationDetailsDialog(product)">
+                        {{product.name }}
+                      </a>
+                  </div>
+
+                  <span *ngSwitchCase="'num_applications'">{{product.num_applications || 0}}</span>
+                  <span *ngSwitchCase="'num_equipments'">{{product.num_equipments || 0}}</span>
+                  
+                  <span *ngSwitchDefault>{{(product[column] || '-')}}</span> 
+                </div>
+              </mat-cell>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         ,
+          </ng-container>
+
+
+          <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+          <ng-container matColumnDef="expandedDetail">
+            <mat-cell class="expand-cell" *matCellDef="let product" [attr.colspan]="expandDisplayedColumns.length">
+              <div class="aggregation-detail mat-elevation-z8" [@detailExpand]="product == expandedRow ? 'expanded' : 'collapsed'">
+                <mat-table class="detail-table" [dataSource]="product.products">
+                  <ng-container matColumnDef="{{column}}" *ngFor="let column of expandDisplayedColumns">
+                      <mat-header-cell *matHeaderCellDef> {{tableKeyLabelMap[column]}} </mat-header-cell>
+                      <mat-cell *matCellDef="let element"> 
+                          <div [ngSwitch]="column">
+
+                            <a *ngSwitchCase="'name'" mat-icon-button color="primary" matTooltip="Click here to see Product Details" (click)="openProductDetailsDialog(element.swidTag, element.name)">
+                              {{element.name }}
+                            </a>
+
+                            <div *ngSwitchCase="'numOfApplications'">
+                              <span *ngIf="!element.numOfApplications">{{element.numOfApplications || 0}}</span>
+                              <a *ngIf="element.numOfApplications" mat-icon-button color="primary" matTooltip="Click here to see Number of Applications" (click)="productApl(element.swidTag, element.name)">
+                                {{element.numOfApplications}}
+                              </a> 
+                            </div>
+                  
+                            <div *ngSwitchCase="'numofEquipments'">
+                              <span *ngIf="!element.numofEquipments">{{element.numofEquipments || 0}}</span>
+                              <a *ngIf="element.numofEquipments" mat-icon-button color="primary" matTooltip="Click here to see Number of Equipments" (click)="productEqui(element.swidTag, element.name)">
+                                {{element.numofEquipments}} 
+                              </a>
+                            </div>
+                            
+                            <span *ngSwitchDefault>{{(element[column] || '-')}}</span> 
+                          </div>
+
+                        </mat-cell>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         ,
+                  </ng-container>
+
+                  <mat-header-row *matHeaderRowDef="expandDisplayedColumns;"></mat-header-row>
+                  <mat-row *matRowDef="let row; columns: expandDisplayedColumns;"></mat-row>
+                </mat-table>
+              </div>
+            </mat-cell>
+          </ng-container>
+
+  
+          <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+          <mat-row *matRowDef="let row; columns: ['expandedDetail']" class="agg-detail-row" [class.agg-expanded-row]="!expandedRow || expandedRow !== row"></mat-row>
+        </mat-table>
+        <!-- <app-loading-spinner *ngIf="_loading"></app-loading-spinner> -->
+        <mat-paginator [length]="length" [pageSize]="page_size" [pageSizeOptions]="[10,20,30,50]"
+          (page)="getPaginatorData($event)" showFirstLastButtons>
+        </mat-paginator>
+      </div>
+    </mat-card-content>
+  </mat-card>

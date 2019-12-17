@@ -1,0 +1,58 @@
+<mat-card class="example-card" style="padding:44px;z-index: 0;">
+    <mat-card-header>
+        <div class="col-md-9 page-heading" style="display:table-cell;padding: 19px;">
+        <h4><span><a routerLink="/optisam/pr/products">{{'Products'|translate}}</a>
+        </span>&#62;<span><a matTooltip="Click here to go back"
+          (click)="gotoApplications()">
+          <!-- (click)="gotoApplications(this.aplName)" -->
+          {{'Application'|translate}}</a>:{{this.appName}}&#62; {{'Instances'|translate}}</span></h4>
+          </div>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="mat-elevation-z8">
+
+        <mat-table [dataSource]="MyDataSource" matSort (matSortChange)="sortData($event)">
+
+          <ng-container matColumnDef="name">
+            <mat-header-cell *matHeaderCellDef mat-sort-header="name">{{'Instances name' | translate}}
+            </mat-header-cell>
+            <mat-cell *matCellDef="let product">
+                {{product.name ||0}}
+            </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="environment">
+            <mat-header-cell *matHeaderCellDef mat-sort-header="ENV">{{'Environment'|translate}}</mat-header-cell>
+            <mat-cell *matCellDef="let product">
+                {{product.environment ||0}} </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="numofProducts">
+            <mat-header-cell *matHeaderCellDef mat-sort-header="NUM_PRODUCTS"> {{'Number of Products'|translate}}</mat-header-cell>
+            <mat-cell *matCellDef="let product">
+              <!-- <a mat-button color="primary">  -->
+              {{product.numofProducts ||0}}
+               <!-- </a> -->
+               </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="numofEquipments">
+              <mat-header-cell *matHeaderCellDef mat-sort-header="NUM_EQUIPMENTS">{{'Number of Equipments'|translate}}</mat-header-cell>
+              <mat-cell *matCellDef="let product">
+                <!-- <a mat-button color="primary"> -->
+                  {{product.numofEquipments||0}} 
+                <!-- </a> -->
+              </mat-cell>
+                </ng-container>
+
+          <mat-header-row *matHeaderRowDef="displayedColumns;"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        </mat-table>
+        <!-- <app-loading-spinner *ngIf="_loading"></app-loading-spinner> -->
+        <mat-paginator [length]="length" [pageSize]="page_size" [pageSizeOptions]="[10,20,30,50]" (page)="pageEvent = getPaginatorData($event)"
+          showFirstLastButtons>
+        </mat-paginator>
+      </div>
+    </mat-card-content>
+    </mat-card>
+

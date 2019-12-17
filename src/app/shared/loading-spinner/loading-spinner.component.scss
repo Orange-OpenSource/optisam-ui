@@ -1,0 +1,12 @@
+.spinner-div{
+    text-align: center;
+}
+    mat-spinner {
+        margin: 0 auto;
+        width: 40px !important;
+        height: 40px !important;
+    }
+    mat-spinner ::ng-deep svg {
+        width: 40px !important;
+        height: 40px !important;
+    }

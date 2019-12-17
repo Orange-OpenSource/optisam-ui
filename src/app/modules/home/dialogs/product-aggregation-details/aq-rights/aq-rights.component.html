@@ -1,0 +1,26 @@
+<div class="table-responsive">
+  <table class="table table-bordered table-striped">
+    <thead>
+      <tr>
+        <th>{{'SKU' | translate}}</th>
+        <th>{{'Metrics' | translate}}</th>
+        <th>{{'Computed licenses' | translate}}</th>
+        <th>{{'Acquired Licenses' | translate}}</th>
+        <th>{{'Delta(Number)' | translate}}</th>
+        <th>{{'Delta(€)' | translate}}</th>
+        <th>{{'Total Cost(€)' | translate}}</th>
+      </tr>
+    </thead>
+    <tbody *ngIf="acquireRights">
+      <tr *ngFor="let item of acquireRights.acq_rights">
+        <td>{{item.SKU}}</td>
+        <td>{{item.metric}}</td>
+        <td>{{item.numCptLicences}}</td>
+        <td>{{item.numAcqLicences}}</td>
+        <td>{{item.deltaNumber}}</td>
+        <td>{{item.deltaCost}}</td>
+        <td>{{item.totalCost}}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,154 @@
+<mat-card-title  color="primary">{{''|translate}}
+</mat-card-title>
+<mat-card>
+<form [formGroup]="attributeForm" >
+
+<div class="row create-equipment">
+        <div class="col-md-4  equipments">
+          <mat-form-field class="demo-full-width" appearance="outline">
+            <input matInput disabled value="{{this.type}}" disabled>
+          </mat-form-field>
+        </div>
+        <!-- <h2>{{this.type}}</h2> -->
+        <!-- <mat-form-field class="demo-full-width" appearance="outline">
+            <input matInput >{{this.metadata_id}}
+        </mat-form-field> -->
+
+        <div class="col-md-4  equipments">
+          <mat-form-field class="demo-full-width" appearance="outline">
+            <!-- <mat-select placeholder="{{'Source?'|translate}}" #name
+                        [formControlName]="'from'">
+                        <mat-option >{{this.metadata_source}}</mat-option>
+                      </mat-select> -->
+            <input matInput disabled placeholder="Source" value="{{this.metadata_source}}">
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-4  equipments" *ngIf="parentId == '2'">
+          <mat-form-field class="demo-full-width" appearance="outline">
+            <input matInput disabled placeholder="Parent Type" value="{{this.parent_type}}">
+          </mat-form-field>
+        </div>
+        <div class="col-md-4 equipments" *ngIf="parentId == '1'">
+            <mat-form-field appearance="outline">
+              <mat-select placeholder="{{'root'|translate}}" [(value)]="selected1" [formControlName]="'root'">
+                <mat-option *ngFor="let type of types" (click)="onSelect(type.ID)" [value]="type.ID">{{type.type }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        <!-- <h2>{{this.parent_type}}</h2> -->
+  </div>
+  <mat-card-title  color="primary">{{'Attribute List'|translate}}
+  </mat-card-title>
+
+    <mat-table #table [dataSource]="attribute" class="equipments-action-table">
+      <ng-container matColumnDef="name">
+        <mat-header-cell *matHeaderCellDef >{{'Name' | translate}}</mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{row.name}}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="data_type">
+        <mat-header-cell *matHeaderCellDef >{{'DataType' | translate}}</mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{row.data_type}}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="mapped_to">
+          <mat-header-cell *matHeaderCellDef >{{'MappedFile' | translate}}</mat-header-cell>
+          <mat-cell *matCellDef="let row">{{row.mapped_to}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="searchable">
+            <mat-header-cell *matHeaderCellDef >{{'Searchable' | translate}}</mat-header-cell>
+            <mat-cell *matCellDef="let row">{{row.searchable||null}}</mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="displayed">
+              <mat-header-cell *matHeaderCellDef >{{'Displayable' | translate}}</mat-header-cell>
+              <mat-cell *matCellDef="let row">{{row.displayed}}</mat-cell>
+            </ng-container>
+
+
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    </mat-table>
+
+  <div formArrayName='attribute' class="attribute-list">
+            <div class="row add-atr-row" *ngFor="let ingredientCtrl of getControls(); let i= index" [formGroupName]="i">
+              <div class="form-group col-md-3 attributes">
+                <label class="attribute-label">{{'Attribute Name'|translate}}</label><br>
+                <mat-form-field class="demo-full-width" appearance="outline">
+                  <input matInput placeholder="{{'Attribute Name'|translate}}" id="name"
+                    formControlName="name">
+                </mat-form-field>
+              </div>
+
+            <div class="form-group col-md-1 attributes">
+              <label class="attribute-label">{{'Displable' | translate}}</label>
+              <mat-checkbox formControlName="displayed"></mat-checkbox>
+            </div>
+
+            <div class="form-group col-md-1 attributes">
+              <label class="attribute-label">{{'Search'|translate}}</label>
+              <mat-checkbox formControlName="searchable"></mat-checkbox>
+            </div>
+
+            <div class="form-group col-md-1 attributes" *ngIf="selectedParent">
+                <label class="attribute-label">{{'ParentI'|translate}}</label><br>
+                  <mat-checkbox ></mat-checkbox>
+            </div>
+
+            <div  class="form-group col-md-3 attributes">
+              <label class="attribute-label">{{'Data Type'| translate}}</label>
+              <mat-form-field appearance="outline">
+                <mat-select #xyz placeholder="{{'Data Type'|translate}}" id="data"
+                  formControlName="data_type" >
+                  <mat-option>-- {{'Select Any' | translate}} --</mat-option>
+                  <mat-option  value="INT">int</mat-option>
+                  <mat-option value="FLOAT">float</mat-option>
+                  <mat-option value="STRING">string</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="form-group col-md-3 attributes">
+              <label class="attribute-label">{{'Mapped To'|translate}}</label>
+              <mat-form-field appearance="outline">
+                <mat-select placeholder="{{'Mapped to'|translate}}"
+                  formControlName="mapped_to">
+                  <mat-option *ngFor="let type of metaData"
+                    [value]="type">{{ type }}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="form-group col-md-1 attributes">
+              <button mat-button (click)="onDeleteAttribute(i)">
+                <mat-icon aria-label="Delete">delete</mat-icon>
+              </button>
+            </div>
+
+            </div>
+
+            <div class="row add-atr-row">
+              <div class="col-md-12 add-attribute-button">
+                <button mat-raised-button color="primary" (click)="onAddAttribute()">{{'Add Attribute'|translate}}</button>
+              </div>
+            </div>
+
+                <!-- Call to action button -->
+                <div class="row cta-button-bx">
+                  <div class="col-md-6 left-btn">
+                    <button mat-raised-button color="primary" [mat-dialog-close]="1" class="cancel-btn">{{'CANCEL'|translate}}</button>
+                    <button mat-raised-button color="primary" (click)="onFormReset()">{{'RESET'|translate}}</button>
+                  </div>
+
+                  <div class="col-md-6 right-btn">
+                    <button type="submit" [disabled]="!attributeForm.valid" (click)="modifyAttribute()" mat-raised-button
+                      color="primary" [mat-dialog-close]="1" class="mat-raised-button">{{'Modify'|translate}}</button>
+                  </div>
+                </div>
+                <!-- End Call to action button -->
+    </div>
+  </form>
+    </mat-card>
+
+

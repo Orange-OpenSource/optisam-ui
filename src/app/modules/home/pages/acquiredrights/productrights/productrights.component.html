@@ -1,0 +1,98 @@
+
+  <mat-card class="example-card" >
+   <div class="container-fluid page-content-header">
+        <div class="row">
+          <div class="col-md-9 page-heading">
+            <h4>{{'List of Inventoried Acquired Rights'|translate}} </h4>
+          </div>
+          <div class="col-md-3 search-div">
+            <app-advance-search [advanceSearchModel]="advanceSearchModel" (advFilterEvent)="advSearchTrigger($event)"></app-advance-search>       
+          </div>
+        </div>
+   </div>
+<mat-card-content>
+  <div class="mat-elevation-z8">
+    <mat-table [dataSource]="MyDataSource" matSort (matSortChange)="sortData($event)">
+
+      <ng-container matColumnDef="swid_tag">
+        <mat-header-cell *matHeaderCellDef mat-sort-header="SWID_TAG" >{{'SWIDtag' | translate}}
+        </mat-header-cell>
+        <mat-cell *matCellDef="let acquired_rights"> {{acquired_rights.swid_tag||0}} </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="entity">
+        <mat-header-cell *matHeaderCellDef mat-sort-header="ENTITY">{{'Entity' | translate}}
+        </mat-header-cell>
+        <mat-cell *matCellDef="let acquired_rights">{{acquired_rights.entity}}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="product_name">
+        <mat-header-cell *matHeaderCellDef mat-sort-header="PRODUCT_NAME">{{'Product name'| translate}}</mat-header-cell>
+        <mat-cell *matCellDef="let acquired_rights"> {{acquired_rights.product_name||0}} </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="editor">
+        <mat-header-cell *matHeaderCellDef mat-sort-header="EDITOR">{{'Editor'| translate}}
+        </mat-header-cell>
+        <mat-cell *matCellDef="let acquired_rights">{{acquired_rights.editor||0}}  </mat-cell>
+      </ng-container>
+
+
+      <ng-container matColumnDef="SKU">
+        <mat-header-cell *matHeaderCellDef mat-sort-header="SKU">{{'SKU'|translate}}</mat-header-cell>
+        <mat-cell *matCellDef="let acquired_rights"> {{acquired_rights.SKU||0}} </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="metric">
+        <mat-header-cell *matHeaderCellDef  mat-sort-header="METRIC" >
+          {{'Metric'|translate}}</mat-header-cell>
+        <mat-cell *matCellDef="let acquired_rights">
+            {{acquired_rights.metric ||0}}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="acquired_licenses_number">
+        <mat-header-cell *matHeaderCellDef mat-sort-header="ACQUIRED_LICENSES_NUMBER"> {{'Acquired licenses number'|translate}}</mat-header-cell>
+        <mat-cell *matCellDef="let acquired_rights">
+            {{acquired_rights.acquired_licenses_number ||0}}</mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="licenses_under_maintenance_number">
+        <mat-header-cell *matHeaderCellDef mat-sort-header="LICENSES_UNDER_MAINTENANCE_NUMBER"> {{'Licenses Under maintenance number'|translate}}</mat-header-cell>
+        <mat-cell *matCellDef="let acquired_rights">
+            {{acquired_rights.licenses_under_maintenance_number ||0}}</mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="avg_licenes_unit_price">
+        <mat-header-cell *matHeaderCellDef mat-sort-header="AVG_LICENSE_UNIT_PRICE"> {{'AVG License unit price (€)'|translate}}</mat-header-cell>
+        <mat-cell *matCellDef="let acquired_rights">
+            {{acquired_rights.avg_licenes_unit_price ||0}}</mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="avg_maintenance_unit_price">
+        <mat-header-cell *matHeaderCellDef mat-sort-header="AVG_MAINTENANCE_UNIT_PRICE"> {{'AVG Maintenance unit price (€)'|translate}}</mat-header-cell>
+        <mat-cell *matCellDef="let acquired_rights">
+            {{acquired_rights.avg_maintenance_unit_price ||0}} </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="total_purchase_cost">
+        <mat-header-cell *matHeaderCellDef mat-sort-header="TOTAL_PURCHASE_COST"> {{'Total purchase cost (€)'|translate}}</mat-header-cell>
+        <mat-cell *matCellDef="let acquired_rights">
+            {{acquired_rights.total_purchase_cost ||0}}</mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="total_maintenance_cost">
+        <mat-header-cell *matHeaderCellDef mat-sort-header="TOTAL_MAINTENANCE_COST"> {{'Total maintenance cost (€)'|translate}}</mat-header-cell>
+        <mat-cell *matCellDef="let acquired_rights">
+            {{acquired_rights.total_maintenance_cost ||0}}</mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="total_cost">
+        <mat-header-cell *matHeaderCellDef mat-sort-header="TOTAL_COST"> {{'Total cost (€)'|translate}}</mat-header-cell>
+        <mat-cell *matCellDef="let acquired_rights">
+            {{acquired_rights.total_cost ||0}}</mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    </mat-table>
+    <!-- <mat-paginator #paginator [pageSize]="7" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons> -->
+    <mat-paginator  [length]="length" [pageSize]="page_size" [pageSizeOptions]="[10,20,30,50]" (page)="pageEvent = getPaginatorData($event)"
+      showFirstLastButtons>
+    </mat-paginator>
+  </div>
+</mat-card-content>
+</mat-card>

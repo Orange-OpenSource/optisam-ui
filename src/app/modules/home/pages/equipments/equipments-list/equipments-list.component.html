@@ -1,0 +1,83 @@
+<mat-card class="example-card">
+  <div class="container-fluid page-content-header">
+    <div class="row">
+      <div class="col-md-9 page-heading" style="display:table-cell">
+        <h4>{{'List of Inventoried Equipments'|translate}} </h4>
+      </div>
+      
+      <div class="col-md-3 search-div">
+        <app-advance-search [advanceSearchModel]="advanceSearchModel" (advFilterEvent)="advSearchTrigger($event)"></app-advance-search>       
+        <!-- <mat-form-field class="search-form-field" floatLabel="never">
+          <input matInput autocomplete="off" (keydown.enter)="applyFilter()" [(ngModel)]="dynamicSearchForm[name]" placeholder="Search by {{name}}">
+
+          <button mat-buttocol-md-3n matSuffix mat-icon-button aria-label="Clear" *ngIf="dynamicSearchForm[name]"
+            (click)="applyFilter()" [disabled]="dynamicSearchForm[name].length < 3">
+              <mat-icon>search</mat-icon>
+          </button>
+          <button mat-button matSuffix mat-icon-button aria-label="Clear" (click)="clearFilter()"
+            *ngIf="dynamicSearchForm[name]">
+            <mat-icon>clear</mat-icon>
+          </button>
+
+          <button mat-button matSuffix class="btn-toggle" [matMenuTriggerFor]="menu">
+            <mat-icon>keyboard_arrow_down</mat-icon>
+          </button>
+          <mat-menu #menu>
+            <div mat-menu-item mat-filter-item [disableRipple]="true" class="menu-title">
+              {{'Advance Search' | translate}}
+            </div>
+            <div mat-menu-item mat-filter-item [disableRipple]="true" *ngFor="let search of sName">
+              <mat-form-field>
+                <input matInput placeholder="{{search}}" [(ngModel)]="dynamicSearchForm[search]">
+              </mat-form-field>
+            </div>
+            <div mat-menu-item mat-filter-item [disableRipple]="true">
+              <button mat-raised-button (click)="clearFilter()">{{'Clear'|translate}}</button>
+              <button mat-raised-button color="primary" (click)="applyFilter()"
+                [disabled]="dynamicSearchForm[name] != '' && dynamicSearchForm[name] && dynamicSearchForm[name].length < 3">{{'Search'|translate}}</button>
+            </div>
+          </mat-menu>
+        </mat-form-field> -->
+      </div>
+    </div>
+  </div>    
+
+
+    <mat-card-content>
+      <div class="table-container mat-elevation-z8">
+        <div class="mat-elevation-z8">
+          <mat-toolbar class="equip-toolbar" color="ThemePalette">
+            <mat-toolbar-row>
+              <button mat-button routerLinkActive="active" [ngClass]="{'active-column': selectedColumn === disCol.type}"
+                *ngFor="let disCol of displayedColumns2" matTooltip="Click here to see Equipment List"
+                (click)="getEquipmentsData(disCol)">{{disCol.type|uppercase}}</button>
+            </mat-toolbar-row>
+          </mat-toolbar>
+          <div class="table-section">
+            <mat-table [dataSource]="dataSource" matSort (matSortChange)="sortData($event)"
+              *ngIf="displayedrows.length > 0">
+              <ng-container *ngFor="let x of displayedrows; let colIndex = index" [matColumnDef]="x">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> {{prettyHeader(x)}}</mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                  <a class="row-anchor" *ngIf="colIndex===0" mat-icon-button color="primary"
+                    matTooltip="Click to see attribute  details" (click)="openDialog(element.ID)">
+                    {{element[x]}} </a>
+                  <span class="row-span" *ngIf="colIndex > 0">{{element[x]}}</span>
+                </mat-cell>
+              </ng-container>
+
+              <mat-header-row *matHeaderRowDef="displayedrows;"></mat-header-row>
+              <mat-row *matRowDef="let row; columns: displayedrows;"></mat-row>
+
+
+            </mat-table>
+          </div>
+          <!-- <app-loading-spinner *ngIf="_loading"></app-loading-spinner> -->
+          <mat-paginator [length]="length" [pageSize]="page_size" [pageSizeOptions]="[10,20,30,50]"
+            (page)="pageEvent = getPaginatorData($event)" showFirstLastButtons>
+          </mat-paginator>
+        </div>
+      </div>
+    </mat-card-content>
+
+</mat-card>

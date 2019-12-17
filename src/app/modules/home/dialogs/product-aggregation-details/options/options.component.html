@@ -1,0 +1,31 @@
+<div *ngIf="productOptions">
+  <p>
+    <strong>{{'Options list' | translate}}</strong>
+    <br>
+    <strong>{{'Number of options' | translate}} :</strong>{{productOptions.numOfOptions || 0}}
+  </p>
+  <div class="table-responsive">
+    <table class="table table-bordered table-striped">
+      <thead>
+        <tr>
+          <th>{{'SWIDTag' | translate}}</th>
+          <th>{{'Product name' | translate}}</th>
+          <th>{{'Editor' | translate}}</th>
+          <th>{{'Edition' | translate}}</th>
+          <th>{{'Release' | translate}}</th>
+          <th>{{'Total Cost(€)' | translate}}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of productOptions.optioninfo">
+          <td>{{item.swidTag || 0}}</td>
+          <td><a>{{item.Name}}</a></td>
+          <td>{{item.editor}}</td>
+          <td>{{item.edition}}</td>
+          <td>{{item.version || 0}}</td>
+          <td>{{item.metric || 0}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

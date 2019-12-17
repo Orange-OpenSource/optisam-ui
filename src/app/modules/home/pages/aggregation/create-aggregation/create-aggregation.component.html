@@ -1,0 +1,84 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>{{'AGGREGATIONS.TEXTS.CREATE_SWIDTAG_AGGREGATION' | translate}}</mat-card-title>
+  </mat-card-header>
+  <form [formGroup]="createForm" (submit)="createAggregation()">
+    <mat-card-content fxLayout="column">
+      <div class="horizontal">
+        <mat-form-field appearance="outline">
+          <mat-label>{{'AGGREGATIONS.TEXTS.NAME' | translate}}</mat-label>
+          <input matInput placeholder="{{'AGGREGATIONS.TEXTS.NAME' | translate}}" formControlName="name">
+          <mat-error *ngIf="createForm.controls.name.hasError('validAggName')">
+              No special characters or spaces are allowed
+            </mat-error>
+        </mat-form-field>
+        <div class="width-clearfix"></div>
+        <mat-form-field appearance="outline">
+          <mat-label>{{'AGGREGATIONS.TEXTS.EDITOR' | translate}}</mat-label>
+          <mat-select formControlName="editor" (selectionChange)="selectionChanged($event, 'editor')" #editorInput>
+            <mat-option>-- {{'AGGREGATIONS.TEXTS.SELECT_EDITOR' | translate}} --</mat-option>
+            <mat-option *ngFor="let editor of editorList;" [value]="editor.Name">{{editor.Name}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="horizontal">
+        <mat-form-field appearance="outline">
+          <mat-label>{{'AGGREGATIONS.TEXTS.METRICS' | translate}}</mat-label>
+          <mat-select formControlName="metric" [disabled]="!createForm.value.editor" (selectionChange)="selectionChanged($event, 'metric')" #metricInput>
+            <mat-option>-- {{'AGGREGATIONS.TEXTS.SELECT_METRIC' | translate}} --</mat-option>
+            <mat-option *ngFor="let metric of metricesList;" [value]="metric.name">{{metric.name}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div class="width-clearfix"></div>
+        <mat-form-field appearance="outline">
+          <mat-label>{{'AGGREGATIONS.TEXTS.PRODUCT' | translate}}</mat-label>
+          <mat-select formControlName="product" [disabled]="!metricInput.value || HTTPActivity || productList.length === 0" (selectionChange)="selectionChanged($event, 'product')" #productInput>
+            <mat-option>-- {{'AGGREGATIONS.TEXTS.SELECT_PRODUCT' | translate}} --</mat-option>
+            <mat-option *ngFor="let product of productList;" [value]="product.name">{{product.name}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="swidtabs" *ngIf="createForm.value.product">
+        <div class="left">
+          <h5 class="transtitle">{{'AGGREGATIONS.TEXTS.SWIDTAGS_ALL' | translate}}</h5>
+          <div class="body">
+            <div class="list-item" *ngFor="let swid of swidList;let idx = index;">
+              <span>{{swid.swidTag}}</span>
+              <mat-icon class="add" (click)="addSwidTag(swid, idx)">add_circle</mat-icon>
+            </div>
+          </div>
+        </div>
+        <div class="trans-icon">
+          <mat-icon>sync_alt</mat-icon>
+        </div>
+        <div class="right">
+          <h5 class="transtitle">{{'AGGREGATIONS.TEXTS.SWIDTAGS_SELECTED' | translate}}</h5>
+          <div class="body">
+
+            <div class="list-item" *ngFor="let swid of selectedSwidList;let idx = index;">
+              <span>{{swid.swidTag}}</span>
+              <mat-icon class="cancel" (click)="removeSwidTag(swid, idx)">remove_circle</mat-icon>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <app-loading-spinner *ngIf="HTTPActivity && selectedSwidList.length === 0"></app-loading-spinner>
+    </mat-card-content>
+    <mat-card-actions>
+      <div class="alert alert-danger" *ngIf="errorMessage">
+        <span>{{errorMessage}}</span>
+      </div>
+      <button class="save-btn" mat-raised-button type="reset" (click)="resetForm()">
+        {{'AGGREGATIONS.ACTIONS.RESET' | translate}}
+      </button>
+      <button class="save-btn" mat-raised-button color="primary" type="submit" [disabled]="!createForm.valid || selectedSwidList.length === 0">
+          <span class="spinner-border spinner-border-sm" *ngIf="HTTPActivity && createForm.valid && selectedSwidList.length !== 0"></span>
+          {{'AGGREGATIONS.ACTIONS.SAVE' | translate}}
+      </button>
+    </mat-card-actions>
+  </form>
+</mat-card>

@@ -1,0 +1,54 @@
+.mat-card {
+  color: rgba(0,0,0,.87);
+  margin: 0px auto 0 auto;
+  position: inherit;
+    top: 100px;
+    right: 100px;
+    margin-bottom: 100px;
+    box-sizing: border-box;
+    width: 440px !important;
+    min-height: calc(100vh - 200px);
+    background-color: rgba(255,255,255,0.95);
+    padding: 30px;
+    color: #333;
+    font-size: 0.875rem;
+    line-height: 1.5;
+}
+mat-menu-panel {
+  min-width: 89px !important;
+}
+
+.optisam-form-logo {
+  display: block;
+  width: 173px;
+  height: 50px;
+  background: url(/assets/images/OpTISAM-Logo-2.png) left center no-repeat;
+  background-size: 173px 50px;
+}
+
+.bg{
+  background-image: url(/assets/images/login-bg3.jpg) ;
+  background-size: cover;
+  padding: 52px 0 0 0;
+  height: 100% !important;
+}
+      mat-card-title,
+      mat-card-content {
+        display: flex;
+        justify-content: center;
+      }
+      .ng-star-inserted { height: 100%; }
+
+.flags {
+  height: 14px;
+  margin-right: 7px;
+}
+
+.spinner-border-sm{
+  height: 1rem !important;
+}
+
+.diableClick{pointer-events: none; cursor: not-allowed;}
+
+.alert{height: inherit;}
+    mat-icon{vertical-align: middle;}

@@ -1,0 +1,115 @@
+<mat-toolbar color="ThemePalette" class="main-nav-bar">
+    <mat-toolbar-row>
+
+      <div class="optisam-logo">
+           <a href="#"><img src="assets/images/OpTISAM-Logo-2.png"></a>
+      </div>
+
+      <button mat-button routerLink="/optisam/dashboard"
+        routerLinkActive="active" >
+        {{'Dashboard' |translate}}</button>
+      <span></span> <button mat-button routerLink="/optisam/apl/applications"
+        routerLinkActive="active">{{'Applications'|translate}}</button>
+      <button mat-button routerLink="/optisam/pr/products" routerLinkActive="active"
+      >{{'Products'
+        |translate}}</button>
+      <button mat-button routerLink="/optisam/eq/equipmentsList"
+        routerLinkActive="active">
+        {{'Equipments' | translate}}</button>
+      <button mat-button routerLink="/optisam/ar/prights"
+       routerLinkActive="active">{{'Acquired
+        rights' | translate}}</button>
+      <button mat-button routerLink="/optisam/simulation"
+        routerLinkActive="active">{{'Simulation' | translate}}</button>
+      <span class="example-spacer"></span>
+      <div fxShow="true" fxHide.lt-md="true">
+        <button mat-icon-button [matMenuTriggerFor]="menu2">
+            <img style="height: 24px; margin-right: 16px;" src="\assets\images\AdminSmall.png"/>
+
+        </button>
+
+        <mat-menu #menu2>
+            <button mat-menu-item matTooltip="Equipments" [routerLink]="['/optisam/eqm']" [routerLinkActive]="['routeactive']">
+
+              <img style="height: 20px; margin-right: 16px;" src="\assets\images\Equipment-managementSmall.png"/>
+              {{'Equipment Management' | translate}}
+            </button>
+            <button mat-menu-item matTooltip="Create Metric" [routerLink]="['/optisam/ma']" [routerLinkActive]="['routeactive']">
+             <!--  <mat-icon>build</mat-icon> -->
+             <img style="height: 20px; margin-right: 16px;" src="\assets\images\Metrics-ManagementSmall.png"/>
+              <!-- <IMG SRC="\assets\images\Equipment-management.png"> -->
+              {{'Metrics Management' | translate}}
+            </button>
+            <button mat-menu-item matTooltip="Users" *ngIf="(role === 'ADMIN') || ((role === 'SUPER_ADMIN'))" [routerLink]="['/optisam/gr/userGroup']" [routerLinkActive]="['routeactive']">
+              <mat-icon>person</mat-icon>
+              {{'User Management' | translate}}
+            </button>
+            <button mat-menu-item matTooltip="Groups" [routerLink]="['/optisam/gr/groupMang']" [routerLinkActive]="['routeactive']">
+              <mat-icon>group_add</mat-icon>
+              {{'Group Management' | translate}}
+            </button>
+            <button mat-menu-item matTooltip="Data management" *ngIf="(role === 'ADMIN') || ((role === 'SUPER_ADMIN'))" [routerLink]="['/optisam/dm/upload-data']" [routerLinkActive]="['routeactive']">
+              <mat-icon>cloud_upload</mat-icon>
+              {{'Data Management' | translate}}
+            </button>
+            <button mat-menu-item matTooltip="Products management" [routerLink]="['/optisam/ag/list-aggregation']" [routerLinkActive]="['routeactive']">
+              <mat-icon>devices_other</mat-icon>
+              {{'Products management' | translate}}
+            </button>
+        </mat-menu>
+
+        <!-- <mat-menu #menu2>
+            <div>
+              <button mat-button matTooltip="equipments" [routerLink]="['/optisam/eq/createEquipment']"><mat-icon>build</mat-icon>
+                {{'Create Equipment' | translate}}
+              </button>
+            </div>
+            <div>
+              <button mat-button matTooltip="groups" [routerLink]="['/optisam/gr/createGroup']"><mat-icon>group_add</mat-icon>
+                {{'Create Group' | translate}}
+              </button>
+            </div>
+          </mat-menu> -->
+        <!-- <a mat-button [matMenuTriggerFor]="menu2">
+          <mat-icon matsuffix>account_balance</mat-icon>
+        </a>
+        <mat-menu #menu2="matMenu" style="height: 200px;">
+          <button mat-menu-item style="line-height: 15px;">
+            <mat-icon matsuffix>add</mat-icon>
+            <span class="gb_m"
+              [routerLink]="['/optisam/equipments/createEquipment']"> {{'Create
+              Equipment'| translate}}</span>
+          </button>
+        </mat-menu> -->
+        <a mat-button [matMenuTriggerFor]="menu">
+          <mat-icon matsuffix>face</mat-icon>
+          {{userName}}
+        </a>
+
+        <mat-menu #menu="matMenu">
+          <!-- <button mat-menu-item>
+            <mat-icon matsuffix>account_circle</mat-icon>
+            {{'Profile'| translate}}
+          </button> -->
+          <button mat-menu-item (click)="langchange()">
+            <mat-icon matsuffix>settings</mat-icon>
+            {{'Settings' |translate}}
+          </button>
+          <button mat-menu-item (click)="logout()">
+            <mat-icon matsuffix>logout</mat-icon>
+            {{'Logout' | translate}}
+          </button>
+        </mat-menu>
+        <a mat-button [matMenuTriggerFor]="menu1" (click)="checkLanguage()">
+          <mat-icon matsuffix>language</mat-icon>
+          {{ 'language' | translate }}
+        </a>
+        <mat-menu #menu1="matMenu">
+          <button mat-menu-item *ngIf="currLang=='fr'"
+            (click)="updateUserLanguage('en')"><img class="flags" src="assets/images/en.png">English</button>
+          <button mat-menu-item *ngIf="currLang=='en'"
+            (click)="updateUserLanguage('fr')"><img class="flags" src="assets/images/fr.png">French</button>
+        </mat-menu>
+      </div>
+    </mat-toolbar-row>
+  </mat-toolbar>

@@ -1,0 +1,42 @@
+<!-- <h2>Attributes List</h2>
+<ul >
+  <li *ngFor="let row of attribute">
+    <span class="badge">{{row.name}}</span> {{row.mapped_to}}
+  </li>
+</ul> -->
+        <mat-card-title  color="primary"><h3>{{'Attribute List for'|translate}} {{this.equipName}}</h3>
+        </mat-card-title>
+
+      <mat-table #table [dataSource]="attribute" class="equipments-action-table">
+        <ng-container matColumnDef="name">
+          <mat-header-cell *matHeaderCellDef >{{'Name' | translate}}</mat-header-cell>
+          <mat-cell *matCellDef="let row"> {{row.name}}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="data_type">
+          <mat-header-cell *matHeaderCellDef >{{'DataType' | translate}}</mat-header-cell>
+          <mat-cell *matCellDef="let row"> {{row.data_type}}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="mapped_to">
+            <mat-header-cell *matHeaderCellDef >{{'Mapped Column' | translate}}</mat-header-cell>
+            <mat-cell *matCellDef="let row">{{row.mapped_to}}</mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="searchable">
+              <mat-header-cell *matHeaderCellDef >{{'Searchable' | translate}}</mat-header-cell>
+              <mat-cell *matCellDef="let row">{{row.searchable||null}}</mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="displayed">
+                <mat-header-cell *matHeaderCellDef >{{'Displayable' | translate}}</mat-header-cell>
+                <mat-cell *matCellDef="let row">{{row.displayed}}</mat-cell>
+              </ng-container>
+
+
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+      </mat-table>
+
+      <mat-dialog-actions align="center">
+        <button mat-raised-button mat-dialog-close>{{'Cancel' | translate}}</button>
+      </mat-dialog-actions>
+

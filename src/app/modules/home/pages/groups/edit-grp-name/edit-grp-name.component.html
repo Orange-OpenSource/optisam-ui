@@ -1,0 +1,33 @@
+<div *ngIf="data.type == 'edit'">
+<h3>{{fullyQualifyName}}</h3>
+<div style="position: center;" *ngIf="showMsg">
+    <div class="col-xs-12">
+      <p class="alert alert-warning">
+        <strong>Group Name Updated Succesfully!!!</strong>
+      </p>
+    </div>
+  </div>
+    <mat-form-field class="example-full-width">
+      <input matInput placeholder="Group Name"  [(ngModel)]="editName">
+   <!--    <mat-error *ngIf="emailFormControl.hasError('email') && !emailFormControl.hasError('required')">
+        Please enter a valid email address
+      </mat-error>-->
+
+    </mat-form-field>
+    <span style="color:red"  *ngIf="nameRequired">
+      Group  name is <strong>required</strong>
+    </span>
+    <div class="row cta-button-bx" >
+        <div class="col-md-12">
+          <button style="margin: 10px;" mat-raised-button color="primary" [mat-dialog-close]="1">{{'CANCEL'|translate}}</button>
+          <button type="button" style="margin: 10px;" mat-raised-button color="primary"
+          (click)="saveEditName(editName)">{{'Save'|translate}}</button>
+          </div>
+    </div>
+      </div>
+      <div *ngIf="data.type == 'scope'">
+          <div *ngFor="let x of data.node.scopes; let colIndex = index">{{x}}<span *ngIf="((data.node.scopes.length - 1) != colIndex)">,</span></div>
+
+      </div>
+
+
