@@ -7,4 +7,3 @@ RUN mkdir dist
 RUN mkdir dist/assets
 COPY dist/assets/ dist/assets
 COPY dist/ .
-
