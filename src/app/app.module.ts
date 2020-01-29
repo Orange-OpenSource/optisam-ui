@@ -1,3 +1,9 @@
+// Copyright (C) 2019 Orange
+// 
+// This software is distributed under the terms and conditions of the 'Apache License 2.0'
+// license which can be found in the file 'License.txt' in this package distribution 
+// or at 'http://www.apache.org/licenses/LICENSE-2.0'. 
+
 // import { LoaderComponent } from './core/loader/loader.component';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, APP_INITIALIZER } from '@angular/core';
@@ -83,6 +89,3 @@ export class AppModule { }
 export function HttpLoaderFactory(httpClient: HttpClient) {
   return new TranslateHttpLoader(httpClient, '/assets/i18n/', '.json');
 }
-
-
-
