@@ -39,6 +39,14 @@ export class AuthInterceptorService implements HttpInterceptor {
       case 'license':
       case 'account':
       case 'auth':
+      case 'simulation':
+      case 'application':
+      case 'product':
+      case 'acquired-rights':
+      case 'metric':
+      case 'equipment':
+      case 'dps':
+      case 'report':
       case 'import':
           _url = this.config[caseValue] + _url;
           request = request.clone({url: _url});
@@ -54,8 +62,8 @@ export class AuthInterceptorService implements HttpInterceptor {
         request = request.clone({ headers: request.headers.set('Authorization', 'Bearer ' + token) });
     }
 
-    //  To exclude Content-Type in import service call
-    if (request.url.search('/api/v1/import') === -1) {
+    //  To exclude Content-Type in import & config service call
+    if (request.url.search('/api/v1/import') === -1 && request.url.search('/api/v1/config') === -1) {
       if (!request.headers.has('Content-Type')) {
           request = request.clone({ headers: request.headers.set('Content-Type', 'application/x-www-form-urlencoded') });
       }
@@ -79,7 +87,7 @@ export class UnauthorisedInterceptor implements HttpInterceptor {
     }, (err: any) => {
       if (err instanceof HttpErrorResponse) {
         this.sharedService.endHttpLoading();
-        if (err.status === 403) {
+        if (err.status === 403 || err.status === 401) {
           window.location.href = '/';
         }
       }

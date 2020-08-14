@@ -2,55 +2,11 @@
   <div class="container-fluid page-content-header">
     <div class="row">
       <div class="col-md-9 page-heading">
-        <h4>{{'List of Inventoried Products'|translate}} </h4>
+        {{'List of Inventoried Products'|translate}}
       </div>
       <div class="col-md-3 search-div">
         <app-advance-search [advanceSearchModel]="advanceSearchModel" (advFilterEvent)="advSearchTrigger($event)">
         </app-advance-search>
-
-        <!-- <mat-form-field class="search-form-field" floatLabel="never">
-                  <input matInput placeholder="{{'Search by Product Name'|translate}}" autocomplete="on"
-                    [(ngModel)]="productnamePlaceholder" (keyup)="setSelected($event.target.value, 2 )" (keydown.enter)="applyFilter()">
-                  <button mat-button matSuffix mat-icon-button aria-label="Clear" *ngIf="productnamePlaceholder"
-                    (click)="applyFilter()" [disabled]="productnamePlaceholder.length < 3">
-                    <mat-icon>search</mat-icon>
-                  </button>
-                  <button mat-button matSuffix mat-icon-button aria-label="Clear" (click)="clearFilter()"
-                    *ngIf="productnamePlaceholder">
-                    <mat-icon>clear</mat-icon>
-                  </button>
-                  <button mat-button matSuffix class="btn-toggle" [matMenuTriggerFor]="menu">
-                    <mat-icon>keyboard_arrow_down</mat-icon>
-                  </button>
-                  <mat-menu #menu>
-                    <div mat-menu-item mat-filter-item [disableRipple]="true" class="menu-title">
-                      {{'Advance Search' | translate}}
-                    </div>
-                    <div mat-menu-item mat-filter-item [disableRipple]="true">
-                      <mat-form-field>
-                        <input matInput placeholder="{{'SWIDtag'|translate}}" [(ngModel)]="swidtagPlaceholder"
-                          (keyup)="setSelectedSearch($event.target.value, 1 )">
-                      </mat-form-field>
-                    </div>
-                    <div mat-menu-item mat-filter-item [disableRipple]="true">
-                      <mat-form-field>
-                        <input matInput placeholder="{{'Product name'|translate}}" [(ngModel)]="productnamePlaceholder"
-                          (keyup)="setSelectedSearch($event.target.value,2)">
-                      </mat-form-field>
-                    </div>
-                    <div mat-menu-item mat-filter-item [disableRipple]="true">
-                      <mat-form-field>
-                        <input matInput placeholder="{{'Editor name'|translate}}" [(ngModel)]="EditorNamePlaceholder"
-                          (keyup)="setSelectedSearch($event.target.value,3)">
-                      </mat-form-field>
-                    </div>
-
-                    <div mat-menu-item mat-filter-item [disableRipple]="true">
-                      <button mat-raised-button (click)="clearFilter()">{{'Clear'|translate}}</button>
-                      <button mat-raised-button color="primary" (click)="applyFilter()" [disabled]="productnamePlaceholder != '' && productnamePlaceholder && productnamePlaceholder.length < 3">{{'Search'|translate}}</button>
-                    </div>
-                  </mat-menu>
-                </mat-form-field> -->
       </div>
     </div>
   </div>
@@ -68,9 +24,9 @@
           <mat-header-cell *matHeaderCellDef mat-sort-header="name">{{'Product name' | translate}}
           </mat-header-cell>
           <mat-cell *matCellDef="let product">
-            <a mat-icon-button color="primary" matTooltip="Click here to see Product Details"
+            <a class="ellipsis mat-button-link" matTooltip="{{product.name}}"
               (click)="openDialog(product.swidTag,product.name)">
-              {{product.name }}</a>
+              {{product.name}}</a>
           </mat-cell>
         </ng-container>
 
@@ -90,37 +46,41 @@
         <ng-container matColumnDef="edition">
           <mat-header-cell *matHeaderCellDef mat-sort-header>{{'Edition'| translate}}
           </mat-header-cell>
-          <mat-cell *matCellDef="let product"> </mat-cell>
+          <mat-cell *matCellDef="let product">{{product.category}}</mat-cell>
         </ng-container>
 
 
         <ng-container matColumnDef="totalCost">
           <mat-header-cell *matHeaderCellDef mat-sort-header>{{'Total cost(€)'|translate}}</mat-header-cell>
-          <mat-cell *matCellDef="let product"> {{0}} </mat-cell>
+          <mat-cell *matCellDef="let product"> {{totalCost || 0}} </mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="numOfApplications">
           <mat-header-cell *matHeaderCellDef mat-sort-header="numOfApplications">
-            {{'Number of applications'|translate}}</mat-header-cell>
+            {{'Application Count'|translate}}</mat-header-cell>
           <mat-cell *matCellDef="let product">
-            <a mat-icon-button color="primary" matTooltip="Click here to see Number of Applications"
+            <a *ngIf="product.numOfApplications" class="mat-button-link" matTooltip="{{'Click here to see related Applications'|translate}}"
               (click)="productApl(product.swidTag,product.name)">
-              {{product.numOfApplications ||0}}</a> </mat-cell>
+              {{product.numOfApplications}}</a> 
+              <span *ngIf="!product.numOfApplications">0</span>
+          </mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="numofEquipments">
-          <mat-header-cell *matHeaderCellDef mat-sort-header="numofEquipments"> {{'Number of equipment'|translate}}
+          <mat-header-cell *matHeaderCellDef mat-sort-header="numofEquipments"> {{'Equipment Count'|translate}}
           </mat-header-cell>
           <mat-cell *matCellDef="let product">
-            <a mat-icon-button color="primary" matTooltip="Click here to see Number of Equipments"
+            <a *ngIf="product.numofEquipments" class="mat-button-link" matTooltip="{{'Click here to see related Equipments'|translate}}"
               (click)="productEqui(product.swidTag,product.name)">
-              {{product.numofEquipments ||0}} </a></mat-cell>
+              {{product.numofEquipments}} </a>
+              <span *ngIf="!product.numofEquipments">0</span>
+          </mat-cell>
         </ng-container>
 
         <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
         <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
       </mat-table>
-      <!-- <app-loading-spinner *ngIf="_loading"></app-loading-spinner> -->
+      <app-loading-spinner *ngIf="_loading"></app-loading-spinner>
       <!-- <mat-paginator #paginator [pageSize]="7" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons> -->
       <mat-paginator [length]="length" [pageSize]="page_size" [pageSizeOptions]="[10,20,30,50]"
         (page)="pageEvent = getPaginatorData($event)" showFirstLastButtons>

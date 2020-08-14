@@ -1,0 +1,138 @@
+<!-- <div class="closeDialog"><button [mat-dialog-close]="true" mat-icon-button><mat-icon>close</mat-icon></button></div> -->
+<mat-card>
+  <mat-card-title class="page-heading">
+    {{'Metric Details'|translate}}
+  </mat-card-title>
+  <mat-card-content>
+    <div class="row">
+      <div class="col-md-3">
+        <mat-form-field appearance="outline">
+          <mat-label>{{'Metric Name' | translate}}</mat-label>
+          <input matInput id="metricName" [value]="metricName" readonly>
+        </mat-form-field>
+      </div>
+      
+      <div class="col-md-3">
+        <mat-form-field appearance="outline">
+          <mat-label>{{'Metric Type' | translate}}</mat-label>
+          <input matInput id="metricType" [value]="metricType" readonly>
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-6">
+        <mat-form-field>
+          <mat-label>{{'Metric Description' | translate}}</mat-label>
+          <textarea id="metricDescription" matInput [value]="metricDescription" readonly></textarea>
+        </mat-form-field>
+      </div>
+    </div>
+    <!-- Oracle Processor or Oracle NUP-->
+    <div class="row" *ngIf="metricDetails && (metricType=='oracle.processor.standard' || metricType == 'oracle.nup.standard')">
+      <div class="col-md-3">
+        <mat-form-field appearance="outline">
+          <mat-label>{{'First Equipment' | translate}}</mat-label>
+          <input matInput id="firstEquipment" [value]="metricDetails.StartEqType" readonly>
+        </mat-form-field>
+      </div>
+      <div class="col-md-3">
+        <mat-form-field appearance="outline">
+          <mat-label>{{'Reference Equipment' | translate}}</mat-label>
+          <input matInput id="refEquipment" [value]="metricDetails.BaseEqType" readonly>
+        </mat-form-field>
+      </div>
+      <div class="col-md-3">
+        <mat-form-field appearance="outline">
+          <mat-label>Core</mat-label>
+          <input matInput id="core" [value]="metricDetails.NumCoreAttr" readonly>
+        </mat-form-field>
+      </div>
+      <div class="col-md-3">
+        <mat-form-field appearance="outline">
+          <mat-label>CPU</mat-label>
+          <input matInput id="CPU" [value]="metricDetails.NumCPUAttr" readonly>
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="row" *ngIf="metricDetails && (metricType=='oracle.processor.standard' || metricType == 'oracle.nup.standard')">      
+      <div class="col-md-3">
+        <mat-form-field appearance="outline">
+          <mat-label>Corefactor</mat-label>
+          <input matInput id="corefactor" [value]="metricDetails.CoreFactorAttr" readonly>
+        </mat-form-field>
+      </div>
+      <div class="col-md-3">
+        <mat-form-field appearance="outline">
+          <mat-label>{{'Aggregation level' | translate}}</mat-label>
+          <input matInput id="aggregationLevel" [value]="metricDetails.AggerateLevelEqType" readonly>
+        </mat-form-field>
+      </div>
+      <div class="col-md-3">
+        <mat-form-field appearance="outline">
+          <mat-label>{{'Last Equipment' | translate}}</mat-label>
+          <input matInput id="lastEquipment" [value]="metricDetails.EndEqType" readonly>
+        </mat-form-field>
+      </div>
+      <div class="col-md-3">
+        <mat-form-field appearance="outline" *ngIf="metricType == 'oracle.nup.standard'">
+          <mat-label>{{'No. of users' | translate}}</mat-label>
+          <input matInput id="numberOfUsers" [value]="metricDetails.NumberOfUsers" readonly>
+        </mat-form-field>
+      </div>
+    </div>
+    <!-- SAG Processor or IBM PVU-->
+    <div class="row" *ngIf="metricDetails &&( metricType == 'sag.processor.standard' || metricType == 'ibm.pvu.standard')">
+      <div class="col-md-3">
+        <mat-form-field appearance="outline">
+          <mat-label>{{'Reference Equipment' | translate}}</mat-label>
+          <input matInput id="refEquipment" [value]="metricDetails.BaseEqType" readonly>
+        </mat-form-field>
+      </div>
+      <div class="col-md-3">
+        <mat-form-field appearance="outline">
+          <mat-label>Core</mat-label>
+          <input matInput id="core" [value]="metricDetails.NumCoreAttr" readonly>
+        </mat-form-field>
+      </div>
+      <div class="col-md-3">
+        <mat-form-field appearance="outline">
+          <mat-label>Corefactor</mat-label>
+          <input matInput id="corefactor" [value]="metricDetails.CoreFactorAttr" readonly>
+        </mat-form-field>
+      </div>
+    </div>
+    <!-- Attribute Counter -->
+    <div  class="row" *ngIf="metricDetails && metricType == 'attribute.counter.standard'">
+      <div class="col-md-3">
+        <mat-form-field appearance="outline">
+          <mat-label>{{'Reference Equipment' | translate}}</mat-label>
+          <input matInput id="refEquipment" [value]="metricDetails.EqType" readonly>
+        </mat-form-field>
+      </div>
+      <div class="col-md-3">
+        <mat-form-field appearance="outline">
+          <mat-label>{{'Attribute Name' | translate}}</mat-label>
+          <input matInput id="attributeName" [value]="metricDetails.AttributeName" readonly>
+        </mat-form-field>
+      </div>
+      <div class="col-md-3">
+        <mat-form-field appearance="outline">
+          <mat-label>{{'Value' | translate}}</mat-label>
+          <input matInput id="attributeName" [value]="metricDetails.Value" readonly>
+        </mat-form-field>
+      </div>
+    </div>
+    <!-- Instance Number -->
+    <div class="row" *ngIf="metricDetails && metricType == 'instance.number.standard'">
+      <div class="col-md-3">
+        <mat-form-field appearance="outline">
+          <mat-label>{{'Coefficient' | translate}}</mat-label>
+          <input matInput id="coefficient" [value]="metricDetails.Coefficient" readonly>
+        </mat-form-field>
+      </div>
+    </div>
+    <app-loading-spinner *ngIf="_loading"></app-loading-spinner>
+  </mat-card-content>
+  <mat-dialog-actions>
+    <button class="btn-two" mat-raised-button mat-dialog-close>{{'Cancel' | translate}}</button>
+  </mat-dialog-actions>
+</mat-card>

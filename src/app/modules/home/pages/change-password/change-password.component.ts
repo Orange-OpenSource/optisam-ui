@@ -8,6 +8,7 @@ import { GroupService } from './../../../../core/services/group.service';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormGroup, FormControl, Validators, FormBuilder, FormArray, FormGroupDirective, NgForm, NgModel } from '@angular/forms';
+import { MatDialog } from '@angular/material';
 
 
 @Component({
@@ -20,12 +21,11 @@ export class ChangePasswordComponent implements OnInit {
   hide2 = true;
   groupForm: FormGroup;
   matchPassword: Boolean = false;
-  showMsg: Boolean = false;
-  showErrorMsg: Boolean = false;
-  errorMsg: String;
 
 
-  constructor(private groupService: GroupService, public router: Router) { }
+  constructor(private groupService: GroupService, 
+              public router: Router,
+              private dialog:MatDialog) { }
 
   ngOnInit() {
     this.groupForm = new FormGroup({
@@ -45,37 +45,31 @@ export class ChangePasswordComponent implements OnInit {
   get confirm() {
     return this.groupForm.get('confirm');
   }
-  createGroup() {
+  createGroup(successMsg, errorMsg) {
     const data = this.groupForm.value;
     if (data.new === data.confirm) {
       this.matchPassword = false;
       delete data.confirm;
       this.groupService.changePassword(data).subscribe(res => {
         this.groupForm.reset();
-        this.showMsg = true;
-        this.showErrorMsg = false;
-        setInterval(() => {
-          localStorage.clear();
-          localStorage.setItem('access_token', '');
-          localStorage.setItem('role', '');
-          localStorage.getItem('access_token');
-          this.router.navigate(['/']);
+        localStorage.clear();
+        this.router.navigate(['/']);
 
-        }, 1000 );
-       /*  this.listGroups(); */
+        this.openModal(successMsg);
       },
       (error) => {
-        const keyArr = Object.keys(error);
-        if (keyArr.includes('error')) {
-          this.errorMsg = error.message;
-          this.showErrorMsg = true;
-          this.showMsg = false;
-        }});
-
-      } else {
-        console.log('i am here');
+        this.openModal(errorMsg);
+      });
+      } 
+      else {
         this.matchPassword = true;
-
     }
+  }
+
+  openModal(templateRef) {
+    let dialogRef = this.dialog.open(templateRef, {
+        width: '50%',
+        disableClose: true
+    });
   }
 }

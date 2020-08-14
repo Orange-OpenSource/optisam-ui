@@ -1,0 +1,75 @@
+<form [formGroup]="profileForm"class="container" >
+  <div class="row col-md-2">
+    <input style="display: none" id="imageInput" formControlName="profilePic" accept="image/png, image/jpg, image/jpeg"
+      type="file" (change)="onFileChanged($event,errorDialog)" #fileInput>
+    <div id="profileImage"  *ngIf="url">
+      <img id="uploaded-img-btn" [src]="url" style='height: 100%; width: 100%; object-fit: cover'>
+      <img id="upload" src="\assets\images\photo-camera.svg" (click)="fileInput.click()"/>
+    </div>
+    <img id="upload-img-btn" *ngIf="!url" (click)="fileInput.click()" src="\assets\images\user.svg"/>
+    <span id="pic-text">{{'Choose Picture'|translate}}</span>
+  </div>
+  <mat-divider [vertical]="true"></mat-divider>
+  <div class="form-body col-md-6">
+    <mat-form-field appearance="outline" class="group">
+      <mat-label>{{'First Name'|translate}}</mat-label>
+      <input matInput placeholder="" formControlName="firstName">
+      <mat-error *ngIf="firstName.errors?.pattern">
+        {{'First name is required in ^[a-zA-Z0-9_]*$ format.'}}
+      </mat-error>
+      <mat-error *ngIf="firstName.errors?.maxlength">
+        {{'First name can be max 15 characters long.'|translate}}
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="group">
+      <mat-label>{{'Last Name'|translate}}</mat-label>
+      <input matInput placeholder="" formControlName="lastName">
+      <mat-error *ngIf="lastName.errors?.pattern">
+        {{'Last name is required in ^[a-zA-Z0-9_]*$ format.'}}
+      </mat-error>
+      <mat-error *ngIf="lastName.errors?.maxlength">
+        {{'Last name can be max 15 characters long.'|translate}}
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="group">
+      <mat-label>{{'Language'|translate}}</mat-label>
+      <mat-select id="selectedLang" formControlName="language">
+        <mat-option value="en">{{'English'|translate}}</mat-option>
+        <mat-option value="fr">{{'French'|translate}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <div class="action-buttons">
+      <button mat-raised-button class="btn-three" [disabled]="profileForm.pristine"
+        (click)="resetProfile()">{{'Reset'|translate}}</button>
+      <button mat-raised-button class="btn-two" [disabled]="profileForm.pristine || !profileForm.valid"
+        (click)="updateProfile(successProfileUpdateDialog, errorProfileUpdateDialog)">
+        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" *ngIf="loading"></span>
+        {{'Save'|translate}}
+      </button>
+    </div>
+  </div>
+</form>
+<ng-template #successProfileUpdateDialog>
+  <mat-dialog-content>
+    <p>{{'PROFILE_UPDATE_SUCCESS'|translate}}</p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="center">
+    <button mat-button (click)="applyChanges()" [mat-dialog-close]="true" cdkFocusInitial>{{'OK'|translate}}</button>
+  </mat-dialog-actions>
+</ng-template>
+<ng-template #errorProfileUpdateDialog>
+  <mat-dialog-content>
+    <p>{{'PROFILE_UPDATE_ERROR'|translate}}</p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="center">
+    <button mat-button [mat-dialog-close]="true" cdkFocusInitial>{{'OK'|translate}}</button>
+  </mat-dialog-actions>
+</ng-template>
+<ng-template #errorDialog>
+  <mat-dialog-content>
+    <p>{{'IMAGE_SIZE_ERROR'|translate}}</p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="center">
+    <button mat-button [mat-dialog-close]="true" cdkFocusInitial>{{'OK'|translate}}</button>
+  </mat-dialog-actions>
+</ng-template>

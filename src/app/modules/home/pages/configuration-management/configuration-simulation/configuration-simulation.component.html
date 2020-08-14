@@ -1,0 +1,134 @@
+<div class="closeDialog"><button [mat-dialog-close]="true" mat-icon-button><mat-icon>close</mat-icon></button></div>
+<div class="col-md-12 main-section">
+    <div class="col-md-12">
+        <div class="page-heading">{{'Configuration'|translate}}</div>
+        <div class="row-flex">
+            <mat-form-field appearance="outline" class="group">
+                <mat-label>{{'Group'|translate}}</mat-label>
+                <mat-select id="groupName" [(ngModel)]="configObj.group" [disabled]="HTTPActivity || groupList.length == 0">
+                    <mat-option value="">-- {{'SELECT_GROUP'|translate}} --</mat-option>
+                    <mat-option *ngFor="let group of groupList;" [value]="group">{{group}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <div class="configName" >
+                <mat-form-field appearance="outline">
+                    <mat-label>{{'Configuration Name'|translate}}</mat-label>
+                    <!-- (keydown)="search($event)"  (keyup)="search($event)" -->
+                  <input matInput placeholder="{{'Configuration Name'|translate}}" id="configName" 
+                  [disabled]="HTTPActivity || !configObj.group" 
+                  [(ngModel)]="configName" (keyup)="validateConfigName($event);checkConfigName()" (focusout)="checkConfigName()" min="0" max="50">
+                </mat-form-field>
+                <mat-error *ngIf="configNameRequired">
+                  {{'Configuration Name is required' | translate}}
+                </mat-error>
+                <mat-error *ngIf="!configNameRequired && invalidConfigName">
+                  {{'Configuration Name is required in ^[-_,A-Za-z0-9]+$ format' | translate}}
+                </mat-error>
+                <mat-error *ngIf="!configNameRequired && duplicateConfigName">
+                  {{'Configuration Name already exists' | translate}}
+                </mat-error>
+                <mat-error *ngIf="!configNameRequired && allowedLengthExceeded">
+                  {{'Configuration Name cannot exceed 50 characters' | translate}}
+                </mat-error>
+            </div>
+            <div class="equipmentType">
+                <mat-form-field appearance="outline">
+                    <mat-label>{{'Equipment Type'|translate}}</mat-label>
+                    <mat-select id="equipType" [(ngModel)]="configObj.equipmentType"
+                        [disabled]="HTTPActivity || equipmentList.length == 0|| !configObj.group"
+                        (selectionChange)="selectionChanged($event, 'equipment',mytemplate)">
+                        <mat-option value="">-- {{'AGGREGATIONS.TEXTS.SELECT_PRODUCT' | translate}} --</mat-option>
+                        <mat-option *ngFor="let equipment of equipmentList;" [value]="equipment">{{equipment.type}}
+                        </mat-option>
+                    </mat-select>
+                    <ng-template #mytemplate>
+                        <mat-dialog-content>
+                            <p>{{'CONFIRM_MSG'|translate}}</p>
+                        </mat-dialog-content>
+                        <mat-dialog-actions align="center">
+                            <button mat-button mat-dialog-close (click) = cancel()>{{'Cancel'|translate}}</button>
+                            <button mat-button [mat-dialog-close]="true" (click)="refreshAttributes()" cdkFocusInitial>{{'OK'|translate}}</button>
+                          </mat-dialog-actions>
+                    </ng-template>
+                </mat-form-field>
+            </div>
+        </div>
+
+        <form [formGroup]="uploadForm">
+            <div class="row-flex attribute-section" *ngIf="configObj.equipmentType">
+                <mat-table formArrayName="filesArray" [dataSource]="attributeList" class="mat-elevation-z8">
+    
+                    <!-- Attribute Column -->
+                    <ng-container matColumnDef="attribute">
+                        <mat-header-cell *matHeaderCellDef> {{'Attribute'|translate}} </mat-header-cell>
+                        <mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
+                    </ng-container>
+    
+                    <!-- Simulable Column -->
+                    <ng-container matColumnDef="simulable">
+                        <mat-header-cell *matHeaderCellDef> {{'Simulable'|translate}} </mat-header-cell>
+                        <mat-cell *matCellDef="let element, let i=index">
+                            <mat-checkbox id="isSimulable{{i}}" [disabled]="true" [checked]="configObj.attributes[i].simulable"></mat-checkbox>
+                        </mat-cell>
+                    </ng-container>
+    
+                    <!-- File Upload Column -->
+                    <ng-container matColumnDef="file">
+                        <mat-header-cell *matHeaderCellDef> {{'File'|translate}} </mat-header-cell>
+                        <mat-cell *matCellDef="let element, let i=index" style="position: relative;">
+                            
+                            <input id="csvFileUpload{{i}}" type="file" name="CSV File Upload" class="file-upload" title=""
+                                (change)="fileChangeListener($event, i)" style="position:absolute; top:i*20%; left:55%;" 
+                                accept=".csv">
+                                <label *ngIf="!configObj.attributes[i].fileName" class="attach-file"><mat-icon>attach_file</mat-icon></label>
+                                <label *ngIf="configObj.attributes[i].fileName" class="attach-file">{{configObj.attributes[i].fileName}}</label>
+                                <label *ngIf="!configObj.attributes[i].fileInvalid && (configObj.attributes[i].file | json) != '{}'"><mat-icon class="valid-file">check_circle</mat-icon></label>
+                                <label *ngIf="configObj.attributes[i].fileInvalid"><mat-icon class="invalid-file">cancel</mat-icon></label>
+                        </mat-cell>
+                    </ng-container>
+    
+                    <!-- Delete Column -->
+                    <ng-container matColumnDef="delete">
+                        <mat-header-cell *matHeaderCellDef> {{'Delete'|translate}} </mat-header-cell>
+                        <mat-cell *matCellDef="let element, let i=index" id="deleteButton">
+                            <mat-icon [ngClass]="configObj.attributes[i].fileName?'delete-icon':'disable-icon'" (click)="deleteAttributeById(i)">delete</mat-icon >
+                        </mat-cell>
+                    </ng-container>
+    
+                    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                </mat-table>
+    
+            </div>
+         </form>
+        <div class="col-md-12" *ngIf="configObj.equipmentType">
+            <br/>
+            <button mat-raised-button id="cancelButton" [mat-dialog-close]="true" class="col-md-3 btn-four"  (click)="backToList()">{{'Cancel'|translate}}</button>
+            &nbsp;
+            <button mat-raised-button id="resetButton" [disabled]="NoChangesFlag || NoFileSelectedFlag" class="col-md-3 resetButton btn-three" (click)="reset()">{{'Reset'|translate}}</button>
+            &nbsp;
+            <button mat-raised-button id="applyButton" class="col-md-3 btn-two" 
+            [disabled]="formInvalidFlag || NoChangesFlag || NoFileSelectedFlag || configNameRequired || invalidConfigName || duplicateConfigName || allowedLengthExceeded" (click)="uploadFile(successDialog,errordialog)">
+                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" *ngIf="loading"></span>
+                {{'Apply'|translate}}
+            </button>
+            <ng-template #successDialog>
+                <mat-dialog-content>
+                    <p>{{'UPLOAD_SUCCESSFUL'|translate}}</p>
+                </mat-dialog-content>
+                <mat-dialog-actions align="center">
+                    <button mat-button [mat-dialog-close]="true" (click)="backToList()" cdkFocusInitial>{{'OK'|translate}}</button>
+                  </mat-dialog-actions>
+            </ng-template>
+            <ng-template #errordialog>
+                <mat-dialog-content>
+                    <p>{{'UPLOAD_CONFIG_ERROR'|translate}}</p>
+                </mat-dialog-content>
+                <mat-dialog-actions align="center">
+                    <button mat-button [mat-dialog-close]="true" (click)="backToList()" cdkFocusInitial>{{'OK'|translate}}</button>
+                  </mat-dialog-actions>
+            </ng-template>
+        </div>
+    </div>
+
+</div>

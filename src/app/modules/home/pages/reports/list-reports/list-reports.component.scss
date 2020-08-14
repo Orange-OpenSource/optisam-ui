@@ -1,0 +1,54 @@
+.mat-card {
+    padding: 16px;
+
+}
+.row {
+    display: flex;
+    margin-right: 0;
+    margin-left: 0;
+    justify-content: space-between;
+}
+.mat-table {
+    max-height: 75vh;
+    overflow-y: auto;
+}
+.mat-cell {
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+#noData {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+.mat-column-report_id {
+    flex: 0 0 10%;
+    width: 10%;
+}
+.mat-column-created_on {
+    flex: 0 0 20%;
+    width: 20%;
+}
+.mat-menu-item {
+    line-height: 16px;
+    max-height: 28px;
+    padding: 5px 16px;
+}
+::ng-deep .mat-menu-panel {
+    margin-top: unset !important;
+    min-width: 92px;
+}
+
+.export-btn {
+    max-width: fit-content;
+    padding-right: 5px;
+    line-height: 28px !important;
+}
+.export-btn:disabled {
+    background: #dedede;
+}
+#refreshButton {
+    margin-right: 5px;
+    min-width: fit-content;
+}

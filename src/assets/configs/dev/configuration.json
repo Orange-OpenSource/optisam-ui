@@ -1,7 +1,15 @@
 {
     "env": "development",
-    "license": "",
-    "account": "",
-    "auth": "",
-    "import": ""
+    "license": "https://optisam-license-dev.kermit-noprod-b.itn.intraorange/api/v1",
+    "simulation":"https://optisam-simulation-dev.kermit-noprod-b.itn.intraorange/api/v1",
+    "account": "https://optisam-account-dev.kermit-noprod-b.itn.intraorange/api/v1",
+    "auth": "https://optisam-auth-dev.kermit-noprod-b.itn.intraorange/api/v1",
+    "import": "https://optisam-import-dev.kermit-noprod-b.itn.intraorange/api/v1",
+    "dps": "https://optisam-dps-dev.kermit-noprod-b.itn.intraorange/api/v1",
+    "application":"https://optisam-application-dev.kermit-noprod-b.itn.intraorange/api/v1",
+    "product":"https://optisam-product-dev.kermit-noprod-b.itn.intraorange/api/v1",
+    "acquired-rights":"https://optisam-acqrights-dev.kermit-noprod-b.itn.intraorange/api/v1",
+    "metric":"https://optisam-metric-dev.kermit-noprod-b.itn.intraorange/api/v1",
+    "equipment":"https://optisam-equipment-dev.kermit-noprod-b.itn.intraorange/api/v1",
+    "report":"https://optisam-report-dev.kermit-noprod-b.itn.intraorange/api/v1"
 }

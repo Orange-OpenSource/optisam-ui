@@ -1,0 +1,141 @@
+.metric-section table td {
+    vertical-align: middle;
+}
+.metric-section table{
+    border: 2px solid #cccccc;
+}
+.main-section{
+    display: flex;
+    padding: 0 0 16px 0;
+}
+.resetEntity button{
+    margin-top: 3px;
+    height: 44px;
+    border-top-right-radius: 5px !important;
+    border-bottom-right-radius: 5px !important;
+}
+
+.entity-section{
+    display: flex;
+}
+    .select{
+        width: 30%;
+    }
+        
+
+.simulate-result{
+    margin-top: 15px;
+    padding: 15px;
+    border: 2px solid #d6d6d6;
+}
+    .result-section {
+        border: 2px solid #d6d6d6;
+        margin-bottom: 10px;
+    }
+        h6 {
+            text-align: left;
+            background-color: #eeeeee;
+            padding: 8px;
+            margin-bottom: 0;
+            border-bottom: 2px solid #d6d6d6;
+        }
+    .simulate-body {
+        padding: 10px 15px;
+        font-size: 13px;
+    }
+
+.result-section.success{
+    border-color: #28a745;
+    // background-color: #0ebf3666;
+}
+.result-section.success h6{
+    background-color: #28a745;
+    border-bottom-color: #28a745;
+    color: #fff !important;
+}
+
+.result-section.error{
+    border-color: #dc3545;
+    // background-color: #ea445440;
+}
+.result-section.error h6{
+    background-color: #dc3545;
+    border-bottom-color: #dc3545;
+    color: #fff !important;
+}
+
+.simulation-failed{
+    text-align: center;
+    font-size: 16px;
+    font-weight: 500;
+    text-transform: uppercase;
+    color: #dc3545;
+}
+
+.progress-text{
+    font-size: 16px;
+    text-transform: capitalize;
+    font-style: italic;
+}
+
+#ResultsLabel {
+    margin-top: 3%;
+    margin-left: 10px;
+}
+
+#simulateButton {
+    height: 44px !important;
+    width: 150px !important;
+    margin-top: 4% !important;
+    border-radius: 5px !important;
+}
+.text-inside-grid {
+    position: absolute;
+    left: 5px;
+  }
+
+  ::ng-deep {
+    .mat-form-field-appearance-outline.has-error .mat-form-field-outline {
+       color: #dc3545;
+    }
+ }
+
+.mat-option {    
+    line-height: 36px !important;
+    font-size: small !important;
+}
+
+.mat-checkbox {
+    margin-top: 5px;
+}
+.mat-header-cell {
+    font-size: 12px !important;
+    font-weight: 500;
+}
+.mat-table {
+    border: 1px solid rgba(0, 0, 0, 0.12);
+}
+.mat-cell {
+    color: black !important;
+}
+.mat-row:nth-child(odd){
+    background-color:white;
+    }
+
+    .spinner-div{
+        text-align: center;
+    }
+    mat-spinner {
+        margin: 0 auto;
+        margin-top: 5px;
+        color:primary;
+        width: 30px !important;
+        height: 30px !important;
+    }
+    mat-spinner ::ng-deep svg {
+        width: 30px !important;
+        height: 30px !important;
+    }
+    ::ng-deep .mat-progress-spinner circle, .mat-spinner circle {
+        stroke: #008AFC;
+    }

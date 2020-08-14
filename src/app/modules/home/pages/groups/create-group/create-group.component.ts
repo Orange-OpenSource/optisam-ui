@@ -8,7 +8,7 @@ import { Component, OnInit, ViewChild, Inject } from '@angular/core';
 import { FormGroup, FormControl, Validators, FormBuilder, FormArray, FormGroupDirective, NgForm, NgModel } from '@angular/forms';
 import { GroupService } from 'src/app/core/services/group.service';
 import { Router } from '@angular/router';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialogRef, MatDialog } from '@angular/material';
 import { checkAndUpdateElementInline } from '@angular/core/src/view/element';
 
 @Component({
@@ -31,7 +31,7 @@ export class CreateGroupComponent implements OnInit {
   showErrorMsg: any;
   errorMsg: any;
   fully_qualified_name: String;
-  constructor(private groupService: GroupService, private router: Router, @Inject (MAT_DIALOG_DATA) public data) { }
+  constructor(private groupService: GroupService, private router: Router, private dialog: MatDialog, @Inject (MAT_DIALOG_DATA) public data) { }
 
   ngOnInit() {
    /*  this.listGroups(); */
@@ -77,7 +77,7 @@ export class CreateGroupComponent implements OnInit {
     this.selectedScopes = this.groups.filter(x => x.ID === group.ID).map(x => x.scopes);
   }
 
-  createGroup() {
+  createGroup(successMsg, errorMsg) {
     const data = this.groupForm.value;
     delete data.groupName;
     data.parent_id = this.data.ID;
@@ -85,6 +85,7 @@ export class CreateGroupComponent implements OnInit {
       this.groupForm.reset();
       this.showMsg = true;
       this.showErrorMsg = false;
+      this.openModal(successMsg);
      /*  this.listGroups(); */
     },
     (error) => {
@@ -93,6 +94,7 @@ export class CreateGroupComponent implements OnInit {
         this.errorMsg = error.message;
         this.showErrorMsg = true;
         this.showMsg = false;
+        this.openModal(errorMsg);
       }});
   }
 
@@ -108,5 +110,21 @@ export class CreateGroupComponent implements OnInit {
     } else {
       this.checkSelectAll.checked = false;
     }
+  }
+
+  resetForm() {
+    this.groupForm.reset();
+    this.groupForm.controls['groupName'].setValue(this.data.name);
+  }
+  
+  openModal(templateRef) {
+    let dialogRef = this.dialog.open(templateRef, {
+        width: '50%',
+        disableClose: true
+    });
+  }
+
+  ngOnDestroy() {
+    this.dialog.closeAll();
   }
 }

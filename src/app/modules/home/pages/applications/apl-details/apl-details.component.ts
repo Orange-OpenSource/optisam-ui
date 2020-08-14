@@ -45,7 +45,7 @@ export class AplDetailsComponent implements OnInit {
   RenderDataTable() {
     this.aplName = localStorage.getItem('aplName');
     this.key = localStorage.getItem('key');
-    this.applicationservice.getproductdetails(this.key).subscribe(
+    this.applicationservice.getproductdetails(this.key,10, 1, 'name', 'asc').subscribe(
       (res: any) => {
         this.MyDataSource = new MatTableDataSource(res.products);
         this.MyDataSource.sort = this.sort;
@@ -58,8 +58,10 @@ export class AplDetailsComponent implements OnInit {
       });
   }
   openDialog(value, name): void {
+    localStorage.setItem('prodName', name);
     const dialogRef = this.dialog.open(MoreDetailsComponent, {
       width: '850px',
+      disableClose: true,
       data: {
           datakey : value,
           dataName : name
@@ -70,6 +72,11 @@ export class AplDetailsComponent implements OnInit {
     });
   }
 
-
-
+  getEquipData(value) {
+    console.log(value);
+    localStorage.setItem('prodName', value.name);
+    const key = localStorage.getItem('key');
+    const swidTag = value.swidTag;
+    this.router.navigate(['/optisam/apl/applications', key, swidTag]);
+  }
 }

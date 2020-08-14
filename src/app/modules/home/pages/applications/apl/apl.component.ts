@@ -37,7 +37,7 @@ export class AplComponent implements OnInit, OnDestroy {
   page_size: any;
   pageEvent: any;
 
-  displayedColumns: string[] = ['name', 'application_owner', 'numofProducts', 'numOfInstances',  'numofEquipment',  'totalCost'];
+  displayedColumns: string[] = ['name', 'owner', 'num_of_products', 'num_of_instances',  'num_of_equipment',  'total_cost'];
   loadingSubscription: Subscription;
   _loading: Boolean;
 

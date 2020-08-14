@@ -5,10 +5,11 @@
 // or at 'http://www.apache.org/licenses/LICENSE-2.0'. 
 
 import { Component, OnInit, Inject, ViewChild, SystemJsNgModuleLoader } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialogRef, MatDialog } from '@angular/material';
 import { MatTableDataSource, MatPaginator, MatSort } from '@angular/material';
 import { EquipmentTypeManagementService } from 'src/app/core/services/equipmenttypemanagement.service';
 import { FormGroup, FormControl } from '@angular/forms';
+import { MoreDetailsComponent } from '../../../dialogs/product-details/more-details.component';
 /*  import { DialogData } from './details'; */
 
 @Component({
@@ -27,6 +28,7 @@ export class AttributeDetailComponent implements OnInit {
   valueArr = [];
   MyDataSource: MatTableDataSource<{}>;
   typeId: String;
+  typeName: String;
   equimId: String;
   parentDetail: any;
   childDetail: any;
@@ -69,7 +71,11 @@ export class AttributeDetailComponent implements OnInit {
   EditorNamePlaceholder: any;
   defaultSearchName;
   equipName;
+  equipNameCapitalized;
   sName = [];
+  activeLink: any;
+  _loading: boolean;
+  moreRows: boolean;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
@@ -87,16 +93,22 @@ export class AttributeDetailComponent implements OnInit {
   /*
      productdetails: DialogData = new DialogData();  */
   constructor(public equipmentTypeManagementService: EquipmentTypeManagementService,
+    private dialog: MatDialog,
     public dialogRef: MatDialogRef<AttributeDetailComponent>,
-    @Inject(MAT_DIALOG_DATA) public data) { }
+    @Inject(MAT_DIALOG_DATA) public data) { 
+      this.dialog.afterAllClosed.subscribe(res=>this.getProduct());
+    }
 
 
   ngOnInit() {
     this.filterGroup = new FormGroup({});
     this.typeId = this.data['typeId'];
+    this.typeName = this.data['typeName'];
     this.equimId = this.data['equiId'];
     this.type = this.data['types'];
     this.equipName = this.data['equipName'];
+    this.equipNameCapitalized = this.equipName.toUpperCase();
+    console.log('data : ',this.type);
     for (let i = 0; i <= this.type.length - 1; i++) {
       if (this.type[i].ID === this.equimId) {
         this.parentId = this.type[i].ID;
@@ -114,15 +126,13 @@ export class AttributeDetailComponent implements OnInit {
       if (ObjKey.includes('parent_id')) {
         if (this.type[i].parent_id === this.parentId) {
           this.childRefrenceArr.push(this.type[i]);
+          this.activeLink = this.childRefrenceArr[0].type;
           // this.childDisplay = false;
-
         }
-
-
       }
     }
-
-    this.equipmentTypeManagementService.getEquipmentDetail(this.equimId, this.typeId).subscribe(
+    this._loading = true;
+    this.equipmentTypeManagementService.getEquipmentDetail(this.equimId, this.typeName).subscribe(
       (res: any) => {
         this.equiObj = JSON.parse(res.equipment);
         this.keyArr = Object.keys(this.equiObj);
@@ -130,9 +140,11 @@ export class AttributeDetailComponent implements OnInit {
         this.keyArr.shift();
         this.valueArr.shift();
         this.MyDataSource = new MatTableDataSource(this.childRefrenceArr);
+        this._loading = false;
         //  this.getParent();
       },
       error => {
+        this._loading = false;
         //   console.log('There was an error while retrieving Posts !!!' + error);
       });
   }
@@ -140,6 +152,7 @@ export class AttributeDetailComponent implements OnInit {
     this.dialogRef.close();
   }
   getParent(): void {
+    this._loading = true;
     this.equipmentTypeManagementService.getParentDetail(this.equimId, this.typeId).subscribe(
       (res: any) => {
         const decodedEquipments: any = atob(res.equipments);
@@ -155,8 +168,10 @@ export class AttributeDetailComponent implements OnInit {
         this.reuseKeyName = Object.keys(parentObj[0]);
         this.reuseKeyName.shift();
         this.reuseValueName = parentObj;
+        this._loading = false;
       },
       error => {
+        this._loading = false;
         console.log('There was an error while retrieving Posts !!!' + error);
       });
 
@@ -175,6 +190,7 @@ export class AttributeDetailComponent implements OnInit {
     const sortBy = this.SortName;
     const sortOrder = 'ASC';
     this.childRefId = obj.ID;
+    this._loading = true;
     this.equipmentTypeManagementService.getChildDetail(this.equimId, this.typeId, obj.ID, length, pageSize, sortBy, sortOrder).subscribe(
       (res: any) => {
         this.displayedrows = [];
@@ -186,17 +202,21 @@ export class AttributeDetailComponent implements OnInit {
         const idValue = this.dataSource[0].ID;
         if (this.dataSource.length > 0) {
           delete this.dataSource[0].ID;
-          console.log('this.dataSource[0]=--', this.dataSource[0]);
-          // tslint:disable-next-line:forin
           for (const x in this.dataSource[0]) {
             this.displayedrows.push(x);
             this.filterGroup.addControl(x, new FormControl(null));
           }
           this.dataSource[0].ID = idValue;
-          console.log('displayedrows-------', this.displayedrows);
+          if(this.displayedrows.length > 6) {
+            this.moreRows = true;
+          } else {
+            this.moreRows = false;
+          }
         }
+        this._loading = false;
       },
       error => {
+        this._loading = false;
         console.log('There was an error while retrieving Posts !!!' + error);
       });
   }
@@ -208,6 +228,7 @@ export class AttributeDetailComponent implements OnInit {
     this.current_page_num = page_num;
     this.length = event.length;
     this.pageSize = event.pageSize;
+    this._loading = true;
     this.equipmentTypeManagementService.getChildPaginatedData(this.equimId, this.typeId, this.childRefId,
       page_num + 1, this.pageSize, sort_by).subscribe(
         (res: any) => {
@@ -224,8 +245,10 @@ export class AttributeDetailComponent implements OnInit {
               this.displayedrows.push(x);
             }
           }
+          this._loading = false;
         },
         error => {
+          this._loading = false;
           console.log('There was an error while retrieving Posts !!!' + error);
         });
   }
@@ -233,6 +256,7 @@ export class AttributeDetailComponent implements OnInit {
   sortData(event) {
     this.sort_order = event.direction;
     this.SortName = event.active;
+    this._loading = true;
     this.equipmentTypeManagementService.sortChildEquipments(this.equimId, this.typeId, this.childRefId, this.current_page_num, this.pageSize,
       event.active, event.direction).subscribe(
         (res: any) => {
@@ -249,8 +273,10 @@ export class AttributeDetailComponent implements OnInit {
               this.displayedrows.push(x);
             }
           }
+          this._loading = false;
         },
         error => {
+          this._loading = false;
           console.log('There was an error while retrieving Posts !!!' + error);
         });
   }
@@ -273,18 +299,20 @@ export class AttributeDetailComponent implements OnInit {
     const length = 1;
     this.productStatus = true;
     const pageSize = 10;
-    const sortBy = 'SWID_TAG';
-    this.equipmentTypeManagementService.getProductDetail(this.equimId, this.typeId, length, pageSize, sortBy).subscribe(
+    const sortBy = 'swidtag';
+    this._loading = true;
+    this.equipmentTypeManagementService.getProductDetail(this.equimId, this.typeName, length, pageSize, sortBy).subscribe(
       (res: any) => {
-        this.productColumn = ['swidTag', 'name', 'editor', 'version'];
+        this.productColumn = ['swidTag', 'name', 'editor', 'numofEquipments'];//'version'];
         this.productdataSource = new MatTableDataSource(res.products);
         this.productdataSource.sort = this.sort;
         this.productLength = res.totalRecords;
         this.productStatus = false;
-
+        this._loading = false;
       },
       error => {
         this.productStatus = true;
+        this._loading = false;
         console.log('There was an error while retrieving Posts !!!' + error);
       });
 
@@ -293,18 +321,21 @@ export class AttributeDetailComponent implements OnInit {
   productSortData(sort) {
     /*   localStorage.setItem('product_direction', sort.direction);
       localStorage.setItem('product_active', sort.active); */
+    this._loading = true;
     this.productsort_order = sort.direction;
     this.productsort_by = sort.active;
-    if (sort.active.toUpperCase() === 'SWIDTAG') {
-      this.productsort_by = 'SWID_TAG';
-    }
+    // if (sort.active.toUpperCase() === 'SWIDTAG') {
+    //   this.productsort_by = 'SWID_TAG';
+    // }
     this.equipmentTypeManagementService.productFilteredData(this.equimId, this.typeId, this.product_curr_num, this.productPageSize,
       this.productsort_by, sort.direction, this.searchFields.swidTag, this.searchFields.productName, this.searchFields.editorName).subscribe(
         (res: any) => {
           this.productdataSource = new MatTableDataSource(res.products);
           this.productdataSource.sort = this.sort;
+          this._loading = false;
         },
         error => {
+          this._loading = false;
           console.log('There was an error while retrieving Posts !!!' + error);
         });
   }
@@ -313,6 +344,7 @@ export class AttributeDetailComponent implements OnInit {
     this.current_page_num = page_num;
     this.product_curr_num = event.length;
     this.productPageSize = event.pageSize;
+    this._loading = true;
     /*   this.productsort_order = localStorage.getItem( 'product_direction');
       this.productsort_by = localStorage.getItem( 'product_active'); */
     if (this.productsort_by === '' || this.productsort_by === null) {
@@ -326,6 +358,7 @@ export class AttributeDetailComponent implements OnInit {
         (res: any) => {
           this.productdataSource = new MatTableDataSource(res.products);
           this.productdataSource.sort = this.sort;
+          this._loading = false;
         }
       );
   }
@@ -368,6 +401,7 @@ export class AttributeDetailComponent implements OnInit {
     }
   }
   applyFilter() {
+    this._loading = true;
     /*   this.productsort_order = localStorage.getItem('product_direction');
       this.productsort_by = localStorage.getItem('product_active'); */
     if (this.productsort_by === '' || this.productsort_by === null) {
@@ -387,6 +421,7 @@ export class AttributeDetailComponent implements OnInit {
           this.productdataSource.sort = this.sort;
           this.productLength = res.totalRecords;
           this.length = res.totalRecords;
+          this._loading = false;
         }
       );
   }
@@ -401,6 +436,7 @@ export class AttributeDetailComponent implements OnInit {
     this.applyFilter();
   }
   applyChildFilter() {
+    this._loading = true;
     let searchFilter = 'search_params=';
     /*   if (this.defaultSearchName === '' || this.defaultSearchName === null) { */
     for (const key in this.filterGroup.value) {
@@ -440,6 +476,7 @@ export class AttributeDetailComponent implements OnInit {
               this.displayedrows.push(x);
             }
           }
+          this._loading = false;
         }
       );
   }
@@ -454,5 +491,18 @@ export class AttributeDetailComponent implements OnInit {
     // console.log('trigger event => ', event);
     this.searchFields = event;
     this.applyFilter();
+  }
+  openDialog(value, name): void {
+    const dialogRef = this.dialog.open(MoreDetailsComponent, {
+      width: '850px',
+      disableClose: true,
+      data: {
+          datakey : value,
+          dataName : name
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+    });
   }
 }

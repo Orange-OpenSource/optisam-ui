@@ -181,18 +181,24 @@ export class DynamicDataSource {
 export class GroupmangementComponent  {
   treeControl: FlatTreeControl<DynamicFlatNode>;
   role: String;
+  _loading: Boolean;
   dataSource: DynamicDataSource;
+  IDToDelete: any;
+  nodeToDelete:any;
+
   constructor(private database: DynamicDatabase, private groupService: GroupService, public dialog: MatDialog,
     private router: Router) {
       this.role = localStorage.getItem('role');
-  this.processTree();
-
+      this.processTree();
+      // dialog.afterAllClosed.subscribe((res)=>this.processTree());
   }
  processTree() {
+  this._loading = true;
   this.treeControl = new FlatTreeControl<DynamicFlatNode>(this.getLevel, this.isExpandable);
   this.dataSource = new DynamicDataSource(this.treeControl, this.database);
   this.groupService.getDirectGroups().subscribe(res => {
     this.dataSource.data = this.database.initialData(res.groups);
+    this._loading = false;
   },
     error => {
       console.log('Fetch direct Group response ERROR !!!' + error);
@@ -207,32 +213,39 @@ export class GroupmangementComponent  {
 
   hasChild = (_: number, _nodeData: DynamicFlatNode) => _nodeData.expandable;
 
-
-  deleteGrp(id, node) {
-    const r = confirm('Are you sure to delete Group??');
-    if (r === true) {
-      this.groupService.deleteGroups(id).subscribe
+  deleteConfirmation(id, node, confirmationMsg) {
+    this.IDToDelete = id;
+    this.nodeToDelete = node;
+    this.openModal(confirmationMsg);
+  }
+  deleteGrp(successMsg, errorMsg) {
+    // const r = confirm('Are you sure to delete Group??');
+    // if (r === true) {
+      this.groupService.deleteGroups(this.IDToDelete).subscribe
       (res => {
-        console.log('Group Delete response------', node.item.parent_id);
+        console.log('Group Delete response------', this.nodeToDelete.item.parent_id);
         this.processTree();
-        this.groupService.getChildGroups(node.item.parent_id).subscribe(chilres => {
-          node.item = chilres;
+        this.groupService.getChildGroups(this.nodeToDelete.item.parent_id).subscribe(chilres => {
+          this.nodeToDelete.item = chilres;
        //   this.dataSource.toggleNode(node, true);
         });
+        this.openModal(successMsg);
         /* this._database.tog */
       },
       error => {
         console.log('Group Delete response ERROR !!!' + error);
+        this.openModal(errorMsg);
       });
-    } else {
-      console.log('not delete', r);
-    }
+    // } else {
+    //   console.log('not delete', r);
+    // }
 }
 addNew(item, node) {
   const dialogRef = this.dialog.open(CreateGroupComponent, {
-    width: '850px',
-    height: '600px',
+    // width: '850px',
+    maxHeight: '600px',
     data: item,
+    disableClose: true
   });
 
   dialogRef.afterClosed().subscribe(result => {
@@ -249,8 +262,10 @@ loadData() {
 userManegment(item, node) {
   const dialogRef = this.dialog.open(GroupusrmanagementComponent, {
     width: '850px',
-    height: '500px',
+    maxHeight: '500px',
+    autoFocus:false,
     data: item,
+    disableClose:true
   });
 
   dialogRef.afterClosed().subscribe(result => {
@@ -263,8 +278,9 @@ userManegment(item, node) {
   }
 EditName(item, node) {
 const dialogRef = this.dialog.open(EditGrpNameComponent, {
- width: '850px',
+//  width: '850px',
  data: {node: item, type : 'edit'},
+ disableClose: true
 });
 
 dialogRef.afterClosed().subscribe(result => {
@@ -285,7 +301,8 @@ dialogRef.afterClosed().subscribe(result => {
 }
 viewScope(node) {
   const dialogRef = this.dialog.open(EditGrpNameComponent, {
-   width: '850px',
+   width: '600px',
+   autoFocus:false,
    data: {node: node, type : 'scope'},
   });
   dialogRef.afterClosed().subscribe(result => {
@@ -294,5 +311,16 @@ viewScope(node) {
       this.loadData();
     }
   });
+  }
+
+  openModal(templateRef) {
+    let dialogRef = this.dialog.open(templateRef, {
+        width: '50%',
+        disableClose: true
+    });
+  }
+
+  ngOnDestroy() {
+    this.dialog.closeAll();
   }
 }

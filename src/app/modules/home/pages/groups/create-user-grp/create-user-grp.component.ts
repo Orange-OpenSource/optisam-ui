@@ -9,6 +9,7 @@ import { FormGroup, FormControl, Validators, FormBuilder, FormArray, FormGroupDi
 import { GroupService } from 'src/app/core/services/group.service';
 import { Router } from '@angular/router';
 import { checkAndUpdateElementInline } from '@angular/core/src/view/element';
+import { MatDialog } from '@angular/material';
 
 
 @Component({
@@ -36,8 +37,10 @@ export class CreateUserGrpComponent implements OnInit {
   scopeSelect: any;
   showErrorMsg: any;
   errorMsg: any;
-  constructor(private groupService: GroupService, private router: Router) { }
+  constructor(private groupService: GroupService, private router: Router,
+    private dialog:MatDialog) { }
   toppings = new FormControl();
+  role = new FormControl();
   ngOnInit() {
     this.roles.push('ADMIN');
     this.roles.push('USER');
@@ -75,8 +78,7 @@ export class CreateUserGrpComponent implements OnInit {
   listGroups() {
     this.groupService.getGroups().subscribe
       (res => {
-        console.log('this.groups------', res);
-        this.groups = res.groups;
+        this.groups = res.groups.filter(group => group.ID !== "1");
       },
       error => {
         console.log('There was an error while retrieving Posts !!!' + error);
@@ -96,7 +98,7 @@ export class CreateUserGrpComponent implements OnInit {
     this.selectedScopes = this.groups.filter(x => x.ID === group.ID).map(x => x.scopes);
   }
 
-  createGroup() {
+  createGroup(successMsg, errorMsg) {
     const arr = [];
     for (let j = 0; j < this.groupIdArr.length; j++) {
       for (let i = 0; i < this.groups.length; i++) {
@@ -118,6 +120,7 @@ export class CreateUserGrpComponent implements OnInit {
       this.showErrorMsg = false;
       this.groupForm.reset();
       this.listGroups();
+      this.openModal(successMsg);
     },
       (error) => {
         const keyArr = Object.keys(error);
@@ -125,6 +128,7 @@ export class CreateUserGrpComponent implements OnInit {
           this.errorMsg = error.message;
           this.showMsg = false;
           this.showErrorMsg = true;
+          this.openModal(errorMsg);
         }
       });
   }
@@ -141,5 +145,27 @@ export class CreateUserGrpComponent implements OnInit {
     } else {
       this.checkSelectAll.checked = false;
     }
+  }
+  openModal(templateRef) {
+    let dialogRef = this.dialog.open(templateRef, {
+        width: '50%',
+        disableClose: true
+    });
+  } 
+  backToList() {
+    console.log('go back')
+    this.router.navigate(['/optisam/gr/viewUsers']);
+  }
+
+  resetGroup() {
+    this.groupForm.reset();
+    this.toppings.reset();
+    this.role.reset();
+    this.groupIdArr = [];
+    this.selectedRole = null;
+  }
+
+  ngOnDestroy() {
+    this.dialog.closeAll();
   }
 }

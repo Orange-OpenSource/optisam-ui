@@ -1,52 +1,28 @@
 <div fxLayout="row" fxLayoutAlign="center center" class="login-main">
 
   <mat-card class="card">
-    <div style="position: center;" *ngIf="showMsg">
-      <div class="col-xs-12">
-        <p class="alert alert-warning">
-          <strong>Group Created Succesfully!!!</strong>
-        </p>
-      </div>
-    </div>
-    <div style="position: center;" *ngIf="showErrorMsg">
-        <div class="col-xs-12">
-          <p class="alert alert-warning">
-            <strong>{{errorMsg}}!!!</strong>
-          </p>
-        </div>
-      </div>
     <mat-card-header>
-      <mat-card-title>Create Group</mat-card-title>
+      <mat-card-title class="page-heading">{{'Create Group'|translate}}</mat-card-title>
     </mat-card-header>
     <mat-card-content fxLayout="column">
-      <form [formGroup]="groupForm" (ngSubmit)="createGroup()">
+      <form [formGroup]="groupForm">
         <mat-form-field appearance="outline">
-          <mat-label>Name</mat-label>
-          <input matInput placeholder="Placeholder" formControlName="name">
+          <mat-label>{{'Name'|translate}}</mat-label>
+          <input matInput placeholder="{{'Name'|translate}}" formControlName="name">
         </mat-form-field>
+
         <mat-error *ngIf="name.invalid && !name.pristine">
-          Name is required in ^[a-zA-Z0-9_]*$ format.
+          {{'Name is required in ^[a-zA-Z0-9_]*$ format.'|translate}}
         </mat-error>
-        <!-- <p *ngIf="name.invalid && !name.pristine">Name is required in ^[a-zA-Z0-9_]*$ format.</p> -->
-        <div style="color:blue;">{{fully_qualified_name}}</div>
-        <mat-form-field appearance="outline">
-            <mat-label>Parent Name</mat-label>
-          <input matInput [disabled]='true' formControlName="groupName">
 
+        <div style="color:#008AFC;">{{fully_qualified_name}}</div>
+        <mat-form-field appearance="outline">
+            <mat-label>{{'Parent Name'|translate}}</mat-label>
+            <input matInput [disabled]='true' formControlName="groupName">
         </mat-form-field>
 
-        <div >
-
-          <!-- <h2>{{selectedGroup.name | uppercase}} Details</h2> -->
-
-          <!-- <div>
-            <label>name:
-              <input [(ngModel)]="selectedHero.name" placeholder="name"/>
-            </label>
-          </div> -->
-        </div>
         <mat-form-field>
-            <mat-select placeholder="Group" placeholder="Scope" [formControl]="scopes" multiple>
+            <mat-select placeholder="Group" placeholder="{{'Scope'|translate}}" [formControl]="scopes" multiple>
               <mat-select-trigger >
                 {{scopes.value ? scopes.value[0] : ''}}
                 <span *ngIf="scopes.value?.length > 1" class="example-additional-selection">
@@ -61,10 +37,27 @@
       </form>
     </mat-card-content>
     <mat-card-actions align="center">
-        <button style="margin: 10px;" mat-raised-button color="primary" [mat-dialog-close]="1">{{'CANCEL'|translate}}</button>
-      <button mat-raised-button color="primary" [disabled]="!groupForm.valid"
-        (click)="createGroup()">Create</button>
+      <button id="cancelButton" class="btn-four" mat-raised-button [mat-dialog-close]="1">{{'Cancel'|translate}}</button>
+      <button id="resetButton" class="btn-three" [disabled]="groupForm.pristine" mat-raised-button (click)="resetForm()">{{'Reset'|translate}}</button>
+      <button id="createButton" class="btn-two" mat-raised-button [disabled]="!groupForm.valid"
+        (click)="createGroup(succesGroupCreateDialog, errorGroupCreateDialog)">{{'Create'|translate}}</button>
     </mat-card-actions>
-
   </mat-card>
 </div>
+
+<ng-template #succesGroupCreateDialog>
+  <mat-dialog-content>
+      <p>{{'CREATE_GROUP_SUCCESS'|translate}}</p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="center">
+      <button [mat-dialog-close]="true" mat-button cdkFocusInitial>{{'OK'|translate}}</button>
+    </mat-dialog-actions>
+</ng-template>
+<ng-template #errorGroupCreateDialog>
+  <mat-dialog-content>
+      <p>{{'CREATE_GROUP_ERROR'|translate}}</p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="center">
+      <button [mat-dialog-close]="true" mat-button cdkFocusInitial>{{'OK'|translate}}</button>
+    </mat-dialog-actions>
+</ng-template> 

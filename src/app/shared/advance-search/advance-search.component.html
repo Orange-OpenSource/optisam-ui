@@ -1,11 +1,11 @@
 <mat-form-field class="search-form-field" floatLabel="never">
-  <input matInput [(ngModel)]="filterFields[model.primary]" placeholder="{{model.title |translate}}"
+  <input id="adv-search-input" matInput [(ngModel)]="filterFields[model.primary]" placeholder="{{model.title |translate}}"
     autocomplete="off" (keydown.enter)="pressEnter()" >
 
-  <button mat-button matSuffix mat-icon-button aria-label="Search" (click)="applyFilter()" [disabled]="!filterFields[model.primary] || filterFields[model.primary].length < 3">
+  <button id="search" mat-button matSuffix mat-icon-button aria-label="Search" (click)="applyFilter()" [disabled]="!filterFields[model.primary] || filterFields[model.primary].length < 3">
     <mat-icon>search</mat-icon>
   </button>
-  <button mat-button matSuffix mat-icon-button aria-label="Clear" (click)="clearFilter()"
+  <button id="clear" mat-button matSuffix mat-icon-button aria-label="Clear" (click)="clearFilter()"
     *ngIf="filterFields[model.primary]">
     <mat-icon>clear</mat-icon>
   </button>
@@ -21,11 +21,11 @@
   </div>
   <div  mat-filter-item class="advanceChild" *ngFor="let itm of model.other;">
     <mat-form-field  >
-      <input matInput placeholder="{{itm.label | translate}}" class="advanceChild" [(ngModel)]="filterFields[itm.key]" (keydown.enter)="pressEnter(true)">
+      <input matInput placeholder="{{itm.label | translate}}" class="advanceChild" [(ngModel)]="filterFields[itm.key]" (keydown.enter)="pressEnter(filterFields[itm.key],true)">
     </mat-form-field>
   </div>
   <div class="buttons-section advanceChild">
-    <button mat-raised-button class="advanceChild" (click)="clearFilter()">{{'Clear'|translate}}</button>
-    <button mat-raised-button class="advanceChild" color="primary" (click)="applyFilter();toggleAdvanceSearch = false;" [disabled]="filterFields[model.primary] != '' && filterFields[model.primary] && filterFields[model.primary].length < 3">{{'Search'|translate}}</button>
+    <button id="adv-clear-button" mat-raised-button class="advanceChild btn-four" (click)="clearFilter()">{{'Clear'|translate}}</button>
+    <button id="adv-apply-button" mat-raised-button class="advanceChild btn-two" (click)="applyFilter();toggleAdvanceSearch = false;" [disabled]="filterFields[model.primary] != '' && filterFields[model.primary] && filterFields[model.primary].length < 3">{{'Search'|translate}}</button>
   </div>
 </div>

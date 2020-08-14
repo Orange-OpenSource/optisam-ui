@@ -4,7 +4,7 @@
 // license which can be found in the file 'License.txt' in this package distribution 
 // or at 'http://www.apache.org/licenses/LICENSE-2.0'. 
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth/auth.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -22,6 +22,8 @@ export class HeaderComponent implements OnInit {
   public currLang = 'en';
   public userLang;
   public role: String;
+  @Output() toggleSidebar = new EventEmitter();
+  public sidebarFlag = false;
 
   constructor(public router: Router, private authservice: AuthService, private translate: TranslateService) {
     translate.addLangs(['en', 'fr']);
@@ -75,5 +77,9 @@ export class HeaderComponent implements OnInit {
     // const emailId = localStorage.getItem('email');
     // this.userName = emailId.substring(0, emailId.lastIndexOf('@'));
     this.router.navigate(['/optisam/settings']);
+  }
+  toggleSideNavbar() {
+    this.sidebarFlag = !this.sidebarFlag;
+    this.toggleSidebar.emit(this.sidebarFlag.toString());
   }
 }

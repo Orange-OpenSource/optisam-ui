@@ -1,60 +1,51 @@
 <mat-toolbar color="ThemePalette" class="main-nav-bar">
     <mat-toolbar-row>
-
-      <div class="optisam-logo">
-           <a href="#"><img src="assets/images/OpTISAM-Logo-2.png"></a>
-      </div>
-
-      <button mat-button routerLink="/optisam/dashboard"
-        routerLinkActive="active" >
-        {{'Dashboard' |translate}}</button>
-      <span></span> <button mat-button routerLink="/optisam/apl/applications"
-        routerLinkActive="active">{{'Applications'|translate}}</button>
-      <button mat-button routerLink="/optisam/pr/products" routerLinkActive="active"
-      >{{'Products'
-        |translate}}</button>
-      <button mat-button routerLink="/optisam/eq/equipmentsList"
-        routerLinkActive="active">
-        {{'Equipments' | translate}}</button>
-      <button mat-button routerLink="/optisam/ar/prights"
-       routerLinkActive="active">{{'Acquired
-        rights' | translate}}</button>
-      <button mat-button routerLink="/optisam/simulation"
-        routerLinkActive="active">{{'Simulation' | translate}}</button>
+      <span id="app-logo" class="optisam-logo" [hidden]="this.sidebarFlag" routerLink="/optisam/dashboard">
+        <img src="assets/images/OpTISAM-Logo.svg">
+      </span>
+      <span id="app-logo-min" class="optisam-logo" [hidden]="!this.sidebarFlag" routerLink="/optisam/dashboard">
+        <img src="assets/images/OpTISAM-Logo-app.svg">
+      </span>
+      <button mat-icon-button (click)="toggleSideNavbar()"><mat-icon id="nav-menu">menu</mat-icon></button>
       <span class="example-spacer"></span>
       <div fxShow="true" fxHide.lt-md="true">
-        <button mat-icon-button [matMenuTriggerFor]="menu2">
-            <img style="height: 24px; margin-right: 16px;" src="\assets\images\AdminSmall.png"/>
-
-        </button>
+        <a id="nav-management-menu" mat-button [matMenuTriggerFor]="menu2">
+            <img style="height: 24px;" src="\assets\images\Admin-2.svg"/>
+            {{'ADMINISTRATION' | translate}}
+        </a>
 
         <mat-menu #menu2>
-            <button mat-menu-item matTooltip="Equipments" [routerLink]="['/optisam/eqm']" [routerLinkActive]="['routeactive']">
-
+            <button id="nav-equipment-management" mat-menu-item matTooltip="{{'Equipment Management' | translate}}" [routerLink]="['/optisam/eqm']" [routerLinkActive]="['routeactive']">
               <img style="height: 20px; margin-right: 16px;" src="\assets\images\Equipment-managementSmall.png"/>
               {{'Equipment Management' | translate}}
             </button>
-            <button mat-menu-item matTooltip="Create Metric" [routerLink]="['/optisam/ma']" [routerLinkActive]="['routeactive']">
-             <!--  <mat-icon>build</mat-icon> -->
+            <button id="nav-metrics-management" mat-menu-item matTooltip="{{'Metrics Management' | translate}}" [routerLink]="['/optisam/ma']" [routerLinkActive]="['routeactive']">
              <img style="height: 20px; margin-right: 16px;" src="\assets\images\Metrics-ManagementSmall.png"/>
-              <!-- <IMG SRC="\assets\images\Equipment-management.png"> -->
               {{'Metrics Management' | translate}}
             </button>
-            <button mat-menu-item matTooltip="Users" *ngIf="(role === 'ADMIN') || ((role === 'SUPER_ADMIN'))" [routerLink]="['/optisam/gr/userGroup']" [routerLinkActive]="['routeactive']">
-              <mat-icon>person</mat-icon>
+            <button id="nav-user-management" mat-menu-item matTooltip="{{'User Management' | translate}}" *ngIf="(role === 'ADMIN') || ((role === 'SUPER_ADMIN'))" [routerLink]="['/optisam/gr/viewUsers']" [routerLinkActive]="['routeactive']">
+              <mat-icon class="mat-icon-admin">person</mat-icon>
               {{'User Management' | translate}}
             </button>
-            <button mat-menu-item matTooltip="Groups" [routerLink]="['/optisam/gr/groupMang']" [routerLinkActive]="['routeactive']">
-              <mat-icon>group_add</mat-icon>
+            <button id="nav-group-management" mat-menu-item matTooltip="{{'Group Management' | translate}}" [routerLink]="['/optisam/gr/groupMang']" [routerLinkActive]="['routeactive']">
+              <mat-icon class="mat-icon-admin">group_add</mat-icon>
               {{'Group Management' | translate}}
             </button>
-            <button mat-menu-item matTooltip="Data management" *ngIf="(role === 'ADMIN') || ((role === 'SUPER_ADMIN'))" [routerLink]="['/optisam/dm/upload-data']" [routerLinkActive]="['routeactive']">
-              <mat-icon>cloud_upload</mat-icon>
+            <button id="nav-data-management" mat-menu-item matTooltip="{{'Data Management' | translate}}" *ngIf="(role === 'ADMIN') || ((role === 'SUPER_ADMIN'))" [routerLink]="['/optisam/dm/data']" [routerLinkActive]="['routeactive']">
+              <mat-icon class="mat-icon-admin">cloud_upload</mat-icon>
               {{'Data Management' | translate}}
             </button>
-            <button mat-menu-item matTooltip="Products management" [routerLink]="['/optisam/ag/list-aggregation']" [routerLinkActive]="['routeactive']">
-              <mat-icon>devices_other</mat-icon>
-              {{'Products management' | translate}}
+            <button id="nav-products-management" mat-menu-item matTooltip="{{'Aggregation Management' | translate}}" [routerLink]="['/optisam/ag/list-aggregation']" [routerLinkActive]="['routeactive']">
+              <mat-icon class="mat-icon-admin">devices_other</mat-icon>
+              {{'Aggregation Management' | translate}}
+            </button>
+            <button id="nav-configuration-management" mat-menu-item matTooltip="{{'Simulation Management' | translate}}" *ngIf="(role === 'ADMIN') || ((role === 'SUPER_ADMIN'))" [routerLink]="['/optisam/cm/simulation-configuration']" [routerLinkActive]="['routeactive']">
+              <mat-icon class="mat-icon-admin">settings</mat-icon>
+              {{'Simulation Management' | translate}}
+            </button>
+            <button id="nav-scope-management" mat-menu-item matTooltip="{{'Scope Management' | translate}}" *ngIf="role === 'SUPER_ADMIN'" [routerLink]="['/optisam/sm']" [routerLinkActive]="['routeactive']">
+              <img style="height: 20px; margin-right: 16px;" src="\assets\images\scope-management.svg"/>
+              {{'Scope Management' | translate}}
             </button>
         </mat-menu>
 
@@ -81,33 +72,30 @@
               Equipment'| translate}}</span>
           </button>
         </mat-menu> -->
-        <a mat-button [matMenuTriggerFor]="menu">
-          <mat-icon matsuffix>face</mat-icon>
+        <a id="nav-admin-menu" mat-button [matMenuTriggerFor]="menu">
+          <mat-icon class="mat-icon-header" matsuffix>face</mat-icon>
           {{userName}}
         </a>
 
         <mat-menu #menu="matMenu">
-          <!-- <button mat-menu-item>
-            <mat-icon matsuffix>account_circle</mat-icon>
-            {{'Profile'| translate}}
-          </button> -->
-          <button mat-menu-item (click)="langchange()">
-            <mat-icon matsuffix>settings</mat-icon>
+          <button id="nav-settings" mat-menu-item (click)="langchange()">
+            <mat-icon class="mat-icon-admin" matsuffix>settings</mat-icon>
             {{'Settings' |translate}}
           </button>
-          <button mat-menu-item (click)="logout()">
-            <mat-icon matsuffix>logout</mat-icon>
+          <button id="nav-logout" mat-menu-item (click)="logout()">
+            <mat-icon class="mat-icon-admin" matsuffix>logout</mat-icon>
             {{'Logout' | translate}}
           </button>
         </mat-menu>
-        <a mat-button [matMenuTriggerFor]="menu1" (click)="checkLanguage()">
-          <mat-icon matsuffix>language</mat-icon>
+        <a id="nav-language-menu" mat-button [matMenuTriggerFor]="menu1" (click)="checkLanguage()">
+          <mat-icon class="mat-icon-header" matsuffix>language</mat-icon>
           {{ 'language' | translate }}
+          <mat-icon>arrow_drop_down</mat-icon>
         </a>
         <mat-menu #menu1="matMenu">
-          <button mat-menu-item *ngIf="currLang=='fr'"
+          <button id="nav-language-en" mat-menu-item *ngIf="currLang=='fr'"
             (click)="updateUserLanguage('en')"><img class="flags" src="assets/images/en.png">English</button>
-          <button mat-menu-item *ngIf="currLang=='en'"
+          <button id="nav-language-fr" mat-menu-item *ngIf="currLang=='en'"
             (click)="updateUserLanguage('fr')"><img class="flags" src="assets/images/fr.png">French</button>
         </mat-menu>
       </div>

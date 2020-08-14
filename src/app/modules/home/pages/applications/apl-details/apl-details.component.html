@@ -2,8 +2,7 @@
         <div class="container-fluid page-content-header">
           <div class="row">
             <div class="col-md-9 page-heading">
-              <h4><span><a routerLink="/optisam/apl/applications">{{'Application'|translate}}</a>:{{this.aplName}} </span> &#62;{{'Products'|translate}}
-              </h4>
+              <span class="parentNode nav-path" routerLink="/optisam/apl/applications">{{'Application'|translate}}</span><span class="nav-path-desc"> : {{this.aplName}}</span><mat-icon class="arrow_icon">arrow_forward_ios</mat-icon> <span class="currentNode nav-path">{{'Products'|translate}}</span>
             </div>
             <div class="col-md-3"></div>
 
@@ -15,29 +14,32 @@
 
       <mat-table [dataSource]="MyDataSource" matSort (matSortChange)="sortData($event)">
         <ng-container matColumnDef="swidTag">
-          <mat-header-cell *matHeaderCellDef mat-sort-header="name"> {{'SWIDtag' | translate}} </mat-header-cell>
+          <mat-header-cell *matHeaderCellDef mat-sort-header="swidTag"> {{'SWIDtag' | translate}} </mat-header-cell>
           <mat-cell *matCellDef="let product"> {{product.swidTag}} </mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="name">
-          <mat-header-cell *matHeaderCellDef mat-sort-header="application_owner">{{'Product name' | translate}}</mat-header-cell>
+          <mat-header-cell *matHeaderCellDef mat-sort-header="name">{{'Product name' | translate}}</mat-header-cell>
           <mat-cell *matCellDef="let product">
-              <a mat-icon-button color="primary" matTooltip="Click here to see Product Details" (click)="openDialog(product.swidTag,product.name)">{{product.name}}</a>
+              <!-- <a class="mat-button-link" mat-icon-button color="primary" matTooltip="{{'Click here to see Product Details'|translate}}" (click)="openDialog(product.swidTag,product.name)"> -->
+              <a class="mat-button-link" matTooltip="{{product.name}}" (click)="openDialog(product.swidTag,product.name)">
+                {{product.name}}
+              </a>
           </mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="Editor" >
-          <mat-header-cell *matHeaderCellDef mat-sort-header="numofProducts">{{'Editor name'| translate}}</mat-header-cell>
+          <mat-header-cell *matHeaderCellDef mat-sort-header="Editor">{{'Editor name'| translate}}</mat-header-cell>
           <mat-cell *matCellDef="let product">
-                  {{product.Editor}}
+                  {{product.editor}}
            </mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="numOfInstances">
-          <mat-header-cell *matHeaderCellDef mat-sort-header="numOfInstances">{{'Number of instances' | translate}}</mat-header-cell>
+          <mat-header-cell *matHeaderCellDef mat-sort-header="numOfInstances">{{'Instance Count' | translate}}</mat-header-cell>
           <mat-cell *matCellDef="let product">
               <!-- <a mat-icon-button color="primary" > -->
-                  {{product.numOfInstances}} 
+                  {{product.numOfInstances||0}} 
                 <!-- </a> -->
               </mat-cell>
         </ng-container>
@@ -45,7 +47,7 @@
         <ng-container matColumnDef="Edition">
           <mat-header-cell *matHeaderCellDef mat-sort-header>{{'Edition'| translate}}</mat-header-cell>
           <mat-cell *matCellDef="let product">
-                  {{product.Edition}}
+                  {{product.Edition||'-'}}
               </mat-cell>
         </ng-container>
 
@@ -62,18 +64,21 @@
           </ng-container>
 
             <ng-container matColumnDef="numofEquipments">
-                <mat-header-cell *matHeaderCellDef mat-sort-header>{{'Number of equipment'|translate}}</mat-header-cell>
+                <mat-header-cell *matHeaderCellDef mat-sort-header>{{'Equipment Count'|translate}}</mat-header-cell>
                     <mat-cell *matCellDef="let product">
-                        <!-- <a mat-icon-button color="primary" > -->
+                        <a *ngIf="product.numofEquipments" class="mat-button-link" (click)="getEquipData(product)">
                             {{product.numofEquipments}}
-                          <!-- </a> -->
+                        </a>
+                        <span *ngIf="!product.numofEquipments">
+                          0
+                        </span>
                         </mat-cell>
               </ng-container>
 
-          <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+          <mat-header-row *matHeaderRowDef="displayedColumns;sticky:true;"></mat-header-row>
           <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
       </mat-table>
-      <!-- <app-loading-spinner *ngIf="_loading"></app-loading-spinner> -->
+      <app-loading-spinner *ngIf="_loading"></app-loading-spinner>
       <mat-paginator #paginator [length]="length" [pageSize]="page_size" [pageSizeOptions]="[10,20,30,50]"showFirstLastButtons>
       </mat-paginator>
     </div>

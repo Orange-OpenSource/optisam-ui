@@ -1,7 +1,0 @@
-{
-    "env": "local",
-    "auth": "http://localhost:8091/api/v1",
-    "account": "http://localhost:8092/api/v1",
-    "license": "http://localhost:8093/api/v1",
-    "import": "http://localhost:8094/api/v1"
-}

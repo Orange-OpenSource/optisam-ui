@@ -15,6 +15,7 @@ import { map, catchError } from 'rxjs/operators';
 })
 export class GroupService {
   apiUrl = environment.API_ACCOUNT_URL;
+  apiEquipUrl = environment.API_EQUIPMENT_URL;
   token = localStorage.getItem('access_token');
   lang = localStorage.getItem('language');
   public errorMsg: string;
@@ -25,7 +26,7 @@ export class GroupService {
     return this.http.get<any>(url);
   }
   updateAttribute(id, attributeData): Observable<any> {
-    const url = this.apiUrl + '/equipments/types/' + id ;
+    const url = this.apiEquipUrl + '/equipments/types/' + id ;
     return this.http.patch<any>(url, attributeData);
   }
   getDirectGroups(): Observable<any> {
@@ -65,9 +66,9 @@ export class GroupService {
       const url = this.apiUrl + '/admin/groups/' + grpId + '/users/add' ;
      return this.http.put<any>(url, data);
    }
-   getAllUserList(): Observable<any> {
+   getAllUserList(allUsersFlag): Observable<any> {
     // const url = this.apiUrl + 'admin/direct_groups';
-      const url = this.apiUrl + '/accounts' ;
+      const url = this.apiUrl + '/accounts' + '?user_filter.all_users=' + allUsersFlag;
      return this.http.get<any>(url);
    }
    changePassword(data): Observable<any> {
@@ -94,6 +95,21 @@ export class GroupService {
         }),
         catchError(this.errorHandler));
   }
+
+  updateUser(groupData): Observable<any> {
+    return this.http.put<any>(this.apiUrl + '/accounts/' + groupData.user_id, groupData)
+      .pipe(
+        map(res => {
+          return res;
+        }),
+        catchError(this.errorHandler));
+  }
+
+  deleteUser(userId): Observable<any> {
+    const url = this.apiUrl + '/accounts/' + userId ;
+    return this.http.delete<any>(url);
+  }
+
   private errorHandler(error) {
     this.errorMsg = error.error;
     return throwError(this.errorMsg);

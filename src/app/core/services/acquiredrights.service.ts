@@ -12,7 +12,7 @@ import { map, catchError } from 'rxjs/operators';
 
 @Injectable()
 export class AcquiredrightsService {
-  apiUrl = environment.API_URL;
+  apiUrl = environment.API_ACQRIGHTS_URL;
   saveSelectedPName: string;
   saveSelectedSWIDTag: string;
   saveSelectedEditor: string;
@@ -24,7 +24,7 @@ export class AcquiredrightsService {
   constructor(private http: HttpClient) { }
 
   getAcquiredrights(pageSize, length) {
-    const url = this.apiUrl + '/acquiredrights?page_num=' + length + '&page_size=' + pageSize + '&sort_by=ENTITY&sort_order=asc';
+    const url = this.apiUrl + '/acqrights?page_num=' + length + '&page_size=' + pageSize + '&sort_by=ENTITY&sort_order=asc';
     return this.http.get(url)
     .pipe(
       map(res => {
@@ -60,13 +60,19 @@ export class AcquiredrightsService {
     if (sort_order === '') {
       sort_order = 'asc';
     }
-    const url = this.apiUrl + '/acquiredrights?page_num=' + length + '&page_size=' + pageSize +
+    const url = this.apiUrl + '/acqrights?page_num=' + length + '&page_size=' + pageSize +
       '&sort_by=' + sort_by + '&sort_order=' + sort_order + filteringCondition;
     return this.http.get(url);
   }
 
   getAggregationAcquiredRights(query: string): Observable<any> {
-    const url = this.apiUrl + '/products/aggregations/acqrightsview' + query;
+    const url = this.apiUrl + '/acqrights/aggregations' + query;
+    // const url = this.apiUrl + '/products/aggregations/acqrightsview' + query;
+    return this.http.get<any>(url);
+  }
+
+  getProductsByAggrID(ID) {
+    const url = this.apiUrl + '/acqrights/aggregations/' + ID + '/records';
     return this.http.get<any>(url);
   }
 }

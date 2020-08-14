@@ -1,10 +1,4 @@
-<!-- <h2>Attributes List</h2>
-<ul >
-  <li *ngFor="let row of attribute">
-    <span class="badge">{{row.name}}</span> {{row.mapped_to}}
-  </li>
-</ul> -->
-        <mat-card-title  color="primary"><h3>{{'Attribute List for'|translate}} {{this.equipName}}</h3>
+        <mat-card-title  class="page-heading">{{'Attribute List for'|translate}} {{this.equipName}}
         </mat-card-title>
 
       <mat-table #table [dataSource]="attribute" class="equipments-action-table">
@@ -36,7 +30,7 @@
         <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
       </mat-table>
 
-      <mat-dialog-actions align="center">
-        <button mat-raised-button mat-dialog-close>{{'Cancel' | translate}}</button>
+      <mat-dialog-actions align="right">
+        <button mat-raised-button class="btn-two" mat-dialog-close>{{'Cancel' | translate}}</button>
       </mat-dialog-actions>
 

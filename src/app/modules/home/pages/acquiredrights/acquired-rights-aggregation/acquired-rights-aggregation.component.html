@@ -2,7 +2,7 @@
     <div class="container-fluid page-content-header">
       <div class="row">
         <div class="col-md-9 page-heading">
-          <h4>{{'List of Inventoried Acquired Rights'|translate}} </h4>
+          {{'List of Inventoried Acquired Rights'|translate}}
         </div>
         <div class="col-md-3 search-div">
           <app-advance-search [advanceSearchModel]="advanceSearchModel" (advFilterEvent)="advSearchTrigger($event)">
@@ -16,21 +16,23 @@
   
           <ng-container matColumnDef="{{column}}" *ngFor="let column of displayedColumns">
               <div *ngIf="sortColumn.indexOf(column) !== -1">
-                <mat-header-cell *matHeaderCellDef mat-sort-header> {{tableKeyLabelMap[column]}} </mat-header-cell>
+                <mat-header-cell *matHeaderCellDef mat-sort-header> {{tableKeyLabelMap[column]|translate}} </mat-header-cell>
               </div>
               <div *ngIf="sortColumn.indexOf(column) === -1">
-                <mat-header-cell *matHeaderCellDef> {{tableKeyLabelMap[column]}} </mat-header-cell>
+                <mat-header-cell *matHeaderCellDef> {{tableKeyLabelMap[column]|translate}} </mat-header-cell>
               </div>
               <mat-cell *matCellDef="let rights"> 
                 <div [ngSwitch]="column">
 
-                  <span *ngSwitchCase="'SKU'" matTooltip="{{getJoinedString(rights.acqRights, 'SKU', ', ')}}">{{getJoinedString(rights.acqRights, 'SKU', ', ')}}</span>
-                  <span *ngSwitchCase="'swid_tag'" matTooltip="{{getJoinedString(rights.acqRights, 'swid_tag', ', ')}}">{{getJoinedString(rights.acqRights, 'swid_tag', ', ')}}</span>
+                  <!-- <span *ngSwitchCase="'SKU'" matTooltip="{{getJoinedString(rights.acqRights, 'SKU', ', ')}}">{{getJoinedString(rights.acqRights, 'SKU', ', ')}}</span>
+                  <span *ngSwitchCase="'swid_tag'" matTooltip="{{getJoinedString(rights.acqRights, 'swid_tag', ', ')}}">{{getJoinedString(rights.acqRights, 'swid_tag', ', ')}}</span> -->
+                  <span *ngSwitchCase="'SKU'" matTooltip="{{rights.skus}}">{{rights.skus}}</span>
+                  <span *ngSwitchCase="'swid_tag'" matTooltip="{{rights.swidtags}}">{{rights.swidtags}}</span>
 
                   <div *ngSwitchCase="'aggregateName'">
-                    <mat-icon *ngIf="expandedRow !== rights" class="expand-icon" (click)="expandedRow = (expandedRow === rights ? null : rights)">add_box</mat-icon>
+                    <mat-icon *ngIf="expandedRow !== rights" class="expand-icon" (click)="expandedRow = (expandedRow === rights ? null : rights);getProductDetails(rights.ID)">add_box</mat-icon>
                     <mat-icon *ngIf="expandedRow === rights" class="expand-icon" (click)="expandedRow = null">indeterminate_check_box</mat-icon>
-                    {{rights.name }}
+                    {{rights.name}}
                   </div>
 
                   <span *ngSwitchCase="'total_cost'">{{rights.total_cost || 0}}</span>
@@ -45,9 +47,9 @@
           <ng-container matColumnDef="expandedDetail">
             <mat-cell class="expand-cell" *matCellDef="let rights" [attr.colspan]="expandDisplayedColumns.length">
               <div class="aggregation-detail mat-elevation-z8" [@detailExpand]="rights == expandedRow ? 'expanded' : 'collapsed'">
-                <mat-table class="detail-table" [dataSource]="rights.acqRights">
+                <mat-table class="detail-table" [dataSource]="productsListByAggrID">
                   <ng-container matColumnDef="{{column}}" *ngFor="let column of expandDisplayedColumns">
-                      <mat-header-cell *matHeaderCellDef> {{tableKeyLabelMap[column]}} </mat-header-cell>
+                      <mat-header-cell *matHeaderCellDef> {{tableKeyLabelMap[column]|translate}} </mat-header-cell>
                       <mat-cell *matCellDef="let element"> 
                           <div [ngSwitch]="column">
                   
@@ -57,7 +59,12 @@
                             <span *ngSwitchCase="'avg_maintenance_unit_price'">{{element.avg_maintenance_unit_price || 0}}</span>
                             <span *ngSwitchCase="'total_purchase_cost'">{{element.total_purchase_cost || 0}}</span>
                             <span *ngSwitchCase="'total_maintenance_cost'">{{element.total_maintenance_cost || 0}}</span>
-                            <span *ngSwitchCase="'total_cost'">{{rights.total_cost || 0}}</span>
+                            <span *ngSwitchCase="'total_cost'">{{element.total_cost || 0}}</span>
+                            <span *ngSwitchCase="'product_name'"  matTooltip="{{element.product_name}}">
+                              <a class="ellipsis mat-button-link" (click)="openDialog(element.swid_tag, element.product_name)">
+                                {{element.product_name}} 
+                              </a>
+                            </span>
 
                             <span *ngSwitchDefault>{{(element[column] || '-')}}</span> 
                           </div>
@@ -65,7 +72,7 @@
                         </mat-cell>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         ,
                   </ng-container>
 
-                  <mat-header-row *matHeaderRowDef="expandDisplayedColumns;"></mat-header-row>
+                  <mat-header-row *matHeaderRowDef="expandDisplayedColumns; sticky: true"></mat-header-row>
                   <mat-row *matRowDef="let row; columns: expandDisplayedColumns;"></mat-row>
                 </mat-table>
               </div>
@@ -77,7 +84,8 @@
           <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
           <mat-row *matRowDef="let row; columns: ['expandedDetail']" class="agg-detail-row" [class.agg-expanded-row]="!expandedRow || expandedRow !== row"></mat-row>
         </mat-table>
-        <!-- <app-loading-spinner *ngIf="_loading"></app-loading-spinner> -->
+        <app-loading-spinner *ngIf="_loading"></app-loading-spinner>
+        <div class="no-data" *ngIf="!_loading && !arAggregationData">{{'No data available' | translate}}</div>
         <mat-paginator [length]="length" [pageSize]="page_size" [pageSizeOptions]="[10,20,30,50]"
           (page)="getPaginatorData($event)" showFirstLastButtons>
         </mat-paginator>

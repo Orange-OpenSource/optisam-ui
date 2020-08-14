@@ -17,28 +17,38 @@ export class AggregationService {
   defaultHeaders: HttpHeaders = new HttpHeaders({'Content-Type': 'application/json'});
   constructor(private http: HttpClient) { }
 
-  getEditorList() {
-    const url = environment.API_URL + '/editors';
+  getEditorList(scope:any) {
+    const url = environment.API_ACQRIGHTS_URL + '/aggregations/editors?scope='+scope;
     return this.http.get<any>(url, {headers: this.defaultHeaders});
   }
 
-  getMetricList() {
-    const url = environment.API_URL + '/metric';
+  getMetricList(scope:any) {
+    const url = environment.API_ACQRIGHTS_URL + '/aggregations/metrics?scope='+scope;
     return this.http.get<any>(url, {headers: this.defaultHeaders});
   }
 
   getProductList(query: string) {
-    const url = environment.API_URL + '/products' + query;
+    const url = environment.API_ACQRIGHTS_URL + '/aggregations/products' + query;
     return this.http.get<any>(url, {headers: this.defaultHeaders});
   }
 
   saveAggregation(data: any) {
-    const url = environment.API_URL + '/products/aggregations';
+    const url = environment.API_ACQRIGHTS_URL + '/aggregations';
     return this.http.post<any>(url, data, {headers: this.defaultHeaders});
   }
 
   getAggregations(query: any) {
-    const url = environment.API_URL + '/products/aggregations' + query;
+    const url = environment.API_ACQRIGHTS_URL + '/aggregations' + query;
     return this.http.get<any>(url, {headers: this.defaultHeaders});
+  }
+
+  deleteAggregation(id: string) {
+    const url = environment.API_ACQRIGHTS_URL + '/aggregations/' + id;
+    return this.http.delete<any>(url, {headers: this.defaultHeaders});
+  }
+
+  updateAggregation(name: string, data: any) {
+    const url = environment.API_ACQRIGHTS_URL + '/aggregations/' + name;
+    return this.http.put<any>(url, data, {headers: this.defaultHeaders});
   }
 }

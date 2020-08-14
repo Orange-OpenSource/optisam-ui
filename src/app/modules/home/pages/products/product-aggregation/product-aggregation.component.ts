@@ -11,6 +11,7 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
 import { Router } from '@angular/router';
 import { ProductAggregationDetailsComponent } from '../../../dialogs/product-aggregation-details/product-aggregation-details.component';
 import { MoreDetailsComponent } from '../../../dialogs/product-details/more-details.component';
+import { ConfirmDialogComponent } from '../../../dialogs/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-product-aggregation',
@@ -41,8 +42,8 @@ export class ProductAggregationComponent implements OnInit {
   filteringOrder: any;
 
 
-  displayedColumns: string[] = ['swidTag', 'aggregateName', 'editor' , 'total_cost', 'num_applications', 'num_equipments'];
-  expandDisplayedColumns: string[] = ['swidTag', 'name', 'editor' , 'totalCost', 'numOfApplications', 'numofEquipments'];
+  displayedColumns: string[] = ['swidTag', 'aggregateName', 'editor', 'total_cost', 'num_applications', 'num_equipments'];
+  expandDisplayedColumns: string[] = ['swidTag', 'name', 'editor' , 'version', 'totalCost', 'numOfApplications', 'numofEquipments'];
   sortColumn: string[] = ['aggregateName', 'editor' , 'total_cost', 'num_applications', 'num_equipments'];
   tableKeyLabelMap: any = {
       'swidTag':  'SwidTag',
@@ -51,10 +52,10 @@ export class ProductAggregationComponent implements OnInit {
       'version': 'Release',
       'total_cost': 'Total cost(€)',
       'totalCost': 'Total cost(€)',
-      'numOfApplications': 'Number of applications',
-      'numofEquipments': 'Number of equipment',
-      'num_applications': 'Number of applications',
-      'num_equipments': 'Number of equipment',
+      'numOfApplications': 'Application Count',
+      'numofEquipments': 'Equipment Count',
+      'num_applications': 'Application Count',
+      'num_equipments': 'Equipment Count',
       'aggregateName': 'Aggregation Name'
     };
   _loading: Boolean;
@@ -74,6 +75,7 @@ export class ProductAggregationComponent implements OnInit {
   expandedRow: any;
   searchQuery: string;
   sortQuery: string;
+  aggregationDetails: any;
 
   constructor(
     private productservice: ProductService,
@@ -92,7 +94,7 @@ export class ProductAggregationComponent implements OnInit {
     this._loading = true;
     let query = '?page_num=' + this.current_page_num + '&page_size=' + this.page_size;
     query += (this.searchQuery ? this.searchQuery : '');
-    query += (this.sortQuery ? this.sortQuery : '');
+    query += (this.sortQuery ? this.sortQuery : '&sort_order=asc&sort_by=aggregation_name');
     this.productservice.getAggregationProducts(query).subscribe(
       (res: any) => {
         this.productAggregationData = new MatTableDataSource(res.aggregations);
@@ -118,7 +120,7 @@ export class ProductAggregationComponent implements OnInit {
     if (!ev.direction) {
       return false;
     }
-    this.sortQuery = '&sorto_order=' + ev.direction.toUpperCase() + '&srt_by=';
+    this.sortQuery = '&sort_order=' + ev.direction.toUpperCase() + '&sort_by=';
     switch (ev.active) {
       case 'aggregateName':
         this.sortQuery += 'NAME';
@@ -140,6 +142,7 @@ export class ProductAggregationComponent implements OnInit {
   openProductDetailsDialog(value, name): void {
     const dialogRef = this.dialog.open(MoreDetailsComponent, {
       width: '850px',
+      disableClose: true,
       data: {
           datakey : value,
           dataName : name
@@ -153,9 +156,12 @@ export class ProductAggregationComponent implements OnInit {
   openAggregationDetailsDialog(aggregation: any): void {
     const dialogRef = this.dialog.open(ProductAggregationDetailsComponent, {
       width: '850px',
+      autoFocus: false,
+      disableClose: true,
       data: {
         productName : aggregation.product_name,
-        aggregationName : aggregation.name
+        aggregationName : aggregation.name,
+        aggregationID :  aggregation.ID
       }
     });
 
@@ -164,7 +170,10 @@ export class ProductAggregationComponent implements OnInit {
   }
 
   getSwidTags(products: any[]) {
-    return products.map(d => d.swidTag).join(', ');
+    if(products)
+      return products.map(d => d.swidTag).join(', ');
+    else
+      return '-';
   }
 
   productApl(swidTag, prodName) {
@@ -188,7 +197,9 @@ export class ProductAggregationComponent implements OnInit {
     this.searchQuery = '';
     this.sortQuery = '';
     Object.keys(this.searchFields).forEach((key) => {
-      this.searchQuery += '&' + key + '=' + this.searchFields[key];
+      if (this.searchFields[key]) {
+        this.searchQuery += '&' + key + '=' + this.searchFields[key];
+      }
     });
     this.getProductAggregationData();
   }
@@ -197,6 +208,22 @@ export class ProductAggregationComponent implements OnInit {
     // console.log('trigger event => ', event);
     this.searchFields = event;
     this.applyFilter();
+  }
+
+  expandAggregation(product) {
+    this._loading = true;
+    this.expandedRow = (this.expandedRow === product ? null : product);
+    this.productservice.getAggregationProductDetails(product.ID).subscribe((res)=>{
+      this.aggregationDetails = res.products;
+      this._loading = false;
+    },error => {
+      this._loading = false;
+      console.log('There was an error while retrieving Products !!!' + error);
+    });
+  }
+
+  closeAggregation() {
+    this.expandedRow = null
   }
 
 }

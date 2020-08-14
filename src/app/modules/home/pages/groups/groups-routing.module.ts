@@ -12,6 +12,8 @@ import { GroupmangementComponent } from './groupmangement/groupmangement.compone
 import { CreateUserGrpComponent } from './create-user-grp/create-user-grp.component';
 import { EditGrpNameComponent } from './edit-grp-name/edit-grp-name.component';
 import { GroupusrmanagementComponent } from './groupusrmanagement/groupusrmanagement.component';
+import { UserListViewComponent } from './user-list-view/user-list-view.component';
+import { EditUserComponent } from './edit-user/edit-user.component';
 
 const routes: Routes = [
   {
@@ -21,7 +23,10 @@ const routes: Routes = [
       { path: 'groupMang', component: GroupmangementComponent },
       { path: 'userGroup', component: CreateUserGrpComponent },
       { path: 'editGroup', component: EditGrpNameComponent },
-      {path: 'groupUsrMange', component: GroupusrmanagementComponent}
+      { path: 'groupUsrMange', component: GroupusrmanagementComponent },
+      { path: 'viewUsers', component : UserListViewComponent },
+      { path: 'editUsers', component : EditUserComponent}
+
     ]
   }
 ];

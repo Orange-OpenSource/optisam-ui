@@ -15,7 +15,7 @@ import { Router } from '@angular/router';
 export class AcquiredRightsTabComponent implements OnInit {
   tabMenus = [
     { title: 'Individual', link: '/optisam/ar/prights'},
-    { title: 'Aggregations', link: '/optisam/ar/prights/aggregaions'}
+    { title: 'Aggregations', link: '/optisam/ar/prights/aggregations'}
   ];
   activeLink = this.tabMenus[0].link;
   constructor( private router: Router) {

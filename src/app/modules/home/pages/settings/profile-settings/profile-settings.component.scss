@@ -1,0 +1,81 @@
+.container-fluid-flex {
+    padding-top: 16px !important;
+  }
+  
+  .nav-item {
+    cursor: pointer;
+  }
+  button {
+      max-width: fit-content !important;
+      padding: 0 32px;
+  }
+  .container{
+    display: flex;
+    justify-content: flex-start;
+    padding: 32px;
+  }
+  .row {
+    display: flex;
+    justify-content: center;
+    padding-top: 32px;
+    padding-bottom: 16px;
+  }
+  
+  #upload {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    min-height: 32px;
+    max-height: 32px;
+    min-width: 32px;
+    max-width: 32px;
+    border-radius: 16px;
+    cursor: pointer;
+    background-color: #008AFC;
+    padding: 5px;
+  }
+  
+  img {
+    min-height: 100px;
+    max-height: 100px;
+    min-width: 100px;
+    max-width: 100px;
+    border-radius: 50px;
+  }
+  #upload-img-btn {
+    cursor: pointer;
+    padding: 16px;
+    border-radius: 50%;
+    border: 4px solid #008AFC;
+    color: #008AFC;
+    height: 30px;
+  }
+  #uploaded-img-btn {
+    border-radius: 50%;
+    border: 4px solid #008AFC;
+    color: #008AFC;
+    height: 30px;
+  }
+  
+  .action-buttons {
+    display: flex;
+    justify-content: space-between;
+  }
+  .form-body {
+    max-width: 400px;
+    padding: 0 32px;
+  }
+  
+  #pic-text {
+    margin-top: -32px;
+  }
+  
+  #profileImage {
+    min-height: 100px;
+    max-height: 100px;
+    min-width: 100px;
+    max-width: 100px;
+    border-radius: 50px;
+    display: inline-block;
+    position: relative;
+  }

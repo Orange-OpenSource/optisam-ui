@@ -9,6 +9,7 @@
     width: 100%;
   }
 .expand-cell{padding: 0;}
+
 .detail-table .mat-header-cell {
     background-color: #4a8db2;
     color: #fff;
@@ -29,4 +30,21 @@
 .expand-icon:hover{cursor: pointer;}
 .detail-table .mat-cell{padding: 5px 10px;}
 // .main-table .mat-header-cell{padding: 0 10px;}
-.main-table .mat-header-cell:first-of-type, .detail-table .mat-cell:first-of-type{padding-left: 20px!important;}
+// .main-table .mat-header-cell:first-of-type, .detail-table .mat-cell:first-of-type{padding-left: 20px!important;}
+
+
+.mat-column-swid_tag {
+    word-wrap: break-word !important;
+    white-space: unset !important;
+    overflow-wrap: break-word;
+    word-wrap: break-word;    
+    word-break: break-word;
+  }
+  
+  .mat-column-SKU {
+    word-wrap: break-word !important;
+    white-space: unset !important;
+    overflow-wrap: break-word;
+    word-wrap: break-word;    
+    word-break: break-word;
+  }

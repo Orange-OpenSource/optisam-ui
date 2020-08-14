@@ -16,10 +16,12 @@ const routes: Routes = [
   {
     path: '', component: AcquiredrightsComponent,
     children: [
-      { path: 'prights', component: AcquiredRightsTabComponent, children: [
-        { path: '', component: ProductrightsComponent },
-        { path: 'aggregaions', component: AcquiredRightsAggregationComponent },
-      ] },
+      { path: 'prights', component: AcquiredRightsTabComponent, 
+        children: [
+                    { path: '', component: ProductrightsComponent },
+                    { path: 'aggregations', component: AcquiredRightsAggregationComponent }
+                  ] 
+      }
       // { path: 'prights', component: ProductrightsComponent },
     ]
   }

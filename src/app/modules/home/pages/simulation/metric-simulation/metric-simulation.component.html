@@ -1,0 +1,140 @@
+<div class="col-md-12 main-section">
+  <div class="col-md-6">
+    <mat-grid-list cols="5" rowHeight="2:1">
+      <mat-grid-tile [colspan]="4">
+        <span class="text-inside-grid page-heading">{{'Environment' | translate}}</span>
+      </mat-grid-tile>
+      <mat-grid-tile>
+        <div  *ngIf="HTTPActivity||_loading" class="spinner-div">
+          <mat-spinner></mat-spinner>
+          <span>{{'Loading'|translate}} ...</span>
+        </div>
+      </mat-grid-tile>
+    </mat-grid-list>
+    
+    <div class="entity-section">
+        <mat-form-field appearance="outline" class="entity-input">
+            <input matInput placeholder="{{'Entity' | translate}}" disabled [value]="simulateObj.viewEntity.join('/')">
+          </mat-form-field>
+
+      <mat-form-field appearance="outline" class="select">
+        <mat-label>{{(entityList.length > 0) ? ('Select Entity'|translate) : ('No Entity'|translate) }}</mat-label>
+        <mat-select [value]="simulateObj.currentEntity" [disabled]="HTTPActivity || entityList.length == 0" (selectionChange)="selectionChanged($event, 'entity')">
+          <mat-option *ngFor="let entity of entityList;" [value]="entity">{{entity.name}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <div class="resetEntity">
+        <button mat-flat-button class="btn-two" (click)="resetEntity()">
+          {{'AGGREGATIONS.ACTIONS.RESET' | translate}}
+        </button>
+      </div>
+    </div>
+
+    
+
+      <mat-form-field appearance="outline">
+        <mat-label>{{'AGGREGATIONS.TEXTS.EDITOR'|translate}}</mat-label>
+        <mat-select [(ngModel)]="simulateObj.editor" [disabled]="!simulateObj.entity || editorList.length == 0" (selectionChange)="selectionChanged($event, 'editor')">
+          <mat-option>-- {{'AGGREGATIONS.TEXTS.SELECT_PRODUCT' | translate}} --</mat-option>
+          <mat-option *ngFor="let editor of editorList;" [value]="editor">{{editor}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- <mat-form-field appearance="outline">
+        <mat-label>{{'AGGREGATIONS.TEXTS.PRODUCT' | translate}}</mat-label>
+        <mat-select [(ngModel)]="simulateObj.product" [disabled]="!simulateObj.editor || HTTPActivity || productList.length === 0"
+          (selectionChange)="selectionChanged($event, 'product')">
+          <mat-option>-- {{'AGGREGATIONS.TEXTS.SELECT_PRODUCT' | translate}} --</mat-option>
+          <mat-option *ngFor="let product of productList;" [value]="product">{{product.name}} - ( {{product.swidTag}} )</mat-option>
+        </mat-select>
+      </mat-form-field> -->
+
+      <mat-form-field appearance="outline"  [ngClass]="{'has-error': invalidProductFlag}">
+        <input type="text" placeholder="{{'AGGREGATIONS.TEXTS.PRODUCT' | translate}}" (keyup)="onChangeProduct($event)"
+        (focusout)="onProductNotSelected()"  matInput [(ngModel)]="simulateObj.product" [matAutocomplete]="auto" [disabled]="!simulateObj.editor || HTTPActivity || productList.length === 0">
+        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selectionChanged($event, 'product')" [displayWith]="getOptionText">
+          <mat-option *ngFor="let option of filteredOptions" [value]="option">
+            {{option.name}} - {{option.swidTag}}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+
+      <div class="metric-section">
+        <mat-table [dataSource]="metricList">
+          <ng-container matColumnDef="metric">
+            <mat-header-cell *matHeaderCellDef>{{'Metric' | translate}}
+            </mat-header-cell>
+            <mat-cell *matCellDef="let metric"> 
+              <mat-checkbox [(ngModel)]="metric.checked" (change)="selectMetric($event, metric)"></mat-checkbox>&nbsp;&nbsp;&nbsp;&nbsp;
+              <span>{{metric.name}}</span>
+            </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="unitCost">
+            <mat-header-cell *matHeaderCellDef>{{'Unit Cost' | translate}}($)
+            </mat-header-cell>
+            <mat-cell *matCellDef="let metric"> 
+              <mat-form-field appearance="outline" class="cost-input">
+                <input matInput placeholder="" (keydown)="validateCostPattern($event)" (keyup)="changeInput($event, metric)" [(ngModel)]="metric.avgUnitPrice">
+              </mat-form-field>
+            </mat-cell>
+          </ng-container>
+
+          <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        </mat-table>
+          <!-- <table class="table">
+            <thead>
+              <tr>
+                <th scope="col"></th>
+                <th scope="col">{{'Metric'|translate}}</th>
+                <th scope="col">{{'Unit Cost'|translate}}($)</th>
+              </tr>
+            </thead>
+            
+            <tbody>
+              <tr *ngFor="let metric of metricList; index as i">
+                <td scope="row">
+                  <mat-checkbox [(ngModel)]="metric.checked" (change)="selectMetric($event, metric)"></mat-checkbox>
+                </td>
+                <td>
+                  {{metric.name}}
+                </td>
+                <td>
+                  <mat-form-field appearance="outline" class="cost-input">
+                    <input matInput placeholder="" (keydown)="validateCostPattern($event)" (keyup)="changeInput($event, metric)" [(ngModel)]="metric.avgUnitPrice">
+                  </mat-form-field>
+                </td>
+              </tr>
+            </tbody>
+          </table> -->
+      </div>
+
+  </div>
+  <div class="col-md-6">
+    <span class="text-inside-grid page-heading" id="ResultsLabel">{{'Results'|translate}}</span>
+    <br/><br/>
+    <button id="simulateButton" class="btn-two" mat-raised-button (click)="simulate()" [disabled]="checkValidSimulation()">
+      {{'Simulate'|translate}}
+    </button>
+    <!-- <div >
+      <span class="progress-text">Simulating results</span>
+      <mat-progress-bar mode="determinate" value="40"></mat-progress-bar>
+    </div> -->
+
+    <div class="simulate-result" *ngIf="simulatedResults && simulatedResults.length != 0">
+      <div class="result-section" *ngFor="let result of simulatedResults" [ngClass]="{'error': !result.exists && !result.success, 'success': !result.exists && result.success}">
+        <h6>{{result.metric_name}}</h6>
+        <div class="simulate-body">
+          <div *ngIf="result.exists || result.success">
+            <p><strong>{{'Licenses'|translate}} :</strong> {{result.num_cpt_licences || '-'}}</p>
+            <p><strong>{{'Total Cost'|translate}} :</strong> {{result.total_cost ? '€' + result.total_cost : '-'}}</p>
+            <p><strong>{{'Status' |translate}}: </strong> {{(result.exists ? 'Existing' : 'Not existing')}}</p>
+          </div>
+          <div class="simulation-failed" *ngIf="!result.exists && !result.success">
+            Simulation Failed
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

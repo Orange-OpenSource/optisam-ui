@@ -1,0 +1,14 @@
+::ng-deep .mat-select-panel {
+    min-width: 270px !important;
+    max-width: 320px;
+    margin-left: 7px;
+    margin-top: 35px;
+    color: #008AFC;
+}
+
+::ng-deep .mat-primary .mat-pseudo-checkbox-checked, .mat-primary .mat-pseudo-checkbox-indeterminate {
+    background: #008AFC;
+}
+#cancelButton{
+    margin-right: 8px;
+}

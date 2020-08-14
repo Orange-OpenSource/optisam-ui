@@ -8,9 +8,10 @@ import { RequiredJSONFormat } from './../../equipmenttypemanagement/dialogs/mode
 import { Component, OnInit, Inject } from '@angular/core';
 import { FormGroup} from '@angular/forms';
 import { EquipmentTypeManagementService } from 'src/app/core/services/equipmenttypemanagement.service';
-import {MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
+import {MAT_DIALOG_DATA, MatDialogRef, MatDialog } from '@angular/material';
 import { AddComponent } from '../../equipmenttypemanagement/dialogs/add/add.component';
 import { strictEqual } from 'assert';
+import { MetricService } from 'src/app/core/services/metric.service';
 @Component({
   selector: 'app-metric-creation',
   templateUrl: './metric-creation.component.html',
@@ -55,6 +56,7 @@ export class MetricCreationComponent implements OnInit {
   factorId: String;
   startEquId: String;
   baseEquId: String;
+  equType: String;
   aggEquiId: String;
   value: String;
   endEquId: String;
@@ -65,11 +67,18 @@ export class MetricCreationComponent implements OnInit {
   href;
   type_id;
   metricTypData;
-
-
+  number_of_users: Number;
+  equipID: any;
+  attrName: String;
+  attrValue: any;
+  attrDataType: any;
+  metricData: any;
+  coefficient:any;
 
   constructor(public dialogRef: MatDialogRef<AddComponent>,
     public equipmentTypeService: EquipmentTypeManagementService,
+    private metricService: MetricService,
+    public dialog: MatDialog,
     @Inject(MAT_DIALOG_DATA) public data: RequiredJSONFormat) { }
 
   ngOnInit() {
@@ -78,12 +87,12 @@ export class MetricCreationComponent implements OnInit {
     this.getMetricType();
   }
   getMetricType() {
-    this.equipmentTypeService.getMetricType().subscribe(res => {
+    this.metricService.getMetricType().subscribe(res => {
       this.metricType = res.types;
     });
   }
   getMetricList() {
-    this.equipmentTypeService.getMetricList().subscribe(res => {
+    this.metricService.getMetricList().subscribe(res => {
       this.metricList = res.metrices;
     });
   }
@@ -112,6 +121,10 @@ export class MetricCreationComponent implements OnInit {
       this.cpuArr = [];
       this.coreFact = [];
       this.coreId = data.ID;
+      this.cpuId = null;
+      this.cpuAtrri = '';
+      this.factorId = null;
+      this.coreFacAttri = '';
       for (let i = 0; i <= this.coreArr.length - 1; i++) {
         if (this.coreArr[i].name !== data.name) {
           this.cpuArr.push(this.coreArr[i]);
@@ -125,6 +138,8 @@ export class MetricCreationComponent implements OnInit {
     if (this.cpuAtrri !== $event.source.value) {
       this.coreFact = [];
       this.cpuId = data.ID;
+      this.factorId = null;
+      this.coreFacAttri = '';
       for (let i = 0; i <= this.cpuArr.length - 1; i++) {
         if (this.cpuArr[i].name !== data.name) {
           this.coreFact.push(this.cpuArr[i]);
@@ -146,16 +161,18 @@ export class MetricCreationComponent implements OnInit {
     if (this.refEqui !== $event.source.value) {
       this.reqAttri = false;
       this.baseEquId = data.ID;
+      this.equType = data.type;
       this.coreArr = [];
       this.cpuArr = [];
       this.coreFact = [];
       let count = 0;
+      this.attributeArr=[];
       for (let i = 0; i <= data.attributes.length - 1; i++) {
         if (data.attributes[i].data_type === 'FLOAT' || data.attributes[i].data_type === 'INT') {
           count++;
           this.coreArr.push(data.attributes[i]);
-          this.attributeArr.push(data.attributes[i]);
         }
+        this.attributeArr.push(data.attributes[i]);
       }
       if (count >= 3) {
         this.reqAttri = false;
@@ -177,11 +194,9 @@ export class MetricCreationComponent implements OnInit {
       }
       this.getValididty();
     }
-    console.log('Arraay', this.coreArr);
   }
   onChangeLastEqui($event, data) {
     if (this.lastEquiVal !== $event.source.value) {
-      //   this.lastEquiArr.push(data);
       this.endEquId = data.ID;
       this.getValididty();
     }
@@ -207,21 +222,17 @@ export class MetricCreationComponent implements OnInit {
   }
   onChangeMetricType($event, data) {
     if (this.metricTypRe !== $event.source.value) {
-
-      console.log('metricTypRe-----', this.metricTypRe);
-      console.log('$event.source.value-----', $event.source.value);
     this.metricTypData = data;
     this.typeDescription = null;
     this.value = null;
     this.value = $event.source.value;
+    this.number_of_users = null;
+    this.coefficient = null;
     for (let i = 0; i <= this.metricType.length - 1; i++) {
       if (this.metricType[i].name === this.value) {
-       // this.typeDescription = this.metricType[i].description;
-       this.typeDescription = 'Number of processor licenses required = CPU nb x Core (per CPU) nb x CoreFactor';
+       this.typeDescription = this.metricType[i].description;
         this.href = this.metricType[i].href;
         this.type_id = this.metricType[i].type_id;
-        console.log('href---------', this.href);
-        console.log('this.type_id---------', this.type_id);
 
         break;
       } else {
@@ -231,13 +242,25 @@ export class MetricCreationComponent implements OnInit {
     }
   }
   }
+
+  onChangeAttr(data) {
+    this.attrValue = null;
+    this.attrDataType = data.data_type;
+  }
+
+  setAttrVal() {
+    console.log(this.attrValue);
+  }
   search($event) {
     const q = $event.target.value;
     this.searchTypeEvent = $event;
     this.TypeNameMsg = false;
     this.metricTypeName = $event.target.value;
     for (let i = 0; i <= this.metricList.length - 1; i++) {
-      this.typeArr[i] = this.metricList[i].name.toLowerCase();
+      if(this.metricList[i].name)
+        this.typeArr[i] = this.metricList[i].name.toLowerCase();
+      else
+        this.typeArr[i] = '';
     }
     if (this.typeArr.includes(q.trim().toLowerCase())) {
       this.TypeNameMsg = true;
@@ -247,9 +270,26 @@ export class MetricCreationComponent implements OnInit {
     this.getValididty();
   }
 
-  onSubmit() {
+  onSubmit(successMsg, errorMsg) {
     const splithref = this.href.split('/v1');
-    const metricData = {
+    if(splithref[splithref.length - 1] === '/metric/acs'){
+      this.metricData = {
+        'ID': '',
+        'name': this.metricTypeName.trim(),
+        'eq_type': this.equType,
+        'attribute_name': this.attrName,
+        'value': this.attrValue
+      }
+    }
+    else if(splithref[splithref.length - 1] === '/metric/inm') {
+      this.metricData = {
+        'ID': '',
+        'Name': this.metricTypeName.trim(),
+        'Coefficient': this.coefficient
+      }
+    }
+    else {
+      this.metricData = {
       'ID': '',
       'Name': this.metricTypeName.trim(),
       'num_core_attr_id': this.coreId,
@@ -259,15 +299,18 @@ export class MetricCreationComponent implements OnInit {
       'base_eq_type_id': this.baseEquId,
       'aggerateLevel_eq_type_id': this.aggEquiId,
       'end_eq_type_id': this.endEquId,
-    };
-    this.equipmentTypeService.createMetric(metricData, splithref[splithref.length - 1])
+      'number_of_users': Number(this.number_of_users || 0)
+    };}
+
+    this.metricService.createMetric(this.metricData, splithref[splithref.length - 1])
       .subscribe(res => {
-        console.log('res---------', res);
+        this.openModal(successMsg);
+      },error => {
+        console.log('An error occured.', error);
+        this.openModal(errorMsg);
       });
   }
   onFormReset() {
-    // console.log('frm reset');
-    // this.editMode=false;
     'use strict';
     this.typeName = null;
     this.startEquId = null;
@@ -279,18 +322,18 @@ export class MetricCreationComponent implements OnInit {
     this.baseEquId = null;
     this.aggEquiId = null;
     this.endEquId = null;
-    this.types = [];
+    // this.types = [];
     this.refEquArr = [];
     this.coreArr = [];
     this.cpuArr = [];
     this.coreFact = [];
     this.aggArr = [];
     this.lastEquiArr = [];
-    this.metricType = [];
+    // this.metricType = [];
     this.typeDescription = null;
-    this.getTypes();
-    this.getMetricList();
-    this.getMetricType();
+    // this.getTypes();
+    // this.getMetricList();
+    // this.getMetricType();
     this.creatBtnVis = true;
     this.firstEqui = null;
     this.metricTypRe = null;
@@ -305,36 +348,56 @@ export class MetricCreationComponent implements OnInit {
     this.searchTypeEvent.target.value = null;
     this.creatBtnVis = true;
     this.metricTypData = null;
-
-
+    this.number_of_users = null;
+    this.coefficient = null;
+    this.attrName = null;
+    this.attrValue = null;
+    this.attrDataType = null;
+    this.TypeNameMsg = false;
   }
   getValididty() {
-   // this.creatBtnVis = true;
+    // this.creatBtnVis = true;
     if ( this.type_id === 'Oracle_Processor') {
-    if (this.startEquId != null && this.coreId != null && this.factorId != null  && this.baseEquId != null
-      && this.aggEquiId != null && this.endEquId != null && this.metricTypeName != null && this.value != null &&
-      this.metricTypeName !== '' && this.firstEqui != null && this.coreFacAttri != null && this.aggreLvl != null) {
-      this.creatBtnVis = false;
-    } else {
-      this.creatBtnVis = true;
+      if (this.startEquId != null && this.coreId != null && this.factorId != null  && this.baseEquId != null
+        && this.aggEquiId != null && this.endEquId != null && this.metricTypeName != null && this.value != null &&
+        this.metricTypeName !== '' && this.firstEqui != null && this.coreFacAttri != null && this.aggreLvl != null) {
+        this.creatBtnVis = false;
+      } else {
+        if (this.type_id === 'Oracle_NUP' && (!this.number_of_users || this.number_of_users < 1)) {
+          this.creatBtnVis = false;
+        } else {
+          this.creatBtnVis = true;
+        }
+      }
+    } 
+    else if ( this.type_id === 'Attr_Counter') {
+      if(this.metricTypeName != null && this.value != null && this.metricTypeName !== '' && this.baseEquId != null && 
+        this.metricTypData != null && this.attrName !=null && this.attrValue != null && this.attrValue != '') {
+          this.creatBtnVis = false;
+        }
+      else {
+        this.creatBtnVis = true;
+      }
     }
-  } else {
-    console.log('metricTypRe', this.metricTypRe);
-    if (this.coreId != null && this.factorId != null  && this.metricTypeName != null && this.value != null
-      && this.metricTypeName !== ''   && this.coreAttri != null
-      && this.baseEquId != null && this.metricTypData != null) {
-      this.creatBtnVis = false;
-    } else {
-      this.creatBtnVis = true;
+    else if( this.type_id === 'Instance_Number') {
+      if(this.coefficient != null) { this.creatBtnVis = false }
+      else { this.creatBtnVis = true }
     }
-  }
+    else {
+      if (this.coreId != null && this.factorId != null  && this.metricTypeName != null && this.value != null
+        && this.metricTypeName !== ''   && this.coreAttri != null
+        && this.baseEquId != null && this.metricTypData != null) {
+        this.creatBtnVis = false;
+      } else {
+        this.creatBtnVis = true;
+      }
+    }
 
   }
   getTypes() {
     this.equipmentTypeService.getTypes().subscribe(
       (res: any) => {
         this.types = res.equipment_types;
-        console.log('res.equipment_types----', res.equipment_types);
       },
       error => {
         console.log('There was an error while retrieving Posts !!!' + error);
@@ -344,4 +407,35 @@ export class MetricCreationComponent implements OnInit {
     this.dialogRef.close();
   }
 
+  validateFloat(ev) {
+    return this.validatePattern(ev,'FLOAT');
+  }
+
+  validatePattern(ev: any, attrType ?: any) {
+    var regEx;
+    const type = this.attrDataType;
+    if(type) {
+      regEx = (type === 'FLOAT') ? new RegExp(/^\d*\.?\d*$/) :((type== 'INT')?new RegExp(/^\d*$/): new RegExp(/[\w]/));
+    }
+    else { regEx = new RegExp('^[0-9]*$'); }
+    const specialKeys: Array<string> = [ 'Backspace', 'Delete', 'End', 'Home' , 'Enter'];
+    if(attrType) {
+      regEx = new RegExp(/^\d*\.?\d*$/);
+    }
+    if (!regEx.test(ev.key) && specialKeys.indexOf(ev.key) === -1) {
+      return false;
+    }
+    else {
+      return true;}
+    }
+  openModal(templateRef) {
+    let dialogRef = this.dialog.open(templateRef, {
+      width: '50%',
+      disableClose: true
+    });
+  } 
+
+  ngOnDestroy() {
+    this.dialog.closeAll();
+  }
 }

@@ -30,12 +30,15 @@ export class EquipmenttypemanagementComponent implements OnInit {
   index: number;
   id: string;
   equipment_types = [];
+  _loading: Boolean;
   datasource: MatTableDataSource<{}>;
   mydatasource: MatTableDataSource<{}>;
   MyDataSource: MatTableDataSource<{}>;
   constructor(public httpClient: HttpClient,
               public dialog: MatDialog,
-              public equipmentTypeManagementService: EquipmentTypeManagementService) {}
+              public equipmentTypeManagementService: EquipmentTypeManagementService) {
+                this.dialog.afterAllClosed.subscribe(res=> this.loadData());
+              }
 
   ngOnInit() {
  this.role = localStorage.getItem('role');
@@ -48,7 +51,10 @@ export class EquipmenttypemanagementComponent implements OnInit {
 
   addNew() {
     const dialogRef = this.dialog.open(AddComponent, {
-      data: {}
+      data: {},
+      autoFocus:false,
+      maxHeight:'500px',
+      disableClose: true
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -60,12 +66,17 @@ export class EquipmenttypemanagementComponent implements OnInit {
     });
   }
 
-  startEdit( id: string, type: string, metadata_id: string,
-     metadata_source: string, parent_type: string, parent_id: string, attributes: string) {
+  startEdit(id: string, type: string, metadata_id: string,
+    metadata_source: string, parent_type: string, parent_id: string, attributes: string) {
     const dialogRef = this.dialog.open(EditComponent, {
       // width: '850px',
-      data: { id: id, type: type, metadata_id: metadata_id,
-        metadata_source: metadata_source, parent_type: parent_type, parent_id: parent_id, attributes: attributes}
+      maxHeight:'500px',
+      autoFocus:false,
+      data: {
+        id: id, type: type, metadata_id: metadata_id,
+        metadata_source: metadata_source, parent_type: parent_type, parent_id: parent_id, attributes: attributes
+      },
+      disableClose: true
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -84,7 +95,10 @@ export class EquipmenttypemanagementComponent implements OnInit {
     console.log('list data', attributes);
     const dialogRef = this.dialog.open(ListComponent, {
       width: '850px',
-      data: {name, attributes},
+      maxHeight: '500px',
+      autoFocus: false,
+      data: { name, attributes },
+      disableClose: true
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -98,47 +112,20 @@ export class EquipmenttypemanagementComponent implements OnInit {
       }
     });
   }
-  // private refreshTable() {
-  //   this.paginator._changePageSize(this.paginator.pageSize);
-  // }
 
   public loadData() {
-    // this.equipmentTypeService = new EquipmentTypeManagementService(this.httpClient);
-    // this.dataSource = new ExampleDataSource(this.equipmentTypeService);
+    this._loading = true;
     this.equipmentTypeManagementService.getAllTypes().subscribe(
-            (res: any) => {
-              this.MyDataSource = new MatTableDataSource(res.equipment_types);
-              console.log('data', this.MyDataSource);
-              // this.dataSource.sort = this.sort;
-              // this.length = res.totalRecords;
-            },
-            error => {
-              console.log('There was an error while retrieving Posts !!!' + error);
-            });
-        }
+      (res: any) => {
+        this.MyDataSource = new MatTableDataSource(res.equipment_types);
+        console.log('data', this.MyDataSource);
+        // this.dataSource.sort = this.sort;
+        // this.length = res.totalRecords;
+        this._loading = false;
+      },
+      error => {
+        this._loading = false;
+        console.log('There was an error while retrieving Posts !!!' + error);
+      });
   }
-
-// export class ExampleDataSource extends DataSource<RequiredJSONFormat> {
-
-//   renderedData: Type[] = [];
-
-//   constructor(public _equipmentTypeService: EquipmentTypeManagementService) {
-//     super();
-//     // Reset to the first page when the user changes the filter.
-//   }
-
-//   /** Connect function called by the table to retrieve one stream containing the data to render. */
-//   connect(): Observable<RequiredJSONFormat[]> {
-//     const displayDataChanges = [
-//       this._equipmentTypeService.dataChange,
-//     ];
-
-//     this._equipmentTypeService.getAllTypes();
-//     return merge(...displayDataChanges).pipe(map( () => {
-//         this.renderedData = this._equipmentTypeService.data.equipment_types;
-//         return this.renderedData;
-//       }
-//     ));
-//   }
-//   disconnect() {}
-// }
+}

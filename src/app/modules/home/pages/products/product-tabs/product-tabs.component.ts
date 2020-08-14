@@ -15,7 +15,7 @@ import { Router } from '@angular/router';
 export class ProductTabsComponent implements OnInit {
   tabMenus = [
     { title: 'Individual', link: '/optisam/pr/products'},
-    { title: 'Aggregations', link: '/optisam/pr/products/aggregaions'}
+    { title: 'Aggregations', link: '/optisam/pr/products/aggregations'}
   ];
   activeLink = this.tabMenus[0].link;
   constructor( private router: Router) {

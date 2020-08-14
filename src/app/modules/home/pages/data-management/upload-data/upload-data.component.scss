@@ -1,20 +1,13 @@
 
   .mat-card{
-    width: 500px !important;
-    box-sizing: border-box;
-    margin: 50px auto 8px auto;
-    padding: 30px;
-  text-transform: capitalize;
+    border:none !important;
   }
-//   .mat-card-content{
-//     margin-left: 110px;
-//   }
-.mat-card-title{
-  margin-left: 110px;
+.mat-card-header {
+  display: flex;
+  justify-content: center;
 }
-.mat-card-header .mat-card-title {
+.mat-card-title {
   font-size: 32px;
-  margin-left: 83px;
 }
 .mat-raised-button {
   box-sizing: initial;
@@ -26,7 +19,6 @@
   margin-bottom: 0px;
 }
 
-
 .inputfile {
 	width: 0.1px;
 	height: 0.1px;
@@ -35,7 +27,16 @@
 	position: absolute;
 	z-index: -1;
 }
-
+.browselabel {
+  cursor: pointer;
+  margin-top: 10px !important;
+  height: 44px;
+  width: 100%;
+  background-color: #008AFC !important;
+  display: flex !important;
+  justify-content: center;
+  align-items: center
+}
 .inputfile + label {
     color: white;
     background-color: #dc3545;
@@ -53,9 +54,9 @@
 .inputfile + label:hover {
     background-color: #c82333;
 }
-.inputfile + label {
-	cursor: pointer; /* "hand" cursor */
-}
+// .inputfile + label {
+// 	cursor: pointer; /* "hand" cursor */
+// }
 
 .browselabel{
     margin: 0;
@@ -67,9 +68,26 @@
     background-color: #F5F5F5;
 }
 .filename {
-    margin-left: 8px;
+  padding: unset;
+  display: flex;
+  align-items: center;
+  margin: 3px 0px;
 }
 .fileerror{color: #dc3545; font-style: italic;}
 .spinner-border-sm{
   height: 1rem !important;
 }
+
+#selectedFiles {
+  margin-top: 16px;
+  border: solid 1px #dee2e6;
+  padding: 12px 16px;
+  display: grid;
+}
+
+#uploadButton {
+  display: flex;
+  align-items: center;
+}
+
+.right-btn {text-align: right; padding: unset;}

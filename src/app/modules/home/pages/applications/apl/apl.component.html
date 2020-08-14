@@ -4,7 +4,7 @@
   <div class="container-fluid page-content-header">
     <div class="row">
       <div class="col-md-9 page-heading">
-        <h4>{{'List of Inventoried Applications'|translate}} </h4>
+        {{'List of Inventoried Applications'|translate}}
       </div>
       <div class="col-md-3 search-div">
         <app-advance-search [advanceSearchModel]="advanceSearchModel" (advFilterEvent)="advSearchTrigger($event)"></app-advance-search>       
@@ -15,44 +15,43 @@
   <mat-card-content>
     <div class="mat-elevation-z8">
 
-      <mat-table [dataSource]="MyDataSource" matSort (matSortChange)="sortData($event)">
+      <mat-table id="applications-table" [dataSource]="MyDataSource" matSort (matSortChange)="sortData($event)">
         <ng-container matColumnDef="name">
           <mat-header-cell *matHeaderCellDef mat-sort-header="name"> {{'Application name' | translate}}
           </mat-header-cell>
           <mat-cell *matCellDef="let product"> {{product.name}} </mat-cell>
         </ng-container>
 
-        <ng-container matColumnDef="application_owner">
-          <mat-header-cell *matHeaderCellDef mat-sort-header="application_owner">{{'Owner' | translate}}
+        <ng-container matColumnDef="owner">
+          <mat-header-cell *matHeaderCellDef mat-sort-header="owner">{{'Owner' | translate}}
           </mat-header-cell>
-          <mat-cell *matCellDef="let product">{{product.application_owner}}
+          <mat-cell *matCellDef="let product">{{product.owner}}
           </mat-cell>
         </ng-container>
 
-        <ng-container matColumnDef="numofProducts">
-          <mat-header-cell *matHeaderCellDef mat-sort-header="numofProducts">{{'Number of products'| translate}}
+        <ng-container matColumnDef="num_of_products">
+          <mat-header-cell *matHeaderCellDef mat-sort-header="num_of_products">{{'Product Count'| translate}}
           </mat-header-cell>
           <mat-cell *matCellDef="let product">
-            <!-- <button mat-icon-button color="primary" (click)="openDialog(product.swidTag,product.name)"> -->
-            <a mat-icon-button color="primary" (click)="productDetails(product.name,product.applicationId)">
-              {{product.numofProducts}} </a>
-            <a fxFlexFill class="mat-row-link"></a>
+            <a class="mat-button-link" *ngIf="product.num_of_products" (click)="productDetails(product.name,product.application_id)">
+              {{product.num_of_products}} </a>
+            <span *ngIf="!product.num_of_products">0</span>
           </mat-cell>
         </ng-container>
 
-        <ng-container matColumnDef="numOfInstances">
-          <mat-header-cell *matHeaderCellDef mat-sort-header="numOfInstances">{{'Number of instances' | translate}}
+        <ng-container matColumnDef="num_of_instances">
+          <mat-header-cell *matHeaderCellDef mat-sort-header="num_of_instances">{{'Instance Count' | translate}}
           </mat-header-cell>
           <mat-cell *matCellDef="let product">
             <!-- <a mat-icon-button color="primary"> -->
-              {{product.numOfInstances}} 
+              {{product.num_of_instances||0}} 
             <!-- </a> -->
             <!-- <a fxFlexFill class="mat-row-link"></a> -->
           </mat-cell>
         </ng-container>
 
-        <ng-container matColumnDef="numofEquipment">
-          <mat-header-cell *matHeaderCellDef mat-sort-header>{{'Number of equipment'| translate}}</mat-header-cell>
+        <ng-container matColumnDef="num_of_equipment">
+          <mat-header-cell *matHeaderCellDef>{{'Equipment Count'| translate}}</mat-header-cell>
           <mat-cell *matCellDef="let product">
             <!-- <a mat-icon-button color="primary"> -->
               {{0}} 
@@ -61,17 +60,17 @@
           </mat-cell>
         </ng-container>
 
-        <ng-container matColumnDef="totalCost">
-          <mat-header-cell *matHeaderCellDef mat-sort-header>{{'Total cost(€)'|translate}}</mat-header-cell>
+        <ng-container matColumnDef="total_cost">
+          <mat-header-cell *matHeaderCellDef>{{'Total cost(€)'|translate}}</mat-header-cell>
           <mat-cell *matCellDef="let product"> {{0}}
           </mat-cell>
         </ng-container>
 
 
-        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
         <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
       </mat-table>
-      <!-- <app-loading-spinner *ngIf="_loading"></app-loading-spinner> -->
+      <app-loading-spinner *ngIf="_loading"></app-loading-spinner>
       <!-- <mat-paginator #paginator [pageSize]="7" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons> -->
       <mat-paginator [length]="length" [pageSize]="page_size" [pageSizeOptions]="[10,20,30,50]"
         (page)="pageEvent = getPaginatorData($event)" showFirstLastButtons>

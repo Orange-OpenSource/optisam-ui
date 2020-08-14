@@ -1,3 +1,7 @@
+.mat-table {
+    max-height: 70vh;
+    overflow-y: auto;
+}
 .no-data{
     padding: 20px;
     font-size: 16px;
@@ -7,3 +11,16 @@
     margin-top: 6px;
     text-decoration: none;
 }
+.action-a{
+    color: #1a084c;
+}
+.action-icon{
+    cursor: pointer;
+    color: #008AFC;
+    height: 20px;
+    width: 20px;
+    font-size: 20px;
+  }
+    .dlt{
+        margin-left: 10px;
+    }

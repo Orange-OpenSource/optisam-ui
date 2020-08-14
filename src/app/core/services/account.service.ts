@@ -27,18 +27,28 @@ export class AccountService {
     const emailId = localStorage.getItem('email');
     const param = { 'locale': res};
     const body = JSON.stringify(param);
-    return this.http
-        .patch(this.apiAccount + '/accounts/' + emailId, body);
+    const url = this.apiAccount + '/accounts/' + emailId;
+    return this.http.patch(url, body);
   }
-  getUpdatedLang (): Observable<any> {
-    this.token = localStorage.getItem('access_token');
-    this.lang = localStorage.getItem('language');
-    const emailId = localStorage.getItem('email');
-     return this.http.get(this.apiAccount + '/accounts/' + emailId)
-     .pipe(
-       (value => {
-         return value;
-       }),
-     );
+
+  getUserInfo(email): Observable<any> {
+    const url = this.apiAccount + '/accounts/' + email; 
+    return this.http.get(url);
    }
+
+   updateProfileDetails(body, userID) {
+     const url = this.apiAccount + '/accounts/' + userID;
+     return this.http.put(url, body);
+   }
+
+  getScopesList(): Observable<any> {
+    const url = this.apiAccount + '/scopes';
+    return this.http.get(url);
+
+  }
+
+  createScope(body) {
+    const url = this.apiAccount + '/scopes';
+    return this.http.post(url, body);
+  }
 }

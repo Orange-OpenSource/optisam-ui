@@ -1,12 +1,17 @@
 .spinner-div{
     text-align: center;
 }
-    mat-spinner {
-        margin: 0 auto;
-        width: 40px !important;
-        height: 40px !important;
-    }
-    mat-spinner ::ng-deep svg {
-        width: 40px !important;
-        height: 40px !important;
-    }
+mat-spinner {
+    margin: 0 auto;
+    margin-top: 5px;
+    color:primary;
+    width: 40px !important;
+    height: 40px !important;
+}
+mat-spinner ::ng-deep svg {
+    width: 40px !important;
+    height: 40px !important;
+}
+::ng-deep .mat-progress-spinner circle, .mat-spinner circle {
+    stroke: #008AFC;
+}

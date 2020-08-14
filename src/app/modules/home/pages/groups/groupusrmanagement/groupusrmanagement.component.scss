@@ -2,8 +2,28 @@
 table {
   width: 100%;
 }
-
+.mat-card {
+  border: none !important;
+}
+.mat-card-header {
+  margin-left: -16px !important;
+  margin-top: -42px;
+  margin-right: 32px !important;
+}
 .mat-form-field {
   font-size: 14px;
   width: 100%;
+}
+
+.closeDialog {
+  display: flex;
+  justify-content: flex-end;
+}
+::ng-deep .mat-checkbox-checked.mat-accent .mat-checkbox-ripple .mat-ripple-element {
+  opacity: 0.03 !important;
+  background-color: #008AFC!important;
+}
+
+::ng-deep .mat-checkbox-checked.mat-accent .mat-checkbox-background,.mat-checkbox-indeterminate.mat-accent .mat-checkbox-background {
+  background-color: #008AFC;
 }

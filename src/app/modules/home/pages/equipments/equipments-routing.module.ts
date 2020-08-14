@@ -12,8 +12,9 @@ import { EquipmentsListComponent } from './equipments-list/equipments-list.compo
 
 const routes: Routes = [
   {
-    path: '', component: EquipmentsComponent},
-      { path: 'equipmentsList', component: EquipmentsListComponent },
+    path: '', component: EquipmentsComponent
+  },
+  { path: 'equipmentsList', component: EquipmentsListComponent }
 ];
 @NgModule({
   imports: [RouterModule.forChild(routes)],

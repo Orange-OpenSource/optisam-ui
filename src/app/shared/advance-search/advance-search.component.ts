@@ -66,8 +66,8 @@ export class AdvanceSearchComponent implements OnInit, OnDestroy {
     this.applyFilter();
   }
 
-  pressEnter(toggle: boolean) {
-    if (this.filterFields[this.model.primary] && this.filterFields[this.model.primary].length > 2) {
+  pressEnter(filteredField?:any,toggle?: boolean) {
+    if ( (this.filterFields[this.model.primary] && this.filterFields[this.model.primary].length>2)||(filteredField && filteredField.length > 2)) {
       this.applyFilter();
       if (toggle) {
         this.toggleAdvanceSearch = false;

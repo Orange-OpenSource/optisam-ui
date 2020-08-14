@@ -15,17 +15,20 @@ import { map, catchError } from 'rxjs/operators';
 })
 export class EquipmentsService {
   apiUrl = environment.API_URL;
+  apiConfigUrl = environment.API_CONFIG_URL;
+  apiEquipUrl = environment.API_EQUIPMENT_URL;
   token = localStorage.getItem('access_token');
   lang = localStorage.getItem('language');
+  
   public errorMsg: string;
   constructor(private http: HttpClient) { }
 
 getMetaData(): Observable<Equipments[]> {
-  const url = this.apiUrl + '/equipments/metadata';
+  const url = this.apiEquipUrl + '/equipments/metadata';
   return this.http.get<Equipments[]>(url);
 }
 getTypes(): Observable<Equipments[]> {
-  const url = this.apiUrl + '/equipments/types';
+  const url = this.apiEquipUrl + '/equipments/types';
   return this.http.get<Equipments[]>(url);
 }
 getDirectGroups(): Observable<any> {
@@ -37,6 +40,32 @@ postAccount(): Observable<any> {
   //  const url = this.apiUrl + 'admin/accounts';
   const url = 'http://localhost:3002/accounts';
   return this.http.get<any>(url);
+}
+
+getEquipmentTypeWithIdentifier(equipmentID: string, identifier: string, query: string) {
+  const url = this.apiEquipUrl + '/equipments/' + equipmentID + '/' + identifier + query;
+  return this.http.get<any>(url);
+}
+
+getEquipmentTypeMetrics(type: string) {
+  const url = this.apiEquipUrl + '/equipments/types/' + type + '/metric';
+  return this.http.get<any>(url);
+}
+
+getEquipmentTypesMetadata(type: string) {
+  const url = this.apiConfigUrl +'/config/metadata/' + type;
+  return this.http.get<any>(url);
+}
+
+getEquipmentTypesAttributes(configID: any, attrID: any) {
+  const url = this.apiConfigUrl +'/config/' + configID + '/' + attrID ;
+  return this.http.get<any>(url);
+}
+
+equipmentHardwareSimulation(body: any) {
+  // const url = this.apiUrl + '/equipments/types/' + body.equip_type + '/' + body.equip_id + '/metric/types/' + body.metric_type + '/' + body.metric_name;
+  const url = this.apiConfigUrl + '/simulation/hardware';
+  return this.http.post<any>(url, body);
 }
 // createEquipments(equipmentData): Observable<any> {
 //   const headers = new HttpHeaders({ 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + this.token });

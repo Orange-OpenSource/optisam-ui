@@ -1,3 +1,10 @@
+.mat-card-content {
+  width: 50% !important;
+  border: 1px solid #D6D6D6;
+  min-height: 400px;
+  padding: 16px;
+}
+
 .Imgclass{
   height: 20px;
   margin-right: 16px;
@@ -14,4 +21,14 @@
 }
 .example-tree-progress-bar {
   margin-left: 30px;
+  max-width: 20%;
+}
+
+.mat-icon {
+  color: black;
+  cursor: pointer;
+}
+
+#deleteBtn, #addBtn, #editBtn {
+  margin: 0 5px !important;
 }

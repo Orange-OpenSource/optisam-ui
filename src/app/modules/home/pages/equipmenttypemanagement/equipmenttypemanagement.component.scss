@@ -1,30 +1,17 @@
-/* mat-header-cell, mat-header-row, .mat-header-cell-def{
-    // min-height:14px;
-    // font-family:Verdana,sans-serif;:Verdana,sans-serif;
-    font-weight:bold;
-    // font-size:13px;
-    color: #1a084c;
-    // margin-bottom:5px;
-     top: 0;
-    position: sticky;
-    z-index: 1;
-    flex-wrap: wrap;
-    // padding: 8px 0;
-    background: #D6D6D6;
-} */
-
-// mat-header-cell, mat-header-row, .mat-header-cell-def{
-//   padding: 8px 0;
-// }
-
-// mat-header-row{
-//   padding: 8px;
-// }
-
 .container {
   margin-top: 40px !important;
 }
-
-
+.row {
+  margin: 0px !important;
+  justify-content: space-between;
+}
+.mat-icon-button.mat-accent {
+  color: #008AFC;
+}
+.no-data{
+  padding: 20px;
+  font-size: 16px;
+  text-align: center;
+}
 
 

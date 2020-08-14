@@ -32,7 +32,7 @@ export class AplInstanceComponent implements OnInit {
   prodName: any;
   appName: any;
 
-  displayedColumns: string[] = ['name',  'environment',  'numofProducts' , 'numofEquipments', ];
+  displayedColumns: string[] = ['instance_id',  'environment',  'num_of_products' , 'num_of_equipments', ];
   _loading: Boolean;
   constructor(private productservice: ProductService, private router: Router, private route: ActivatedRoute) { }
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -71,12 +71,12 @@ export class AplInstanceComponent implements OnInit {
     this.sort_order = localStorage.getItem( 'instance_direction');
     this.sort_by = localStorage.getItem( 'instance_active');
     if (this.sort_by === '' || this.sort_by === null) {
-      this.sort_by = 'name';
+      this.sort_by = 'instance_id';
     }
     if (this.sort_order === '' || this.sort_order === null) {
       this.sort_order = 'asc';
     }
-    this.productservice.getInstancesSort(swidTag, app_id, page_num + 1, this.pageSize,
+    this.productservice.getInstancesSort(swidTag, app_id, this.pageSize, page_num + 1,
       this.sort_by, this.sort_order).subscribe(
         (res: any) => {
           this.MyDataSource = new MatTableDataSource(res.products);

@@ -1,17 +1,14 @@
 <div *ngIf="data.type == 'edit'">
-<h3>{{fullyQualifyName}}</h3>
+<span class="page-heading">{{fullyQualifyName}}</span>
 <div style="position: center;" *ngIf="showMsg">
     <div class="col-xs-12">
       <p class="alert alert-warning">
-        <strong>Group Name Updated Succesfully!!!</strong>
+        <strong>{{'Group Name Updated Succesfully'|translate}}!!!</strong>
       </p>
     </div>
   </div>
     <mat-form-field class="example-full-width">
-      <input matInput placeholder="Group Name"  [(ngModel)]="editName">
-   <!--    <mat-error *ngIf="emailFormControl.hasError('email') && !emailFormControl.hasError('required')">
-        Please enter a valid email address
-      </mat-error>-->
+      <input #name matInput placeholder="{{'Group Name'|translate}}" (keyup)="validateName(name.value)" [(ngModel)]="editName">
 
     </mat-form-field>
     <span style="color:red"  *ngIf="nameRequired">
@@ -19,15 +16,38 @@
     </span>
     <div class="row cta-button-bx" >
         <div class="col-md-12">
-          <button style="margin: 10px;" mat-raised-button color="primary" [mat-dialog-close]="1">{{'CANCEL'|translate}}</button>
-          <button type="button" style="margin: 10px;" mat-raised-button color="primary"
-          (click)="saveEditName(editName)">{{'Save'|translate}}</button>
+          <button id="cancelButton" class="btn-four" mat-raised-button [mat-dialog-close]="1">{{'Cancel'|translate}}</button>
+          <button id="resetButton" class="btn-three" [disabled]="cannotUpdateFlag" mat-raised-button (click)="setData()">{{'Reset'|translate}}</button>
+          <button id="saveButton" [disabled]="cannotUpdateFlag" mat-raised-button class="btn-two"
+          (click)="saveEditName(editName, succesGroupUpdateDialog, errorGroupUpdateDialog)">{{'Save'|translate}}</button>
           </div>
     </div>
       </div>
-      <div *ngIf="data.type == 'scope'">
-          <div *ngFor="let x of data.node.scopes; let colIndex = index">{{x}}<span *ngIf="((data.node.scopes.length - 1) != colIndex)">,</span></div>
+<div *ngIf="data.type == 'scope'">
+  <div class="closeDialog"><button [mat-dialog-close]="true" mat-icon-button><mat-icon>close</mat-icon></button></div>
+  <div class="page-heading">{{'Scopes'|translate}}</div>
+  <div class="scopesList">
+    <span *ngFor="let x of data.node.scopes; let colIndex = index">
+      {{x}}
+      <span *ngIf="((data.node.scopes.length - 1) != colIndex)">, </span>
+    </span> 
+  </div>
+       
+</div>
 
-      </div>
-
-
+<ng-template #succesGroupUpdateDialog>
+  <mat-dialog-content>
+    <p>{{'UPDATE_GROUP_SUCCESS'|translate}}</p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="center">
+    <button [mat-dialog-close]="true" mat-button cdkFocusInitial>{{'OK'|translate}}</button>
+  </mat-dialog-actions>
+</ng-template>
+<ng-template #errorGroupUpdateDialog>
+  <mat-dialog-content>
+    <p>{{'UPDATE_GROUP_ERROR'|translate}}</p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="center">
+    <button [mat-dialog-close]="true" mat-button cdkFocusInitial>{{'OK'|translate}}</button>
+  </mat-dialog-actions>
+</ng-template>

@@ -10,14 +10,26 @@ import { DataManagementComponent } from './data-management.component';
 import { UploadDataComponent } from './upload-data/upload-data.component';
 import { AuthGuard } from 'src/app/core/guards/auth.guard';
 import { Role } from 'src/app/utils/roles.config';
+import { ListDataComponent } from './list-data/list-data.component';
+import { ListMetadataComponent } from './list-metadata/list-metadata.component';
 
 const routes: Routes = [
   {
     path: '', component: DataManagementComponent,
     children: [
-                { path: 'upload-data', component: UploadDataComponent, canActivate: [AuthGuard],
-                data: { roles: [Role.SuperAdmin, Role.Admin] } }
-              ]
+      {
+        path: 'data', component: ListDataComponent, canActivate: [AuthGuard],
+        data: { roles: [Role.SuperAdmin.valueOf(), Role.Admin.valueOf()] }
+      },
+      {
+        path: 'metadata', component: ListMetadataComponent, canActivate: [AuthGuard],
+        data: { roles: [Role.SuperAdmin.valueOf(), Role.Admin.valueOf()] }
+      },
+      {
+        path: 'upload-data', component: UploadDataComponent, canActivate: [AuthGuard],
+        data: { roles: [Role.SuperAdmin.valueOf(), Role.Admin.valueOf()] }
+      }
+    ]
   }
 ];
 

@@ -15,7 +15,7 @@ const routes: Routes = [
   {
     path: 'create-aggregation', component: CreateAggregationComponent,
     canActivate: [AuthGuard],
-    data: { roles: [Role.SuperAdmin, Role.Admin] }
+    data: { roles: [Role.SuperAdmin.valueOf(), Role.Admin.valueOf()] }
   },
   { path: 'list-aggregation', component: ListAggregationComponent }
 ];

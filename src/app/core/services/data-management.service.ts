@@ -16,9 +16,18 @@ export class DataManagementService {
   apiUrl = environment.API_URL;
 
   constructor(private http: HttpClient) { }
+  
+  getUploadedData(query):Observable<any> {
+    const url = environment.API_DPS_URL + '/uploads/data' + query;
+    return this.http.get(url);
+  }
+  getUploadedMetadata(query):Observable<any> {
+    const url = environment.API_DPS_URL + '/uploads/metadata' + query;
+    return this.http.get(url);
+  }
 
-  uploadDataManagementFile(data: any): Observable<any> {
-    const url = environment.API_IMPORT_URL + '/import';
+  uploadDataManagementFiles(data: any, type): Observable<any> {
+    const url = environment.API_IMPORT_URL + '/import/' + type;
     return this.http.post(url, data, {responseType: 'text'});
   }
 }

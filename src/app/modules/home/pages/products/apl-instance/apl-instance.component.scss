@@ -1,55 +1,7 @@
-
 .mat-table {
-  .mat-row, .mat-header-row, .mat-footer-row {
-    padding-left: 24px;
-    padding-right: 24px;
-  }
+  max-height: 70vh;
+  overflow-y: auto;
 }
-mat-menu-item {
-  border: solid 1px #d1d8de !important;
-  width:260px !important;
-  height:41px !important;
-  text-align: center !important;
-  .mat-menu-item-checked{
-    background-color: #ffffff !important;
-    font-weight: bold !important;
-  }
-  .mat-menu-item-toggle{
-    width:50% !important;
-    font-size: 15px !important;
-  }
+.page-content-header {  
+  margin-left: -30px !important;
 }
-
-mat-header-cell, mat-header-row, .mat-header-cell-def{
-    background:#D6D6D6;
-    // min-height:14px;
-    // font-family:Verdana,sans-serif;:Verdana,sans-serif;
-    font-weight:bold;
-    // font-size:13px;
-    color: #1a084c;
-    // margin-bottom:5px;
-     top: 0;
-    position: sticky;
-    z-index: 1;
-    flex-wrap: wrap;
-}
-
-.mat-form-field {
-  width: 100%;
-}
-
-
-mat-row{
-    min-height:20px;
-    // font-family:Verdana,sans-serif;:Verdana,sans-serif;
-    // font-size:11px;
-    color: #1a084c;
-    }
-mat-cell{
-    // height:20px;
-    // font-family:Verdana,sans-serif;:Verdana,sans-serif;
-    // font-size:11px;
-    color: #1a084c;
-}
-
-

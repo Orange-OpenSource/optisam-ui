@@ -10,7 +10,7 @@ import { EquipmentsService } from 'src/app/core/services/equipments.service';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { Router } from '@angular/router';
 import { EquipmentTypeManagementService } from 'src/app/core/services/equipmenttypemanagement.service';
-import { MatSort, MatPaginator, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
+import { MatSort, MatPaginator, MAT_DIALOG_DATA, MatDialogRef, MatDialog } from '@angular/material';
 import { RequiredJSONFormat } from '../model';
 
 @Component({
@@ -48,19 +48,19 @@ export class AddComponent implements OnInit {
 
   constructor(public dialogRef: MatDialogRef<AddComponent>,
     public equipmentTypeService: EquipmentTypeManagementService,
+    public dialog: MatDialog,
     @Inject(MAT_DIALOG_DATA) public data: RequiredJSONFormat) { }
 
   ngOnInit() {
     this.getAttributes();
     this.getTypes();
-    const attributeArr = new FormArray([]);
     this.createForm = new FormGroup({
       'type': new FormControl('', [Validators.required, Validators.minLength(1),
       Validators.pattern(/^[-_,A-Za-z0-9]+$/)]),
       'from': new FormControl('', [Validators.required]),
       'root': new FormControl(''),
       // 'parentI': new FormControl('', [Validators.required]),
-      'attribute': attributeArr
+      'attribute': new FormArray([])
     });
   }
   get type() {
@@ -73,6 +73,7 @@ export class AddComponent implements OnInit {
     if (event.checked === true) {
       this.selected[i] = 'STRING';
       this.primaryKeyValue[i] = true;
+      this.primaryKeys[i] = true;
       this.prntChckStats = true;
     } else {
       this.selected[i] = '';
@@ -147,6 +148,8 @@ export class AddComponent implements OnInit {
     }
     if (this.prntChckStats === true) {
       this.parentIStatus[this.len] = true;
+    } else {
+      this.parentIStatus[this.len] = false;
     }
 
     (<FormArray>this.createForm.get('attribute')).push(
@@ -180,7 +183,7 @@ export class AddComponent implements OnInit {
     (<FormArray>this.createForm.get('attribute')).removeAt(index);
   }
 
-  onSubmit() {
+  onSubmit(successMsg,errorMsg) {
     const form_data = this.createForm.value;
     for (let i = 0; i <= this.selected.length; i++) {
       if (this.selected[i] === 'STRING') {
@@ -192,26 +195,29 @@ export class AddComponent implements OnInit {
     attributeData.type = form_data.type;
     attributeData.metadata_id = form_data.from;
     attributeData.attributes = form_data.attribute;
-    // console.log('testing submit data', attributeData);
     if (form_data) {
-      this.equipmentTypeService.createEquipments(attributeData)
+      this.equipmentTypeService.createEquipments(attributeData)  
         .subscribe(res => {
-          // console.log('Res ==>', res);
           this.errorMsg = '';
           this.createForm.reset();
           this.getAttributes();
           this.getTypes();
-          this.dialogRef.close();
+          this.openModal(successMsg);
         }, err => {
-          // console.log('Error ==>', err);
           this.errorMsg = (err.error && err.rooro.message) ? err.error.message : 'Backend validation failed';
+          this.openModal(errorMsg);
         });
     }
   }
   onFormReset() {
-    // console.log('frm reset');
     this.createForm.reset();
-    // this.editMode=false;
+    this.checkStatus = false;
+    this.prntChckStats = false;
+    this.primaryKeys = [];
+    const control = <FormArray>this.createForm.get('attribute');
+        for(let i = control.length-1; i >= 0; i--) {
+            control.removeAt(i);
+    }
   }
   getTypes() {
     this.equipmentTypeService.getTypes().subscribe(
@@ -227,24 +233,17 @@ export class AddComponent implements OnInit {
     this.equipmentTypeService.getMetaData().subscribe(
       (res: any) => {
         this.metaData = res.metadata;
-        //  this.metaData.ID = this.metadata_id;
-        // console.log('aagya', this.metaData[0].attributes);
       },
       error => {
         console.log('There was an error while retrieving Posts !!!' + error);
       });
   }
   filterAttributes(ID) {
-    console.log('test------', ID);
     if (ID.isUserInput) {
       this.selectedAttributes = this.metaData.filter(x => x.ID === ID.source.value).map(x => x.attributes);
-     // console.log('the value----', this.selectedAttributes);
     }
   }
   reduceMapped_toList(type, selectedAttributes, value) {
-      // console.log('type--------', type);
-      // console.log('value--------', value);
-      // console.log('selectedAttributes--------', selectedAttributes[value]);
      for ( let  j = 0; j < selectedAttributes[value].length; j++) {
         if (selectedAttributes[value][j] === type) {
 
@@ -261,10 +260,19 @@ export class AddComponent implements OnInit {
   }
   onSelect(ID) {
     this.selectedParent = ID;
-    // console.log(this.selectedParent);
   }
   onNoClick(): void {
     this.dialogRef.close();
   }
+  
+  openModal(templateRef) {
+    let dialogRef = this.dialog.open(templateRef, {
+      width: '50%',
+      disableClose: true
+    });
+  } 
 
+  ngOnDestroy() {
+    this.dialog.closeAll();
+  }
 }

@@ -9,6 +9,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { AplDetailsComponent } from './apl-details/apl-details.component';
 import { ApplicationsComponent } from './applications.component';
 import { AplComponent } from './apl/apl.component';
+import { ProdEquiComponent } from '../products/prod-equi/prod-equi.component';
 
 
 const routes: Routes = [
@@ -16,7 +17,9 @@ const routes: Routes = [
   path: '', component: ApplicationsComponent,
 children: [
       { path: 'applications', component: AplComponent },
-      { path: 'applications/:key', component: AplDetailsComponent}
+      { path: 'applications/:key', component: AplDetailsComponent},
+      { path: 'applications/:key/:swidTag', component:ProdEquiComponent}
+      
 ]
   }
 ];

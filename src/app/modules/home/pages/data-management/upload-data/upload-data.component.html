@@ -1,41 +1,88 @@
-<div fxLayout="row" fxLayoutAlign="center center" class="login-main">
+<div fxLayout="row" fxLayoutAlign="center center">
   <mat-card class="card">
-    <div style="position: center;" *ngIf="showMsg">
-      <div class="col-xs-12">
-        <p class="alert alert-success">
-          <strong>File Uploaded Succesfully!!!</strong>
-        </p>
-      </div>
-    </div>
-    <div style="position: center;" *ngIf="showErrorMsg">
-      <div class="col-xs-12">
-        <p class="alert alert-warning">
-          <strong>Some Error Occurend! Error: {{errorMsg}}</strong>
-        </p>
-      </div>
-    </div>
     <mat-card-header>
-      <mat-card-title>Upload Data File</mat-card-title>
+      <mat-card-title class="page-heading" *ngIf="activeTab=='Data'">{{'Upload Data Files'|translate}}</mat-card-title>
+      <mat-card-title class="page-heading" *ngIf="activeTab!='Data'">{{'Upload Metadata Files'|translate}}</mat-card-title>
     </mat-card-header>
     <mat-card-content fxLayout="column">
       <form [formGroup]="uploadForm">
-        <span>Select the files to upload. File must be a zip file only.</span>
-        <div class="upload-div">
-          <!-- <mat-label>Old Password</mat-label> -->
-          <input #fileInput class="inputfile" id="file" type="file" name="files" accept="application/x-zip-compressed" (click)="fileInput.value = null" (change)="onFileSelect($event)" />
-          <label class="browselabel" for="file">Browse</label>
-          <span class="filename" *ngIf="filename"><mat-icon>insert_drive_file</mat-icon> {{filename}}</span>
+        <div *ngIf="activeTab=='Data'">
+          <mat-form-field appearance="outline">
+            <mat-label>{{'Scope' | translate}}</mat-label>
+            <mat-select id="scope" formControlName="scope" [disabled]="scopesList.length == 0" (selectionChange)="scopeSelected(scope.value)" #scope>
+              <mat-option>-- {{'Select Scope' | translate}} --</mat-option>
+              <mat-option id="scope_option_{{i}}" *ngFor="let scope of scopesList;let i = index;" [value]="scope">{{scope}}</mat-option>
+            </mat-select>
+          </mat-form-field>
         </div>
-        <span *ngIf="showFileErrorMessage" class="fileerror">* File type must be only zip</span>
+        <span id="buttonHeader">{{'Select the files to upload. Files must be in csv format only.'|translate}}</span>
+        <!-- <div class="col-md-12 upload-div"> -->
+          <div id="uploadButton">
+            <input class="inputfile" id="file" type="file" name="files" accept=".csv"  (change)="onFileSelect($event)" multiple/>
+            <label class="browselabel" for="file">{{'Browse'|translate}}</label>
+          </div>
+          <div *ngIf="selectedFiles && selectedFiles.length>0" id="selectedFiles">
+          <span *ngFor="let file of selectedFiles" class="filename col-md-6"><mat-icon>insert_drive_file</mat-icon> {{file.name}}</span>
+          </div>
+        <!-- </div> -->
         
       </form>
     </mat-card-content>
     <mat-card-actions align="center">
-      <button mat-raised-button color="primary" [disabled]="!uploadForm.valid" (click)="uploadFile()">
+      <button id="cancelButton" class="btn-four" mat-raised-button mat-dialog-close="true">{{'Cancel'|translate}}</button>
+      <button id="resetButton"  class="btn-three" mat-raised-button [disabled]="uploadForm.pristine && selectedFiles.length == 0" (click)="resetForm()">{{'Reset'|translate}}</button>
+      <button id="submitButton" class="btn-two" mat-raised-button [disabled]="!uploadForm.valid" (click)="uploadFile(successDialog, errorDialog, duplicateScopeDialog, invalidFileNameDialog)">
         <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" *ngIf="loading"></span>       
-        Submit
+        {{'Submit'|translate}}
       </button>
     </mat-card-actions>
 
   </mat-card>
 </div>
+<ng-template #successDialog>
+  <mat-dialog-content>
+    <p>{{'UPLOAD_FILE_SUCCESS'|translate}}</p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="center">
+    <button mat-button [mat-dialog-close]="true" (click)="backToList()" cdkFocusInitial>{{'OK'|translate}}</button>
+  </mat-dialog-actions>
+</ng-template>
+<ng-template #errorDialog>
+  <mat-dialog-content>
+    <p>{{'UPLOAD_FILE_ERROR'|translate}}</p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="center">
+    <button mat-button [mat-dialog-close]="true" (click)="backToList()" cdkFocusInitial>{{'OK'|translate}}</button>
+  </mat-dialog-actions>
+</ng-template>
+<ng-template #duplicateScopeDialog>
+  <mat-dialog-content>
+    <p>{{'DUPLICATE_SCOPE_ERROR'|translate}}</p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="center">
+    <button mat-button [mat-dialog-close]="true" (click)="backToList()" cdkFocusInitial>{{'OK'|translate}}</button>
+  </mat-dialog-actions>
+</ng-template>
+<ng-template #invalidFileNameDialog>
+  <mat-dialog-content>
+    <strong>{{'INVALID_FILE_NAME'|translate}}</strong>
+    <div  *ngIf="activeTab == 'Data'">
+      {{'INVALID_DATA_FILE_NAME_ERROR'|translate}}
+      <ul>
+        <li>{{'products.csv'}}</li>
+        <li>{{'products_equipments.csv'}}</li>
+        <li>{{'applications_products.csv'}}</li>
+        <li>{{'products_acquiredRights.csv'}}</li>
+        <li>{{'applications.csv'}}</li>
+        <li>{{'applications_instances.csv'}}</li>
+        <li>{{'instances_equipments.csv'}}</li>
+        <li>{{'instances_products.csv'}}</li>
+        <li>{{'equipment_[a-zA-Z]*.csv'}}</li>
+      </ul>
+    </div>
+    <p  *ngIf="activeTab != 'Data'">{{'INVALID_METADATA_FILE_NAME_ERROR'|translate}}</p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="center">
+    <button mat-button [mat-dialog-close]="true" (click)="backToList()" cdkFocusInitial>{{'OK'|translate}}</button>
+  </mat-dialog-actions>
+</ng-template>

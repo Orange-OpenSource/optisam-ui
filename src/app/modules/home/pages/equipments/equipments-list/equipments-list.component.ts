@@ -43,6 +43,8 @@ export class EquipmentsListComponent implements OnInit {
   _loading: Boolean;
   primaryKey: string;
   dynamicSearchForm: any = {};
+  activeLink: any;
+  moreRows:Boolean;
 
   advanceSearchModel: any = {
     title: '',
@@ -64,7 +66,6 @@ export class EquipmentsListComponent implements OnInit {
     this.equipmentTypeManagementService.getAllTypes().subscribe(
       (res: any) => {
         this.allType = res.equipment_types;
-        // console.log('res.equipment_types-----', res.equipment_types);
         this.MyDataSource = new MatTableDataSource(res.equipment_types);
         this.displayedColumns = [];
         const filteredData: any = this.MyDataSource.filteredData;
@@ -73,6 +74,7 @@ export class EquipmentsListComponent implements OnInit {
         for (const pdata of filteredData) {
           this.displayedColumns.push(pdata.type);
         }
+        this.activeLink = this.displayedColumns2[0].type;
         this.getEquipmentsData(this.displayedColumns2[0]);
       },
       () => {
@@ -84,8 +86,6 @@ export class EquipmentsListComponent implements OnInit {
     return testData.filteredData;
   }
   getEquipmentsData(list) {
-    // console.log('Check------', list);
-   // this.clearFilter();
     this.sharedService.triggerClearSeach();
     this._loading = true;
     this.dataSource = null;
@@ -102,31 +102,6 @@ export class EquipmentsListComponent implements OnInit {
     this.advanceSearchModel.primary = '';
     this.advanceSearchModel.title = '';
     this.advanceSearchModel.other = [];
-   // this.applyFilter();
-    /* for (const attr of list.attributes) {
-      if (attr.primary_key) {
-        this.name = attr.name;
-      }
-    }
-    console.log('Log----', list.attributes);
-    for (const filter of list.attributes) {
-      if (filter.searchable) {
-        if ( filter.name === 'HostName') {
-        this.sName.push(filter.name);
-        this.filterGroup.addControl(filter.name, new FormControl(null));
-       // this.dynamicSearchForm[name] = null;
-        }
-      }
-    }
-    for (const filter of list.attributes) {
-      if (filter.searchable) {
-        if ( filter.name !== 'HostName') {
-        this.sName.push(filter.name);
-        this.filterGroup.addControl(filter.name, new FormControl(null));
-       // this.dynamicSearchForm[name] = null;
-        }
-      }
-    } */
     for (const attr of list.attributes) {
       if (attr.searchable) {
         if (attr.primary_key) {
@@ -142,23 +117,20 @@ export class EquipmentsListComponent implements OnInit {
         this.displayedrows = [];
         const encodedEquipments = res.equipments;
         const decodedEquipments: any = atob(encodedEquipments);
+        var headerList = [];
+        for(var k in JSON.parse(decodedEquipments)[0]) {headerList.push(k);}
+        if(headerList.length >= 8) {
+          this.moreRows = true;
+        } else {
+          this.moreRows = false;
+        }
         const testData = new MatTableDataSource(decodedEquipments);
         this.dataSource = JSON.parse(this.getFilterData(testData));
-        // console.log('data sources------', this.dataSource);
         this.length = res.totalRecords;
+        this.paginator.pageIndex = 0;
+        this.paginator.pageSize = 10;
         this._loading = false;
-        /* const idValue = this.dataSource[0].ID;
-        if (this.dataSource.length > 0) {
-          delete this.dataSource[0].ID;
-          // tslint:disable-next-line:forin
-          for (const x in this.dataSource[0]) {
-            this.displayedrows.push(x);
-          }
-        }
-        this.dataSource[0].ID = idValue; */
-
         this.displayedrows = this.makeTableRows(this.dataSource);
-        // console.log('this.displayedrows.', this.displayedrows);
       });
   }
   getPaginatorData(event) {
@@ -180,18 +152,7 @@ export class EquipmentsListComponent implements OnInit {
         this.dataSource = JSON.parse(this.getFilterData(testData));
         this.length = res.totalRecords;
         this._loading = false;
-        /* const idValue = this.dataSource[0].ID;
-        if (this.dataSource.length > 0) {
-          delete this.dataSource[0].ID;
-          // tslint:disable-next-line:forin
-          for (const x in this.dataSource[0]) {
-            this.displayedrows.push(x);
-          }
-        }
-        this.dataSource[0].ID = idValue; */
-
         this.displayedrows = this.makeTableRows(this.dataSource);
-
       },
       error => {
         console.log('There was an error while retrieving Posts !!!' + error);
@@ -201,18 +162,6 @@ export class EquipmentsListComponent implements OnInit {
     this._loading = true;
     this.dataSource = null;
     const searchFilter = this.getSearchParams(this.searchFields);
-    // const searchFilter = this.getSearchParams(this.dynamicSearchForm);
-    /* let searchFilter = 'search_params=';
-    // tslint:disable-next-line:forin
-    for (const key in this.filterGroup.value) {
-      if (this.filterGroup.value[key]) {
-        if (searchFilter === 'search_params=') {
-          searchFilter += key + '=' + this.filterGroup.value[key];
-        } else {
-          searchFilter += ',' + key + '=' + this.filterGroup.value[key];
-        }
-      }
-    } */
     const sort_by = this.name;
     this.sort_order = localStorage.getItem('list_direction');
     this.sort_by = localStorage.getItem('list_active');
@@ -232,16 +181,6 @@ export class EquipmentsListComponent implements OnInit {
           this.dataSource = JSON.parse(this.getFilterData(testData));
           this.length = res.totalRecords;
           this._loading = false;
-          /* const idValue = this.dataSource[0].ID;
-          if (this.dataSource.length > 0) {
-            delete this.dataSource[0].ID;
-            // tslint:disable-next-line:forin
-            for (const x in this.dataSource[0]) {
-              this.displayedrows.push(x);
-            }
-          }
-          this.dataSource[0].ID = idValue; */
-
           this.displayedrows = this.makeTableRows(this.dataSource);
         }
       );
@@ -254,7 +193,7 @@ export class EquipmentsListComponent implements OnInit {
     localStorage.setItem('list_active', event.active);
     const searchFilter = this.getSearchParams(this.searchFields);
     this.equipmentTypeManagementService.sortEquipments(key, this.current_page_num, this.pageSize,
-      event.active, event.direction, searchFilter).subscribe(
+      event.active, event.direction, null, searchFilter).subscribe(
         (res: any) => {
           this.displayedrows = [];
           const encodedEquipments = res.equipments;
@@ -263,27 +202,22 @@ export class EquipmentsListComponent implements OnInit {
           this.dataSource = JSON.parse(this.getFilterData(testData));
           this.length = res.totalRecords;
           this._loading = false;
-          /* const idValue = this.dataSource[0].ID;
-          if (this.dataSource.length > 0) {
-            delete this.dataSource[0].ID;
-            // tslint:disable-next-line:forin
-            for (const x in this.dataSource[0]) {
-              this.displayedrows.push(x);
-            }
-            this.dataSource[0].ID = idValue;
-          } */
-
           this.displayedrows = this.makeTableRows(this.dataSource);
         },
         error => {
+          this._loading = false;
           console.log('There was an error while retrieving Posts !!!' + error);
         });
   }
-  openDialog(typeId): void {
+
+  openDialog(ele,x): void {
     const dialogRef = this.dialog.open(AttributeDetailComponent, {
       width: '1600px',
+      maxHeight: '550px',
+      disableClose: true,
       data: {
-        typeId : typeId,
+        typeId : ele.ID,
+        typeName : ele[x],
         equipName: this.equipName,
         equiId : this.equiId,
         types: this.allType
@@ -292,7 +226,6 @@ export class EquipmentsListComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
     });
   }
-
 
   clearFilter() {
     this.filterGroup.reset();
@@ -308,9 +241,7 @@ export class EquipmentsListComponent implements OnInit {
       const rows = [];
       if (dataSource.length > 0) {
         for (let i = 0; i < dataSource.length; i++) {
-          // console.log('jjj',this.dataSource[i])
           Object.keys(dataSource[i]).forEach(key => {
-            // console.log('key',key)
             if (key === 'ID' || rows.indexOf(key) !== -1) {
               return;
             }
@@ -336,7 +267,6 @@ export class EquipmentsListComponent implements OnInit {
    }
 
    advSearchTrigger(event) {
-    // console.log('trigger event => ', event);
     this.searchFields = event;
     this.applyFilter();
   }

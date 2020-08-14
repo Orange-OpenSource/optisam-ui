@@ -1,21 +1,15 @@
-
+.card {
+  border: unset !important;
+}
   .mat-card{
     width: 400px !important;
-    box-sizing: border-box;
-    margin: 50px auto 8px auto;
-    padding: 30px;
-  text-transform: capitalize;
+    padding: 0 16px;
   }
-  .mat-card-content{
-    // margin-left: 110px;
+
+  .mat-card-header {
+    display: flex;
+    justify-content: center;
   }
-.mat-card-title{
-  margin-left: 110px;
-}
-.mat-card-header .mat-card-title {
-  font-size: 32px;
-  margin-left: 83px;
-}
 .mat-raised-button {
   box-sizing: initial;
 }
@@ -24,4 +18,8 @@
 }
 .select-checkbox label{
   margin-bottom: 0px;
+}
+.mat-hint {
+  margin-top: 5px;
+  font-size: 12px;
 }

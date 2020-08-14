@@ -17,15 +17,16 @@ import { AccountService } from '../../services/account.service';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
-  isPasswordShow = false;
+  isPasswordShow:any = false;
   loginForm: FormGroup;
   errorMsg: string;
   lang: any;
-  invalid = false;
-  public currLang = 'en';
-  public userLang;
+  invalid:any = false;
+  public currLang:any = 'en';
+  public userLang:any;
   error_code: any;
-  loading = false;
+  loading:Boolean = false;
+  firstLogInFlag: any = 'false';
   constructor(private authservice: AuthService, private accountservice: AccountService,
     private router: Router, private translate: TranslateService) {
     translate.addLangs(['en', 'fr']);
@@ -55,9 +56,7 @@ export class LoginComponent implements OnInit {
       this.loading = true;
       this.authservice.login(val.email, val.password).subscribe(res => {
         token = res.access_token;
-       // this.authservice.
       },
-        // (error) => this.errorMsg = error,
         (err: any) => {
           this.displayErrorMessage(err);
           this.loading = false;
@@ -66,19 +65,24 @@ export class LoginComponent implements OnInit {
           if (token) {
             localStorage.setItem('access_token', token);
             localStorage.setItem('email', val.email);
-            // console.log('callinggetlang');
-            this.accountservice.getUpdatedLang()
-              .subscribe(
-                (res1: any) => {
-                  this.lang = res1.locale;
-                  localStorage.setItem('role', res1.role);
-               /*  this.authservice.getAceessRigthypes().subscribe(res => {
-                console.log('test-------', res);
-                }); */
-                  // console.log(this.lang);
-                  this.currLang = this.lang;
+            this.accountservice.getUserInfo(val.email)
+              .subscribe((res: any) => {
+                  this.currLang = res.locale;
+                  this.lang = res.locale;
+                  this.firstLogInFlag = res.first_login;
+                  localStorage.setItem('first_name', res.first_name);
+                  localStorage.setItem('last_name', res.last_name);
+                  localStorage.setItem('profile_pic', (res.profile_pic)?(res.profile_pic):'');
+                  localStorage.setItem('role', res.role);
+                  localStorage.setItem('firstLogin', this.firstLogInFlag);
                   this.updateUserLanguage(this.currLang);
-                  this.router.navigate(['/optisam/dashboard']);
+                  if(this.firstLogInFlag) {
+                    this.router.navigate(['/optisam/changePassword']);
+                  }
+                  else {
+                    this.router.navigate(['/optisam/dashboard']);
+                  }
+                  this.loading = false;
                 },
                 error => {
                   console.log('There was an error while retrieving Posts !!!' + error);
@@ -102,7 +106,7 @@ export class LoginComponent implements OnInit {
   ) {
       this.errorMsg = 'LOGIN.MESSAGES.LOGIN-ERROR-ADMIN';
   } else {
-        this.errorMsg = 'LOGIN.MESSAGES.LOGIN-ERROR-CREDENTIALS';
+        this.errorMsg = 'LOGIN.MESSAGES.LOGIN-ERROR-NETWORK';
     }
 }
 }

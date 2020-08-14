@@ -14,11 +14,13 @@ import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CustomMaterialModule } from 'src/app/material.module';
 import { ListAggregationComponent } from './list-aggregation/list-aggregation.component';
+import { EditAggregationDialogComponent } from './edit-aggregation-dialog/edit-aggregation-dialog.component';
 
 @NgModule({
   declarations: [
     CreateAggregationComponent,
-    ListAggregationComponent
+    ListAggregationComponent,
+    EditAggregationDialogComponent
   ],
   imports: [
     CommonModule,
@@ -28,6 +30,7 @@ import { ListAggregationComponent } from './list-aggregation/list-aggregation.co
     ReactiveFormsModule,
     CustomMaterialModule,
     SharedModule
-  ]
+  ],
+  entryComponents: [EditAggregationDialogComponent]
 })
 export class AggregationModule { }

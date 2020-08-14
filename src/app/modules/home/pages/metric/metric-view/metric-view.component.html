@@ -1,10 +1,14 @@
 <router-outlet></router-outlet>
 <mat-card>
-  <div class="form add-btn-bx" *ngIf="(role === 'ADMIN') || (role === 'SUPER_ADMIN')">
-    <button mat-raised-button (click)="addNew()" color="primary">
-      <mat-icon color="panel">add</mat-icon> {{'Add Metric' | translate}}
-    </button>
-
+  <div class="row">
+    <div class="page-heading" style="display:table-cell">
+      {{'Metrics Management'|translate}}
+    </div>
+    <div class="form add-btn-bx" *ngIf="(role === 'ADMIN') || (role === 'SUPER_ADMIN')">
+      <button id="addNewMetricButton" mat-raised-button (click)="addNew()" class="btn-two">
+        <mat-icon color="panel">add</mat-icon> {{'Add Metric' | translate}}
+      </button>
+    </div>
   </div>
 
     <div class="mat-elevation-z8">
@@ -16,7 +20,9 @@
       
         <ng-container matColumnDef="name">
           <mat-header-cell *matHeaderCellDef>{{'Name' | translate}}</mat-header-cell>
-          <mat-cell *matCellDef="let row"> {{row.name||0}}</mat-cell>
+          <mat-cell *matCellDef="let row" class="highlight"> 
+            <span>{{row.name||0}}</span>
+          </mat-cell>
         </ng-container>
       
         <ng-container matColumnDef="description">
@@ -26,8 +32,10 @@
       
       
         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="openDetails(row)"></mat-row>
       </mat-table>
+      <app-loading-spinner *ngIf="_loading"></app-loading-spinner>
+      <div class="no-data" *ngIf="noDataAvailableFlag">{{'No data available'|translate}}</div>
     </div>
 
 </mat-card>

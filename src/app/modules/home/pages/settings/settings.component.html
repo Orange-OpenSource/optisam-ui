@@ -1,79 +1,16 @@
 <div class="container-fluid-flex">
-  <div class="tabs">
-    <div *ngFor="let tab of tablist" class="tab-name" [ngClass]="{'active': currentTab === tab}" (click)="currentTab = tab;">
-      <span>{{tab}}</span>
-    </div>
-    <!-- <div class="tab-name"><span>Change Password</span></div> -->
-  </div>
-  <div class="content">
-
-    <div class="language-setting" *ngIf="currentTab === 'Language'">
-      <div class="col-lg-12 language-setting-page">
-        <div class="card">
-          <div class="card-body">
-            <div class="page-heading">
-              <h4>Select your Language</h4>
-            </div>
-            <form>
-              <div class="form-group">
-                <select class="form-control" [(ngModel)]="selectedLang" name="something">
-                  <option selected value="1">Select Language</option>
-                  <option value="en">English</option>
-                  <option value="fr">French</option>
-                </select>
-              </div>
-              <button class="btn btn-primary form-control" type="submit" (click)=Updatelang()>SAVE</button>
-            </form>
-          </div>
-        </div>
+  <div class="col-md-12 tabs">
+    <nav>
+      <div class="nav nav-tabs" id="nav-tab" role="tablist">
+        <a class="nav-item nav-link active" id="nav-lang-tab" data-toggle="tab" role="tab"
+          (click)="currentTab = 'Profile Settings'" aria-selected="true">{{'Profile Settings' | translate}}</a>
+        <a class="nav-item nav-link" id="nav-pass-tab" data-toggle="tab" role="tab"
+          (click)="currentTab = 'Change Password'" aria-selected="false">{{'Change Password' | translate}}</a>
       </div>
-    </div>
-
+    </nav>
+  </div>
+  <div class="col-md-12 content">
+    <app-profile-settings *ngIf="currentTab === 'Profile Settings'"></app-profile-settings>
     <app-change-password *ngIf="currentTab === 'Change Password'"></app-change-password>
-
   </div>
 </div>
-
-<!-- <div class="container-fluid">
-  <div style="position: center;" class="col-lg-12 language-setting-page" *ngIf="egMsg">
-    <div class="col-xs-12">
-      <p class="alert alert-warning">
-        <strong>Language Change Successfully !!!</strong>
-      </p>
-    </div>
-  </div>
-  <div style="position: center;" class="col-lg-12 language-setting-page" *ngIf="frMsg">
-    <div class="col-xs-12">
-      <p class="alert alert-warning">
-        <strong style="position: center;">Changement de langue avec succès!!!</strong>
-      </p>
-    </div>
-  </div>
-  <div class="row">
-
-    <div class="col-lg-12 language-setting-page">
-      <div class="card">
-        <div class="card-body">
-          <div class="page-heading">
-            <h4>Select your Language</h4>
-          </div>
-          <form>
-            <div class="form-group">
-              <select class="form-control" [(ngModel)]="selectedLang" name="something">
-                <option selected value="1">Select Language</option>
-                <option value="en">English</option>
-                <option value="fr">French</option>
-              </select>
-            </div>
-            <button class="btn btn-primary form-control" type="submit" (click)=Updatelang()>SAVE</button>
-          </form>
-        </div>
-      </div>
-    </div>
-    <div class="col-lg-4">
-      <button class="btn btn-secondary form-control" [routerLink]="['/optisam/chngPassword']">
-        {{'Change Password' | translate}}
-      </button>
-    </div>
-  </div>
-</div> -->

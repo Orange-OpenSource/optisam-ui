@@ -41,6 +41,7 @@ export class ProductrightsComponent implements OnInit {
   editorNamePlaceholder: any;
   productNamePlaceholder: String;
   metricPlaceholder: any;
+  _loading: Boolean;
 
   displayedColumns: string[] = ['entity',
     'SKU',
@@ -78,11 +79,13 @@ export class ProductrightsComponent implements OnInit {
     this.RenderDataTable();
   }
   RenderDataTable() {
+    this._loading = true;
     this.acquiredrightservice.getAcquiredrights(10, 1).subscribe(
       (res: any) => {
         this.MyDataSource = new MatTableDataSource(res.acquired_rights);
         this.MyDataSource.sort = this.sort;
         this.length = res.totalRecords;
+        this._loading = false;
       },
       error => {
         console.log('There was an error while retrieving Posts !!!' + error);
@@ -91,6 +94,7 @@ export class ProductrightsComponent implements OnInit {
   getPaginatorData(event) {
     const page_num = event.pageIndex;
     this.current_page_num = page_num;
+    this._loading = true;
     this.length = event.length;
     this.pageSize = event.pageSize;
     this.sort_order = localStorage.getItem('acquired_direction');
@@ -107,10 +111,12 @@ export class ProductrightsComponent implements OnInit {
         (res: any) => {
           this.MyDataSource = new MatTableDataSource(res.acquired_rights);
           this.MyDataSource.sort = this.sort;
+          this._loading = false;
         }
       );
   }
   sortData(sort) {
+    this._loading = true;
     localStorage.setItem('acquired_direction', sort.direction);
     localStorage.setItem('acquired_active', sort.active);
     if (this.current_page_num === 0) {
@@ -122,6 +128,7 @@ export class ProductrightsComponent implements OnInit {
         (res: any) => {
           this.MyDataSource = new MatTableDataSource(res.acquired_rights);
           this.MyDataSource.sort = this.sort;
+          this._loading = false;
         },
         error => {
           console.log('There was an error while retrieving Posts !!!' + error);
@@ -163,6 +170,7 @@ export class ProductrightsComponent implements OnInit {
     }
   }
   applyFilter() {
+    this._loading = true;
     this.sort_order = localStorage.getItem('acquired_direction');
     this.sort_by = localStorage.getItem('acquired_active');
     if (this.sort_by === '' || this.sort_by === null) {
@@ -181,6 +189,7 @@ export class ProductrightsComponent implements OnInit {
           this.MyDataSource = new MatTableDataSource(res.acquired_rights);
           this.MyDataSource.sort = this.sort;
           this.length = res.totalRecords;
+          this._loading = false;
         }
       );
   }
@@ -202,5 +211,19 @@ export class ProductrightsComponent implements OnInit {
     // console.log('trigger event => ', event);
     this.searchFields = event;
     this.applyFilter();
+  }
+
+  openDialog(value, name): void {
+    const dialogRef = this.dialog.open(MoreDetailsComponent, {
+      width: '850px',
+      disableClose: true,
+      data: {
+          datakey : value,
+          dataName : name
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+    });
   }
 }

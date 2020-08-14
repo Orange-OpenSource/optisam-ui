@@ -1,44 +1,7 @@
-// .mat-cell:nth-child(1),
-// .mat-header-cell:nth-child(1){
-//   flex: 0 0 15%;
-// }
-
-// .mat-cell:nth-child(2),
-// .mat-header-cell:nth-child(2){
-//   flex: 0 0 25%;
-// }
-
-// .mat-cell:nth-child(3),
-// .mat-header-cell:nth-child(3){
-//   flex: 0 0 12%;
-// }
-
-// .mat-cell:nth-child(4),
-// .mat-header-cell:nth-child(4){
-//   flex: 0 0 10%;
-// }
-// .mat-cell:nth-child(5),
-// .mat-header-cell:nth-child(5){
-//   flex: 0 0 8%;
-// }
-// .mat-cell:nth-child(6),
-// .mat-header-cell:nth-child(6){
-//   flex: 0 0 10%;
-// }
-// .mat-cell:nth-child(7),
-// .mat-header-cell:nth-child(7){
-//   flex: 0 0 10%;
-// }
-
-/* 
 .mat-table {
-  .mat-row, .mat-header-row, .mat-footer-row {
-    padding-left: 24px;
-    padding-right: 24px;
-  }
+  overflow-y: auto;
+  max-height: 75vh;
 }
- */
-
 mat-menu-item {
   border: solid 1px #d1d8de !important;
   width:260px !important;
@@ -52,18 +15,26 @@ mat-menu-item {
 
   .mat-menu-item-toggle{
     width:50% !important;
-    // font-size: 15px !important;
 }
 
-  //  background:#ececec;
-    // min-height:14px;
-    // font-family:Verdana,sans-serif;:Verdana,sans-serif;
-    // font-size:13px;
-    // margin-bottom:5px;
+.mat-column-swidTag {
+  word-wrap: break-word !important;
+  white-space: unset !important;
+  overflow-wrap: break-word;
+  word-wrap: break-word;    
+  word-break: break-word;
+}
 
+.mat-column-name {
+  flex: 0 0 20% !important;
+  width: 20% !important;
+}
 
-    // font-family:Verdana,sans-serif;:Verdana,sans-serif;
-    // font-size:11px;
-    // font-family:Verdana,sans-serif;:Verdana,sans-serif;
-    // font-size:11px;
+.mat-column-numOfApplications, .mat-column-numofEquipments, .mat-column-totalCost {
+  flex: 0 0 8% !important;
+  width: 8% !important;
+}
 
+.page-content-header {
+    padding-bottom: 10px;
+}

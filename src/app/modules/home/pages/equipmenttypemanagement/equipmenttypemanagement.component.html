@@ -1,12 +1,14 @@
 <router-outlet></router-outlet>
 <mat-card class="example-card">
-  <div class="form add-btn-bx" *ngIf="(role === 'ADMIN') || (role === 'SUPER_ADMIN')">
-    <button mat-raised-button (click)="addNew()" color="primary">
-      <mat-icon color="panel">add</mat-icon> {{'Add Equipment Type' | translate}}
-    </button>
-    <!-- <mat-form-field floatPlaceholder="never" color="accent">
-        <input matInput #filter placeholder="Filter Equipment Types">
-      </mat-form-field> -->
+  <div class="row">
+    <div class="page-heading" style="display:table-cell">
+      {{'Equipment Management'|translate}} 
+    </div>
+    <div class="form add-btn-bx" *ngIf="(role === 'ADMIN') || (role === 'SUPER_ADMIN')">
+      <button mat-raised-button (click)="addNew()" class="btn-two">
+        <mat-icon color="panel">add</mat-icon> {{'Add Equipment Type' | translate}}
+      </button>
+    </div>
   </div>
 
   <div class="mat-elevation-z8">
@@ -26,12 +28,12 @@
 
     <ng-container matColumnDef="parent_type">
       <mat-header-cell *matHeaderCellDef >{{'Parent Type' | translate}}</mat-header-cell>
-      <mat-cell *matCellDef="let row"> {{row.parent_type }}</mat-cell>
+      <mat-cell *matCellDef="let row"> {{row.parent_type||'-'}}</mat-cell>
     </ng-container>
     <ng-container matColumnDef="attributes">
         <mat-header-cell *matHeaderCellDef >{{'Attributes' | translate}}</mat-header-cell>
         <mat-cell *matCellDef="let row">
-            <a mat-icon-button color="primary" matTooltip="{{'Click here to see Attributes List' | translate}}"
+            <a class="mat-button-link" matTooltip="{{'Click here to see Attributes List' | translate}}"
             (click)="listAttributes(row.type, row.attributes)">
                 {{row.attributes.length||0}}</a>
           </mat-cell>
@@ -42,13 +44,8 @@
       <mat-header-cell  *matHeaderCellDef>{{'Actions' | translate}}</mat-header-cell>
       <mat-cell *matCellDef="let row; let i=index;">
         <button mat-icon-button color="accent" (click)="startEdit(row.ID, row.type, row.metadata_id, row.metadata_source, row.parent_type, row.parent_id, row.attributes)">
-          <!-- <mat-icon aria-label="Edit">edit</mat-icon> -->
           <mat-icon>mode_edit</mat-icon>
         </button>
-
-        <!-- <button mat-icon-button color="accent" >
-          <mat-icon aria-label="Delete">delete</mat-icon>
-        </button> -->
       </mat-cell>
       </div>
       <div>
@@ -61,15 +58,7 @@
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
     <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
      </mat-table>
+     <app-loading-spinner *ngIf="_loading"></app-loading-spinner>
+     <div class="no-data" *ngIf="!_loading && (!MyDataSource || (MyDataSource && MyDataSource.data.length ==0))">{{'No Records Found' | translate}}</div>
   </div>
-
-  <!-- <div class="no-results" [style.display]="dataSource.renderedData.length == 0 ? '' : 'none'">
-    No results
-  </div> -->
-
-  <!-- <mat-paginator #paginator
-                 [pageIndex]="0"
-                 [pageSize]="10"
-                 [pageSizeOptions]="[5, 10, 25, 100]">
-  </mat-paginator> -->
  </mat-card>

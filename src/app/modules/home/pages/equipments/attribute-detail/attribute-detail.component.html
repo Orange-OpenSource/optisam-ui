@@ -1,6 +1,6 @@
-<h1 mat-dialog-title>{{equipName}}</h1>
+<div class="page-heading" mat-dialog-title>{{equipNameCapitalized}}</div>
 <mat-dialog-content>
-  <div class="container-fluid">
+  <div>
     <div class="row">
       <div class="col-lg-12 page-heading"></div>
       <!-- &#62; -->
@@ -8,39 +8,40 @@
         <div class="product-tabs">
           <nav>
             <div class="nav nav-tabs" id="nav-tab" role="tablist">
-              <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab"
-                aria-controls="nav-home" aria-selected="true">{{'Detail' | translate}}</a>
-              <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab"
-                aria-controls="nav-profile" aria-selected="false" [hidden]="parentDisplay"
+              <a class="nav-item nav-link active" id="nav-eqp-home-tab" data-toggle="tab" href="#nav-eqp-home" role="tab"
+                aria-controls="nav-eqp-home" aria-selected="true">{{'Detail' | translate}}</a>
+              <a class="nav-item nav-link" id="nav-eqp-parent-tab" data-toggle="tab" href="#nav-eqp-parent" role="tab"
+                aria-controls="nav-eqp-parent" aria-selected="false" [hidden]="parentDisplay"
                 (click)="getParent()">{{'Parent' | translate}}</a>
 
-              <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab"
-                aria-controls="nav-contact" aria-selected="false" [hidden]=" !(childRefrenceArr.length > 0)"
+              <a class="nav-item nav-link" id="nav-eqp-children-tab" data-toggle="tab" href="#nav-eqp-children" role="tab"
+                aria-controls="nav-eqp-children" aria-selected="false" [hidden]=" !(childRefrenceArr.length > 0)"
                 (click)="getchildRef()">{{'Children' | translate}}</a>
-              <a class="nav-item nav-link" id="nav-product-tab" data-toggle="tab" href="#nav-product" role="tab"
-                aria-controls="nav-product" aria-selected="false" (click)="getProduct()">{{'Product' | translate}}</a>
+              <a class="nav-item nav-link" id="nav-eqp-product-tab" data-toggle="tab" href="#nav-eqp-product" role="tab"
+                aria-controls="nav-eqp-product" aria-selected="false" (click)="getProduct()">{{'Product' | translate}}</a>
 
             </div>
           </nav>
           <div class="tab-content" id="nav-tabContentx">
-
-            <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+            <!-- Equipment Details -->
+            <div class="tab-pane fade show active" id="nav-eqp-home" role="tabpanel" aria-labelledby="nav-eqp-home-tab">
               <div class="tab-content-inner">
                 <div *ngFor="let x of keyArr; let colIndex = index">
                   <p><strong>{{x}}:</strong> {{valueArr[colIndex] }}</p>
                 </div>
+                <app-loading-spinner *ngIf="_loading && keyArr.length==0"></app-loading-spinner>
               </div>
             </div>
-            <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+            <!-- Equipment Parent -->
+            <div class="tab-pane fade" id="nav-eqp-parent" role="tabpanel" aria-labelledby="nav-eqp-parent-tab">
               <div class="tab-content-inner">
-                <div class="table-responsive">
-                  <table class="table table-bordered table-striped">
-                    <thead class="thead-dark">
+                <div *ngIf="!_loading" class="table-responsive">
+                  <table class="table table-bordered">
+                    <thead>
                       <tr>
                         <th *ngFor="let tabelHead of reuseKeyName">
                           {{tabelHead}}
                         </th>
-
                       </tr>
                     </thead>
                     <tbody>
@@ -52,24 +53,26 @@
                     </tbody>
                   </table>
                 </div>
+                <app-loading-spinner *ngIf="_loading && reuseValueName.length==0"></app-loading-spinner>
               </div>
             </div>
-            <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
+            <!-- Equipment Children -->
+            <div class="tab-pane fade" id="nav-eqp-children" role="tabpanel" aria-labelledby="nav-eqp-children-tab">
               <div class="tab-content-inner">
                 <mat-card class="custome-card">
                   <!-- Popup's Tab Content heading -->
                   <div class="container-fluid">
                     <div class="row popup-tab-row">
-                      <div class="col-md-9 popup-tab-title">
-                        <h4>Here will be tab content title</h4>
+                      <div class="col-md-9 nav-path">
+                        {{'List of children'|translate}}
                       </div>
                       <div class="col-md-3 search-div">
                         <mat-form-field class="search-form-field" floatLabel="never">
                           <input matInput placeholder="{{'Search by Attribute'|translate}}" disabled autocomplete="on">
-                          <button mat-button matSuffix class="btn-toggle" [matMenuTriggerFor]="menu">
+                          <button id="toggleSearchKey" mat-button mat-icon-button matSuffix class="btn-toggle" [matMenuTriggerFor]="menu">
                             <mat-icon>keyboard_arrow_down</mat-icon>
                           </button>
-                          <mat-menu #menu>
+                          <mat-menu #menu style="margin-left: -150px !important;border-radius: 0px !important;">
                             <div mat-menu-item mat-filter-item [disableRipple]="true" class="menu-title">
                               {{'Advance Search' | translate}}
                             </div>
@@ -80,8 +83,9 @@
                               </mat-form-field>
                             </div>
                             <div mat-menu-item mat-filter-item [disableRipple]="true">
-                              <button mat-raised-button (click)="clearChildFilter()">{{'Clear'|translate}}</button>
-                              <button mat-raised-button color="primary"
+                              &nbsp;
+                              <button class="btn-four" mat-raised-button (click)="clearChildFilter()">{{'Clear'|translate}}</button>&nbsp;
+                              <button mat-raised-button class="primary-btn"
                                 (click)="applyChildFilter()">{{'Search'|translate}}</button>
                             </div>
                           </mat-menu>
@@ -91,41 +95,40 @@
                   </div>
                   <!-- End Popup's Tab Content heading -->
 
-                  <div class="server-tab">
-                    <mat-toolbar-row>
-                      <button mat-button routerLinkActive="active" *ngFor="let disCol of childRefrenceArr"
-                        (click)="getChild(disCol)">{{disCol.type|uppercase}}</button>
-                    </mat-toolbar-row>
-
-                    <div class="server-table">
-                      <mat-table [dataSource]="dataSource" matSort (matSortChange)="sortData($event)" scrollX="true"
-                        maxWidth="400">
-                        <ng-container cdkColumnDef="userId" *ngFor="let x of displayedrows; let colIndex = index"
-                          matColumnDef="{{x}}">
+                  <div class="children-table" *ngIf="!_loading && childRefrenceArr.length!=0">
+                    <nav mat-tab-nav-bar *ngIf="childRefrenceArr.length>0">
+                      <a mat-tab-link class="tab-anchor" *ngFor="let disCol of childRefrenceArr" routerLinkActive="active"
+                        (click)="getChild(disCol);activeLink = disCol.type;" [active]="activeLink == disCol.type">
+                        {{disCol.type|uppercase|translate}} </a>
+                    </nav>
+                    <div *ngIf="!_loading && childRefrenceArr.length!=0 && dataSource">
+                      <mat-table [dataSource]="dataSource" matSort (matSortChange)="sortData($event)" scrollX="true" maxWidth="400">
+                        <ng-container cdkColumnDef="userId" *ngFor="let x of displayedrows; let colIndex = index" matColumnDef="{{x}}">
                           <mat-header-cell *matHeaderCellDef mat-sort-header> {{x}}</mat-header-cell>
                           <mat-cell *matCellDef="let element"> {{element[x]}} </mat-cell>
                         </ng-container>
-                        <mat-header-row *matHeaderRowDef="displayedrows"></mat-header-row>
-                        <mat-row *matRowDef="let row; columns: displayedrows;"></mat-row>
+                        <mat-header-row *matHeaderRowDef="displayedrows" [ngClass]="moreRows? 'extendrow' :''"></mat-header-row>
+                        <mat-row *matRowDef="let row; columns: displayedrows;" [ngClass]="moreRows? 'extendrow' :''"></mat-row>
                       </mat-table>
+                      <mat-paginator [length]="length" [pageSize]="page_size" [pageSizeOptions]="[10,20,30,50]"
+                        (page)="pageEvent = getPaginatorData($event)" showFirstLastButtons>
+                      </mat-paginator>
                     </div>
                   </div>
-
-                  <mat-paginator [length]="length" [pageSize]="page_size" [pageSizeOptions]="[10,20,30,50]"
-                    (page)="pageEvent = getPaginatorData($event)" showFirstLastButtons>
-                  </mat-paginator>
                 </mat-card>
+                <app-loading-spinner *ngIf="_loading"></app-loading-spinner>
               </div>
             </div>
-            <div class="tab-pane fade" id="nav-product" role="tabpanel" aria-labelledby="nav-product-tab">
+            <!-- Equipment Products -->
+            <div class="tab-pane fade" id="nav-eqp-product" role="tabpanel" aria-labelledby="nav-eqp-product-tab">
               <div class="tab-content-inner">
 
                 <mat-card class="example-card" [hidden]="productStatus">
 
                   <div class="container-fluid page-content-header">
                     <div class="row">
-                      <div class="col-md-9 page-heading">
-                        <h4>Here will be tab content title</h4>
+                      <div class="col-md-9 nav-path">
+                        {{'Product List' | translate}}
                       </div>
 
                       <div class="col-md-3 search-div">
@@ -195,8 +198,10 @@
                         <ng-container matColumnDef="name">
                           <mat-header-cell *matHeaderCellDef mat-sort-header="name">{{'Product name' | translate}}
                           </mat-header-cell>
-                          <mat-cell *matCellDef="let product">
-                            {{product.name }}
+                          <mat-cell *matCellDef="let product" matTooltip="{{product.name}}"> 
+                            <a class="ellipsis mat-button-link" (click)="openDialog(product.swidTag, product.name)">
+                              {{product.name}} 
+                            </a>
                           </mat-cell>
                         </ng-container>
 
@@ -213,16 +218,23 @@
                           <mat-cell *matCellDef="let product"> {{product.version}} </mat-cell>
                         </ng-container>
 
+                        <ng-container matColumnDef="numofEquipments">
+                          <mat-header-cell *matHeaderCellDef>{{'Equipment Count'| translate}}
+                          </mat-header-cell>
+                          <mat-cell *matCellDef="let product"> {{product.numofEquipments}} </mat-cell>
+                        </ng-container>
+
                         <mat-header-row *matHeaderRowDef="productColumn; sticky: true"></mat-header-row>
                         <mat-row *matRowDef="let row; columns: productColumn;"></mat-row>
                       </mat-table>
-                      <!-- <mat-paginator #paginator [pageSize]="7" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons> -->
+                      <app-loading-spinner *ngIf="_loading"></app-loading-spinner>
                       <mat-paginator [length]="productLength" [pageSize]="page_size" [pageSizeOptions]="[10,20,30,50]"
                         (page)="pageEvent = getProductPaginatorData($event)" showFirstLastButtons>
                       </mat-paginator>
                     </div>
                   </mat-card-content>
                 </mat-card>
+                <app-loading-spinner *ngIf="_loading"></app-loading-spinner>
 
               </div>
             </div>
@@ -235,6 +247,6 @@
   </div>
 </mat-dialog-content>
 
-<mat-dialog-actions align="center">
-  <button mat-raised-button mat-dialog-close>{{'CANCEL' | translate}}</button>
+<mat-dialog-actions>
+  <button class="btn-two" mat-raised-button mat-dialog-close>{{'Cancel' | translate}}</button>
 </mat-dialog-actions>

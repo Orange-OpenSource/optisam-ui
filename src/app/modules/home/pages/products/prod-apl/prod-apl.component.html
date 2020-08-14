@@ -2,49 +2,12 @@
         <div class="container-fluid page-content-header">
           <div class="row">
             <div class="col-md-9 page-heading">
-              <h4><a routerLink="/optisam/pr/products">{{'Products'|translate}}: </a><span>{{this.prodName}}
-                </span> &#62; {{'Applications'|translate}} </h4>
+              <span class="parentNode nav-path" routerLink="/optisam/pr/products">{{'Product'|translate}}</span><span class="nav-path-desc"> : {{this.prodName}}</span>
+                <mat-icon class="arrow_icon">arrow_forward_ios</mat-icon><span class="currentNode nav-path">{{'Applications'|translate}}</span>
             </div>
 
             <div class="col-md-3 search-div">
               <app-advance-search [advanceSearchModel]="advanceSearchModel" (advFilterEvent)="advSearchTrigger($event)"></app-advance-search>       
-              <!-- <mat-form-field class="search-form-field" floatLabel="never">
-                <input matInput [(ngModel)]="appnamePlaceholder" placeholder="{{'Search by Application Name'|translate}}"
-                  autocomplete="off" (keyup)="setSelected($event.target.value, 1 )">
-                <button mat-button matSuffix mat-icon-button aria-label="Clear" *ngIf="appnamePlaceholder" (click)="onSearchClear()"
-                  [disabled]="appnamePlaceholder.length < 3">
-                  <mat-icon>search</mat-icon>
-                </button>
-                <button mat-button matSuffix mat-icon-button aria-label="Clear" (click)="clearFilter()" *ngIf="appnamePlaceholder">
-                  <mat-icon>clear</mat-icon>
-                </button>
-                <button mat-button matSuffix class="btn-toggle" [matMenuTriggerFor]="menu">
-                  <mat-icon>keyboard_arrow_down</mat-icon>
-                </button>
-                <mat-menu #menu>
-                  <div mat-menu-item mat-filter-item [disableRipple]="true" class="menu-title">
-                    {{'Advance Search' | translate}}
-                  </div>
-                  <div mat-menu-item mat-filter-item [disableRipple]="true">
-                    <mat-form-field>
-                      <input matInput placeholder="{{'Application name'|translate}}" [(ngModel)]="appnamePlaceholder"
-                        (keyup)="setSelectedSearch($event.target.value, 1 )">
-                    </mat-form-field>
-                  </div>
-                  <div mat-menu-item mat-filter-item [disableRipple]="true">
-                    <mat-form-field>
-                      <input matInput placeholder="{{'Owner'|translate}}" [(ngModel)]="ownerPlaceholder"
-                        (keyup)="setSelectedSearch($event.target.value,2)">
-                    </mat-form-field>
-                  </div>
-
-                  <div mat-menu-item mat-filter-item [disableRipple]="true">
-                    <button mat-raised-button (click)="clearFilter()">{{'Clear'|translate}}</button>
-                    <button mat-raised-button color="primary" (click)="applyFilter()"
-                      [disabled]="appnamePlaceholder != '' && appnamePlaceholder && appnamePlaceholder.length < 3">{{'Search'|translate}}</button>
-                  </div>
-                </mat-menu>
-              </mat-form-field> -->
             </div>
           </div>
         </div>
@@ -61,33 +24,35 @@
                 </mat-cell>
               </ng-container>
 
-              <ng-container matColumnDef="app_owner" >
-                  <mat-header-cell *matHeaderCellDef mat-sort-header="application_owner">{{'Owner' | translate}}</mat-header-cell>
-                  <mat-cell *matCellDef="let product">{{product.app_owner||0}}
+              <ng-container matColumnDef="owner" >
+                  <mat-header-cell *matHeaderCellDef mat-sort-header="owner">{{'Owner' | translate}}</mat-header-cell>
+                  <mat-cell *matCellDef="let product">{{product.owner||0}}
                   </mat-cell>
                 </ng-container>
 
-              <ng-container matColumnDef="numOfInstances">
-                  <mat-header-cell *matHeaderCellDef mat-sort-header="numOfInstances">{{'Number of instances' | translate}}</mat-header-cell>
+              <ng-container matColumnDef="num_of_instances">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header="num_of_instances">{{'Instance Count' | translate}}</mat-header-cell>
                   <mat-cell *matCellDef="let product">
-                      <a mat-icon-button color="primary" (click)=productInstances(product.application_id,product.name) >
-                          {{product.numOfInstances||0}} </a>
-                        <a fxFlexFill class="mat-row-link"></a>
-                      </mat-cell>
+                    <a *ngIf="product.num_of_instances" class="mat-button-link"  (click)=productInstances(product.application_id,product.name) >
+                          {{product.num_of_instances}} </a>
+                    <span *ngIf="!product.num_of_instances">0</span>
+                  </mat-cell>
                 </ng-container>
 
 
-              <ng-container matColumnDef="numofEquipments">
-                <mat-header-cell *matHeaderCellDef mat-sort-header="numofEquipments"> {{'Number of equipment'|translate}}</mat-header-cell>
+              <ng-container matColumnDef="num_of_equipments">
+                <mat-header-cell *matHeaderCellDef mat-sort-header="num_of_equipments"> {{'Equipment Count'|translate}}</mat-header-cell>
                 <mat-cell *matCellDef="let product">
-                  <a mat-icon-button color="primary">
-                    {{product.numofEquipments ||0}} </a></mat-cell>
+                  <a *ngIf="product.num_of_equipments" class="mat-button-link" >
+                    {{product.num_of_equipments}} </a>
+                  <span *ngIf="!product.num_of_equipments">0</span>
+                </mat-cell>
               </ng-container>
 
               <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
               <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
             </mat-table>
-            <!-- <app-loading-spinner *ngIf="_loading"></app-loading-spinner> -->
+            <app-loading-spinner *ngIf="_loading"></app-loading-spinner>
             <mat-paginator  [length]="length" [pageSize]="page_size" [pageSizeOptions]="[10,20,30,50]"
             (page)="pageEvent = getPaginatorData($event)" showFirstLastButtons>
         </mat-paginator>

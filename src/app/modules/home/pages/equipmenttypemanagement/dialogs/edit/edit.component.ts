@@ -6,7 +6,7 @@
 
 
 import { Component, OnInit, ViewChild, Inject } from '@angular/core';
-import { MatPaginator, MatTableDataSource, MatSort, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatPaginator, MatTableDataSource, MatSort, MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material';
 import { ApplicationService } from 'src/app/core/services/application.service';
 import { Router } from '@angular/router';
 import { EquipmentTypeManagementService } from 'src/app/core/services/equipmenttypemanagement.service';
@@ -46,6 +46,7 @@ export class EditComponent implements OnInit {
 
   constructor(public equipmentTypeService: EquipmentTypeManagementService,
   public dialogRef: MatDialogRef<EditComponent>,
+  public dialog: MatDialog,
   @Inject(MAT_DIALOG_DATA) public data: RequiredJSONFormat) { }
 
   attribute = this.data.attributes;
@@ -76,6 +77,7 @@ export class EditComponent implements OnInit {
         // 'parentI': new FormControl('', [Validators.required]),
       'attribute': attributeArr
     });
+    this.attributeForm.markAsPristine();
   }
   getTypes() {
     this.equipmentTypeService.getTypes().subscribe(
@@ -115,7 +117,7 @@ export class EditComponent implements OnInit {
     (<FormArray>this.attributeForm.get('attribute')).removeAt(index);
   }
 
-  modifyAttribute() {
+  modifyAttribute(successMsg, errorMsg) {
     const attribute_data = this.attributeForm.value;
     const attributeData = new ModifyJSONFormat;
     // attributeData.parent_id = attribute_data.from;
@@ -124,6 +126,9 @@ export class EditComponent implements OnInit {
       this.equipmentTypeService.updateAttribute(this.id, attributeData)
       .subscribe(res => {
         this.attributeForm.reset();
+        this.openModal(successMsg);
+      },error => {
+        this.openModal(errorMsg);
       });
     }
   }
@@ -155,5 +160,15 @@ export class EditComponent implements OnInit {
   }
     onNoClick(): void {
     this.dialogRef.close();
+  }
+  openModal(templateRef) {
+    let dialogRef = this.dialog.open(templateRef, {
+      width: '50%',
+      disableClose: true
+    });
+  } 
+
+  ngOnDestroy() {
+    this.dialog.closeAll();
   }
 }

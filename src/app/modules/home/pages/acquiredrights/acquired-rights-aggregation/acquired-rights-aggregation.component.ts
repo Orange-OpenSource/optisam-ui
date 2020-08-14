@@ -9,6 +9,7 @@ import { AcquiredrightsService } from 'src/app/core/services/acquiredrights.serv
 import { Router } from '@angular/router';
 import { MatDialog, MatSort, MatPaginator, MatTableDataSource } from '@angular/material';
 import { trigger, style, state, animate, transition } from '@angular/animations';
+import { MoreDetailsComponent } from '../../../dialogs/product-details/more-details.component';
 
 @Component({
   selector: 'app-acquired-rights-aggregation',
@@ -37,19 +38,19 @@ export class AcquiredRightsAggregationComponent implements OnInit {
   pageEvent: any;
   current_page_num: any;
   filteringOrder: any;
-
+  productsListByAggrID: any[];
 
   displayedColumns: string[] = ['entity', 'SKU', 'swid_tag', 'aggregateName', 'editor', 'metric', 'total_cost'];
   expandDisplayedColumns: string[] = ['entity', 'SKU', 'swid_tag', 'product_name', 'editor', 'metric', 'acquired_licenses_number', 'licenses_under_maintenance_number',  'avg_licenes_unit_price', 'avg_maintenance_unit_price', 'total_purchase_cost', 'total_maintenance_cost', 'total_cost'];
   sortColumn: string[] = ['aggregateName', 'editor', 'metric', 'total_cost'];
   tableKeyLabelMap: any = {
       'swid_tag':  'SwidTag',
-      'name': 'Product Name',
+      'product_name': 'Product Name',
       'editor': 'Editor',
       'version': 'Release',
       'total_cost': 'Total cost(€)',
-      'num_applications': 'Number of applications',
-      'num_equipments': 'Number of equipment',
+      'num_applications': 'Application Count',
+      'num_equipments': 'Equipment Count',
       'aggregateName': 'Aggregation Name',
       'SKU': 'SKU',
       'entity': 'Entity',
@@ -97,8 +98,11 @@ export class AcquiredRightsAggregationComponent implements OnInit {
   getAcqiredRightsAggregationData() {
     this._loading = true;
     let query = '?page_num=' + this.current_page_num + '&page_size=' + this.page_size;
-    query += (this.searchQuery ? this.searchQuery : '');
-    query += (this.sortQuery ? this.sortQuery : '');
+    this.sortQuery = (this.sortQuery ? this.sortQuery : '&sort_order=asc')
+    query += this.sortQuery;
+    this.searchQuery = this.searchQuery ? this.searchQuery : '&sort_by=NAME'
+    query += this.searchQuery;
+    console.log('query',this.searchQuery, '---', this.sortQuery);
     this.acquiredrightservice.getAggregationAcquiredRights(query).subscribe(
       (res: any) => {
         this.arAggregationData = new MatTableDataSource(res.aggregations);
@@ -124,16 +128,19 @@ export class AcquiredRightsAggregationComponent implements OnInit {
     if (!ev.direction) {
       return false;
     }
-    this.sortQuery = '&sorto_order=' + ev.direction.toUpperCase() + '&srt_by=';
+    this.searchQuery = '';
+    this.sortQuery = '';
+    this.sortQuery = '&sort_order=' + ev.direction.toLowerCase();
+    this.searchQuery = '&sort_by=';
     switch (ev.active) {
       case 'aggregateName':
-        this.sortQuery += 'NAME';
+        this.searchQuery += 'NAME';
         break;
 
       case 'editor':
       case 'total_cost':
       case 'metric':
-        this.sortQuery += ev.active.toUpperCase();
+        this.searchQuery += ev.active.toUpperCase();
         break;
 
       default:
@@ -153,7 +160,7 @@ export class AcquiredRightsAggregationComponent implements OnInit {
     if (this.current_page_num === 0) {
       this.current_page_num = 1;
     }
-    this.searchQuery = '';
+    // this.searchQuery = '';
     this.sortQuery = '';
     Object.keys(this.searchFields).forEach((key) => {
       if (this.searchFields[key]) {
@@ -164,8 +171,33 @@ export class AcquiredRightsAggregationComponent implements OnInit {
   }
 
   advSearchTrigger(event) {
-    console.log('trigger event => ', event);
+    // console.log('trigger event => ', event);
     this.searchFields = event;
     this.applyFilter();
+  }
+
+  getProductDetails(ID) {
+    this._loading = true;
+    this.acquiredrightservice.getProductsByAggrID(ID).subscribe(res=>{
+      this.productsListByAggrID = res.acquired_rights;
+      console.log('acquired_rights : ', res.acquired_rights);
+      this._loading = false;
+    },err=>{
+      console.log('Products could not be fetched!');
+      this._loading = false;
+    });
+  }
+  openDialog(value, name): void {
+    const dialogRef = this.dialog.open(MoreDetailsComponent, {
+      width: '850px',
+      disableClose: true,
+      data: {
+          datakey : value,
+          dataName : name
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+    });
   }
 }

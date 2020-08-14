@@ -1,0 +1,101 @@
+.main-section{
+    display: flex;
+    margin-top: -16px;
+    padding: unset;
+}
+.page-heading {
+    margin-bottom: 16px;
+}
+.resetEntity button{
+    margin-top: 3px;
+    height: 44px;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.entity-section{
+    display: flex;
+}
+    .select{
+        width: 30%;
+    }
+.row-flex{
+    display: flex;
+}       
+    div.equipmentType, div.configName{
+        margin-left: 15px;;
+    } 
+
+.mat-table {
+    width: 100%;
+}
+    .mat-column-attribute {
+        word-wrap: break-word !important;
+        white-space: unset !important;
+        flex: 0 0 35% !important;
+        width: 35% !important;
+        overflow-wrap: break-word;
+        word-wrap: break-word;    
+        word-break: break-word;
+        text-align: center;
+        justify-content: center;
+    }
+    .mat-column-simulable {
+        flex: 0 0 15% !important;
+        width: 15% !important;
+        text-align: center;
+        justify-content: center;
+    }
+    .mat-column-file {
+        flex: 0 0 35% !important;
+        width:35% !important;
+        text-align: center;
+        justify-content: center;
+    }
+    .mat-column-delete {
+        flex: 0 0 15% !important;
+        width: 15% !important;
+        text-align: center;
+        justify-content: center;
+    }
+    .mat-cell {
+        color: black !important;
+    }
+        .custom-file-upload {
+            margin-bottom: 0px !important;
+        }
+        .attach-file {
+            margin-top: 5%;
+        }
+        .file-upload {
+            opacity: 0;
+            width: 55px;
+            // margin-top: 2%;
+            margin-left: 5%;
+        }
+        .valid-file {
+            color: green;
+        }
+        .invalid-file {
+            color:red;
+        }
+        .delete-icon {
+            cursor: pointer;
+        }
+        .disable-icon {
+            color: grey;
+            cursor: auto;
+        }
+
+        ::ng-deep {
+            .mat-checkbox-checked.mat-accent.mat-checkbox-disabled .mat-checkbox-background {
+            background-color: black;
+            }
+        }
+#cancelButton {
+    margin-left: 10%;
+}
+.closeDialog {
+  display: flex;
+  justify-content: flex-end;
+}

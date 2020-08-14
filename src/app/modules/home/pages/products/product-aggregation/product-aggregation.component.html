@@ -2,7 +2,7 @@
     <div class="container-fluid page-content-header">
       <div class="row">
         <div class="col-md-9 page-heading">
-          <h4>{{'List of Inventoried Products'|translate}} </h4>
+          {{'List of Inventoried Products'|translate}}
         </div>
         <div class="col-md-3 search-div">
           <app-advance-search [advanceSearchModel]="advanceSearchModel" (advFilterEvent)="advSearchTrigger($event)">
@@ -16,27 +16,42 @@
   
           <ng-container matColumnDef="{{column}}" *ngFor="let column of displayedColumns">
             <div *ngIf="sortColumn.indexOf(column) !== -1">
-              <mat-header-cell *matHeaderCellDef mat-sort-header> {{tableKeyLabelMap[column]}} </mat-header-cell>
+              <mat-header-cell *matHeaderCellDef mat-sort-header> {{tableKeyLabelMap[column] |translate}} </mat-header-cell>
             </div>
             <div *ngIf="sortColumn.indexOf(column) === -1">
-              <mat-header-cell *matHeaderCellDef> {{tableKeyLabelMap[column]}} </mat-header-cell>
+              <mat-header-cell *matHeaderCellDef> {{tableKeyLabelMap[column]|translate}} </mat-header-cell>
             </div>
               <mat-cell *matCellDef="let product"> 
                 <div [ngSwitch]="column">
 
-                  <span *ngSwitchCase="'swidTag'" matTooltip="{{getSwidTags(product.products)}}">{{getSwidTags(product.products)}}</span>
+                  <span *ngSwitchCase="'swidTag'">{{product.swidtags}}</span>
 
                   <div *ngSwitchCase="'aggregateName'">
-                      <mat-icon *ngIf="expandedRow !== product" class="expand-icon" (click)="expandedRow = (expandedRow === product ? null : product)">add_box</mat-icon>
-                      <mat-icon *ngIf="expandedRow === product" class="expand-icon" (click)="expandedRow = null">indeterminate_check_box</mat-icon>
-                      <a mat-icon-button color="primary" matTooltip="Click here to see Aggregation Details"
+                      <mat-icon *ngIf="expandedRow !== product" class="expand-icon" (click)="expandAggregation(product)">add_box</mat-icon>
+                      <mat-icon *ngIf="expandedRow === product" class="expand-icon" (click)="closeAggregation()">indeterminate_check_box</mat-icon>
+                      <a class="align-left" id="AggrName" matTooltip="{{'Click here to see Aggregation Details'|translate}}"
                         (click)="openAggregationDetailsDialog(product)">
                         {{product.name }}
                       </a>
                   </div>
 
-                  <span *ngSwitchCase="'num_applications'">{{product.num_applications || 0}}</span>
-                  <span *ngSwitchCase="'num_equipments'">{{product.num_equipments || 0}}</span>
+                  <div *ngSwitchCase="'num_applications'">
+                    <span *ngIf="!product.num_applications || product.num_applications == 0">{{product.num_applications || 0}}</span>
+                    <a *ngIf="product.num_applications" class="align-left mat-button-link" [routerLink]="['/optisam/pr/products/aggregations', product.name, 'applications']" matTooltip="{{'Click here to see related Applications'|translate}}">
+                      {{product.num_applications}}
+                    </a>
+                  </div>
+                  <div *ngSwitchCase="'num_equipments'">
+                    <span *ngIf="!product.num_equipments || product.num_equipments == 0">{{product.num_equipments || 0}}</span>
+                    <a *ngIf="product.num_equipments" class="align-left mat-button-link" [routerLink]="['/optisam/pr/products/aggregations', product.name, 'equipments']"  matTooltip="{{'Click here to see related Equipments'|translate}}">
+                      {{product.num_equipments}}
+                    </a> 
+                  </div>
+
+                  <ng-container matColumnDef="version">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header="version">{{'Release'| translate}}</mat-header-cell>
+                    <mat-cell *matCellDef="let product"> {{product.version}} </mat-cell>
+                  </ng-container>
                   
                   <span *ngSwitchDefault>{{(product[column] || '-')}}</span> 
                 </div>
@@ -48,26 +63,26 @@
           <ng-container matColumnDef="expandedDetail">
             <mat-cell class="expand-cell" *matCellDef="let product" [attr.colspan]="expandDisplayedColumns.length">
               <div class="aggregation-detail mat-elevation-z8" [@detailExpand]="product == expandedRow ? 'expanded' : 'collapsed'">
-                <mat-table class="detail-table" [dataSource]="product.products">
+                <mat-table class="detail-table" [dataSource]="aggregationDetails">
                   <ng-container matColumnDef="{{column}}" *ngFor="let column of expandDisplayedColumns">
-                      <mat-header-cell *matHeaderCellDef> {{tableKeyLabelMap[column]}} </mat-header-cell>
+                      <mat-header-cell *matHeaderCellDef> {{tableKeyLabelMap[column]|translate}} </mat-header-cell>
                       <mat-cell *matCellDef="let element"> 
                           <div [ngSwitch]="column">
 
-                            <a *ngSwitchCase="'name'" mat-icon-button color="primary" matTooltip="Click here to see Product Details" (click)="openProductDetailsDialog(element.swidTag, element.name)">
-                              {{element.name }}
+                            <a *ngSwitchCase="'name'" class="align-left mat-button-link"  matTooltip="{{element.name}}" (click)="openProductDetailsDialog(element.swidTag, element.name)">
+                              {{element.name}}
                             </a>
 
                             <div *ngSwitchCase="'numOfApplications'">
                               <span *ngIf="!element.numOfApplications">{{element.numOfApplications || 0}}</span>
-                              <a *ngIf="element.numOfApplications" mat-icon-button color="primary" matTooltip="Click here to see Number of Applications" (click)="productApl(element.swidTag, element.name)">
+                              <a *ngIf="element.numOfApplications" class="align-left mat-button-link" mat-icon-button matTooltip="{{'Click here to see related Applications'|translate}}" (click)="productApl(element.swidTag, element.name)">
                                 {{element.numOfApplications}}
                               </a> 
                             </div>
                   
                             <div *ngSwitchCase="'numofEquipments'">
                               <span *ngIf="!element.numofEquipments">{{element.numofEquipments || 0}}</span>
-                              <a *ngIf="element.numofEquipments" mat-icon-button color="primary" matTooltip="Click here to see Number of Equipments" (click)="productEqui(element.swidTag, element.name)">
+                              <a *ngIf="element.numofEquipments" class="align-left mat-button-link" mat-icon-button matTooltip="{{'Click here to see related Equipments'|translate}}" (click)="productEqui(element.swidTag, element.name)">
                                 {{element.numofEquipments}} 
                               </a>
                             </div>
@@ -90,7 +105,7 @@
           <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
           <mat-row *matRowDef="let row; columns: ['expandedDetail']" class="agg-detail-row" [class.agg-expanded-row]="!expandedRow || expandedRow !== row"></mat-row>
         </mat-table>
-        <!-- <app-loading-spinner *ngIf="_loading"></app-loading-spinner> -->
+        <app-loading-spinner *ngIf="_loading || !productAggregationData"></app-loading-spinner>
         <mat-paginator [length]="length" [pageSize]="page_size" [pageSizeOptions]="[10,20,30,50]"
           (page)="getPaginatorData($event)" showFirstLastButtons>
         </mat-paginator>

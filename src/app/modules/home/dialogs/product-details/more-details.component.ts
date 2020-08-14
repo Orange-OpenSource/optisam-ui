@@ -8,6 +8,8 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { ProductService } from 'src/app/core/services/product.service';
 import { DialogData } from './details';
+import { Subscription } from 'rxjs';
+import { SharedService } from 'src/app/shared/shared.service';
 
 
 @Component({
@@ -21,33 +23,66 @@ export class MoreDetailsComponent implements OnInit {
   pName: any;
   edition: any;
   acquireRight: any;
+  loadingSubscription: Subscription;
+  _loading: Boolean;
+  swidTag: any;
+  productInfo: DialogData = new DialogData();
+  productOptions: DialogData = new DialogData();
 
-  productdetails: DialogData = new DialogData();
   constructor(private productsService: ProductService,
+    private sharedService: SharedService,
     public dialogRef: MatDialogRef<MoreDetailsComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData) { }
+    @Inject(MAT_DIALOG_DATA) public data: DialogData) { 
+      this.loadingSubscription = this.sharedService .httpLoading().subscribe(load => {
+        this._loading = load;
+      });}
 
 
   ngOnInit() {
-    const val = this.data['datakey'];
+    this.swidTag = this.data['datakey'];
     this.pName = this.data['dataName'];
-    this.productsService.getAcquiredRigthDetail(val).subscribe(
-      (res: any) => {
-        this.acquireRight = res;
-        console.log('acquireRight-------', this.acquireRight);
-      },
-      error => {
-        console.log('There was an error while retrieving Posts !!!' + error);
-      });
+    this.getProductDetails();
+  }
 
-    this.productsService.getMoreDetails(val).subscribe(
+  getProductDetails() {
+    this._loading = true;
+    this.productsService.getMoreDetails(this.swidTag).subscribe(
       (res: any) => {
-        this.productdetails = res;
+        this.productInfo = res;
+        this._loading = false;
       },
       error => {
+        this._loading = false;
         console.log('There was an error while retrieving Posts !!!' + error);
       });
   }
+
+  getProductOptions() {
+    this._loading = true;
+    this.productsService.getOptionsDetails(this.swidTag).subscribe(
+      (res: any) => {
+        this.productOptions = res;
+        this._loading = false;
+      },
+      error => {
+        this._loading = false;
+        console.log('There was an error while retrieving Posts !!!' + error);
+      });
+  }
+
+  getAcquiredRights() {
+    this._loading = true;
+    this.productsService.getAcquiredRightDetails(this.swidTag).subscribe(
+      (res: any) => {
+        this.acquireRight = res;
+        this._loading = false;
+      },
+      error => {
+        this._loading = false;
+        console.log('There was an error while retrieving Posts !!!' + error);
+      });
+  }
+
   onNoClick(): void {
     this.dialogRef.close();
   }

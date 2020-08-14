@@ -32,9 +32,9 @@ export class ProdAplComponent implements OnInit {
   appnamePlaceholder: any;
   ownerPlaceholder: any;
   prodName: any;
+  swidTag:any;
 
-
-  displayedColumns: string[] = ['name',  'numOfInstances', 'app_owner',  'numofEquipments'];
+  displayedColumns: string[] = ['name',  'num_of_instances', 'owner',  'num_of_equipments'];
   _loading: Boolean;
 
   advanceSearchModel: any = {
@@ -56,9 +56,9 @@ export class ProdAplComponent implements OnInit {
     this.RenderDataTable();
   }
   RenderDataTable() {
-    const swidTag = (this.route.snapshot.paramMap.get('swidTag'));
+    this.swidTag = (this.route.snapshot.paramMap.get('swidTag'));
     this.prodName = localStorage.getItem('prodName');
-    this.productservice.getprodApplications(swidTag, 10, 1).subscribe(
+    this.productservice.getprodApplications(this.swidTag, 10, 1, 'asc', 'name').subscribe(
       (res: any) => {
         this.MyDataSource = new MatTableDataSource(res.applications);
         this.MyDataSource.sort = this.sort;
@@ -86,8 +86,7 @@ export class ProdAplComponent implements OnInit {
     if (this.sort_order === '' || this.sort_order === null) {
       this.sort_order = 'asc';
     }
-    this.productservice.filteredData(page_num + 1, this.pageSize, this.searchFields.owner,
-      this.sort_by, this.sort_order, this.searchFields.appName, this.searchFields.owner).subscribe(
+      this.productservice.getprodApplications(this.swidTag, this.pageSize, page_num + 1, this.sort_order, this.sort_by).subscribe(
         (res: any) => {
           this.MyDataSource = new MatTableDataSource(res.applications);
           this._loading = false;
@@ -103,8 +102,7 @@ export class ProdAplComponent implements OnInit {
     const swidTag = (this.route.snapshot.paramMap.get('swidTag'));
     localStorage.setItem('prodApl_direction', sort.direction);
     localStorage.setItem('prodApl_active', sort.active);
-      this.productservice.prodAplfilteredData( swidTag, this.current_page_num, this.pageSize, sort.active,
-      sort.direction, this.searchFields.appName, this.searchFields.owner).subscribe(
+    this.productservice.getprodApplications(this.swidTag, this.pageSize, this.current_page_num + 1, this.sort_order, this.sort_by).subscribe(
       (res: any) => {
         this.MyDataSource = new MatTableDataSource(res.applications);
         this.MyDataSource.sort = this.sort;

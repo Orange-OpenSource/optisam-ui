@@ -25,6 +25,10 @@ class ProdApplications {
   numofEquipments: string;
 }
 
+export interface AggregationProductsInformation {
+  products: string[];
+}
+
 export interface AggregationDetailsInformation {
   ID: string;
   name: string;
@@ -65,4 +69,29 @@ interface AquiredRightsInformation {
   totalCost: number;
   deltaNumber: number;
   deltaCost: number;
+}
+
+export interface ProductAggregationApplications {
+  totalRecords: number;
+  applications: AggregationApplications[];
+}
+
+interface AggregationApplications {
+  application_id: string;
+  name: string;
+  app_owner: string;
+  numOfInstances: number;
+  numofEquipments: number;
+}
+
+export interface MetricSimulationRequest {
+  swid_tag: string;
+  metric_name: string;
+  unit_cost: number;
+}
+
+export interface MetricSimulationResponse {
+  numCptLicences: number;
+  total_cost: number;
+  metric_name?: string;
 }

@@ -1,13 +1,23 @@
-mat-header-cell, mat-header-row, .mat-header-cell-def{
-    // min-height:14px;
-    // font-family:Verdana,sans-serif;:Verdana,sans-serif;
-    // font-size:13px;
-    padding: 8px 0;
-   }
-mat-header-row{
-  padding: 8px;
-}
-
 .container {
     margin-top: 40px !important;
+}
+
+.row {
+    margin: 0px !important;
+    justify-content: space-between;
+  }
+.mat-button-link {
+    cursor: pointer;
+}
+.highlight:hover {
+  text-decoration: underline;
+}
+.mat-row {
+    cursor: pointer;
+}
+  .mat-column-description {
+    word-wrap: break-word !important;
+    overflow-wrap: break-word;
+    word-wrap: break-word;    
+    word-break: break-word;
 }

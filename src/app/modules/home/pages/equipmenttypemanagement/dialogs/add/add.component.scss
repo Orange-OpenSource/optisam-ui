@@ -1,37 +1,55 @@
-// .mat-form-field-appearance-outline .mat-form-field-flex {
-//   padding: 0 .75em 0 .75em;
-//   margin-top: -.25em;
-//   position: relative !important;
-// }
-
 .mat-form-field{display: block;}
 .mat-card {max-height: 620px; overflow-y: auto; /* padding: 10px; */}
-// .create-equipment {margin:0;}
-// .mat-card-title { padding: 0; margin: 0; }
-// .mat-card-title {
-//   margin-bottom: 16px !important;
-// }
+
 .mat-card-content .row { margin: 0; }
-// .mat-checkbox {margin-right: 7px;}
 
 /* 20-05-2019 Add components */
 .add-attribute-button { padding-left: 0;  padding-bottom: 10px; text-align: right; padding-right: 0;}
 .cta-button-bx .left-btn { text-align: left; padding-left: 0; }
 .cta-button-bx .left-btn button { margin-right: 10px; }
-.cta-button-bx .right-btn {text-align: right;}
+.cta-button-bx .right-btn {text-align: right; padding: unset;}
 .attribute-group .attributes { padding: 0 15px 0 0; }
 .attribute-group .attribute-label  { width: 100%; }
 .mat-checkbox { margin: 0 5px 0 0;}
-.attribute-group .close-btn button { margin: 40px 0 0 0; }
+// .attribute-group .close-btn button { margin: 40px 0 0 0; }
 .mat-error {
-    // margin: -15px 0 20px 0 
     font-size: 10px;
 }
-.create-equipment .equipments {padding: 0 15px 0 0;}
+.mat-icon {
+    color: #008AFC !important;
+}
+.create-equipment .field-left {padding: 0 15px 0 0;}
+.create-equipment .field-center {padding: 0 15px 0 0;}
+.create-equipment .field-right {padding: 0px;}
 .error-div{
     padding: 7px 16px;
     background: #dc3545;
     color: #fff;
     font-size: 16px;
     border-radius: 5px;
+}
+#addAttrButton {
+    margin-right: 10px;
+}
+.cancelBtn {
+    margin-top:5px;
+}
+.checkbox-section {
+    width: 100%;
+    padding-top: 5px;
+}
+.checkbox-labels {
+    display: flex;
+}
+.chkLabel {
+    display: flex;
+    justify-content: center;
+}
+.checkboxes {
+    display: flex;
+}
+.chkbox {
+    display: flex;
+    justify-content: center;
+    margin-top:5px;
 }

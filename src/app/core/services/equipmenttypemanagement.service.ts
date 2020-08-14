@@ -15,6 +15,8 @@ import { RequiredJSONFormat, EquipmentTypes, EquipmentType } from 'src/app/modul
 @Injectable()
 export class EquipmentTypeManagementService {
   apiUrl = environment.API_URL;
+  apiProductUrl = environment.API_PRODUCT_URL;
+  apiEquipUrl = environment.API_EQUIPMENT_URL;
   token = localStorage.getItem('access_token');
   dataChange: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
   dialogData: any;
@@ -31,11 +33,11 @@ export class EquipmentTypeManagementService {
 
   /** CRUD METHODS */
   getAllTypes(): Observable<EquipmentType[]> {
-    const url = this.apiUrl + '/equipments/types';
+    const url = this.apiEquipUrl + '/equipments/types';
     return this.httpClient.get<EquipmentType[]>(url);
   }
   createEquipments(equipmentData): Observable<any> {
-    return this.httpClient.post<any>(this.apiUrl + '/equipments/types', equipmentData)
+    return this.httpClient.post<any>(this.apiEquipUrl + '/equipments/types', equipmentData)
       .pipe(
         map(res => {
           this.dialogData = equipmentData;
@@ -43,32 +45,46 @@ export class EquipmentTypeManagementService {
         }));
   }
   getMetaData(): Observable<Equipments[]> {
-    const url = this.apiUrl + '/equipments/metadata';
+    const url = this.apiEquipUrl + '/equipments/metadata';
     return this.httpClient.get<Equipments[]>(url);
   }
   getMappedSource(id): Observable<Equipments[]> {
-    const url = this.apiUrl + '/equipments/metadata/' + id ;
+    const url = this.apiEquipUrl + '/equipments/metadata/' + id ;
     return this.httpClient.get<Equipments[]>(url);
   }
   getTypes(): Observable<Equipments[]> {
-    const url = this.apiUrl + '/equipments/types';
+    const url = this.apiEquipUrl + '/equipments/types';
     return this.httpClient.get<Equipments[]>(url);
   }
   addType(type: Type): void {
     this.dialogData = type;
   }
   updateAttribute(id, attributeData): Observable<any> {
-    const url = this.apiUrl + '/equipments/types/' + id ;
+    const url = this.apiEquipUrl + '/equipments/types/' + id ;
     return this.httpClient.patch<any>(url, attributeData);
   }
 
   getEquipmentsdata(key, name, pageSize, length) {
-    const url =  this.apiUrl + '/equipments/' + key  +
+    const url =  this.apiEquipUrl + '/equipments/' + key  +
     '?' + 'page_num=' + length + '&page_size=' + pageSize + '&sort_by=' + name + '&sort_order=ASC';
     return this.httpClient.get<Equipments[]>(url);
   }
+// Equip for Applications
+  getEquipmentDataWithFilters(key, name, pageSize, length, filteringkey1, filteringkey2) {
+    let filteringCondition = '';
+    if (filteringkey1 !== '' && filteringkey1 !== undefined) {
+      filteringCondition = filteringCondition + '&filter.product_id.filteringkey=' + filteringkey1;
+    }
+    if (filteringkey2 !== '' && filteringkey2 !== undefined) {
+      filteringCondition = filteringCondition + '&filter.application_id.filteringkey=' + filteringkey2;
+    }
+    const url =  this.apiEquipUrl + '/equipments/' + key  +
+    '?' + 'page_num=' + length + '&page_size=' + pageSize + '&sort_by=' + name + '&sort_order=ASC'+ filteringCondition;
+    return this.httpClient.get<Equipments[]>(url);
+    
+  }
   getProdWithEquipments(swigTag, key, name, pageSize, length, searchFilter?: any) {
-    let url =  this.apiUrl + '/products/' + swigTag + '/equipments/' + key  +
+    let url =  this.apiEquipUrl + '/products/' + swigTag + '/equipments/' + key  +
     '?' + 'page_num=' + length + '&page_size=' + pageSize + '&sort_by=' + name + '&sort_order=ASC';
     if (searchFilter) {
       url += '&' + searchFilter;
@@ -77,7 +93,7 @@ export class EquipmentTypeManagementService {
   }
 
   getPaginatedData(key, name, length, pageSize, searchFilter?: any) {
-    let url =  this.apiUrl + '/equipments/' + key  +
+    let url =  this.apiEquipUrl + '/equipments/' + key  +
     '?' + 'page_num=' + length + '&page_size=' + pageSize + '&sort_by=' + name + '&sort_order=ASC';
 
     if (searchFilter) {
@@ -85,15 +101,20 @@ export class EquipmentTypeManagementService {
    }
     return this.httpClient.get<Equipments[]>(url);
   }
-  sortEquipments(key, length, pageSize, sort_by, sort_order, searchFilter?: any ) {
+  sortEquipments(key, length, pageSize, sort_by, sort_order, swidtag, searchFilter?: any ) {
     if (sort_order === '') {
       sort_order = 'asc';
     }
-    let url =  this.apiUrl + '/equipments/' + key  +
-    '?' + 'page_num=' + length + '&page_size=' + pageSize + '&sort_by=' + sort_by + '&sort_order=' + sort_order;
-
+    let url;
+    if(swidtag){
+      url =  this.apiEquipUrl + '/products/' + swidtag + '/equipments/' + key  +
+      '?page_num=' + length + '&page_size=' + pageSize + '&sort_by=' + sort_by + '&sort_order=' + sort_order;
+    } else {
+      url =  this.apiEquipUrl + '/equipments/' + key  + '?page_num=' + length + '&page_size=' + pageSize + '&sort_by=' + 
+      sort_by + '&sort_order=' + sort_order;
+    }
     if (searchFilter) {
-       url += '&' + searchFilter;
+      url += '&' + searchFilter;
     }
     return this.httpClient.get<Equipments[]>(url);
   }
@@ -101,7 +122,7 @@ export class EquipmentTypeManagementService {
     if (sort_order === '') {
       sort_order = 'asc';
     }
-    const url = this.apiUrl + '/equipments/'  + key  +
+    const url = this.apiEquipUrl + '/equipments/'  + key  +
     '?' + 'page_num=' + length + '&page_size=' + pageSize +
       '&sort_by=' + sort_by + '&sort_order=' + sort_order + '&' + searchFilter;
       return this.httpClient.get<Equipments[]>(url);
@@ -110,35 +131,35 @@ export class EquipmentTypeManagementService {
       if (sort_order === '') {
         sort_order = 'asc';
       }
-      const url =  this.apiUrl + '/products/' + swigTag + '/equipments/'  + key  +
+      const url =  this.apiEquipUrl + '/products/' + swigTag + '/equipments/'  + key  +
       '?' + 'page_num=' + length + '&page_size=' + pageSize +
         '&sort_by=' + sort_by + '&sort_order=' + sort_order + '&' + searchFilter;
         return this.httpClient.get<Equipments[]>(url);
     }
-  getEquipmentDetail(typeID, equiId) {
-    const url =  this.apiUrl + '/equipments/' + typeID  + '/' + equiId;
+  getEquipmentDetail(equiId,typeName) {
+    const url =  this.apiEquipUrl + '/equipments/' + equiId  + '/' + typeName;
     console.log(url);
     return this.httpClient.get<Equipments[]>(url);
   }
   getParentDetail(typeID, equiId) {
-    const url =  this.apiUrl + '/equipments/' + typeID  + '/' + equiId + '/' + 'parents';
+    const url =  this.apiEquipUrl + '/equipments/' + typeID  + '/' + equiId + '/' + 'parents';
     console.log(url);
     return this.httpClient.get<Equipments[]>(url);
   }
   getChildDetail(typeID, equiId, childTypeId, length, pageSize, sort_by, sort_order) {
-    const url =  this.apiUrl + '/equipments/' + typeID  + '/' + equiId + '/childs' + '/' + childTypeId +
+    const url =  this.apiEquipUrl + '/equipments/' + typeID  + '/' + equiId + '/childs' + '/' + childTypeId +
     '?' + 'page_num=' + length + '&page_size=' + pageSize + '&sort_by=' + sort_by + '&sort_order=' + sort_order;
     console.log(url);
     return this.httpClient.get<Equipments[]>(url);
   }
-  getProductDetail(typeID, equiId, length, pageSize, sort_by) {
-    const url =  this.apiUrl + '/equipments/' + typeID  + '/' + equiId + '/' + 'products' +
-    '?' + 'page_num=' + length + '&page_size=' + pageSize + '&sort_by=' + sort_by + '&sort_order=ASC';
+  getProductDetail(equiId, typeName, length, pageSize, sort_by) {
+    const url =  this.apiProductUrl + '/products' +
+    '?' + 'page_num=' + length + '&page_size=' + pageSize + '&sort_by=' + sort_by + '&sort_order=asc&search_params.equipment_id.filter_type=1&search_params.equipment_id.filteringkey='+typeName;
     console.log(url);
     return this.httpClient.get<Equipments[]>(url);
   }
   getChildPaginatedData(typeID, equiId, childTypeId, length, pageSize, sort_by) {
-    const url =  this.apiUrl + '/equipments/' + typeID  + '/' + equiId + '/childs' + '/' + childTypeId +
+    const url =  this.apiEquipUrl + '/equipments/' + typeID  + '/' + equiId + '/childs' + '/' + childTypeId +
     '?' + 'page_num=' + length + '&page_size=' + pageSize + '&sort_by=' + sort_by + '&sort_order=ASC';
     return this.httpClient.get<Equipments[]>(url);
   }
@@ -146,7 +167,7 @@ export class EquipmentTypeManagementService {
     if (sort_order === '') {
       sort_order = 'asc';
     }
-    const url =  this.apiUrl + '/equipments/' + typeID  + '/' + equiId + '/childs' + '/' + childTypeId +
+    const url =  this.apiEquipUrl + '/equipments/' + typeID  + '/' + equiId + '/childs' + '/' + childTypeId +
     '?' + 'page_num=' + length + '&page_size=' + pageSize + '&sort_by=' + sort_by + '&sort_order=' + sort_order;
     return this.httpClient.get<Equipments[]>(url);
   }
@@ -154,14 +175,14 @@ export class EquipmentTypeManagementService {
     if (sort_order === '') {
       sort_order = 'asc';
     }
-    const url =  this.apiUrl + '/equipments/' + typeID  + '/' + equiId + '/childs' + '/' + childTypeId +
+    const url =  this.apiEquipUrl + '/equipments/' + typeID  + '/' + equiId + '/childs' + '/' + childTypeId +
     '?' + 'page_num=' + length + '&page_size=' + pageSize + '&sort_by=' + sort_by + '&sort_order=' + sort_order + '&' + searchFilter;
     return this.httpClient.get<Equipments[]>(url);
   }
   productFilteredData(typeID, equiId, length, pageSize, sort_by, sort_order,
     filteringkey1, filteringkey2, filteringkey3): Observable<Equipments[]> {
-      sort_by = sort_by.toUpperCase();
-      sort_order = sort_order.toUpperCase();
+      sort_by = sort_by;
+      sort_order = sort_order;
     let filteringCondition = '';
     if (filteringkey1 !== '' && filteringkey1 !== undefined) {
       filteringCondition = filteringCondition + '&search_params.swidTag.filteringkey=' + filteringkey1;
@@ -176,24 +197,17 @@ export class EquipmentTypeManagementService {
     if (sort_order === '') {
       sort_order = 'ASC';
     }
-    const url = this.apiUrl + '/equipments/' + typeID  + '/' + equiId + '/' + 'products?page_num=' + length + '&page_size=' + pageSize +
-      '&sort_by=' + sort_by + '&sort_order=' + sort_order + filteringCondition;
+    const url =  this.apiProductUrl + '/products' +
+                '?' + 'page_num=' + length + '&page_size=' + pageSize + '&sort_by=' + sort_by + 
+                '&sort_order=asc&search_params.equipment_id.filteringkey=' + equiId + filteringCondition;
+    
+    // const url = this.apiEquipUrl + '/equipments/' + typeID  + '/' + equiId + '/' + 'products?page_num=' + length + '&page_size=' + pageSize +
+    //   '&sort_by=' + sort_by + '&sort_order=' + sort_order + filteringCondition;
     return this.httpClient.get<Equipments[]>(url);
   }
-  getMetricList() {
-    const url = this.apiUrl + '/metric';
+
+  getAggregationEquipments(query: string, aggregateName: string, equipmentId: string) {
+    const url = this.apiEquipUrl + '/products/aggregations/' + aggregateName + '/equipments/' + equipmentId + query;
     return this.httpClient.get<any>(url);
-  }
-  getMetricType() {
-    const url = this.apiUrl + '/metric/types';
-    return this.httpClient.get<any>(url);
-  }
-  createMetric(metricData, href) {
-    return this.httpClient.post<any>(this.apiUrl + href, metricData)
-      .pipe(
-        map(res => {
-          this.dialogData = metricData;
-          return res;
-        }));
   }
 }

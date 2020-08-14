@@ -14,11 +14,13 @@ export class SharedService {
   private _navigationLoading: Subject<Boolean>;
   private _httpLoading: Subject<Boolean>;
   private _clearAdvSearch: BehaviorSubject<any>;
+  private _emitProfileChange: Subject<any>;
 
   constructor() {
     this._navigationLoading = new Subject<Boolean>();
     this._httpLoading = new Subject<Boolean>();
     this._clearAdvSearch = new BehaviorSubject<any>('1');
+    this._emitProfileChange = new Subject<any>();
   }
 
   startLoading() {
@@ -51,5 +53,13 @@ export class SharedService {
 
   triggerClearSeach() {
     this._clearAdvSearch.next('1');
+  }
+
+  emitProfileChange(change: any) {
+    this._emitProfileChange.next(change);
+  }
+
+  getChangedProfile() {
+    return this._emitProfileChange.asObservable();
   }
 }

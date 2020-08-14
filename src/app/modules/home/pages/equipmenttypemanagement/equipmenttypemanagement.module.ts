@@ -16,6 +16,7 @@ import { AddComponent } from './dialogs/add/add.component';
 import { DeleteComponent } from './dialogs/delete/delete.component';
 import { EditComponent } from './dialogs/edit/edit.component';
 import { ListComponent } from './dialogs/list/list.component';
+import { SharedModule } from 'src/app/shared/shared.module';
 @NgModule({
   imports: [
     CommonModule,
@@ -23,7 +24,8 @@ import { ListComponent } from './dialogs/list/list.component';
     FormsModule,
     ReactiveFormsModule,
     CustomMaterialModule,
-    EquipmentTypeManagementRoutingModule
+    EquipmentTypeManagementRoutingModule,
+    SharedModule
   ],
   entryComponents: [
     AddComponent,

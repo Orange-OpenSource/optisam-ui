@@ -7,3 +7,17 @@
 .example-full-width {
   width: 100%;
 }
+
+#cancelButton,#resetButton,#saveButton {
+  margin: 10px;
+}
+.scopesList {
+  margin-top: 10px;
+}
+.closeDialog {
+  display: flex;
+  justify-content: flex-end;
+}
+.page-heading {
+  margin-top: -32px !important;
+}

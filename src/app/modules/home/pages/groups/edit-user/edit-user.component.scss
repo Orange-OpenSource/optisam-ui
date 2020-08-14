@@ -1,0 +1,20 @@
+.card {
+  border: unset !important;
+}
+.mat-card{
+  width: 400px !important;
+  padding: 0 16px;
+}
+.mat-card-header {
+  display: flex;
+  justify-content: center;
+}
+.mat-raised-button {
+  box-sizing: initial;
+}
+.selectAll-option mat-pseudo-checkbox{
+  display: none;
+}
+.select-checkbox label{
+  margin-bottom: 0px;
+}

@@ -1,0 +1,59 @@
+<mat-card class="example-card">
+    <div class="container-fluid page-content-header">
+      <div class="row">
+        <div class="col-md-9 page-heading" style="display:table-cell">
+          <span class="parentNode nav-path" routerLink="/optisam/pr/products/aggregations">{{'Product Aggregation'|translate}}</span><span class="nav-path-desc"> : {{aggregationName}}
+            </span> <mat-icon class="arrow_icon">arrow_forward_ios</mat-icon> <span class="currentNode nav-path">{{'Equipments'|translate}}</span>
+        </div>
+  
+        <div class="col-md-3 search-div">
+            <app-advance-search [advanceSearchModel]="advanceSearchModel" (advFilterEvent)="advSearchTrigger($event)"></app-advance-search> 
+        </div>
+      </div>
+    </div>
+  <!-- End page header -->
+  
+  
+    <mat-card-content>
+      <div class="table-container mat-elevation-z8">
+        <div class="mat-elevation-z8">
+              <mat-toolbar color="ThemePalette">
+                <mat-toolbar-row>
+                  <button  mat-button routerLinkActive="active" [ngClass]="{'active-column': selectedEquipment.type === disCol.type}" *ngFor="let disCol of equipmentTypes"
+                  matTooltip="Click here to see Equipment List" (click)="selectEquipment(disCol)">{{disCol.type|uppercase}}</button>
+                </mat-toolbar-row>
+              </mat-toolbar>
+  
+              <div *ngIf="!_loading" class="table-section">
+                  <!-- <div class="no-equip" *ngIf="length == 0">No equipments available</div> -->
+                  <mat-table *ngIf="displayedrows && displayedrows.length > 0" [dataSource]="dataSource" matSort (matSortChange)="sortData($event)">
+                    <ng-container *ngFor="let x of displayedrows; let colIndex = index" matColumnDef="{{x}}">
+                      <th>
+                        <mat-header-cell *matHeaderCellDef mat-sort-header matTooltip="{{x}}"> {{x}}</mat-header-cell>
+                      </th>
+                      <mat-cell *matCellDef="let element">
+                        <td *ngIf="colIndex===0">{{element[x]}} </td>
+                        <td *ngIf="colIndex > 0">{{element[x]}}</td>
+                      </mat-cell>
+                    </ng-container>
+  
+                    <tr>
+                      <mat-header-row *matHeaderRowDef="displayedrows;sticky:true;"></mat-header-row>
+                    </tr>
+                    <tr>
+                      <mat-row *matRowDef="let row; columns: displayedrows;"></mat-row>
+                    </tr>
+  
+                  </mat-table>
+                  <div id="dataUnavailableMsg" *ngIf="!_loading && displayedrows && displayedrows.length == 0">{{'No data available'|translate}}</div>
+              </div>
+              <app-loading-spinner *ngIf="_loading"></app-loading-spinner>
+  
+        <mat-paginator *ngIf="length != 0" [length]="length" [pageSize]="page_size" [pageSizeOptions]="[10,20,30,50]"
+        (page)="getPaginatorData($event)" showFirstLastButtons>
+        </mat-paginator>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+  

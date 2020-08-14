@@ -1,37 +1,76 @@
-<mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
-  <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
-    <button mat-icon-button disabled></button>
-   <div  mat-menu-item matTooltip="{{node.item.fully_qualified_name}}">{{node.item.name}}</div>
-   <div >  <a mat-menu-item style="margin-right: 16px;" (click)="userManegment(node.item, node)">{{node.item.num_of_users}} users</a></div>
+<mat-card>
+  <mat-card-title class="page-heading">
+    {{'Group Management'|translate}}
+  </mat-card-title>
 
- <div ><a  mat-menu-item (click)="viewScope(node.item)"> View Scope</a></div>
- <div *ngIf="(role === 'ADMIN') || (role === 'SUPER_ADMIN')"  ><a *ngIf="(node.item.num_of_users === '0') && (node.item.num_of_child_groups === '0')"> <img style="height: 20px; margin-right: 16px;" mat-menu-item (click)="deleteGrp(node.item.ID, node)" src="\assets\images\delete-512.png"/></a></div>
-  <div *ngIf="(role === 'ADMIN') || (role === 'SUPER_ADMIN')"> <a><img style="height: 20px; margin-right: 16px;" (click)="addNew(node.item, node)" mat-menu-item src="\assets\images\add.png"/> </a></div>
-  <div *ngIf="(role === 'ADMIN') || (role === 'SUPER_ADMIN')"> <a><img style="height: 20px; margin-right: 16px;" mat-menu-item (click)="EditName(node.item,node)"  src="\assets\images\edit.png"/></a> </div>
-  </mat-tree-node>
-  <mat-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodePadding>
-    <button mat-icon-button
-            [attr.aria-label]="'toggle ' + node.item" matTreeNodeToggle>
-      <mat-icon class="mat-icon-rtl-mirror">
-        {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
-      </mat-icon>
-    </button>
-    <div mat-menu-item matTooltip="{{node.item.fully_qualified_name}}">  {{node.item.name}}</div>
+  <mat-card-content class="mat-elevation-z8">
+    <app-loading-spinner *ngIf="_loading || !dataSource"></app-loading-spinner>
+    <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
+      <mat-tree-node *matTreeNodeDef="let node;" matTreeNodePadding>
+        <button *ngIf="isExpandable(node)" mat-icon-button [attr.aria-label]="'toggle ' + node.item" matTreeNodeToggle>
+          <mat-icon class="mat-icon-rtl-mirror">
+            {{treeControl.isExpanded(node) ? 'remove_circle_outline' : 'add_circle_outline'}}
+          </mat-icon>
+        </button>
+        <button *ngIf="!isExpandable(node)" mat-icon-button disabled></button>
 
+        <div mat-menu-item matTooltip="{{node.item.fully_qualified_name}}"> {{node.item.name}}</div>
 
-  <div>  <a style="margin-right: 16px;" mat-menu-item (click)="userManegment(node.item, node)">{{node.item.num_of_users}} users</a></div>
- <!-- <div> <textarea matInput placeholder="Leave a comment" disabled></textarea> </div> -->
-<!--  <div *ngFor="let x of node.item.scopes; let colIndex = index">{{x}},</div>
- -->
-<!--  user{{node.item.num_of_users}}
- groupList{{node.item.num_of_child_groups}} -->
- <div ><a  mat-menu-item (click)="viewScope(node.item)"> View Scope</a></div>
- <div *ngIf="(role === 'ADMIN') || (role === 'SUPER_ADMIN')"><a *ngIf="(node.item.num_of_users === '0') && (node.item.num_of_child_groups === '0')"> <img style="height: 20px; margin-right: 16px;" mat-menu-item (click)="deleteGrp(node.item.ID)" src="\assets\images\delete-512.png"/></a></div>
-  <div *ngIf="(role === 'ADMIN') || (role === 'SUPER_ADMIN')"> <a><img style="height: 20px; margin-right: 16px;" (click)="addNew(node.item)" mat-menu-item src="\assets\images\add.png"/> </a></div>
-  <div *ngIf="(role === 'ADMIN') || (role === 'SUPER_ADMIN')"> <a><img style="height: 20px; margin-right: 16px;" mat-menu-item (click)="EditName(node.item,node)"  src="\assets\images\edit.png"/></a> </div>
-    <mat-progress-bar *ngIf="node.isLoading"
-                      mode="indeterminate"
-                      class="example-tree-progress-bar"></mat-progress-bar>
-  </mat-tree-node>
+        <div> 
+          <a style="margin-right: 16px;" mat-menu-item (click)="userManegment(node.item, node)">
+            {{node.item.num_of_users}} {{'users'|translate}}
+          </a>
+        </div>
 
-</mat-tree>
+        <div>
+          <a mat-menu-item (click)="viewScope(node.item)"> 
+            {{'View Scope'|translate}}
+          </a>
+        </div>
+
+        <div id="deleteBtn" *ngIf="(role === 'ADMIN' || role === 'SUPER_ADMIN') && (node.item.num_of_users === '0') && (node.item.num_of_child_groups === '0')"
+          (click)="deleteConfirmation(node.item.ID, node, deleteConfirmationDialog)">
+          <mat-icon>delete_outline</mat-icon>
+        </div>
+
+        <div id="addBtn" *ngIf="(role === 'ADMIN') || (role === 'SUPER_ADMIN')" (click)="addNew(node.item)"> 
+          <mat-icon>add</mat-icon>
+        </div>
+
+        <div id="editBtn" *ngIf="(role === 'ADMIN') || (role === 'SUPER_ADMIN')" (click)="EditName(node.item,node)"> 
+          <mat-icon>edit</mat-icon>
+        </div>
+        
+        <mat-progress-bar *ngIf="node.isLoading" mode="indeterminate" class="example-tree-progress-bar">
+        </mat-progress-bar>
+
+      </mat-tree-node>
+    </mat-tree>
+  </mat-card-content>
+
+    <ng-template #succesGroupDeleteDialog>
+      <mat-dialog-content>
+        <p>{{'DELETE_GROUP_SUCCESS'|translate}}</p>
+      </mat-dialog-content>
+      <mat-dialog-actions align="center">
+        <button [mat-dialog-close]="true" mat-button cdkFocusInitial>{{'OK'|translate}}</button>
+      </mat-dialog-actions>
+    </ng-template>
+    <ng-template #errorGroupDeleteDialog>
+      <mat-dialog-content>
+        <p>{{'DELETE_GROUP_ERROR'|translate}}</p>
+      </mat-dialog-content>
+      <mat-dialog-actions align="center">
+        <button [mat-dialog-close]="true" mat-button cdkFocusInitial>{{'OK'|translate}}</button>
+      </mat-dialog-actions>
+    </ng-template>
+    <ng-template #deleteConfirmationDialog>
+      <mat-dialog-content>
+        <p>{{'DELETE_GROUP_CONFIRM_MSG' | translate}}</p>
+      </mat-dialog-content>
+      <mat-dialog-actions align="center">
+        <button mat-button [mat-dialog-close]="true" (click)="deleteGrp(succesGroupDeleteDialog,errorGroupDeleteDialog)"
+          cdkFocusInitial>{{'OK'|translate}}</button>
+        <button mat-button [mat-dialog-close]="true" cdkFocusInitial>{{'Cancel'|translate}}</button>
+      </mat-dialog-actions>
+    </ng-template>

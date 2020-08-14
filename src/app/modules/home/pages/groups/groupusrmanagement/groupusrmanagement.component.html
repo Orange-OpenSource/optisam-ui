@@ -1,17 +1,22 @@
-<!-- <mat-form-field>
-    <input matInput value="Disco party!" placeholder="Message" #message>
-  </mat-form-field> -->
-<div class="col-sm-12"><h3>Group Management</h3></div>
-<div class="col-sm-12"><h6>{{fullyQualifiedName}}</h6></div>
-
-<div style="position: center;" *ngIf="addMsg">
-    <div class="col-xs-12">
-      <p class="alert alert-warning">
-        <strong>Add User Succesfully!!!</strong>
-      </p>
+<div class="closeDialog"><button [mat-dialog-close]="true" mat-icon-button><mat-icon>close</mat-icon></button></div>
+<mat-card class="card">
+  <mat-card-header>
+    <mat-card-title>
+      {{'Group Management'|translate}}
+      <div>
+        <h6>{{fullyQualifiedName}}</h6>
+      </div>
+    </mat-card-title>
+  </mat-card-header>
+  <mat-card-content fxLayout="column">
+    <div style="position: center;" *ngIf="addMsg">
+      <div class="col-xs-12">
+        <p class="alert alert-warning">
+          <strong>Add User Succesfully!!!</strong>
+        </p>
+      </div>
     </div>
-  </div>
-  <div style="position: center;" *ngIf="deleteMsg">
+    <div style="position: center;" *ngIf="deleteMsg">
       <div class="col-xs-12">
         <p class="alert alert-warning">
           <strong>Remove User Succesfully!!!</strong>
@@ -19,63 +24,99 @@
       </div>
     </div>
     <div style="position: center;" *ngIf="errorMsg">
-        <div class="col-xs-12">
-          <p class="alert alert-warning">
-            <strong>{{eMessage}}</strong>
-          </p>
-        </div>
+      <div class="col-md-12">
+        <p class="alert alert-warning">
+          <strong>{{eMessage}}</strong>
+        </p>
       </div>
-<div class="row">
-  <div class="col-sm-4"><mat-form-field>
-  <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Search">
-</mat-form-field></div>
-<div *ngIf="(role === 'ADMIN') || (role === 'SUPER_ADMIN')" class="col-sm-4" >
-    <mat-form-field>
-        <mat-label>Select User</mat-label>
-        <mat-select [formControl]="toppings" multiple>
-          <mat-option *ngFor="let topping of filterUserList" [value]="topping"  matTooltip="{{topping.user_id}}">{{topping.first_name}} {{topping.last_name}}</mat-option>
-        </mat-select>
-      </mat-form-field></div>
-      <div class="col-sm-4" >
-  <button *ngIf="(role === 'ADMIN') || (role === 'SUPER_ADMIN')" mat-raised-button (click)="addUser()">Add User</button>
-  <button *ngIf="(role === 'ADMIN') || (role === 'SUPER_ADMIN')" mat-raised-button (click)="delete()" style="margin: 10px">Delete User</button></div>
+    </div>
+    <div class="row">
+      <div class="col-sm-4">
+        <mat-form-field>
+          <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Search">
+        </mat-form-field>
+      </div>
+      <div *ngIf="(role === 'ADMIN') || (role === 'SUPER_ADMIN')" class="col-sm-4">
+        <mat-form-field>
+          <mat-label>Select User</mat-label>
+          <mat-select [formControl]="users" multiple>
+            <mat-option *ngFor="let user of filterUserList" [value]="user" matTooltip="{{user.user_id}}">
+              {{user.first_name}} {{user.last_name}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="col-sm-4">
+        <button *ngIf="(role === 'ADMIN') || (role === 'SUPER_ADMIN')" [disabled]="!this.users.value" mat-raised-button class="primary-btn"
+          (click)="addUser(succesAddUserDialog,errorAddUserDialog)">Add User</button>
+        <button *ngIf="(role === 'ADMIN') || (role === 'SUPER_ADMIN')" [disabled]="checkedUsr.length == 0" mat-raised-button class="btn-two"
+          (click)="delete(succesDeleteUserDialog,errorDeleteUserDialog)" style="margin: 10px">Delete User</button></div>
 
-</div>
-<table mat-table [dataSource]="dataSource" class="mat-elevation-z8"  matSort>
+    </div>
+    <mat-table [dataSource]="dataSource" class="mat-elevation-z8" matSort>
 
-  <!-- Position Column -->
-  <ng-container matColumnDef="last_name">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header>Last Name </th>
-    <td mat-cell *matCellDef="let element"> {{element.last_name}} </td>
-  </ng-container>
+      <!-- Last Name Column -->
+      <ng-container matColumnDef="last_name">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Last Name </mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{element.last_name}} </mat-cell>
+      </ng-container>
 
-  <!-- Name Column -->
-  <ng-container matColumnDef="first_name">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header>First Name</th>
-    <td mat-cell *matCellDef="let element"> {{element.first_name}} </td>
-  </ng-container>
+      <!-- First Name Column -->
+      <ng-container matColumnDef="first_name">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>First Name</mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{element.first_name}} </mat-cell>
+      </ng-container>
 
-  <!-- Weight Column -->
-  <ng-container matColumnDef="user_id">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header> Email </th>
-    <td mat-cell *matCellDef="let element"> {{element.user_id}} </td>
-  </ng-container>
+      <!-- Email Column -->
+      <ng-container matColumnDef="user_id">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Email </mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{element.user_id}} </mat-cell>
+      </ng-container>
 
-  <!-- Symbol Column -->
+      <!-- Action Column -->
+      <ng-container matColumnDef="action">
+        <div *ngIf="(role === 'ADMIN') || (role === 'SUPER_ADMIN')">
+          <mat-header-cell *matHeaderCellDef> Action </mat-header-cell>
+          <mat-cell *matCellDef="let element">
+            <mat-checkbox (change)="onCheked($event,element.user_id)"></mat-checkbox>
+          </mat-cell>
+        </div>
+      </ng-container>
+      <mat-header-row *matHeaderRowDef="displayedColumns;sticky:true"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    </mat-table>
+    <app-loading-spinner *ngIf="_loading"></app-loading-spinner>
+  </mat-card-content>
+</mat-card>
 
-  <ng-container matColumnDef="action">
-    <div *ngIf="(role === 'ADMIN') || (role === 'SUPER_ADMIN')">
-    <th mat-header-cell *matHeaderCellDef> Action </th>
-    <td mat-cell *matCellDef="let element"> <mat-checkbox (change)="onCheked($event,element.user_id)"></mat-checkbox> </td>
-  </div>
-  <div>
-      <th mat-header-cell *matHeaderCellDef> </th>
-      <td mat-cell *matCellDef="let element"> </td>
-  </div>
-  </ng-container>
-
-
-
-  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-</table>
+<ng-template #succesAddUserDialog>
+  <mat-dialog-content>
+    <p>{{'ADD_USER_SUCCESS'|translate}}</p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="center">
+    <button [mat-dialog-close]="true" mat-button cdkFocusInitial>{{'OK'|translate}}</button>
+  </mat-dialog-actions>
+</ng-template>
+<ng-template #errorAddUserDialog>
+  <mat-dialog-content>
+    <p>{{'ADD_USER_ERROR'|translate}}</p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="center">
+    <button [mat-dialog-close]="true" mat-button cdkFocusInitial>{{'OK'|translate}}</button>
+  </mat-dialog-actions>
+</ng-template>
+<ng-template #succesDeleteUserDialog>
+  <mat-dialog-content>
+    <p>{{'DELETE_USER_SUCCESS'|translate}}</p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="center">
+    <button [mat-dialog-close]="true" mat-button cdkFocusInitial>{{'OK'|translate}}</button>
+  </mat-dialog-actions>
+</ng-template>
+<ng-template #errorDeleteUserDialog>
+  <mat-dialog-content>
+    <p>{{'DELETE_USER_ERROR'|translate}}</p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="center">
+    <button [mat-dialog-close]="true" mat-button cdkFocusInitial>{{'OK'|translate}}</button>
+  </mat-dialog-actions>
+</ng-template>

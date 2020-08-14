@@ -1,0 +1,128 @@
+<div class="main-section">
+  <div class="col-md-12">
+      <h4>{{'Configuration'|translate}}</h4>
+      <div class="row-flex">
+          <mat-form-field appearance="outline" class="group">
+              <mat-label>{{'Group'|translate}}</mat-label>
+              <mat-select id="groupName" [(ngModel)]="configObj.group" [disabled]="HTTPActivity || groupList.length == 0">
+                  <mat-option value="">-- {{'SELECT_GROUP'|translate}} --</mat-option>
+                  <mat-option *ngFor="let group of groupList;" [value]="group">{{group}}</mat-option>
+              </mat-select>
+          </mat-form-field>
+          <div class="configName" >
+              <mat-form-field appearance="outline">
+                  <mat-label>{{'Configuration Name'|translate}}</mat-label>
+                  <!-- (keydown)="search($event)"  (keyup)="search($event)" -->
+                <input matInput placeholder="{{'Configuration Name'|translate}}" id="configName" [(ngModel)]="configName" 
+                    [disabled]="true">
+              </mat-form-field>
+          </div>
+          <div class="equipmentType">
+            <mat-form-field appearance="outline">
+                <mat-label>{{'Equipment Type'|translate}}</mat-label>
+                <!-- HTTPActivity || equipmentList.length == 0|| !configObj.group -->
+                <mat-select id="equipType" [(ngModel)]="configObj.equipmentType"
+                    [disabled]="true"
+                    (selectionChange)="selectionChanged($event, 'equipment',mytemplate)">
+                    <mat-option value="">-- {{'AGGREGATIONS.TEXTS.SELECT_PRODUCT' | translate}} --</mat-option>
+                    <mat-option *ngFor="let equipment of equipmentList;" [value]="equipment">{{equipment.type}}
+                    </mat-option>
+                </mat-select>
+                <ng-template #mytemplate>
+                    <mat-dialog-content>
+                        <p>{{'CONFIRM_MSG'|translate}}</p>
+                    </mat-dialog-content>
+                    <mat-dialog-actions align="center">
+                        <button mat-button mat-dialog-close (click) = cancel()>{{'Cancel'|translate}}</button>
+                        <button mat-button [mat-dialog-close]="true" (click)="refreshAttributes()" cdkFocusInitial>{{'OK'|translate}}</button>
+                      </mat-dialog-actions>
+                </ng-template>
+            </mat-form-field>
+          </div>
+      </div>
+
+      <form [formGroup]="uploadForm">
+          <div class="row-flex attribute-section" *ngIf="configObj.equipmentType && attributeList.length>0">
+              <mat-table formArrayName="filesArray" [dataSource]="attributeList" class="mat-elevation-z8">
+  
+                  <!-- Attribute Column -->
+                  <ng-container matColumnDef="attribute">
+                      <mat-header-cell *matHeaderCellDef> {{'Attribute'|translate}} </mat-header-cell>
+                      <mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
+                  </ng-container>
+  
+                  <!-- Simulable Column -->
+                  <ng-container matColumnDef="simulable">
+                      <mat-header-cell *matHeaderCellDef> {{'Simulable'|translate}} </mat-header-cell>
+                      <mat-cell *matCellDef="let element, let i=index">
+                          <mat-checkbox id="isSimulable{{i}}" [disabled]="true" [checked]="configObj.attributes[i].simulable"></mat-checkbox>
+                      </mat-cell>
+                  </ng-container>
+  
+                  <!-- File Upload Column -->
+                  <ng-container matColumnDef="file">
+                      <mat-header-cell *matHeaderCellDef> {{'File'|translate}} </mat-header-cell>
+                      <mat-cell *matCellDef="let element, let i=index" style="position: relative;">
+                          <div *ngIf="configObj.attributes[i].fileName" >
+                            <input id="csvFileUpload{{i}}" name="CSV File Upload" class="file-upload" title=""
+                            style="position:absolute; top:i*20%; left:55%;" 
+                            accept=".csv">
+                            <label *ngIf="configObj.attributes[i].fileName" class="attach-file">{{configObj.attributes[i].fileName}}</label>
+                            <label *ngIf="!configObj.attributes[i].fileInvalid && (configObj.attributes[i].file | json) != '{}'"><mat-icon class="valid-file">check_circle</mat-icon></label>
+                            <label *ngIf="configObj.attributes[i].fileInvalid"><mat-icon class="invalid-file">cancel</mat-icon></label>
+                          </div>
+                          <div *ngIf="!configObj.attributes[i].fileName">
+                            <input id="csvFileUpload{{i}}" type="file" name="CSV File Upload" class="file-upload" title=""
+                            (change)="fileChangeListener($event, i)" style="position:absolute; top:i*20%; left:55%;" 
+                            accept=".csv">
+                            <label *ngIf="!configObj.attributes[i].fileName" class="attach-file"><mat-icon>attach_file</mat-icon></label>
+                          </div>
+                      </mat-cell>
+                  </ng-container>
+  
+                  <!-- Delete Column -->
+                  <ng-container matColumnDef="delete">
+                      <mat-header-cell *matHeaderCellDef> {{'Delete'|translate}} </mat-header-cell>
+                      <mat-cell *matCellDef="let element, let i=index" id="deleteButton">
+                          <mat-icon [ngClass]="configObj.attributes[i].fileName?'delete-icon':'disable-icon'" (click)="deleteAttributeById(i)">delete</mat-icon >
+                      </mat-cell>
+                  </ng-container>
+  
+                  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                  <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+              </mat-table>
+          </div>
+       </form>
+       <app-loading-spinner *ngIf="attributeList.length===0"></app-loading-spinner>
+      <div *ngIf="configObj.equipmentType">
+          <br/>
+          <button mat-raised-button [mat-dialog-close]="true"  id="cancelButton" class="col-md-3 btn-four">{{'Cancel'|translate}}</button>
+          <button mat-raised-button id="resetButton" [disabled]="disableResetFlag || editRequestSentFlag" class="col-md-3 resetButton btn-three" (click)="reset()">{{'Reset'|translate}}</button>
+          &nbsp;
+          <button mat-raised-button id="applyButton" class="col-md-3 btn-two" [disabled]="formInvalidFlag || NoChangesFlag || NoFileSelectedFlag || editRequestSentFlag" (click)="uploadFile(succesUpdateDialog,errorUpdateDialog)">
+            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" *ngIf="loading"></span>  
+            {{'Update'|translate}}
+        </button>
+      </div>
+      <!-- Update successful message -->
+      <ng-template #succesUpdateDialog>
+        <mat-dialog-content>
+            <p>{{'SUCCESS_CONFIG_UPDATE_MSG'|translate}}</p>
+        </mat-dialog-content>
+        <mat-dialog-actions align="center">
+            <button [mat-dialog-close]="true" mat-button cdkFocusInitial>{{'OK'|translate}}</button>
+          </mat-dialog-actions>
+    </ng-template>
+    <!-- Update error message -->
+    <ng-template #errorUpdateDialog>
+      <mat-dialog-content>
+          <p>{{'ERROR_CONFIG_UPDATE_MSG'|translate}}</p>
+      </mat-dialog-content>
+      <mat-dialog-actions align="center">
+          <button [mat-dialog-close]="true" mat-button cdkFocusInitial>{{'OK'|translate}}</button>
+        </mat-dialog-actions>
+  </ng-template>
+
+  </div>
+  
+</div>

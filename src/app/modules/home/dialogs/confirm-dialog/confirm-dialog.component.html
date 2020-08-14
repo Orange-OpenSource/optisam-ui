@@ -1,0 +1,17 @@
+<h1 mat-dialog-title>{{data.title}}</h1>
+<mat-dialog-content >
+  <div>
+    <p>{{data.content}}</p>
+    <div class="alert alert-danger" *ngIf="error">
+      <span>Some error occured!! Please try again!</span>
+    </div>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="center">
+  <button mat-raised-button mat-dialog-close [disabled]="_loading">{{'Cancel' | translate}}</button>
+  <button mat-raised-button class="confirm-btn" (click)="confirm()" color="primary" [disabled]="_loading">
+    <span *ngIf="_loading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+    {{'Delete' | translate}}
+  </button>
+</mat-dialog-actions>

@@ -1,0 +1,118 @@
+<mat-card class="example-card" style="z-index: 0;">
+
+  <div class="container-fluid page-content-header">
+    <div class="row">
+      <div class="page-heading">
+        {{'Configuration' | translate}}
+      </div>
+      <div class="col-md-2" class="add-btn">
+        <button id="createConfigButton" mat-raised-button class="btn-two" (click)="createNew()" *ngIf="(role === 'ADMIN') || ((role === 'SUPER_ADMIN'))">
+          <mat-icon>add</mat-icon>
+          {{'Create Configuration' | translate}}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <mat-card-content>
+    <div class="mat-elevation-z8">
+
+      <mat-table [dataSource]="configurationData" matSort (matSortChange)="sortData($event)">
+        <ng-container matColumnDef="id">
+          <mat-header-cell *matHeaderCellDef > {{'Configuration ID'| translate}}
+          </mat-header-cell>
+          <mat-cell *matCellDef="let configuration"> {{configuration.config_id}} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="name">
+          <mat-header-cell *matHeaderCellDef > {{'Configuration Name'| translate}}
+          </mat-header-cell>
+          <mat-cell *matCellDef="let configuration"> {{configuration.config_name}} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="equipType">
+          <mat-header-cell *matHeaderCellDef > {{'Equipment Type' | translate}}
+          </mat-header-cell>
+          <mat-cell *matCellDef="let configuration">
+              {{configuration.equipment_type}} 
+          </mat-cell>
+        </ng-container>
+        
+        <ng-container matColumnDef="attributes">
+          <mat-header-cell *matHeaderCellDef > {{'Attributes' | translate}}
+          </mat-header-cell>
+          <mat-cell *matCellDef="let configuration">
+              {{configuration.attributes}}
+          </mat-cell>
+        </ng-container>
+<!--         
+        <ng-container matColumnDef="config_files">
+          <mat-header-cell *matHeaderCellDef > {{'Configuration Files' | translate}}
+          </mat-header-cell>
+          <mat-cell *matCellDef="let configuration">
+              {{configuration.config_attr}}
+          </mat-cell>
+        </ng-container> -->
+        
+        <ng-container matColumnDef="created_by">
+          <mat-header-cell *matHeaderCellDef > {{'Created By' | translate}}
+          </mat-header-cell>
+          <mat-cell *matCellDef="let configuration">
+              {{configuration.created_by}}
+          </mat-cell>
+        </ng-container>
+        
+        <ng-container matColumnDef="created_on">
+          <mat-header-cell *matHeaderCellDef > {{'Created On' | translate}}
+          </mat-header-cell>
+          <mat-cell *matCellDef="let configuration">
+              {{configuration.created_on}}
+          </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="action">
+          <mat-header-cell *matHeaderCellDef >{{'Action' | translate}}</mat-header-cell>
+          <mat-cell *matCellDef="let configuration">
+              <mat-icon class="action-icon" matTooltip="Edit Configuration" (click)="openDialog(configuration)">edit</mat-icon>
+              <mat-icon class="action-icon dlt" matTooltip="Delete Configuration" (click)="deleteConfigurationConfirmation(configuration, confirmationDialog)">delete</mat-icon>
+          </mat-cell>
+        </ng-container>
+        <ng-template #confirmationDialog>
+          <mat-dialog-content>
+              <p>{{'DELETE_CONFIRM_MSG' | translate}}</p>
+          </mat-dialog-content>
+          <mat-dialog-actions align="center">
+              <button mat-button [mat-dialog-close]="true" (click)="deleteConfiguration(successDialog,errorDialog)" cdkFocusInitial>{{'OK'|translate}}</button>
+              <button mat-button [mat-dialog-close]="true" cdkFocusInitial>{{'Cancel'|translate}}</button>
+            </mat-dialog-actions>
+        </ng-template>
+
+        <mat-header-row *matHeaderRowDef="displayedColumns; sticky:true"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+      </mat-table>
+      <app-loading-spinner *ngIf="_loading"></app-loading-spinner>
+      <div class="no-data" *ngIf="!_loading && configurationData && configurationData.length === 0">{{'No Configuration' | translate}}</div>
+      <!-- <mat-paginator #paginator [pageSize]="7" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons> -->
+      <!-- <mat-paginator [length]="totalRecords" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions"
+        (page)="getPaginatorData($event)" showFirstLastButtons>
+      </mat-paginator> -->
+    </div>
+    <!-- <app-loading-spinner *ngIf="_loading || !MyDataSource"></app-loading-spinner> -->
+  </mat-card-content>
+</mat-card>
+<ng-template #successDialog>
+  <mat-dialog-content>
+    <p>{{'DELETE_CONFIG_SUCCESS'|translate}}</p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="center">
+    <button mat-button [mat-dialog-close]="true" cdkFocusInitial>{{'OK'|translate}}</button>
+  </mat-dialog-actions>
+</ng-template>
+<ng-template #errorDialog>
+  <mat-dialog-content>
+    <p>{{'DELETE_CONFIG_ERROR'|translate}}</p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="center">
+    <button mat-button [mat-dialog-close]="true" cdkFocusInitial>{{'OK'|translate}}</button>
+  </mat-dialog-actions>
+</ng-template>

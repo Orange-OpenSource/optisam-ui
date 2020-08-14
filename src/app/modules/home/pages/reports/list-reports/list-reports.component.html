@@ -1,0 +1,107 @@
+<mat-card class="example-card">
+  <div class="container-fluid page-content-header">
+    <div class="row">
+      <div class="page-heading">
+        {{'Reports' | translate}}
+      </div>
+      <div>
+        <button id="refreshButton" matTooltip="{{'Refresh Reports Table'|translate}}" mat-raised-button class="btn-three" (click)="getReportsData()"><mat-icon class="refreshIcon">refresh</mat-icon></button>
+        <button id="dataUpload" mat-raised-button class="btn-two" (click)="createReport()">
+          <mat-icon>add</mat-icon>
+          {{'Create Report'|translate}}
+        </button>
+      </div>
+    </div>
+  </div>
+  <mat-card-content>
+    <div class="mat-elevation-z8">
+      <mat-table [dataSource]="MyDataSource" matSort (matSortChange)="sortData($event)">
+
+        <ng-container matColumnDef="report_id">
+          <mat-header-cell *matHeaderCellDef mat-sort-header="report_id">{{'Report ID' | translate}}
+          </mat-header-cell>
+          <mat-cell *matCellDef="let report"> {{report.report_id}} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="report_type">
+          <mat-header-cell *matHeaderCellDef mat-sort-header="report_type">{{'Report Type' | translate}}
+          </mat-header-cell>
+          <mat-cell *matCellDef="let report"> {{report.report_type}} </mat-cell>
+        </ng-container>
+
+
+        <ng-container matColumnDef="created_on">
+          <mat-header-cell *matHeaderCellDef mat-sort-header="created_on">{{'Created On' | translate}}
+          </mat-header-cell>
+          <mat-cell *matCellDef="let report"> {{report.created_on}} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="created_by">
+          <mat-header-cell *matHeaderCellDef mat-sort-header="created_by">{{'Created By'| translate}}</mat-header-cell>
+          <mat-cell *matCellDef="let report"> {{report.created_by}} </mat-cell>
+        </ng-container>
+
+
+        <ng-container matColumnDef="report_status">
+          <mat-header-cell *matHeaderCellDef mat-sort-header="report_status">{{'Status'| translate}}
+          </mat-header-cell>
+          <mat-cell *matCellDef="let report"> {{report.report_status}} </mat-cell>
+        </ng-container>
+
+
+        <ng-container matColumnDef="actions">
+          <mat-header-cell *matHeaderCellDef>{{'Action'|translate}}</mat-header-cell>
+          <mat-cell *matCellDef="let report"> 
+            <mat-menu #actionMenu="matMenu">
+              <button mat-menu-item (click)="setFileFormat('CSV',report,exportConfirmationDialog)">CSV</button>
+              <button mat-menu-item (click)="setFileFormat('PDF',report,exportConfirmationDialog)">PDF</button>
+            </mat-menu>
+            
+            <button mat-button class="btn-two export-btn" [disabled]="report.report_status == 'PENDING'" [matMenuTriggerFor]="actionMenu">
+              {{'Export'|translate}}&nbsp;&nbsp;<mat-icon>arrow_drop_down</mat-icon>
+            </button>  
+          </mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+      </mat-table>
+      <app-loading-spinner *ngIf="_loading"></app-loading-spinner>
+      <div id="noData" *ngIf="!_loading && (!MyDataSource || (MyDataSource && MyDataSource.data.length === 0))">{{'No Reports available' | translate}}</div>
+      <mat-paginator [length]="length" [pageSize]="page_size" [pageSizeOptions]="[10,20,30,50]"
+        (page)="getPaginatorData($event)" showFirstLastButtons>
+      </mat-paginator>
+    </div>
+  </mat-card-content>
+</mat-card>
+<!-- Export Confirmation -->
+<ng-template #exportConfirmationDialog>
+  <mat-dialog-content>
+      <p>{{'EXPORT_REPORT_CONFIRM_MSG' | translate}}  {{selectedFileFormat}} {{'file'|translate}}.</p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="center">
+      <button mat-button (click)="getReportById(successDialog,errorDialog)" cdkFocusInitial>
+        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" *ngIf="isDownloading"></span>
+        {{'OK'|translate}}
+      </button>&nbsp;
+      <button mat-button [mat-dialog-close]="true" cdkFocusInitial>{{'Cancel'|translate}}</button>
+    </mat-dialog-actions>
+</ng-template> 
+<!-- Successful export -->
+<ng-template #successDialog>
+  <mat-dialog-content>
+      <p>{{'EXPORT_REPORT_SUCCESS'|translate}}</p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="center">
+      <button [mat-dialog-close]="true" mat-button cdkFocusInitial>{{'OK'|translate}}</button>
+    </mat-dialog-actions>
+</ng-template>
+<!-- Error in exporting report -->
+<ng-template #errorDialog>
+  <mat-dialog-content>
+      <p>{{'EXPORT_REPORT_ERROR'|translate}}</p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="center">
+      <button [mat-dialog-close]="true" mat-button cdkFocusInitial>{{'OK'|translate}}</button>
+    </mat-dialog-actions>
+</ng-template>  

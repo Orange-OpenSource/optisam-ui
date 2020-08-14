@@ -31,6 +31,8 @@ import { LoaderInterceptor } from './core/interceptors/loader.interceptor';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { DynamicDatabase } from './modules/home/pages/groups/groupmangement/groupmangement.component';
 import { ConfigurationServiceService } from './configuration-service/configuration-service.service';
+import { MatPaginatorModule } from '@angular/material';
+import { SharedModule } from './shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -49,6 +51,8 @@ import { ConfigurationServiceService } from './configuration-service/configurati
     ReactiveFormsModule,
     BrowserAnimationsModule,
     MatProgressSpinnerModule,
+    MatPaginatorModule,
+    SharedModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
@@ -80,7 +84,7 @@ import { ConfigurationServiceService } from './configuration-service/configurati
       provide: HTTP_INTERCEPTORS,
       useClass: UnauthorisedInterceptor,
       multi: true
-  },
+  }
 ],
   bootstrap: [AppComponent],
 })

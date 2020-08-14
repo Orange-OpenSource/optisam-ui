@@ -6,22 +6,57 @@
 .mat-button {
   text-transform: uppercase; margin-right: 5px;
 }
-.optisam-logo { display: inline-block; margin: 0 30px 0 0; }
+.optisam-logo { 
+  background-color: #EAEAEA; 
+  height: 60px;
+}
+
+#app-logo {
+  padding: 6px 10px;
+  width: 11.3rem;
+}
+#app-logo-min {
+  padding: 5px 10px;
+  width: 4.5rem ;
+}
 
 .flags {
   height: 14px;
   margin-right: 7px;
 }
 
-.mat-toolbar-multiple-rows {
-  // min-height: 100px;
+.mat-toolbar-row {
+  padding: unset !important;
+  max-height: 60px;
 }
-mat-toolbar-row{
-  // padding-top: 55px;
+mat-toolbar{
+  max-height: 60px;
+}
+.mat-toolbar-multiple-rows {
+  min-height: 60px;
+}
+::ng-deep .mat-menu-panel {
+  border-radius: unset !important;
+  margin-top: 10px !important;
 }
 .mat-menu-item.routeactive {
-  color: blue;
+  color: #008AFC;
 }
 .mat-menu-item {
-  color: rgba(0,0,0,.87);
+  color: black !important;
+}
+.mat-icon-header {  
+  color: #008AFC !important;
+}
+.mat-icon-admin {
+  color : #000000e3 !important;
+}
+#nav-menu {
+  color:black !important;
+}
+.mat-button {
+  cursor: pointer !important;
+}
+.mat-button:hover {
+  color: #008AFC !important;
 }

@@ -12,7 +12,8 @@ import { environment } from 'src/environments/environment';
 
 @Injectable()
 export class ApplicationService {
-  apiUrl = environment.API_URL;
+  apiUrl = environment.API_APPLICATION_URL;
+  apiUrlProduct = environment.API_PRODUCT_URL;
   details: any;
   token = localStorage.getItem('access_token');
   lang = localStorage.getItem('language');
@@ -31,8 +32,14 @@ export class ApplicationService {
       '&sort_by=' + sort_by + '&sort_order=' + sort_order;
     return this.http.get<Applications[]>(url);
   }
-  getproductdetails(key): Observable<Applications[]> {
-    const url = this.apiUrl + '/applications/' + key + '/products';
+  getproductdetails(key,pageSize, length, sort_by, sort_order): Observable<Applications[]> {
+    // const url = this.apiUrl + '/applications/' + key + '/products';
+    let filteringCondition = '';
+    if (key !== '' && key !== undefined) {
+      filteringCondition = filteringCondition + '&search_params.application_id.filter_type=1&search_params.application_id.filteringkey=' + key;
+    }
+    const url = this.apiUrlProduct + '/products?page_num=' + length + '&page_size=' + pageSize +
+      '&sort_by=' + sort_by + '&sort_order=' + sort_order + filteringCondition;
     return this.http.get<Applications[]>(url);
   }
   filteredData(length, pageSize, sort_by, sort_order, filteringkey1, filteringkey2): Observable<Applications[]> {
@@ -43,7 +50,7 @@ export class ApplicationService {
     }
 
     if (filteringkey2 !== '' && filteringkey2 !== undefined) {
-      filteringCondition = filteringCondition + '&search_params.application_owner.filteringkey=' + filteringkey2;
+      filteringCondition = filteringCondition + '&search_params.owner.filteringkey=' + filteringkey2;
     }
     if (sort_order === '') {
       sort_order = 'asc';

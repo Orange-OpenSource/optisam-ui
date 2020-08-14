@@ -8,10 +8,12 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { MetricViewComponent } from './metric-view/metric-view.component';
 import { MetricCreationComponent } from './metric-creation/metric-creation.component';
+import { MetricDetailsComponent } from './metric-details/metric-details.component';
 
 const routes: Routes = [
   { path: '', component: MetricViewComponent },
   { path: 'newmetric', component: MetricCreationComponent },
+  { path: 'viewMetric', component: MetricDetailsComponent }
 ];
 @NgModule({
   imports: [RouterModule.forChild(routes)],

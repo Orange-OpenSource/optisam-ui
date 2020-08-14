@@ -13,17 +13,22 @@ import { AplInstanceComponent } from './apl-instance/apl-instance.component';
 import { ProdEquiComponent } from './prod-equi/prod-equi.component';
 import { ProductAggregationComponent } from './product-aggregation/product-aggregation.component';
 import { ProductTabsComponent } from './product-tabs/product-tabs.component';
+import { ProductAggregationApplicationsComponent } from './product-aggregation-applications/product-aggregation-applications.component';
+import { ProductAggregationEquipmentsComponent } from './product-aggregation-equipments/product-aggregation-equipments.component';
+
 const routes: Routes = [
   {
     path: '', component: ProductsComponent,
     children: [
       { path: 'products', component: ProductTabsComponent, children: [
         { path: '', component: ProdComponent },
-        { path: 'aggregaions', component: ProductAggregationComponent },
+        { path: 'aggregations', component: ProductAggregationComponent }
       ] },
       { path: 'products/:swidTag', component: ProdAplComponent },
       { path: 'products/equi/:swidTag', component: ProdEquiComponent },
-      { path: 'instances/:swidTag/:app_id', component: AplInstanceComponent },
+      { path: 'products/aggregations/:agg_name/applications', component: ProductAggregationApplicationsComponent, pathMatch: 'full' },
+      { path: 'products/aggregations/:agg_name/equipments', component: ProductAggregationEquipmentsComponent },
+      { path: 'instances/:swidTag/:app_id', component: AplInstanceComponent }
     ]
   }
 ];

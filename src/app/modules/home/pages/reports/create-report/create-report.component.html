@@ -1,0 +1,101 @@
+<mat-card>
+  <mat-card-title color="primary" class="page-heading">
+    {{'Create Report'|translate}}
+  </mat-card-title>
+
+  <mat-card-content>
+    <form [formGroup]="reportForm">
+      <div class="row">
+        <div class="col-md-6">
+          <mat-form-field appearance="outline">
+            <mat-label>{{'Scope' | translate}}</mat-label>
+            <mat-select id="scope" formControlName="scope" [disabled]="scopesList.length == 0"
+              (selectionChange)="scopeSelected()">
+              <mat-option>-- {{'Select Scope' | translate}} --</mat-option>
+              <mat-option id="scope_option_{{i}}" *ngFor="let scope of scopesList;let i = index;" [value]="scope">
+                {{scope}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-6">
+          <mat-form-field appearance="outline">
+            <mat-label>{{'Report Type' | translate}}</mat-label>
+            <mat-select id="reportType" formControlName="reportType" [disabled]="reportTypesList.length == 0|| !selectedScope"
+              (selectionChange)="reportTypeSelected()">
+              <mat-option>-- {{'Select Type' | translate}} --</mat-option>
+              <mat-option id="report_type_option_{{i}}" *ngFor="let reportType of reportTypesList;let i = index;"
+                [value]="reportType">{{reportType.report_type_name}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div *ngIf="selectedReportType === 'compliance' || selectedReportType === 'ProductEquipments'" class="row">
+        <div class="col-md-6">
+          <mat-form-field appearance="outline">
+            <mat-label>{{'Editor' | translate}}</mat-label>
+            <mat-select id="editor" formControlName="editor" [disabled]="editorsList.length == 0" (selectionChange)="editorSelected()">
+              <mat-option>-- {{'Select Editor' | translate}} --</mat-option>
+              <mat-option id="editor_option_{{i}}" *ngFor="let editor of editorsList;let i = index;" [value]="editor">
+                {{editor}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field appearance="outline">
+            <mat-label>{{'Product' | translate}}</mat-label>
+            <mat-select multiple id="product" formControlName="product" [disabled]="productsList.length == 0">
+              <mat-option [value]="1" (click)="toggleSelectAll(ev)" #ev>
+                -- {{'Select All' | translate}} --
+              </mat-option>
+              <mat-option id="product_option_{{i}}" *ngFor="let product of productsList;let i = index;"
+                [value]="product.swidTag">{{product.name}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div *ngIf="selectedReportType === 'ProductEquipments'" class="row">
+        <div class="col-md-6">
+          <mat-form-field appearance="outline">
+            <mat-label>{{'Equipment Type' | translate}}</mat-label>
+            <mat-select id="equipType"  formControlName = "equipmentType" [disabled]="equipmentTypesList.length == 0">
+                <mat-option value="">-- {{'AGGREGATIONS.TEXTS.SELECT_PRODUCT' | translate}} --</mat-option>
+                <mat-option *ngFor="let equipment of equipmentTypesList;" [value]="equipment">{{equipment.type}}
+                </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+    </form>
+    <app-loading-spinner *ngIf="_loading"></app-loading-spinner>
+  </mat-card-content>
+  <mat-card-actions align="center">
+    <button id="cancelButton" class="btn-four" mat-raised-button mat-dialog-close="true">{{'Cancel'|translate}}</button>
+    <button id="resetButton"  class="btn-three" mat-raised-button [disabled]="reportForm.pristine" (click)="resetForm()">{{'Reset'|translate}}</button>
+    <button id="submitButton" class="btn-two" mat-raised-button [disabled]="!reportForm.valid" (click)="createReport(successDialog, errorDialog)">
+      <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" *ngIf="reqInProgress"></span>       
+      {{'Create'|translate}}
+    </button>
+  </mat-card-actions>
+</mat-card>
+
+<!-- Create success message -->
+<ng-template #successDialog>
+  <mat-dialog-content>
+    <p>{{'SUCCESS_REPORT_CREATE_MSG'|translate}}</p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="center">
+    <button [mat-dialog-close]="true" mat-button cdkFocusInitial>{{'OK'|translate}}</button>
+  </mat-dialog-actions>
+</ng-template>
+<!-- Create error message -->
+<ng-template #errorDialog>
+  <mat-dialog-content>
+    <p>{{'ERROR_REPORT_CREATE_MSG'|translate}}</p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="center">
+    <button [mat-dialog-close]="true" mat-button cdkFocusInitial>{{'OK'|translate}}</button>
+  </mat-dialog-actions>
+</ng-template>

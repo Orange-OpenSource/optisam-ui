@@ -13,6 +13,7 @@ import { CustomMaterialModule } from 'src/app/material.module';
 import { MatricsRoutingModule } from './matrics-routing.module';
 import { MetricViewComponent } from './metric-view/metric-view.component';
 import { MetricCreationComponent } from './metric-creation/metric-creation.component';
+import { MetricDetailsComponent } from './metric-details/metric-details.component';
 
 @NgModule({
   imports: [
@@ -27,6 +28,6 @@ import { MetricCreationComponent } from './metric-creation/metric-creation.compo
  /*  entryComponents: [
     AttributeDetailComponent
   ], */
-  declarations:  [ MetricViewComponent, MetricCreationComponent],
+  declarations:  [ MetricViewComponent, MetricCreationComponent, MetricDetailsComponent],
 })
 export class MetricsModule { }

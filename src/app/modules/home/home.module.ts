@@ -12,10 +12,9 @@ import { HomeComponent } from './home.component';
 import { HomeRoutingModule } from './home-routing.module';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { MetricComponent } from './pages/metric/metric.component';
-import { SimulationComponent } from './pages/simulation/simulation.component';
 import { HeaderComponent } from 'src/app/core/header/header.component';
 import { CustomMaterialModule } from 'src/app/material.module';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { SettingsComponent } from './pages/settings/settings.component';
 import { ChangePasswordComponent } from './pages/change-password/change-password.component';
 import { FooterComponent } from '../../core/footer/footer.component';
@@ -25,16 +24,22 @@ import { InformationComponent } from './dialogs/product-aggregation-details/info
 import { OptionsComponent } from './dialogs/product-aggregation-details/options/options.component';
 import { AqRightsComponent } from './dialogs/product-aggregation-details/aq-rights/aq-rights.component';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { ConfirmDialogComponent } from './dialogs/confirm-dialog/confirm-dialog.component';
+import { MatPaginatorIntl } from '@angular/material';
+import { PaginatorI18n } from 'src/app/shared/custom-mat-paginator-int';
+import { ProfileSettingsComponent } from './pages/settings/profile-settings/profile-settings.component';
 
 @NgModule({
   declarations: [HeaderComponent, FooterComponent,
-    HomeComponent, SimulationComponent, DashboardComponent, MetricComponent,
+    HomeComponent, DashboardComponent, MetricComponent,
      SettingsComponent, LoaderComponent,
      ChangePasswordComponent,
      ProductAggregationDetailsComponent,
      InformationComponent,
      OptionsComponent,
-     AqRightsComponent],
+     AqRightsComponent,
+     ConfirmDialogComponent,
+     ProfileSettingsComponent],
   imports: [
     CommonModule,
     FormsModule,
@@ -44,6 +49,10 @@ import { SharedModule } from 'src/app/shared/shared.module';
     CustomMaterialModule,
     TranslateModule ,
     SharedModule ],
-  entryComponents: [ProductAggregationDetailsComponent]
+    entryComponents: [ProductAggregationDetailsComponent, ConfirmDialogComponent],
+    providers:[{
+          provide: MatPaginatorIntl, deps: [TranslateService],
+          useFactory: (translateService: TranslateService) => new PaginatorI18n(translateService).getPaginatorIntl()
+        }]
 })
 export class HomeModule { }

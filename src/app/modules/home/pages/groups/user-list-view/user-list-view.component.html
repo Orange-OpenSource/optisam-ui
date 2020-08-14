@@ -1,0 +1,96 @@
+<mat-card class="example-card" style="z-index: 0;">
+
+  <div class="container-fluid page-content-header">
+    <div class="row">
+      <div class="page-heading">
+        {{'Users' | translate}}
+      </div>
+      <div class="add-btn">
+        <a mat-raised-button class="btn-two" (click)="addNew()">
+          <mat-icon>add</mat-icon>
+          {{'Add User' | translate}}
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <mat-card-content>
+    <div class="mat-elevation-z8">
+      <mat-table [dataSource]="dataSource" class="mat-elevation-z8"  matSort>
+        <!-- Last Name Column -->
+        <ng-container matColumnDef="last_name">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>{{'Last Name'|translate}} </mat-header-cell>
+          <mat-cell *matCellDef="let element"> {{element.last_name}} </mat-cell>
+        </ng-container>
+      
+        <!-- First Name Column -->
+        <ng-container matColumnDef="first_name">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>{{'First Name'|translate}}</mat-header-cell>
+          <mat-cell *matCellDef="let element"> {{element.first_name}} </mat-cell>
+        </ng-container>
+      
+        <!-- Email Column -->
+        <ng-container matColumnDef="user_id">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> {{'Email'|translate}} </mat-header-cell>
+          <mat-cell *matCellDef="let element"> {{element.user_id}} </mat-cell>
+        </ng-container>
+      
+        <!-- Groups Column -->
+        <ng-container matColumnDef="groups">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> {{'Groups'|translate}} </mat-header-cell>
+          <mat-cell *matCellDef="let element"> {{element.groups || '-'}} </mat-cell>
+        </ng-container>
+      
+        <!-- Role Column -->
+        <ng-container matColumnDef="role">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> {{'Role'|translate}} </mat-header-cell>
+          <mat-cell *matCellDef="let element"> {{element.role}} </mat-cell>
+        </ng-container>
+      
+        <!-- Action Column -->      
+        <ng-container matColumnDef="action">
+          <div *ngIf="(role === 'ADMIN') || (role === 'SUPER_ADMIN')">
+            <mat-header-cell *matHeaderCellDef> {{'Action'|translate}} </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-icon *ngIf = "element.role !== 'SUPER_ADMIN'" class="action-icon" matTooltip="Edit Role" (click)="editUser(element)" >edit</mat-icon>
+                <mat-icon *ngIf = "element.role !== 'SUPER_ADMIN'" class="action-icon dlt" matTooltip="Delete User" (click)="deleteUserConfirmation(element, deleteConfirmationDialog)">delete</mat-icon>
+            </mat-cell>
+          </div>
+        </ng-container>
+        <ng-template #deleteConfirmationDialog>
+          <mat-dialog-content>
+              <p>{{'DELETE_USER_CONFIRM_MSG' | translate}}</p>
+          </mat-dialog-content>
+          <mat-dialog-actions align="center">
+              <button mat-button [mat-dialog-close]="true" (click)="deleteUser(successDialog,errorDialog)" cdkFocusInitial>{{'OK'|translate}}</button>
+              <button mat-button [mat-dialog-close]="true" cdkFocusInitial>{{'Cancel'|translate}}</button>
+            </mat-dialog-actions>
+        </ng-template>      
+      
+        <mat-header-row *matHeaderRowDef="displayedColumns;sticky:true"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+      </mat-table>
+      <app-loading-spinner *ngIf="_loading"></app-loading-spinner>
+      <!-- <mat-paginator #paginator [length]="length" [pageSize]="page_size" [pageSizeOptions]="[5,10,20,30,50]"
+       (page)="pageEvent = getPaginatorData($event)"showFirstLastButtons>
+      </mat-paginator> -->
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<ng-template #successDialog>
+  <mat-dialog-content>
+    <p>{{'DELETE_USER_SUCCESS'|translate}}</p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="center">
+    <button mat-button [mat-dialog-close]="true" cdkFocusInitial>{{'OK'|translate}}</button>
+  </mat-dialog-actions>
+</ng-template>
+<ng-template #errorDialog>
+  <mat-dialog-content>
+    <p>{{'DELETE_USER_ERROR'|translate}}</p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="center">
+    <button mat-button [mat-dialog-close]="true" cdkFocusInitial>{{'OK'|translate}}</button>
+  </mat-dialog-actions>
+</ng-template>

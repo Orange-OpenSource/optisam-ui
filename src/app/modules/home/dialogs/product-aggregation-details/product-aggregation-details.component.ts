@@ -37,31 +37,49 @@ export class ProductAggregationDetailsComponent implements OnInit, OnDestroy {
    }
 
   ngOnInit() {
+    this.getDetails();
+    this.getOptionDetails();
+    this.getAcquiredRights();
+  }
 
-    // Get acquire rights
+  // Get aggregation details
+  getDetails() {
+    this._loading = true;
+    this.productsService.getAggregationInfoDetails(this.data.aggregationID).subscribe(
+      (res: any) => {
+        this.productdetails = res;
+        this._loading = false;
+      },
+      error => {
+        this._loading = false;
+        console.log('There was an error while retrieving Posts !!!' + error);
+      });
+  }
+
+  // Get aggregation options
+  getOptionDetails() {
+    this._loading = true;
+    this.productsService.getAggregationOptions(this.data.aggregationID).subscribe(
+      (res: any) => {
+        this.aggregationOptions = res;
+        this._loading = false;
+      },
+      error => {
+        this._loading = false;
+        console.log('There was an error while retrieving Posts !!!' + error);
+      });
+  }
+
+  // Get acquire rights
+  getAcquiredRights() {
+    this._loading = true;
     this.productsService.getAggregationAquiredRights(this.data.aggregationName).subscribe(
       (res: any) => {
         this.acquireRight = res;
+        this._loading = false;
       },
       error => {
-        console.log('There was an error while retrieving Posts !!!' + error);
-      });
-
-    // Get aggregation details
-    this.productsService.getAggregationInfoDetails(this.data.aggregationName).subscribe(
-      (res: any) => {
-        this.productdetails = res;
-      },
-      error => {
-        console.log('There was an error while retrieving Posts !!!' + error);
-      });
-
-    // Get aggregation options
-    this.productsService.getAggregationOptions(this.data.aggregationName).subscribe(
-      (res: any) => {
-        this.aggregationOptions = res;
-      },
-      error => {
+        this._loading = false;
         console.log('There was an error while retrieving Posts !!!' + error);
       });
   }

@@ -20,6 +20,8 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { ProdEquiComponent } from './prod-equi/prod-equi.component';
 import { ProductAggregationComponent } from './product-aggregation/product-aggregation.component';
 import { ProductTabsComponent } from './product-tabs/product-tabs.component';
+import { ProductAggregationEquipmentsComponent } from './product-aggregation-equipments/product-aggregation-equipments.component';
+import { ProductAggregationApplicationsComponent } from './product-aggregation-applications/product-aggregation-applications.component';
 
 @NgModule({
   imports: [
@@ -31,6 +33,6 @@ import { ProductTabsComponent } from './product-tabs/product-tabs.component';
     ReactiveFormsModule,
     SharedModule
   ],
-  declarations: [ProductsComponent, ProdAplComponent, AplInstanceComponent, ProdComponent, ProdEquiComponent, ProductAggregationComponent, ProductTabsComponent],
+  declarations: [ProductsComponent, ProdAplComponent, AplInstanceComponent, ProdComponent, ProdEquiComponent, ProductAggregationComponent, ProductTabsComponent, ProductAggregationEquipmentsComponent, ProductAggregationApplicationsComponent],
 })
 export class ProductsModule { }

@@ -14,6 +14,7 @@ import { FormsModule } from '@angular/forms';
 import { ApplicationsComponent } from './applications.component';
 import { AplComponent } from './apl/apl.component';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { ProductsModule } from '../products/products.module';
 
 @NgModule({
   declarations: [AplComponent, AplDetailsComponent, ApplicationsComponent ],
@@ -23,7 +24,8 @@ import { SharedModule } from 'src/app/shared/shared.module';
     CommonModule,
     FormsModule,
     CustomMaterialModule,
-    SharedModule
+    SharedModule,
+    ProductsModule
   ]
 })
 export class ApplicationsModule { }

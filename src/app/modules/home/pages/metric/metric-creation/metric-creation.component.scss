@@ -4,3 +4,22 @@
 .create-equipment .equipments {padding: 0 15px 0 0;}
 .cta-button-bx { margin: 0; }
 .cta-button-bx .btn-col { padding: 0 0 0 0; }
+.cta-button-bx .right-btn {text-align: right; padding: unset;}
+.hint{
+    font-size: 0.8rem;
+    font-style: italic;
+}
+.m-t-10 {
+    margin-top: -10px;
+}
+.example-full-width {
+  height: 42px !important;
+  margin-top: 0px !important;
+}
+.mat-card {
+  padding-top: unset;
+}
+.closeDialog {
+  display: flex;
+  justify-content: flex-end;
+}

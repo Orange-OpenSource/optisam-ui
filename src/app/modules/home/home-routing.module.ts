@@ -8,10 +8,10 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { HomeComponent } from './home.component';
 import { MetricComponent } from './pages/metric/metric.component';
-import { SimulationComponent } from './pages/simulation/simulation.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { SettingsComponent } from './pages/settings/settings.component';
 import { ChangePasswordComponent } from './pages/change-password/change-password.component';
+// import { ChangePasswordComponent } from './pages/change-password/change-password.component';
 
 const routes: Routes = [
   {
@@ -27,11 +27,14 @@ const routes: Routes = [
       { path: 'ar', loadChildren: './pages/acquiredrights/acquiredrights.module#AcquiredrightsModule'},
       { path: 'gr', loadChildren: './pages/groups/groups.module#GroupsModule'},
       { path: 'dm', loadChildren: './pages/data-management/data-management.module#DataManagementModule'},
+      { path: 'cm', loadChildren: './pages/configuration-management/configuration-management.module#ConfigurationManagementModule'},
       { path: 'ag', loadChildren: './pages/aggregation/aggregation.module#AggregationModule'},
+      { path: 'sm', loadChildren: './pages/scope-management/scope-management.module#ScopeManagementModule' },
+      { path: 'changePassword', component: ChangePasswordComponent},
       { path: 'settings', component: SettingsComponent },
       { path: 'metrics', component: MetricComponent },
-      { path: 'metrics', component: MetricComponent },
-      { path: 'simulation', component: SimulationComponent },
+      { path: 'simulation', loadChildren: './pages/simulation/simulation.module#SimulationModule'},
+      { path: 'reports', loadChildren: './pages/reports/reports.module#ReportsModule'}
     ]
   }
 ];

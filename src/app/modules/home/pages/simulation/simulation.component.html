@@ -1,4 +1,8 @@
-<div class="landing-div">
-    <span class="large-text">{{'Simulation Coming Soon' | translate}}</span>
-    <span class="small-text">{{'Please stay tuned' | translate}}</span>
-</div>
+<mat-card class="mat-elevation-8">
+    <nav mat-tab-nav-bar>
+        <a mat-tab-link class="tab-anchor" *ngFor="let menu of tabMenus" [routerLink]="menu.link"
+            routerLinkActive="active" (click)="activeLink = menu.link" [active]="activeLink == menu.link">
+            {{menu.title | translate}} </a>
+    </nav>
+</mat-card>
+<router-outlet></router-outlet>

@@ -1,7 +1,7 @@
-
+<div class="closeDialog"><button [mat-dialog-close]="true" mat-icon-button><mat-icon>close</mat-icon></button></div>
 <mat-card>
-      <mat-card-title color="primary">
-        <h2>{{'Add New Metric'|translate}}</h2>
+      <mat-card-title color="primary" class="page-heading">
+        {{'Add New Metric'|translate}}
       </mat-card-title>
       
       <mat-card-content>
@@ -9,7 +9,7 @@
             <div class="col-md-3 equipments">
               <mat-form-field class="demo-full-width" appearance="outline">
                 <input matInput (keydown)="search($event)" [value]="typeName" (keyup)="search($event)"
-                  placeholder="{{'Type Name'|translate}}" id="type">
+                  placeholder="{{'Type Name'|translate}}" id="metricName">
                 <mat-error>
                   {{'Type Name is required in ^[-_,A-Za-z0-9]+$ format.' | translate}}
                 </mat-error>
@@ -24,7 +24,7 @@
             <div class="col-md-3 equipments">
               <mat-form-field appearance="outline">
                 <mat-label>{{'Metric Type' | translate}}</mat-label>
-                <mat-select placeholder="{{'Metric Type'|translate}}" [(value)]="metricTypRe">
+                <mat-select id="metricType" placeholder="{{'Metric Type'|translate}}" [(value)]="metricTypRe">
                   <!-- <mat-option  (onSelectionChange)="filterAttributes($event)" [value]="select">
                                     Select Metric type </mat-option> -->
                   <mat-option *ngFor="let type of metricType" (onSelectionChange)="onChangeMetricType($event,type.name)"
@@ -34,19 +34,19 @@
               </mat-form-field>
             </div>
 
-            <div class="col-md-3 equipments">
-              <mat-form-field class="example-full-width">
-                <textarea matInput [value]="typeDescription" disabled></textarea>
+            <div class="col-md-6 equipments">
+              <mat-form-field class="m-t-10">
+                <textarea id="metricDescription" class="example-full-width" matInput [value]="typeDescription" disabled></textarea>
               </mat-form-field>
             </div>
             <!-- textarea disabled -->
      </div>
 
-      <div *ngIf="type_id == 'Oracle_Processor'" class="row create-equipment">
+      <div *ngIf="metricTypRe && (type_id == 'Oracle_Processor' || type_id == 'Oracle_NUP')" class="row create-equipment">
           <div class="col-md-3 equipments">
             <mat-form-field appearance="outline">
               <mat-label>{{'First Equipment' | translate}}</mat-label>
-              <mat-select [(value)]="firstEqui">
+              <mat-select id = "firstEquipment" [(value)]="firstEqui">
                 <mat-option *ngFor="let equiment of types" (onSelectionChange)="onChangefirstEqui($event,equiment)"
                   [value]="equiment.type">
                   {{equiment.type }}</mat-option>
@@ -57,7 +57,7 @@
           <div class="col-md-3 equipments">
             <mat-form-field appearance="outline">
               <mat-label>{{'Reference Equipment' | translate}}</mat-label>
-              <mat-select [disabled]="refEquStatus" placeholder="{{'Reference Equipment'|translate}}" [(value)]="refEqui">
+              <mat-select id="refEquipment" [disabled]="refEquStatus" placeholder="{{'Reference Equipment'|translate}}" [(value)]="refEqui">
                 <!-- <mat-option  (onSelectionChange)="filterAttributes($event)" [value]="select">
                                   Select Metric type </mat-option> -->
                 <mat-option *ngFor="let refEquiment of refEquArr " (onSelectionChange)="onChangeRefEqui($event,refEquiment)"
@@ -73,7 +73,7 @@
           <div class="col-md-3 equipments">
             <mat-form-field appearance="outline">
               <mat-label>Core</mat-label>
-              <mat-select [(value)]="coreAttri">
+              <mat-select id="core" [(value)]="coreAttri">
                 <!-- <mat-option  (onSelectionChange)="filterAttributes($event)" [value]="select">
                                 Select Metric type </mat-option> -->
                 <mat-option *ngFor="let core of coreArr" (onSelectionChange)="onCoreChange($event, core)" [value]="core.name">
@@ -85,7 +85,7 @@
           <div class="col-md-3 equipments">
             <mat-form-field appearance="outline">
               <mat-label>CPU</mat-label>
-              <mat-select [(value)]="cpuAtrri">
+              <mat-select id="CPU" [(value)]="cpuAtrri">
                 <!-- <mat-option  (onSelectionChange)="filterAttributes($event)" [value]="select">
                                 Select Metric type </mat-option> -->
                 <mat-option *ngFor="let type of cpuArr" (onSelectionChange)="onCpuChange($event, type)" [value]="type.name">
@@ -97,7 +97,7 @@
           <div class="col-md-3 equipments">
             <mat-form-field appearance="outline">
               <mat-label>Corefactor</mat-label>
-              <mat-select [(value)]="coreFacAttri">
+              <mat-select id="corefactor" [(value)]="coreFacAttri">
                 <!-- <mat-option  (onSelectionChange)="filterAttributes($event)" [value]="select">
                                 Select Metric type </mat-option> -->
                 <mat-option *ngFor="let factor of coreFact" (onSelectionChange)="onCoreFactorChange($event, factor)"
@@ -110,7 +110,7 @@
           <div class="col-md-3 equipments">
             <mat-form-field appearance="outline">
               <mat-label>{{'Aggregation level' | translate}}</mat-label>
-              <mat-select placeholder="{{'Aggregation level'|translate}}" [(value)]="aggreLvl">
+              <mat-select id="aggregationLevel" placeholder="{{'Aggregation level'|translate}}" [(value)]="aggreLvl">
                 <!-- <mat-option  (onSelectionChange)="filterAttributes($event)" [value]="select">
                                   Select Metric type </mat-option> -->
                 <mat-option *ngFor="let aggR of aggArr" (onSelectionChange)="onChangeAggrLvl($event, aggR)" [value]="aggR.type">
@@ -122,7 +122,7 @@
           <div class="col-md-3 equipments">
             <mat-form-field appearance="outline">
               <mat-label>{{'Last Equipment' | translate}}</mat-label>
-              <mat-select placeholder="{{'Last Equipment'|translate}}" [(value)]="lastEquiVal">
+              <mat-select id="lastEquipment" placeholder="{{'Last Equipment'|translate}}" [(value)]="lastEquiVal">
                 <!-- <mat-option  (onSelectionChange)="filterAttributes($event)" [value]="select">
                                   Select Metric type </mat-option> -->
                 <mat-option *ngFor="let lastEqui of lastEquiArr" (onSelectionChange)="onChangeLastEqui($event, lastEqui)"
@@ -132,13 +132,26 @@
             </mat-form-field>
           </div>
 
+          <div class="col-md-3 equipments" *ngIf="type_id == 'Oracle_NUP'">
+            <mat-form-field appearance="outline">
+              <input id="noOfUsers" matInput (keydown)="validatePattern($event)" type="number" min="1"
+                placeholder="{{'No. of users'|translate}}" [(ngModel)]="number_of_users" (keyup)="getValididty()">
+              <!-- <mat-hint class="hint">
+                {{'( Integer values only and greater than 0 )' | translate}}
+              </mat-hint> -->
+            </mat-form-field>
+            <mat-error *ngIf="number_of_users == 0">
+              {{'There must be atleast 1 user' | translate }}
+            </mat-error>
+          </div>
+
       </div>
 
-      <div *ngIf="(type_id == 'SAG_Processor') || (type_id == 'IBM_PVU')" class="row create-equipment">
+      <div *ngIf="metricTypRe && ((type_id == 'SAG_Processor') || (type_id == 'IBM_PVU'))" class="row create-equipment">
         <div class="col-md-3 equipments">
           <mat-form-field appearance="outline">
             <mat-label>Reference Equipment</mat-label>
-            <mat-select placeholder="{{'Reference Equipment'|translate}}" [(value)]="refEqui">
+            <mat-select id="refEquipment" placeholder="{{'Reference Equipment'|translate}}" [(value)]="refEqui">
               <mat-option *ngFor="let refEquiment of types " (onSelectionChange)="onChangeRefEqui($event,refEquiment)"
                 [value]="refEquiment.type">
                 {{refEquiment.type }}</mat-option>
@@ -152,7 +165,7 @@
         <div class="col-md-3 equipments">
           <mat-form-field appearance="outline">
             <mat-label>Core</mat-label>
-            <mat-select [(value)]="coreAttri">
+            <mat-select id="core" [(value)]="coreAttri">
               <!-- <mat-option  (onSelectionChange)="filterAttributes($event)" [value]="select">
                             Select Metric type </mat-option> -->
               <mat-option *ngFor="let core of coreArr" (onSelectionChange)="onCoreChange($event, core)" [value]="core.name">
@@ -173,7 +186,7 @@
       <div class="col-md-3 equipments">
         <mat-form-field appearance="outline">
           <mat-label>Corefactor</mat-label>
-          <mat-select [(value)]="coreFacAttri">
+          <mat-select id="corefactor" [(value)]="coreFacAttri">
             <!-- <mat-option  (onSelectionChange)="filterAttributes($event)" [value]="select">
                           Select Metric type </mat-option> -->
             <mat-option *ngFor="let factor of cpuArr" (onSelectionChange)="onCoreFactorChange($event, factor)"
@@ -185,19 +198,80 @@
 
       </div>
       
-
-      <div class="row cta-button-bx" *ngIf="(type_id == 'SAG_Processor') || (type_id == 'IBM_PVU') || (type_id == 'Oracle_Processor')">
-        <div class="col-md-12 btn-col">
-          <button style="margin: 10px 10px 10px 0;" mat-raised-button color="primary" [mat-dialog-close]="1">{{'CANCEL'|translate}}</button>
-          <button style="margin: 10px;" mat-raised-button color="primary" (click)="onFormReset()">{{'RESET'|translate}}</button>
-          <button type="submit" style="margin: 10px;" [disabled]="creatBtnVis"  mat-raised-button color="primary" [mat-dialog-close]="1"
-          (click)="onSubmit()">{{'CREATE'|translate}}</button>
+      <div *ngIf="(type_id == 'Attr_Counter' && metricTypRe)"  class="row create-equipment">
+        <div class="col-md-3 equipments">
+          <mat-form-field appearance="outline">
+            <mat-label>{{'Reference Equipment'|translate}}</mat-label>
+            <mat-select id="refEquipment" placeholder="{{'Reference Equipment'|translate}}" [(value)]="refEqui">
+              <mat-option *ngFor="let refEquiment of types " (onSelectionChange)="onChangeRefEqui($event,refEquiment)"
+                [value]="refEquiment.type">
+                {{refEquiment.type }}</mat-option>
+            </mat-select>
+            </mat-form-field>
+        </div>
+        
+        <div class="col-md-3 equipments">
+          <mat-form-field appearance="outline">
+            <mat-label>{{'Attribute Name'|translate}}</mat-label>
+            <mat-select id="attrName" placeholder="{{'Attribute Name'|translate}}" [(value)]="attrName">
+              <mat-option *ngFor="let attr of attributeArr " (onSelectionChange)="onChangeAttr(attr);getValididty()"
+                [value]="attr.name">
+                {{attr.name}}</mat-option>
+            </mat-select>
+            </mat-form-field>
         </div>
 
-        <!-- <div class="col-md-6 right-btn"> </div> -->
+        
+        <div class="col-md-3 equipments">
+          <mat-form-field appearance="outline" >
+            <mat-label>{{'Value'|translate}}</mat-label>
+            <input id="attrValue" matInput (keydown)="validatePattern($event)" (focusout)="setAttrVal()"
+              placeholder="{{'Value'|translate}}" [(ngModel)]="attrValue" (keyup)="getValididty()">
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div *ngIf="metricTypRe && type_id == 'Instance_Number'"  class="row create-equipment">
+        <div class="col-md-3 equipments">
+          <mat-form-field appearance="outline">
+            <input id="coefficient" matInput placeholder="{{'Coefficient'|translate}}" (keydown)="validateFloat($event)"
+            [(ngModel)]="coefficient"  (keyup)="getValididty()">
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="row cta-button-bx" *ngIf="(type_id == 'SAG_Processor') || (type_id == 'IBM_PVU') || (type_id == 'Oracle_Processor') || (type_id == 'Oracle_NUP')|| (type_id == 'Attr_Counter') || (type_id == 'Instance_Number')">
+        <div class="col-md-6 btn-col">
+          <button id="cancelButton" style="margin: 10px 10px 10px 0;" mat-raised-button class="btn-four" [mat-dialog-close]="1">{{'Cancel'|translate}}</button>
+          <button id="resetButton" style="margin: 10px;" mat-raised-button class="btn-three" (click)="onFormReset()">{{'Reset'|translate}}</button>
+        </div>
+
+        <div class="col-md-6 right-btn"> 
+          <button id="createButton" type="submit" style="margin: 10px;" [disabled]="creatBtnVis || TypeNameMsg"  mat-raised-button class="btn-two"
+          (click)="onSubmit(succesCreateDialog, errorCreateDialog)">{{'Create'|translate}}</button>
+        </div>
         
       </div>
       <!-- End Call to action button -->
 
   </mat-card-content>
 </mat-card>
+
+<!-- Create success message -->
+<ng-template #succesCreateDialog>
+  <mat-dialog-content>
+    <p>{{'SUCCESS_METRIC_CREATE_MSG'|translate}}</p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="center">
+     <button [mat-dialog-close]="true" mat-button cdkFocusInitial>{{'OK'|translate}}</button>
+  </mat-dialog-actions>
+</ng-template>
+<!-- Create error message -->
+<ng-template #errorCreateDialog>
+  <mat-dialog-content>
+     <p>{{'ERROR_METRIC_CREATE_MSG'|translate}}</p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="center">
+    <button [mat-dialog-close]="true" mat-button cdkFocusInitial>{{'OK'|translate}}</button>
+  </mat-dialog-actions>
+</ng-template>

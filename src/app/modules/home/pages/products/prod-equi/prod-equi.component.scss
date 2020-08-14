@@ -1,64 +1,26 @@
-// mat-header-cell, mat-header-row, .mat-header-cell-def{
-  // background:#f2f4f7;
-  // min-height:14px;
-  // font-family:Verdana,sans-serif;:Verdana,sans-serif;
-  // font-weight:bold;
-  // font-size:13px;
-  // color: #1a084c;
-  // margin-bottom:5px;
-  // top: 0;
-  // position: sticky;
-  // z-index: 1;
-  // flex-wrap: wrap;
-// }
-
-// .mat-cell:nth-child(1),
-// .mat-header-cell:nth-child(1){
-//   flex: 0 0 17%;
-//   word-break: break-all;
-// }
-
-// .mat-cell:nth-child(2),
-// .mat-header-cell:nth-child(2){
-//   flex: 0 0 10%;
-//   word-break: break-all;
-// }
-
-// .mat-cell:nth-child(3),
-// .mat-header-cell:nth-child(3){
-//   flex: 0 0 15%;
-// }
-// .mat-cell:nth-child(4),
-// .mat-header-cell:nth-child(4){
-//   flex: 0 0 15%;
-// }
-// .mat-cell:nth-child(5),
-// .mat-header-cell:nth-child(5){
-//   flex: 0 0 17%;
-// }
-// .mat-cell:nth-child(6),
-// .mat-header-cell:nth-child(6){
-//   flex: 0 0 15%;
-// }
-// .mat-cell:nth-child(7),
-// .mat-header-cell:nth-child(7){
-//   flex: 0 0 15%;
-// }
-// .mat-cell:nth-child(8),
-// .mat-header-cell:nth-child(8){
-//   flex: 0 0 15%;
-// }
-// .mat-cell:nth-child(9),
-// .mat-header-cell:nth-child(9){
-//   flex: 0 0 15%;
-// }
-
-
+.example-card {
+  height: 100vh;
+}
+.equip-container {
+  padding: 16px;
+}
+.table-section {
+  padding-top: 16px;
+}
 .mat-menu-item-toggle{ width:50% !important; font-size: 15px !important;}
-.active-column{outline: none;color: blue;}
-.mat-row, .mat-header-row {min-width: 2800px;width: 100%;}
-mat-header-row{padding: 10px;}
-
+.active-column{outline: none;color: #008AFC;}
+.mat-tab-link {
+  min-width: fit-content;
+  padding: 0 16px;
+}
+.mat-row {
+  display: inline-flex !important;
+  min-width:100%;
+  max-width: max-content !important;
+}
+.extendrow {
+ min-width: 200%;
+}
 .row-anchor{
   width: 100%;
   white-space: unset;
@@ -73,9 +35,25 @@ mat-header-cell{  word-break: break-word;}
 .equip-toolbar{
   z-index: 9;
 }
+.mat-toolbar-row {
+  padding: unset !important;
+  max-height: 42px;
+}
+mat-toolbar{
+  max-height: 42px;
+}
+.mat-toolbar-multiple-rows {
+  min-height: 42px;
+}
 
 /* 07-08-2019 */
-.table-section { padding: 20px; }
-// .table-section .mat-table { border: 1px solid rgba(0, 0, 0, 0.12);}
+.mat-table { 
+  overflow: auto;
+  max-height: 100vh;
+}
 .mat-paginator-container {background: #ececec !important;}
 
+#dataUnavailableMsg {
+  display: flex;
+  justify-content: center;
+}

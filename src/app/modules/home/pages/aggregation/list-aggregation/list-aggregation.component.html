@@ -2,18 +2,18 @@
 
     <div class="container-fluid page-content-header">
       <div class="row">
-        <div class="col-md-7 page-heading">
-          <h4>{{'AGGREGATIONS.TEXTS.SWIDTAGS_AGGREGATION'|translate}} </h4>
+        <div class="col-md-10 page-heading">
+          {{'AGGREGATIONS.TEXTS.SWIDTAGS_AGGREGATION'|translate}}
         </div>
         <div class="col-md-2" class="add-btn">
-          <a mat-raised-button color="primary" [routerLink]="['/optisam/ag/create-aggregation']" *ngIf="(role === 'ADMIN') || ((role === 'SUPER_ADMIN'))">
+          <a id="addAggregation" mat-raised-button class="btn-two" (click)="addNew()" *ngIf="(role === 'ADMIN') || ((role === 'SUPER_ADMIN'))">
             <mat-icon>add</mat-icon>
             {{'AGGREGATIONS.ACTIONS.ADD_AGGREGATION'|translate}}
           </a>
         </div>
-        <div class="col-md-3 search-div">
+        <!-- <div class="col-md-3 search-div">
           <app-advance-search [hideAdvanceToggle]="true" [advanceSearchModel]="advanceSearchModel" (advFilterEvent)="advSearchTrigger($event)"></app-advance-search>       
-        </div>
+        </div> -->
       </div>
     </div>
   
@@ -27,10 +27,10 @@
             <mat-cell *matCellDef="let aggregation"> {{aggregation.name}} </mat-cell>
           </ng-container>
   
-          <ng-container matColumnDef="product">
+          <ng-container matColumnDef="product_names">
             <mat-header-cell *matHeaderCellDef >{{'AGGREGATIONS.TEXTS.PRODUCT' | translate}}
             </mat-header-cell>
-            <mat-cell *matCellDef="let aggregation">{{aggregation.product}}
+            <mat-cell *matCellDef="let aggregation">{{aggregation.product_names.join(', ')}}
             </mat-cell>
           </ng-container>
   
@@ -57,19 +57,28 @@
             </mat-cell>
           </ng-container>
 
-          <!-- <ng-container matColumnDef="action">
+          <ng-container matColumnDef="action">
             <mat-header-cell *matHeaderCellDef >{{'Action'| translate}}</mat-header-cell>
             <mat-cell *matCellDef="let aggregation">
-                <mat-icon (click)="editSwid()">edit</mat-icon>
-                <mat-icon (click)="deleteSwid()">delete</mat-icon>
+                <mat-icon class="action-icon" matTooltip="Edit Aggregation" (click)="editAggregation(aggregation)">edit</mat-icon>
+                <mat-icon class="action-icon dlt" matTooltip="Delete Aggregation" (click)="deleteAggregationConfirmation(aggregation,deleteConfirmationDialog)">delete</mat-icon>
+                <ng-template #deleteConfirmationDialog>
+                  <mat-dialog-content>
+                      <p>{{'DELETE_AGGR_CONFIRM_MSG' | translate}}- {{aggregation.name}}</p>
+                  </mat-dialog-content>
+                  <mat-dialog-actions align="center">
+                      <button mat-icon-button [mat-dialog-close]="true" (click)="deleteProductAggregation(successDialog,errorDialog)" cdkFocusInitial>{{'OK'|translate}}</button>&nbsp;
+                      <button mat-icon-button [mat-dialog-close]="true" cdkFocusInitial>{{'Cancel'|translate}}</button>
+                    </mat-dialog-actions>
+                </ng-template>  
             </mat-cell>
-          </ng-container> -->
+          </ng-container>
     
           <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
           <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
         </mat-table>
         <div class="no-data" *ngIf="aggregationData && aggregationData.length == 0;">{{'AGGREGATIONS.TEXTS.NO_AGGREGATION'| translate}}</div>
-        <!-- <app-loading-spinner *ngIf="_loading"></app-loading-spinner> -->
+        <app-loading-spinner *ngIf="_loading"></app-loading-spinner>
         <!-- <mat-paginator #paginator [pageSize]="7" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons> -->
         <!-- <mat-paginator [length]="totalRecords" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions"
           (page)="getPaginatorData($event)" showFirstLastButtons>
@@ -78,3 +87,19 @@
     </mat-card-content>
   </mat-card>
   
+<ng-template #successDialog>
+  <mat-dialog-content>
+    <p>{{'DELETE_AGGR_SUCCESS'|translate}}</p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="center">
+    <button mat-button [mat-dialog-close]="true" cdkFocusInitial>{{'OK'|translate}}</button>
+  </mat-dialog-actions>
+</ng-template>
+<ng-template #errorDialog>
+  <mat-dialog-content>
+    <p>{{'DELETE_AGGR_ERROR'|translate}}</p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="center">
+    <button mat-button [mat-dialog-close]="true" cdkFocusInitial>{{'OK'|translate}}</button>
+  </mat-dialog-actions>
+</ng-template>

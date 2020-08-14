@@ -11,7 +11,8 @@ import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
   import {BehaviorSubject, fromEvent, merge, Observable} from 'rxjs';
   import {map} from 'rxjs/operators';
 import { MetricCreationComponent } from '../metric-creation/metric-creation.component';
-import { EquipmentTypeManagementService } from 'src/app/core/services/equipmenttypemanagement.service';
+import { MetricDetailsComponent } from '../metric-details/metric-details.component';
+import { MetricService } from 'src/app/core/services/metric.service';
 
   @Component({
     selector: 'app-metric-view',
@@ -26,8 +27,12 @@ import { EquipmentTypeManagementService } from 'src/app/core/services/equipmentt
     id: string;
     equipment_types = [];
     role: String;
+    _loading: Boolean;
     MyDataSource: MatTableDataSource<{}>;
-    constructor(public equipmentTypeManagementService: EquipmentTypeManagementService, public dialog: MatDialog) { }
+    noDataAvailableFlag :Boolean;
+    constructor(public  metricService: MetricService, public dialog: MatDialog) {
+      this.dialog.afterAllClosed.subscribe(res => this.loadData() );
+     }
 
     ngOnInit() {
       this.role = localStorage.getItem('role');
@@ -38,7 +43,9 @@ import { EquipmentTypeManagementService } from 'src/app/core/services/equipmentt
     }
     addNew() {
       const dialogRef = this.dialog.open(MetricCreationComponent, {
-        data: {}
+        data: {},
+        autoFocus:false,
+        disableClose: true
       });
 
       dialogRef.afterClosed().subscribe(result => {
@@ -52,19 +59,37 @@ import { EquipmentTypeManagementService } from 'src/app/core/services/equipmentt
         }
       });
     }
+
+    openDetails(metric) {
+      this.dialog.open(MetricDetailsComponent, {
+        width: '800px',
+        disableClose: true,
+        autoFocus:false,
+        maxHeight: '90vh',
+        data: metric
+        });
+    }
+    
     public loadData() {
-      this.equipmentTypeManagementService.getMetricList().subscribe(
+      this._loading = true;
+      this.metricService.getMetricList().subscribe(
        (res: any) => {
           this.MyDataSource = new MatTableDataSource(res.metrices);
-                console.log('data', this.MyDataSource);
-                // this.dataSource.sort = this.sort;
-                // this.length = res.totalRecords;
-
-                console.log('test---------', res.metrices);
+          if(this.MyDataSource.data.length == 0) {
+            this.noDataAvailableFlag = true;
+          } else {
+            this.noDataAvailableFlag = false;
+          }
+          this._loading = false;
         },
         (error) => {
+          if(error.error == 'cannot fetch metric types') {
+            this.noDataAvailableFlag = true;
+          } else {
+            this.noDataAvailableFlag = false;
+          }
+          this._loading = false;
           console.log('There was an error while retrieving Posts !!!' + error);
-          // this.getEquipmentsData(this.displayedColumns2[0]);
         });
     }
   }

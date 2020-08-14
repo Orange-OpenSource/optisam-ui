@@ -10,7 +10,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { EquipmenttypemanagementComponent } from './equipmenttypemanagement.component';
 
 const routes: Routes = [
-  { path: '', component: EquipmenttypemanagementComponent },
+  { path: '', component: EquipmenttypemanagementComponent }
 ];
 @NgModule({
   imports: [RouterModule.forChild(routes)],

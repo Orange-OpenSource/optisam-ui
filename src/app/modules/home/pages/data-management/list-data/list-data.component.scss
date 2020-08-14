@@ -1,0 +1,24 @@
+.upload-button-box {
+    margin-top: -16px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+.mat-table {
+    max-height: 70vh;
+    overflow-y: auto;
+}
+#noData {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+.mat-column-file_name {        
+    overflow-wrap: break-word;
+    word-wrap: break-word;    
+    word-break: break-word;
+}
+#refreshButton {
+    margin-right: 5px;
+    min-width: fit-content;
+}

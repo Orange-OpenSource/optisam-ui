@@ -7,7 +7,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import {FormControl, Validators} from '@angular/forms';
 import { GroupService } from 'src/app/core/services/group.service';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialogRef, MatDialog } from '@angular/material';
 import { Router} from '@angular/router';
 
 @Component({
@@ -20,16 +20,26 @@ fullyQualifyName: String;
 editName: String;
 nameRequired: Boolean;
 showMsg: Boolean;
-  constructor(@Inject (MAT_DIALOG_DATA) public data, private groupService: GroupService, private router: Router) { }
+cannotUpdateFlag: Boolean = true;
+  constructor(@Inject (MAT_DIALOG_DATA) public data, private dialog: MatDialog,private groupService: GroupService, private router: Router) { }
 
   ngOnInit() {
-    console.log('data---------', this.data);
+    this.setData();
+  }
+  setData() {
     this.editName = this.data.node.name;
     this.fullyQualifyName = this.data.node.fully_qualified_name;
+    this.cannotUpdateFlag = true;
   }
-  changeVal(editName) {
+  validateName(name) {
+    if(name===this.data.node.name) {
+      this.cannotUpdateFlag = true;
+    }
+    else {
+      this.cannotUpdateFlag = false;
+    }
   }
-  saveEditName(data) {
+  saveEditName(data, successMsg, errorMsg) {
     if (this.editName === '' || this.editName === null) {
       console.log('1');
       this.nameRequired = true;
@@ -41,13 +51,26 @@ showMsg: Boolean;
       this.groupService.editName(this.data.node.ID, data).subscribe(res => {
         console.log('res----', res);
         this.showMsg = true;
+        this.openModal(successMsg);
       },
         error => {
           console.log('Fetch direct Group response ERROR !!!' + error);
           this.showMsg = false;
+          this.openModal(errorMsg);
         });
       this.nameRequired = false;
     }
 
   }
+  openModal(templateRef) {
+    let dialogRef = this.dialog.open(templateRef, {
+        width: '50%',
+        disableClose: true
+    });
+  }
+
+  ngOnDestroy() {
+    this.dialog.closeAll();
+  }
+
 }

@@ -13,15 +13,19 @@ import { DataManagementComponent } from './data-management.component';
 import { UploadDataComponent } from './upload-data/upload-data.component';
 import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
+import { ListDataComponent } from './list-data/list-data.component';
+import { ListMetadataComponent } from './list-metadata/list-metadata.component';
+import { SharedModule } from 'src/app/shared/shared.module';
 
 @NgModule({
-  declarations: [DataManagementComponent, UploadDataComponent],
+  declarations: [DataManagementComponent, UploadDataComponent, ListDataComponent, ListMetadataComponent],
   imports: [
     CommonModule,
     DataManagementRoutingModule,
     CustomMaterialModule,
     TranslateModule,
     FormsModule,
+    SharedModule,
     ReactiveFormsModule
   ]
 })
