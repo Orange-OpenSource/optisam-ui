@@ -5,7 +5,7 @@
 // or at 'http://www.apache.org/licenses/LICENSE-2.0'. 
 
 import { Component, Inject, OnInit } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ProductService } from 'src/app/core/services/product.service';
 import { DialogData } from './details';
 import { Subscription } from 'rxjs';
@@ -21,6 +21,7 @@ import { SharedService } from 'src/app/shared/shared.service';
 export class MoreDetailsComponent implements OnInit {
   value: any;
   pName: any;
+  appID: any;
   edition: any;
   acquireRight: any;
   loadingSubscription: Subscription;
@@ -41,6 +42,10 @@ export class MoreDetailsComponent implements OnInit {
   ngOnInit() {
     this.swidTag = this.data['datakey'];
     this.pName = this.data['dataName'];
+    if(this.data['appID'])
+    {this.appID = this.data['appID'];} else {
+      this.appID = null;
+    }
     this.getProductDetails();
   }
 
@@ -72,7 +77,7 @@ export class MoreDetailsComponent implements OnInit {
 
   getAcquiredRights() {
     this._loading = true;
-    this.productsService.getAcquiredRightDetails(this.swidTag).subscribe(
+    this.productsService.getAcquiredRightDetails(this.swidTag,'',this.appID).subscribe(
       (res: any) => {
         this.acquireRight = res;
         this._loading = false;

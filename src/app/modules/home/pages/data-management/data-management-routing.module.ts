@@ -12,6 +12,7 @@ import { AuthGuard } from 'src/app/core/guards/auth.guard';
 import { Role } from 'src/app/utils/roles.config';
 import { ListDataComponent } from './list-data/list-data.component';
 import { ListMetadataComponent } from './list-metadata/list-metadata.component';
+import { ListRawdataComponent } from './list-rawdata/list-rawdata.component';
 
 const routes: Routes = [
   {
@@ -23,6 +24,10 @@ const routes: Routes = [
       },
       {
         path: 'metadata', component: ListMetadataComponent, canActivate: [AuthGuard],
+        data: { roles: [Role.SuperAdmin.valueOf(), Role.Admin.valueOf()] }
+      },
+      {
+        path: 'globaldata', component: ListRawdataComponent, canActivate: [AuthGuard],
         data: { roles: [Role.SuperAdmin.valueOf(), Role.Admin.valueOf()] }
       },
       {

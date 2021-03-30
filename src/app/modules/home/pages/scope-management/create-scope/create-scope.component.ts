@@ -7,7 +7,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { AccountService } from 'src/app/core/services/account.service';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-create-scope',
@@ -44,6 +44,7 @@ export class CreateScopeComponent implements OnInit {
   }
 
   createScope(successMsg,errorMsg) {
+    this.scopeForm.markAsPristine();
     this._loading = true;
     const body = {
       'scope_code': this.scope_id.value,

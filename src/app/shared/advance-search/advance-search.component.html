@@ -1,6 +1,6 @@
 <mat-form-field class="search-form-field" floatLabel="never">
   <input id="adv-search-input" matInput [(ngModel)]="filterFields[model.primary]" placeholder="{{model.title |translate}}"
-    autocomplete="off" (keydown.enter)="pressEnter()" >
+    autocomplete="off" (keyup)="onFocusOut()" (keydown.enter)="pressEnter()" >
 
   <button id="search" mat-button matSuffix mat-icon-button aria-label="Search" (click)="applyFilter()" [disabled]="!filterFields[model.primary] || filterFields[model.primary].length < 3">
     <mat-icon>search</mat-icon>
@@ -10,22 +10,31 @@
     <mat-icon>clear</mat-icon>
   </button>
 
-  <button id="toggleKey" *ngIf="!hideAdvanceToggle" mat-button mat-icon-button matSuffix class="btn-toggle" (click)="openAdvanceSearch()">
+  <button id="toggleKeyDown" *ngIf="!toggleAdvanceSearch" mat-button mat-icon-button matSuffix class="btn-toggle"
+    (click)="openAdvanceSearch()">
     <mat-icon>keyboard_arrow_down</mat-icon>
   </button>
+  <button id="toggleKeyUp" *ngIf="toggleAdvanceSearch" mat-button mat-icon-button matSuffix class="btn-toggle"
+    (click)="openAdvanceSearch()">
+    <mat-icon>keyboard_arrow_up</mat-icon>
+  </button>
+
+  <!-- <button id="toggleKey" *ngIf="!hideToggleFlag" mat-button mat-icon-button matSuffix class="btn-toggle" (click)="openAdvanceSearch()">
+    <mat-icon>keyboard_arrow_down</mat-icon>
+  </button> -->
 </mat-form-field>
 
-<div *ngIf="!hideAdvanceToggle" #advanceSearch class="advance-search mat-elevation-z8" [ngClass]="{'hidden': !toggleAdvanceSearch}" tabindex="-1" (focusout)="focusout($event)">
+<div *ngIf="!hideToggleFlag" #advanceSearch class="advance-search mat-elevation-z8" [ngClass]="{'hidden': !toggleAdvanceSearch}" tabindex="-1" (focusout)="focusout($event)">
   <div class="menu-title advanceChild">
     {{'Advance Search' | translate}}
   </div>
-  <div  mat-filter-item class="advanceChild" *ngFor="let itm of model.other;">
+  <div  mat-filter-item class="advanceChild" *ngFor="let itm of model.other;let idx = index;">
     <mat-form-field  >
-      <input matInput placeholder="{{itm.label | translate}}" class="advanceChild" [(ngModel)]="filterFields[itm.key]" (keydown.enter)="pressEnter(filterFields[itm.key],true)">
+      <input matInput id="{{itm.label}}" placeholder="{{itm.label | translate}}" class="advanceChild" [(ngModel)]="filterFields[itm.key]" (keyup)="onFocusOut()" (keydown.enter)="pressEnter(filterFields[itm.key],true)">
     </mat-form-field>
   </div>
   <div class="buttons-section advanceChild">
-    <button id="adv-clear-button" mat-raised-button class="advanceChild btn-four" (click)="clearFilter()">{{'Clear'|translate}}</button>
-    <button id="adv-apply-button" mat-raised-button class="advanceChild btn-two" (click)="applyFilter();toggleAdvanceSearch = false;" [disabled]="filterFields[model.primary] != '' && filterFields[model.primary] && filterFields[model.primary].length < 3">{{'Search'|translate}}</button>
+    <button id="adv-clear-button" mat-raised-button class="advanceChild btn-four" (click)="clearFilter()" [disabled]="!enableReset">{{'Clear'|translate}}</button>
+    <button id="adv-apply-button" mat-raised-button class="advanceChild btn-two" (click)="applyFilter();toggleAdvanceSearch = false;" [disabled]="!enableSearch">{{'Search'|translate}}</button>
   </div>
 </div>

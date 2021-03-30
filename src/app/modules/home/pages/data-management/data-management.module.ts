@@ -16,9 +16,11 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { ListDataComponent } from './list-data/list-data.component';
 import { ListMetadataComponent } from './list-metadata/list-metadata.component';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { FailedRecordsDetailsComponent } from './list-data/failed-records-details/failed-records-details.component';
+import { ListRawdataComponent } from './list-rawdata/list-rawdata.component';
 
 @NgModule({
-  declarations: [DataManagementComponent, UploadDataComponent, ListDataComponent, ListMetadataComponent],
+  declarations: [DataManagementComponent, UploadDataComponent, ListDataComponent, ListMetadataComponent, FailedRecordsDetailsComponent, ListRawdataComponent],
   imports: [
     CommonModule,
     DataManagementRoutingModule,

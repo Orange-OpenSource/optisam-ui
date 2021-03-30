@@ -11,10 +11,10 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { map } from 'rxjs/operators';
 import { RequiredJSONFormat, EquipmentTypes, EquipmentType } from 'src/app/modules/home/pages/equipmenttypemanagement/dialogs/model';
+import { Equipments } from './equipments';
 
 @Injectable()
 export class EquipmentTypeManagementService {
-  apiUrl = environment.API_URL;
   apiProductUrl = environment.API_PRODUCT_URL;
   apiEquipUrl = environment.API_EQUIPMENT_URL;
   token = localStorage.getItem('access_token');
@@ -23,19 +23,10 @@ export class EquipmentTypeManagementService {
 
   constructor(private httpClient: HttpClient) { }
 
-  // get data(): any[] {
-  //   return this.dataChange.value;
-  // }
-
   getDialogData() {
     return this.dialogData;
   }
 
-  /** CRUD METHODS */
-  getAllTypes(): Observable<EquipmentType[]> {
-    const url = this.apiEquipUrl + '/equipments/types';
-    return this.httpClient.get<EquipmentType[]>(url);
-  }
   createEquipments(equipmentData): Observable<any> {
     return this.httpClient.post<any>(this.apiEquipUrl + '/equipments/types', equipmentData)
       .pipe(
@@ -44,16 +35,22 @@ export class EquipmentTypeManagementService {
           return res;
         }));
   }
-  getMetaData(): Observable<Equipments[]> {
-    const url = this.apiEquipUrl + '/equipments/metadata';
+  getMetaData(scope): Observable<Equipments[]> {
+    const url = this.apiEquipUrl + '/equipments/metadata?scopes=' + scope;
     return this.httpClient.get<Equipments[]>(url);
   }
   getMappedSource(id): Observable<Equipments[]> {
-    const url = this.apiEquipUrl + '/equipments/metadata/' + id ;
+    const url = this.apiEquipUrl + '/equipments/metadata/' + id + '?scopes=' + localStorage.getItem('scope');
     return this.httpClient.get<Equipments[]>(url);
   }
-  getTypes(): Observable<Equipments[]> {
-    const url = this.apiEquipUrl + '/equipments/types';
+  getTypes(scope?:string): Observable<Equipments[]> {
+    let url;
+    if(scope) {
+      url = this.apiEquipUrl + '/equipments/types?scopes=' + scope;
+    }
+    else {
+      url = this.apiEquipUrl + '/equipments/types?scopes=' + localStorage.getItem('scope');
+    }    
     return this.httpClient.get<Equipments[]>(url);
   }
   addType(type: Type): void {
@@ -66,11 +63,11 @@ export class EquipmentTypeManagementService {
 
   getEquipmentsdata(key, name, pageSize, length) {
     const url =  this.apiEquipUrl + '/equipments/' + key  +
-    '?' + 'page_num=' + length + '&page_size=' + pageSize + '&sort_by=' + name + '&sort_order=ASC';
+    '/equipments?' + 'page_num=' + length + '&page_size=' + pageSize + '&sort_by=' + name + '&sort_order=ASC&scopes=' + localStorage.getItem('scope');
     return this.httpClient.get<Equipments[]>(url);
   }
 // Equip for Applications
-  getEquipmentDataWithFilters(key, name, pageSize, length, filteringkey1, filteringkey2) {
+  getEquipmentDataWithFilters(key, pageSize, length, sort_order, sort_by, filteringkey1, filteringkey2, filteringkey3, searchFilter?: any) {
     let filteringCondition = '';
     if (filteringkey1 !== '' && filteringkey1 !== undefined) {
       filteringCondition = filteringCondition + '&filter.product_id.filteringkey=' + filteringkey1;
@@ -78,108 +75,78 @@ export class EquipmentTypeManagementService {
     if (filteringkey2 !== '' && filteringkey2 !== undefined) {
       filteringCondition = filteringCondition + '&filter.application_id.filteringkey=' + filteringkey2;
     }
-    const url =  this.apiEquipUrl + '/equipments/' + key  +
-    '?' + 'page_num=' + length + '&page_size=' + pageSize + '&sort_by=' + name + '&sort_order=ASC'+ filteringCondition;
-    return this.httpClient.get<Equipments[]>(url);
-    
-  }
-  getProdWithEquipments(swigTag, key, name, pageSize, length, searchFilter?: any) {
-    let url =  this.apiEquipUrl + '/products/' + swigTag + '/equipments/' + key  +
-    '?' + 'page_num=' + length + '&page_size=' + pageSize + '&sort_by=' + name + '&sort_order=ASC';
-    if (searchFilter) {
-      url += '&' + searchFilter;
+    if (filteringkey3 !== '' && filteringkey3 !== undefined) {
+      filteringCondition = filteringCondition + '&filter.instance_id.filteringkey=' + filteringkey3;
     }
-    return this.httpClient.get<Equipments[]>(url);
-  }
-
-  getPaginatedData(key, name, length, pageSize, searchFilter?: any) {
-    let url =  this.apiEquipUrl + '/equipments/' + key  +
-    '?' + 'page_num=' + length + '&page_size=' + pageSize + '&sort_by=' + name + '&sort_order=ASC';
-
     if (searchFilter) {
-      url += '&' + searchFilter;
-   }
-    return this.httpClient.get<Equipments[]>(url);
-  }
-  sortEquipments(key, length, pageSize, sort_by, sort_order, swidtag, searchFilter?: any ) {
+      filteringCondition += '&' + searchFilter;
+    }
     if (sort_order === '') {
       sort_order = 'asc';
     }
-    let url;
-    if(swidtag){
-      url =  this.apiEquipUrl + '/products/' + swidtag + '/equipments/' + key  +
-      '?page_num=' + length + '&page_size=' + pageSize + '&sort_by=' + sort_by + '&sort_order=' + sort_order;
-    } else {
-      url =  this.apiEquipUrl + '/equipments/' + key  + '?page_num=' + length + '&page_size=' + pageSize + '&sort_by=' + 
-      sort_by + '&sort_order=' + sort_order;
-    }
-    if (searchFilter) {
-      url += '&' + searchFilter;
-    }
+    const url =  this.apiEquipUrl + '/equipments/' + key  +
+    '/equipments?' + 'page_num=' + length + '&page_size=' + pageSize + '&sort_by=' + sort_by + '&sort_order=' + sort_order + '&scopes=' + localStorage.getItem('scope') + filteringCondition;
     return this.httpClient.get<Equipments[]>(url);
+    
   }
+
   filteredData(key, length, pageSize, sort_by, sort_order, searchFilter) {
     if (sort_order === '') {
       sort_order = 'asc';
     }
     const url = this.apiEquipUrl + '/equipments/'  + key  +
-    '?' + 'page_num=' + length + '&page_size=' + pageSize +
-      '&sort_by=' + sort_by + '&sort_order=' + sort_order + '&' + searchFilter;
+    '/equipments?' + 'page_num=' + length + '&page_size=' + pageSize +
+      '&sort_by=' + sort_by + '&sort_order=' + sort_order + '&scopes=' + localStorage.getItem('scope') + '&' + searchFilter;
       return this.httpClient.get<Equipments[]>(url);
-    }
-    getProdWithEquipmentSearch(swigTag, key, length, pageSize, sort_by, sort_order, searchFilter) {
-      if (sort_order === '') {
-        sort_order = 'asc';
-      }
-      const url =  this.apiEquipUrl + '/products/' + swigTag + '/equipments/'  + key  +
-      '?' + 'page_num=' + length + '&page_size=' + pageSize +
-        '&sort_by=' + sort_by + '&sort_order=' + sort_order + '&' + searchFilter;
-        return this.httpClient.get<Equipments[]>(url);
-    }
+  }
+
   getEquipmentDetail(equiId,typeName) {
-    const url =  this.apiEquipUrl + '/equipments/' + equiId  + '/' + typeName;
-    console.log(url);
+    const url =  this.apiEquipUrl + '/equipments/' + equiId  + '/' + typeName + '?scopes=' + localStorage.getItem('scope');
     return this.httpClient.get<Equipments[]>(url);
   }
+
   getParentDetail(typeID, equiId) {
-    const url =  this.apiEquipUrl + '/equipments/' + typeID  + '/' + equiId + '/' + 'parents';
-    console.log(url);
+    const url =  this.apiEquipUrl + '/equipments/' + typeID  + '/' + equiId + '/' + 'parents?scopes=' + localStorage.getItem('scope');
     return this.httpClient.get<Equipments[]>(url);
   }
+
   getChildDetail(typeID, equiId, childTypeId, length, pageSize, sort_by, sort_order) {
     const url =  this.apiEquipUrl + '/equipments/' + typeID  + '/' + equiId + '/childs' + '/' + childTypeId +
-    '?' + 'page_num=' + length + '&page_size=' + pageSize + '&sort_by=' + sort_by + '&sort_order=' + sort_order;
-    console.log(url);
+    '?' + 'page_num=' + length + '&page_size=' + pageSize + '&sort_by=' + sort_by + '&sort_order=' + sort_order + '&scopes=' + localStorage.getItem('scope');
     return this.httpClient.get<Equipments[]>(url);
   }
+
   getProductDetail(equiId, typeName, length, pageSize, sort_by) {
     const url =  this.apiProductUrl + '/products' +
-    '?' + 'page_num=' + length + '&page_size=' + pageSize + '&sort_by=' + sort_by + '&sort_order=asc&search_params.equipment_id.filter_type=1&search_params.equipment_id.filteringkey='+typeName;
-    console.log(url);
+    '?' + 'page_num=' + length + '&page_size=' + pageSize + '&sort_by=' + sort_by + '&sort_order=asc' + '&scopes=' + localStorage.getItem('scope') + '&search_params.equipment_id.filter_type=1&search_params.equipment_id.filteringkey='+typeName;
     return this.httpClient.get<Equipments[]>(url);
   }
+
   getChildPaginatedData(typeID, equiId, childTypeId, length, pageSize, sort_by) {
     const url =  this.apiEquipUrl + '/equipments/' + typeID  + '/' + equiId + '/childs' + '/' + childTypeId +
-    '?' + 'page_num=' + length + '&page_size=' + pageSize + '&sort_by=' + sort_by + '&sort_order=ASC';
+    '?' + 'page_num=' + length + '&page_size=' + pageSize + '&sort_by=' + sort_by + '&sort_order=ASC&scopes=' + localStorage.getItem('scope');
     return this.httpClient.get<Equipments[]>(url);
   }
+
   sortChildEquipments(typeID, equiId, childTypeId, length, pageSize, sort_by, sort_order ) {
     if (sort_order === '') {
       sort_order = 'asc';
     }
     const url =  this.apiEquipUrl + '/equipments/' + typeID  + '/' + equiId + '/childs' + '/' + childTypeId +
-    '?' + 'page_num=' + length + '&page_size=' + pageSize + '&sort_by=' + sort_by + '&sort_order=' + sort_order;
+    '?' + 'page_num=' + length + '&page_size=' + pageSize + '&sort_by=' + sort_by + '&sort_order=' + sort_order + '&scopes=' + localStorage.getItem('scope');
     return this.httpClient.get<Equipments[]>(url);
   }
+
   sortFilterChildEquipments(typeID, equiId, childTypeId, length, pageSize, sort_by, sort_order, searchFilter ) {
     if (sort_order === '') {
       sort_order = 'asc';
     }
     const url =  this.apiEquipUrl + '/equipments/' + typeID  + '/' + equiId + '/childs' + '/' + childTypeId +
-    '?' + 'page_num=' + length + '&page_size=' + pageSize + '&sort_by=' + sort_by + '&sort_order=' + sort_order + '&' + searchFilter;
+    '?' + 'page_num=' + length + '&page_size=' + pageSize + '&sort_by=' + sort_by + '&sort_order=' + sort_order + '&scopes=' + localStorage.getItem('scope') + '&' + searchFilter;
     return this.httpClient.get<Equipments[]>(url);
   }
-  productFilteredData(typeID, equiId, length, pageSize, sort_by, sort_order,
+
+  productFilteredData(equiId, typeName, length, pageSize, sort_by, sort_order,
     filteringkey1, filteringkey2, filteringkey3): Observable<Equipments[]> {
       sort_by = sort_by;
       sort_order = sort_order;
@@ -198,16 +165,18 @@ export class EquipmentTypeManagementService {
       sort_order = 'ASC';
     }
     const url =  this.apiProductUrl + '/products' +
-                '?' + 'page_num=' + length + '&page_size=' + pageSize + '&sort_by=' + sort_by + 
-                '&sort_order=asc&search_params.equipment_id.filteringkey=' + equiId + filteringCondition;
-    
-    // const url = this.apiEquipUrl + '/equipments/' + typeID  + '/' + equiId + '/' + 'products?page_num=' + length + '&page_size=' + pageSize +
-    //   '&sort_by=' + sort_by + '&sort_order=' + sort_order + filteringCondition;
+                '?' + 'page_num=' + length + '&page_size=' + pageSize + '&sort_by=' + sort_by + '&sort_order=asc' + 
+                '&scopes=' + localStorage.getItem('scope') + '&search_params.equipment_id.filter_type=1&search_params.equipment_id.filteringkey=' + typeName + filteringCondition;
     return this.httpClient.get<Equipments[]>(url);
   }
 
   getAggregationEquipments(query: string, aggregateName: string, equipmentId: string) {
-    const url = this.apiEquipUrl + '/products/aggregations/' + aggregateName + '/equipments/' + equipmentId + query;
+    const url = this.apiEquipUrl + '/products/aggregations/' + aggregateName + '/equipments/' + equipmentId + query + '&scopes=' + localStorage.getItem('scope');
     return this.httpClient.get<any>(url);
+  }
+
+  deleteEquipmentType(type):Observable<any> {
+    const url = this.apiEquipUrl + '/equipments/types/'+ type +'?scope=' + localStorage.getItem('scope');
+    return this.httpClient.delete<any>(url);
   }
 }

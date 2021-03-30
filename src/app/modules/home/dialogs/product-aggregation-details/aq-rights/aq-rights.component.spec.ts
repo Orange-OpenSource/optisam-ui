@@ -7,6 +7,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { AqRightsComponent } from './aq-rights.component';
+import { TranslateModule } from '@ngx-translate/core';
+import { SharedModule } from 'src/app/shared/shared.module';
 
 describe('AqRightsComponent', () => {
   let component: AqRightsComponent;
@@ -14,7 +16,11 @@ describe('AqRightsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AqRightsComponent ]
+      declarations: [ AqRightsComponent ],
+      imports : [
+                  SharedModule,
+                  TranslateModule.forRoot() 
+                ]
     })
     .compileComponents();
   }));

@@ -5,8 +5,8 @@
 // or at 'http://www.apache.org/licenses/LICENSE-2.0'. 
 
 import { Component, OnInit, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { AggregationService } from 'src/app/core/services/aggregation.service';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { ProductService } from 'src/app/core/services/product.service';
 
 @Component({
   selector: 'app-confirm-dialog',
@@ -19,7 +19,7 @@ export class ConfirmDialogComponent implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<ConfirmDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
-    private aggService: AggregationService
+    private productService: ProductService
   ) {
     this._loading = false;
     this.error = false;
@@ -36,7 +36,7 @@ export class ConfirmDialogComponent implements OnInit {
   }
 
   deleteProductAggregation() {
-    this.aggService.deleteAggregation(this.data.id).subscribe(resp => {
+    this.productService.deleteAggregation(this.data.id).subscribe(resp => {
       this._loading = false;
       this.dialogRef.close(true);
     }, err => {

@@ -53,3 +53,38 @@
     justify-content: center;
     margin-top:5px;
 }
+::ng-deep .mat-select-panel {
+    min-width: 190px !important;
+    margin-left: 32px;
+    margin-top: 20px;
+}
+::ng-deep .mat-select-panel#scope-panel {
+    min-width: calc(100% + 10px) !important;
+    margin-left: 12px;
+    margin-top: 25px;
+}
+::ng-deep .mat-select-panel#root-panel {
+    min-width: calc(100% + 10px) !important;
+    margin-left: 10px;
+    margin-top: 36px;
+}
+::ng-deep .mat-select-panel#data-panel {
+    min-width: calc(100% + 16px) !important;
+    margin-left: 8px;
+    margin-top: 36px;
+}
+::ng-deep .mat-checkbox-checked.mat-accent .mat-checkbox-ripple .mat-ripple-element {
+    opacity: 0.03 !important;
+    background-color: #008AFC!important;
+  }
+  
+::ng-deep .mat-checkbox-checked.mat-accent .mat-checkbox-background,::ng-deep .mat-checkbox-indeterminate.mat-accent .mat-checkbox-background {
+  background-color: #008AFC !important;
+}
+::ng-deep .mat-primary .mat-pseudo-checkbox-checked,::ng-deep .mat-primary .mat-pseudo-checkbox-indeterminate {
+  background: #008afc;
+}
+#duplicateNameMsg {
+    margin-top: -14px;
+    margin-left: 8px;
+}

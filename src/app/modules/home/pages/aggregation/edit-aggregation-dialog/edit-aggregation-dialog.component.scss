@@ -17,18 +17,13 @@
 .swidtabs{
     display: flex;
     align-items: center;
-    // justify-content: center;
 }
 .left, .right {
     width: 46%;
     border: 1px solid;
     border-radius: 5px 5px 0px 0px;
 }
-.right{
-    // margin-left: 2%;
-}
 .transtitle{
-    // color: #fff;
     padding: 7px;
     margin-bottom: 0;
 }
@@ -59,10 +54,25 @@
         word-break: break-all;
     }
     .add{
-        color: #008AFC;
+        color: green;
         cursor: pointer;
     }
     .cancel{
-        color: #008AFC;
+        color: red;
         cursor: pointer;
     }
+
+::ng-deep .mat-input-element:disabled, .mat-form-field-type-mat-native-select.mat-form-field-disabled .mat-form-field-infix::after {
+    color: black;
+}
+
+::ng-deep .mat-select-panel#products-panel {
+    min-width: calc(100% + 16px) !important;
+    margin-left: 32px;
+    margin-top: 32px;
+    color: #008AFC;
+}
+
+::ng-deep .mat-primary .mat-pseudo-checkbox-checked, ::ng-deep .mat-primary .mat-pseudo-checkbox-indeterminate {
+    background: #008AFC;
+}

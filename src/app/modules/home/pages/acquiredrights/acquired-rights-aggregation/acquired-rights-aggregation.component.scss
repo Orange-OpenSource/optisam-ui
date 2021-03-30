@@ -48,3 +48,9 @@
     word-wrap: break-word;    
     word-break: break-word;
   }
+
+  .mat-button-link {
+    text-overflow: ellipsis;
+    overflow: hidden;
+      white-space: unset;
+  }

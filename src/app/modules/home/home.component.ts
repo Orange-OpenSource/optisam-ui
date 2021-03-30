@@ -4,10 +4,9 @@
 // license which can be found in the file 'License.txt' in this package distribution 
 // or at 'http://www.apache.org/licenses/LICENSE-2.0'. 
 
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { SharedService } from '../../shared/shared.service';
 import { Subscription } from 'rxjs';
-import { isNullOrUndefined } from 'util';
 import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
@@ -29,7 +28,8 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   constructor(
     private sharedService: SharedService,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private cd : ChangeDetectorRef
   ) {
     this.navigationLoading = false;
     this.navigationSubscription = this.sharedService.navigationLoading().subscribe(data => {
@@ -72,6 +72,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     const emailId = localStorage.getItem('email');
     if(profile_pic != '') {
       this.profilePicData = this.sanitizer.bypassSecurityTrustResourceUrl('data:image;base64,' + profile_pic); 
+      this.cd.detectChanges();
     }
     else {
       this.profilePicData = null;

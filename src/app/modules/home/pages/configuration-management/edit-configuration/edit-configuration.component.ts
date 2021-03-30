@@ -9,7 +9,7 @@ import { SharedService } from 'src/app/shared/shared.service';
 import { GroupService } from 'src/app/core/services/group.service';
 import { EquipmentsService } from 'src/app/core/services/equipments.service';
 import { Papa } from 'ngx-papaparse';
-import { MatDialog, MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
 import { ConfigurationService } from 'src/app/core/services/configuration.service';
 import { isUndefined } from 'util';
@@ -66,9 +66,12 @@ export class EditConfigurationComponent implements OnInit {
       group: null,
       attributes: []
     };
-    this.configID = this.data['datakey'].config_id;
-    this.eqTypeForUpdate = this.data['datakey'].equipment_type;
-    this.configName = this.data['datakey'].config_name;
+    if(this.data['datakey'])
+    {
+      this.configID = this.data['datakey'].config_id;
+      this.eqTypeForUpdate = this.data['datakey'].equipment_type;
+      this.configName = this.data['datakey'].config_name;
+    }
   }
 
   ngOnInit() {
@@ -95,7 +98,7 @@ export class EditConfigurationComponent implements OnInit {
   // Get All Equipment types
   getEquipmentList() {
     this.equipmentService.getTypes().subscribe((response: any) => {
-      this.equipmentList = response.equipment_types || [];
+      this.equipmentList = (response.equipment_types || []).reverse();
       if(this.eqTypeForUpdate !== '') {
         for(let i=0;i<this.equipmentList.length;i++) {
           if(this.equipmentList[i].type === this.eqTypeForUpdate) {
@@ -134,24 +137,6 @@ export class EditConfigurationComponent implements OnInit {
     });
   }
 
-  // Function for change in dropdown selection
-  selectionChanged(ev: any, type: string,templateRef) {
-    switch (type) {
-      case 'equipment': //Get Attributes
-      const changedAttributes = this.configObj.attributes.filter((res)=>(res.fileName)).length;
-      if(changedAttributes>0) {
-        this.openModal(templateRef);
-      }
-      if(changedAttributes === 0) {
-        this.selectedEqType = ev.value;
-        this.getEquipmentAttributeList(this.selectedEqType.type);
-      }
-        break;
-
-      default:
-        break;
-    }
-  }
   refreshAttributes() {    
     this.refreshAttributesFlag = true;
     this.getEquipmentAttributeList(this.configObj.equipmentType.type);
@@ -160,9 +145,9 @@ export class EditConfigurationComponent implements OnInit {
     this.refreshAttributesFlag = false;
     this.configObj.equipmentType = this.selectedEqType;
   }
-  openModal(templateRef) {
+  openModal(templateRef,width) {
     let dialogRef = this.dialog.open(templateRef, {
-        width: '50%',
+        width: width,
         disableClose: true
     });
   } 
@@ -288,11 +273,11 @@ export class EditConfigurationComponent implements OnInit {
     formData.append('deletedMetadataIDs',this.deletedConfigAttrs.toString());
     this.editRequestSentFlag = true;
     this.configurationService.updateConfiguration(formData, this.configID).subscribe(data => {
-      this.openModal(successMsg);
+      this.openModal(successMsg,'30%');
       this.loading = false;
       console.log('success! ',data);
     }, err => {
-      this.openModal(errorMsg);
+      this.openModal(errorMsg,'30%');
       this.loading = false;
       console.log('error ',err);
     });

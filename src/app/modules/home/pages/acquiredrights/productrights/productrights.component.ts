@@ -6,10 +6,12 @@
 
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { MatPaginator, MatSort, MatDialog, MatTableDataSource } from '@angular/material';
-import { ProductService } from 'src/app/core/services/product.service';
 import { MoreDetailsComponent } from '../../../dialogs/product-details/more-details.component';
-import { AcquiredrightsService } from 'src/app/core/services/acquiredrights.service';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatDialog } from '@angular/material/dialog';
+import { ProductService } from 'src/app/core/services/product.service';
 
 @Component({
   selector: 'app-productrights',
@@ -47,10 +49,14 @@ export class ProductrightsComponent implements OnInit {
     'SKU',
     'swid_tag',
     'product_name',
+    'version',
     'editor',
     'metric',
     'acquired_licenses_number',
     'licenses_under_maintenance_number',
+    'start_of_maintenance',
+    'end_of_maintenance',
+    'licenses_under_maintenance',
     'avg_licenes_unit_price',
     'avg_maintenance_unit_price',
     'total_purchase_cost',
@@ -70,9 +76,9 @@ export class ProductrightsComponent implements OnInit {
   };
   searchFields: any = {};
 
-  constructor(private acquiredrightservice: AcquiredrightsService, public dialog: MatDialog, private router: Router) { }
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
+  constructor(private productService: ProductService, public dialog: MatDialog, private router: Router) { }
+  @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
+  @ViewChild(MatSort, {static: false}) sort: MatSort;
 
   ngOnInit() {
     this.current_page_num = 1;
@@ -80,7 +86,7 @@ export class ProductrightsComponent implements OnInit {
   }
   RenderDataTable() {
     this._loading = true;
-    this.acquiredrightservice.getAcquiredrights(10, 1).subscribe(
+    this.productService.getAcquiredrights(10, 1).subscribe(
       (res: any) => {
         this.MyDataSource = new MatTableDataSource(res.acquired_rights);
         this.MyDataSource.sort = this.sort;
@@ -105,7 +111,7 @@ export class ProductrightsComponent implements OnInit {
     if (this.sort_order === '' || this.sort_order === null) {
       this.sort_order = 'asc';
     }
-    this.acquiredrightservice.filteredData(page_num + 1, this.pageSize,
+    this.productService.filteredDataAcqRights(page_num + 1, this.pageSize,
       this.sort_by, this.sort_order, this.searchFields.swidTag, this.searchFields.sku,
       this.searchFields.editorName, this.searchFields.productName, this.searchFields.metric).subscribe(
         (res: any) => {
@@ -122,7 +128,7 @@ export class ProductrightsComponent implements OnInit {
     if (this.current_page_num === 0) {
       this.current_page_num = 1;
     }
-    this.acquiredrightservice.filteredData(this.current_page_num, this.pageSize,
+    this.productService.filteredDataAcqRights(this.current_page_num, this.pageSize,
       sort.active, sort.direction, this.searchFields.swidTag, this.searchFields.sku,
       this.searchFields.editorName, this.searchFields.productName, this.searchFields.metric).subscribe(
         (res: any) => {
@@ -171,18 +177,19 @@ export class ProductrightsComponent implements OnInit {
   }
   applyFilter() {
     this._loading = true;
+    this.MyDataSource = null;
     this.sort_order = localStorage.getItem('acquired_direction');
     this.sort_by = localStorage.getItem('acquired_active');
     if (this.sort_by === '' || this.sort_by === null) {
       this.sort_by = 'ENTITY';
     }
     if (this.sort_order === '' || this.sort_order === null) {
-      this.sort_order = 'ASC';
+      this.sort_order = 'asc';
     }
     if (this.current_page_num === 0 ) {
       this.current_page_num = 1;
     }
-    this.acquiredrightservice.filteredData(this.current_page_num, this.pageSize,
+    this.productService.filteredDataAcqRights(this.current_page_num, this.pageSize,
       this.sort_by, this.sort_order, this.searchFields.swidTag, this.searchFields.sku,
       this.searchFields.editorName, this.searchFields.productName, this.searchFields.metric).subscribe(
         (res: any) => {

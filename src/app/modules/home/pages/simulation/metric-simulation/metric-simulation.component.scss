@@ -18,9 +18,6 @@
 .entity-section{
     display: flex;
 }
-    .select{
-        width: 30%;
-    }
         
 
 .simulate-result{
@@ -139,3 +136,11 @@
     ::ng-deep .mat-progress-spinner circle, .mat-spinner circle {
         stroke: #008AFC;
     }
+    ::ng-deep .mat-checkbox-checked.mat-accent .mat-checkbox-ripple .mat-ripple-element {
+        opacity: 0.03 !important;
+        background-color: #008AFC!important;
+      }
+      
+      ::ng-deep .mat-checkbox-checked.mat-accent .mat-checkbox-background,.mat-checkbox-indeterminate.mat-accent .mat-checkbox-background {
+        background-color: #008AFC;
+      }

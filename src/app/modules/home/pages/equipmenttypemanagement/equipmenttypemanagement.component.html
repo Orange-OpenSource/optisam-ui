@@ -1,64 +1,92 @@
-<router-outlet></router-outlet>
 <mat-card class="example-card">
   <div class="row">
     <div class="page-heading" style="display:table-cell">
-      {{'Equipment Management'|translate}} 
+      {{'Equipment Management'|translate}}
     </div>
     <div class="form add-btn-bx" *ngIf="(role === 'ADMIN') || (role === 'SUPER_ADMIN')">
-      <button mat-raised-button (click)="addNew()" class="btn-two">
+      <button id="addEqpBtn" mat-raised-button (click)="addNew()" class="btn-two">
         <mat-icon color="panel">add</mat-icon> {{'Add Equipment Type' | translate}}
       </button>
     </div>
   </div>
 
   <div class="mat-elevation-z8">
-     <mat-table #table [dataSource]="MyDataSource" matSort>
-    <!--- Note that these columns can be defined in any order.
-          The actual rendered columns are set as a property on the row definition" -->
-
-    <ng-container matColumnDef="type">
-      <mat-header-cell *matHeaderCellDef >{{'Type Name' | translate}}</mat-header-cell>
-      <mat-cell *matCellDef="let row"> {{row.type||0}}</mat-cell>
-    </ng-container>
-
-    <ng-container matColumnDef="metadata_source">
-      <mat-header-cell *matHeaderCellDef >{{'Source Name' | translate}}</mat-header-cell>
-      <mat-cell *matCellDef="let row"> {{row.metadata_source||0}}</mat-cell>
-    </ng-container>
-
-    <ng-container matColumnDef="parent_type">
-      <mat-header-cell *matHeaderCellDef >{{'Parent Type' | translate}}</mat-header-cell>
-      <mat-cell *matCellDef="let row"> {{row.parent_type||'-'}}</mat-cell>
-    </ng-container>
-    <ng-container matColumnDef="attributes">
-        <mat-header-cell *matHeaderCellDef >{{'Attributes' | translate}}</mat-header-cell>
-        <mat-cell *matCellDef="let row">
-            <a class="mat-button-link" matTooltip="{{'Click here to see Attributes List' | translate}}"
-            (click)="listAttributes(row.type, row.attributes)">
-                {{row.attributes.length||0}}</a>
-          </mat-cell>
+    <mat-table #table [dataSource]="MyDataSource" matSort>
+      <ng-container matColumnDef="type">
+        <mat-header-cell *matHeaderCellDef>{{'Type Name' | translate}}</mat-header-cell>
+        <mat-cell *matCellDef="let equipment"> {{equipment.type||0}}</mat-cell>
       </ng-container>
-    <!-- actions -->
-    <ng-container  matColumnDef="actions">
-      <div *ngIf="(role === 'ADMIN') || (role === 'SUPER_ADMIN')">
-      <mat-header-cell  *matHeaderCellDef>{{'Actions' | translate}}</mat-header-cell>
-      <mat-cell *matCellDef="let row; let i=index;">
-        <button mat-icon-button color="accent" (click)="startEdit(row.ID, row.type, row.metadata_id, row.metadata_source, row.parent_type, row.parent_id, row.attributes)">
-          <mat-icon>mode_edit</mat-icon>
-        </button>
-      </mat-cell>
-      </div>
-      <div>
-        <mat-header-cell  *matHeaderCellDef></mat-header-cell>
-        <mat-cell *matCellDef="let row; let i=index;">
-        </mat-cell>
-      </div>
-    </ng-container>
 
-    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
-     </mat-table>
-     <app-loading-spinner *ngIf="_loading"></app-loading-spinner>
-     <div class="no-data" *ngIf="!_loading && (!MyDataSource || (MyDataSource && MyDataSource.data.length ==0))">{{'No Records Found' | translate}}</div>
+      <ng-container matColumnDef="metadata_source">
+        <mat-header-cell *matHeaderCellDef>{{'Source Name' | translate}}</mat-header-cell>
+        <mat-cell *matCellDef="let equipment"> {{equipment.metadata_source||0}}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="parent_type">
+        <mat-header-cell *matHeaderCellDef>{{'Parent Type' | translate}}</mat-header-cell>
+        <mat-cell *matCellDef="let equipment"> {{equipment.parent_type||'-'}}</mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="attributes">
+        <mat-header-cell *matHeaderCellDef>{{'Attributes' | translate}}</mat-header-cell>
+        <mat-cell *matCellDef="let equipment">
+          <a class="mat-button-link" matTooltip="{{'Click here to see Attributes List' | translate}}"
+            (click)="listAttributes(equipment.type, equipment.attributes)">
+            {{equipment.attributes.length||0}}</a>
+        </mat-cell>
+      </ng-container>
+      <!-- actions -->
+      <ng-container matColumnDef="actions">
+        <div *ngIf="(role === 'ADMIN') || (role === 'SUPER_ADMIN')">
+          <mat-header-cell *matHeaderCellDef>{{'Actions' | translate}}</mat-header-cell>
+          <mat-cell *matCellDef="let equipment; let i=index;">
+            <button id="editBtn{{i}}" mat-icon-button matTooltip="{{'Edit Equipment Type'|translate}}" color="accent" (click)="startEdit(equipment)">
+              <mat-icon>mode_edit</mat-icon>
+            </button>
+            <button id="editBtn{{i}}" *ngIf="canDelete(equipment.ID)" mat-icon-button matTooltip="{{'Delete Equipment Type'|translate}}" color="accent" (click)="deleteEquipmentTypeConfirmation(equipment, deleteConfirmationDialog)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </mat-cell>
+        </div>
+        <div>
+          <mat-header-cell *matHeaderCellDef></mat-header-cell>
+          <mat-cell *matCellDef="let equipment; let i=index;">
+          </mat-cell>
+        </div>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let equipment; columns: displayedColumns;"></mat-row>
+    </mat-table>
+    <app-loading-spinner *ngIf="_loading"></app-loading-spinner>
+    <div class="no-data" *ngIf="!_loading && (!MyDataSource || (MyDataSource && MyDataSource.data.length ==0))">{{'No
+      Records Found' | translate}}</div>
   </div>
- </mat-card>
+</mat-card>
+
+<ng-template #deleteConfirmationDialog>
+  <mat-dialog-content>
+      <p>{{'DELETE_EQUIPMENT_CONFIRM_MSG' | translate}}</p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="center">
+      <button mat-button class="btn-two" (click)="deleteEquipmentType(successDialog,errorDialog)" cdkFocusInitial>
+        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" *ngIf="_deleteLoading"></span>
+        {{'OK'|translate}}</button>
+      <button mat-button [mat-dialog-close]="true" class="btn-three" cdkFocusInitial>{{'Cancel'|translate}}</button>
+    </mat-dialog-actions>
+</ng-template>   
+<ng-template #successDialog>
+  <mat-dialog-content>
+    <p>{{'DELETE_EQUIPMENT_SUCCESS'|translate}}</p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="center">
+    <button mat-button [mat-dialog-close]="true" (click)="loadData()" class="btn-two" cdkFocusInitial>{{'OK'|translate}}</button>
+  </mat-dialog-actions>
+</ng-template>
+<ng-template #errorDialog>
+  <mat-dialog-content>
+    <p>{{'Error'|translate}}: {{errorMessage|translate}}.</p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="center">
+    <button mat-button [mat-dialog-close]="true" class="btn-two" cdkFocusInitial>{{'OK'|translate}}</button>
+  </mat-dialog-actions>
+</ng-template>

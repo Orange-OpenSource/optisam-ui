@@ -11,9 +11,6 @@
             {{'AGGREGATIONS.ACTIONS.ADD_AGGREGATION'|translate}}
           </a>
         </div>
-        <!-- <div class="col-md-3 search-div">
-          <app-advance-search [hideAdvanceToggle]="true" [advanceSearchModel]="advanceSearchModel" (advFilterEvent)="advSearchTrigger($event)"></app-advance-search>       
-        </div> -->
       </div>
     </div>
   
@@ -67,8 +64,8 @@
                       <p>{{'DELETE_AGGR_CONFIRM_MSG' | translate}}- {{aggregation.name}}</p>
                   </mat-dialog-content>
                   <mat-dialog-actions align="center">
-                      <button mat-icon-button [mat-dialog-close]="true" (click)="deleteProductAggregation(successDialog,errorDialog)" cdkFocusInitial>{{'OK'|translate}}</button>&nbsp;
-                      <button mat-icon-button [mat-dialog-close]="true" cdkFocusInitial>{{'Cancel'|translate}}</button>
+                      <button mat-button [mat-dialog-close]="true" class="btn-two" (click)="deleteProductAggregation(successDialog,errorDialog)" cdkFocusInitial>{{'OK'|translate}}</button>&nbsp;
+                      <button mat-button [mat-dialog-close]="true" class="btn-three" cdkFocusInitial>{{'Cancel'|translate}}</button>
                     </mat-dialog-actions>
                 </ng-template>  
             </mat-cell>
@@ -92,7 +89,7 @@
     <p>{{'DELETE_AGGR_SUCCESS'|translate}}</p>
   </mat-dialog-content>
   <mat-dialog-actions align="center">
-    <button mat-button [mat-dialog-close]="true" cdkFocusInitial>{{'OK'|translate}}</button>
+    <button mat-button [mat-dialog-close]="true" class="btn-two" cdkFocusInitial>{{'OK'|translate}}</button>
   </mat-dialog-actions>
 </ng-template>
 <ng-template #errorDialog>
@@ -100,6 +97,6 @@
     <p>{{'DELETE_AGGR_ERROR'|translate}}</p>
   </mat-dialog-content>
   <mat-dialog-actions align="center">
-    <button mat-button [mat-dialog-close]="true" cdkFocusInitial>{{'OK'|translate}}</button>
+    <button mat-button [mat-dialog-close]="true" class="btn-two" cdkFocusInitial>{{'OK'|translate}}</button>
   </mat-dialog-actions>
 </ng-template>

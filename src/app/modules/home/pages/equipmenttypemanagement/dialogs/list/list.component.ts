@@ -5,10 +5,7 @@
 // or at 'http://www.apache.org/licenses/LICENSE-2.0'. 
 
 import { Component, OnInit, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { DialogData } from 'src/app/modules/home/dialogs/product-details/details';
-import { ListAttributes } from '../../model';
-import { RequiredJSONFormat } from '../model';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-list',
@@ -22,11 +19,10 @@ export class ListComponent implements OnInit {
   equipName: any;
 
   constructor(public dialogRef: MatDialogRef<ListComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: RequiredJSONFormat) { }
+    @Inject(MAT_DIALOG_DATA) public data) { }
 
   ngOnInit() {
     this.equipName = this.data['name'];
-    console.log('popup data', this.data);
   }
 
 }

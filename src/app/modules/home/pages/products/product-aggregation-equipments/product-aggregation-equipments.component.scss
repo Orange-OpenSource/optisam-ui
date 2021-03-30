@@ -2,7 +2,6 @@
 #dataUnavailableMsg {
   display: flex;
   justify-content: center;
-  padding: 16px;
 }
 .mat-table {
   overflow: auto;
@@ -17,4 +16,14 @@ mat-toolbar{
 }
 .mat-toolbar-multiple-rows {
   min-height: 42px;
+}
+.mat-tab-link {
+  min-width: fit-content;
+  padding: 0 16px;
+}
+.table-container {
+  padding: 16px;
+}
+.table-section { 
+  margin-top: 16px;
 }

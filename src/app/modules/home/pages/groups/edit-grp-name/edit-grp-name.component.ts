@@ -5,10 +5,10 @@
 // or at 'http://www.apache.org/licenses/LICENSE-2.0'. 
 
 import { Component, OnInit, Inject } from '@angular/core';
-import {FormControl, Validators} from '@angular/forms';
 import { GroupService } from 'src/app/core/services/group.service';
-import { MAT_DIALOG_DATA, MatDialogRef, MatDialog } from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { Router} from '@angular/router';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-edit-grp-name',
@@ -16,61 +16,78 @@ import { Router} from '@angular/router';
   styleUrls: ['./edit-grp-name.component.scss']
 })
 export class EditGrpNameComponent implements OnInit {
-fullyQualifyName: String;
-editName: String;
-nameRequired: Boolean;
-showMsg: Boolean;
-cannotUpdateFlag: Boolean = true;
-  constructor(@Inject (MAT_DIALOG_DATA) public data, private dialog: MatDialog,private groupService: GroupService, private router: Router) { }
+  groupForm: FormGroup;
+  _loading: Boolean;
+  errorMessage: string;
+  group: any;
+  cannotUpdateFlag:Boolean;
+  actionSuccessful:Boolean;
+
+  constructor(
+    @Inject (MAT_DIALOG_DATA) public data, 
+    private fb: FormBuilder,
+    private dialog: MatDialog,
+    private groupService: GroupService
+    ) { 
+      this.group = this.data;
+    }
 
   ngOnInit() {
-    this.setData();
+    this.initForm();
   }
-  setData() {
-    this.editName = this.data.node.name;
-    this.fullyQualifyName = this.data.node.fully_qualified_name;
-    this.cannotUpdateFlag = true;
-  }
-  validateName(name) {
-    if(name===this.data.node.name) {
-      this.cannotUpdateFlag = true;
-    }
-    else {
-      this.cannotUpdateFlag = false;
-    }
-  }
-  saveEditName(data, successMsg, errorMsg) {
-    if (this.editName === '' || this.editName === null) {
-      console.log('1');
-      this.nameRequired = true;
-    } else {
-      console.log('2');
-     data = {'group_id': this.data.node.ID,
-             'group': {
-              'name': this.editName.trim()}};
-      this.groupService.editName(this.data.node.ID, data).subscribe(res => {
-        console.log('res----', res);
-        this.showMsg = true;
-        this.openModal(successMsg);
-      },
-        error => {
-          console.log('Fetch direct Group response ERROR !!!' + error);
-          this.showMsg = false;
-          this.openModal(errorMsg);
-        });
-      this.nameRequired = false;
-    }
 
+  initForm() {
+    this.groupForm = this.fb.group({
+      'name':[null, [Validators.required, Validators.minLength(1), Validators.pattern(/^[a-zA-Z0-9_]*$/)]]
+    });
+    this.name.setValue(this.group.name);
   }
-  openModal(templateRef) {
-    let dialogRef = this.dialog.open(templateRef, {
-        width: '50%',
-        disableClose: true
+
+  get name() {
+    return this.groupForm.get('name');
+  }
+
+  resetGroup(){
+    this.groupForm.reset();
+    this.name.setValue(this.group.name);
+  }
+
+  updateGroup(successMsg,errorMsg) {
+    this.groupForm.markAsPristine();
+    this._loading = true;
+    const body = {
+      'groupId': this.group.ID,
+      'group': {
+          'name': this.name.value
+        }
+    }
+    this.groupService.updateGroup(this.group.ID, body).subscribe(res=>{
+      this._loading = false;
+      this.actionSuccessful = true;
+      this.openModal(successMsg);
+    },err=>{
+      this._loading = false;
+      this.actionSuccessful = false;
+      this.errorMessage = err.error.message;
+      this.openModal(errorMsg);
     });
   }
+  
+  unchangedName(): Boolean {
+    if(this.name.value === this.group.name) {
+      return true;
+    }
+    return false;
+  }
+
+  openModal(templateRef) {
+    let dialogRef = this.dialog.open(templateRef, {
+        width: '30%',
+        disableClose: true
+    });
+  } 
 
   ngOnDestroy() {
     this.dialog.closeAll();
   }
-
 }

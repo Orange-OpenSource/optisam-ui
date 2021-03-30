@@ -4,15 +4,12 @@
 // license which can be found in the file 'License.txt' in this package distribution 
 // or at 'http://www.apache.org/licenses/LICENSE-2.0'. 
 
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-  import {HttpClient} from '@angular/common/http';
-  import {MatDialog, MatTableDataSource } from '@angular/material';
-  import {DataSource} from '@angular/cdk/collections';
-  import {BehaviorSubject, fromEvent, merge, Observable} from 'rxjs';
-  import {map} from 'rxjs/operators';
+import {Component, OnInit} from '@angular/core';
 import { MetricCreationComponent } from '../metric-creation/metric-creation.component';
 import { MetricDetailsComponent } from '../metric-details/metric-details.component';
 import { MetricService } from 'src/app/core/services/metric.service';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatDialog } from '@angular/material/dialog';
 
   @Component({
     selector: 'app-metric-view',
@@ -30,33 +27,21 @@ import { MetricService } from 'src/app/core/services/metric.service';
     _loading: Boolean;
     MyDataSource: MatTableDataSource<{}>;
     noDataAvailableFlag :Boolean;
+     
     constructor(public  metricService: MetricService, public dialog: MatDialog) {
-      this.dialog.afterAllClosed.subscribe(res => this.loadData() );
+      if(this.dialog.afterAllClosed) {
+        this.dialog.afterAllClosed.subscribe(res => this.loadData());
+      }
      }
 
     ngOnInit() {
       this.role = localStorage.getItem('role');
-      this.loadData();
-    }
-    refresh() {
-      this.loadData();
     }
     addNew() {
       const dialogRef = this.dialog.open(MetricCreationComponent, {
         data: {},
         autoFocus:false,
         disableClose: true
-      });
-
-      dialogRef.afterClosed().subscribe(result => {
-        if (result === 1) {
-          // // When using an edit things are little different, firstly we find record inside DataService by id
-          // const foundIndex = this.equipmentTypeService.dataChange.value.findIndex(x => x.id === this.id);
-          // // Then you update that record using data from dialogData (values you enetered)
-          // this.equipmentTypeService.dataChange.value[foundIndex] = this.equipmentTypeManagementService.getDialogData();
-          // // And lastly refresh table
-          this.loadData();
-        }
       });
     }
 
@@ -70,7 +55,7 @@ import { MetricService } from 'src/app/core/services/metric.service';
         });
     }
     
-    public loadData() {
+    loadData() {
       this._loading = true;
       this.metricService.getMetricList().subscribe(
        (res: any) => {

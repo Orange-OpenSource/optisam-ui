@@ -6,9 +6,12 @@
 
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { UploadDataComponent } from '../upload-data/upload-data.component';
-import { MatDialog, MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
 import { DataManagementService } from 'src/app/core/services/data-management.service';
 import { Subscription } from 'rxjs';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { MatDialog } from '@angular/material/dialog';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'app-list-metadata',
@@ -28,17 +31,15 @@ export class ListMetadataComponent implements OnInit {
   page_size: any = 10;
   length:any;
   sortQuery: any;
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
+  @ViewChild(MatSort, {static: false}) sort: MatSort;
                                 
   constructor(private dialog: MatDialog,
-    private dataService: DataManagementService) { 
-      this.dialog.afterAllClosed.subscribe(res=>{
-        this.getListData();
-      });
-    }
+    private dataService: DataManagementService) { }
 
-  ngOnInit() { }
+  ngOnInit() { 
+    this.getListData();
+  }
 
   getListData() {
       this._loading = true;
@@ -63,8 +64,11 @@ export class ListMetadataComponent implements OnInit {
       autoFocus: false,
       disableClose: true,
       data: 'Metadata',
-      maxHeight: '500px',
-      width:'390px'
+      maxHeight: '90vh',
+      width:'420px'
+    });
+    dialogRef.afterClosed().subscribe(res => {
+      this.getListData();
     });
   }
   
@@ -92,7 +96,7 @@ export class ListMetadataComponent implements OnInit {
   }
 
   ngOnDestroy() {
-    this.subscription.unsubscribe();
+    // this.subscription.unsubscribe();
   }
 
 }

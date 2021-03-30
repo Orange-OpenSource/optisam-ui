@@ -1,15 +1,14 @@
 
   .mat-card{
-    width: 500px !important;
-    box-sizing: border-box;
-    // margin: 50px auto 8px auto;
-    // padding: 30px;
-    text-transform: capitalize;
+    padding: unset;
     border: none !important;
   }
   .mat-card-header {
     margin: unset !important;
   }
+  ::ng-deep .mat-card-header-text {
+    margin: unset ;
+}
 .mat-raised-button {
   box-sizing: initial;
 }
@@ -25,4 +24,18 @@
 .mat-select-panel {
   max-height: 150px !important;
   overflow-y: scroll !important;
+}
+.highlight {
+  color:#008AFC;
+}
+::ng-deep .mat-primary .mat-pseudo-checkbox-checked {
+  background-color: #008AFC;
+}
+::ng-deep #scope-panel.mat-select-panel {
+  border-radius: unset !important;
+  margin-left: 40px;
+  margin-top: 30px;
+  width: 100%;
+  min-width: unset !important;
+  max-width: unset !important;
 }

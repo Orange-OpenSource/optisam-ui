@@ -4,7 +4,7 @@
       <mat-table #table [dataSource]="attribute" class="equipments-action-table">
         <ng-container matColumnDef="name">
           <mat-header-cell *matHeaderCellDef >{{'Name' | translate}}</mat-header-cell>
-          <mat-cell *matCellDef="let row"> {{row.name}}</mat-cell>
+          <mat-cell *matCellDef="let row"><span  [ngClass]="(row.primary_key)?'highlight':''">{{row.name}}</span></mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="data_type">
@@ -31,6 +31,6 @@
       </mat-table>
 
       <mat-dialog-actions align="right">
-        <button mat-raised-button class="btn-two" mat-dialog-close>{{'Cancel' | translate}}</button>
+        <button id="cancelButton" mat-raised-button class="btn-two" mat-dialog-close>{{'Cancel' | translate}}</button>
       </mat-dialog-actions>
 

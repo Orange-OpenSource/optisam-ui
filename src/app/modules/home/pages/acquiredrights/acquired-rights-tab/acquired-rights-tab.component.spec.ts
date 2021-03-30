@@ -4,17 +4,25 @@
 // license which can be found in the file 'License.txt' in this package distribution 
 // or at 'http://www.apache.org/licenses/LICENSE-2.0'. 
 
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { AcquiredRightsTabComponent } from './acquired-rights-tab.component';
+import { RouterTestingModule } from '@angular/router/testing';
+import { TranslateModule } from '@ngx-translate/core';
+import { CustomMaterialModule } from 'src/app/material.module';
 
 describe('AcquiredRightsTabComponent', () => {
   let component: AcquiredRightsTabComponent;
   let fixture: ComponentFixture<AcquiredRightsTabComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ AcquiredRightsTabComponent ]
+      declarations: [ AcquiredRightsTabComponent ],
+      imports : [ 
+                  RouterTestingModule,
+                  CustomMaterialModule,
+                  TranslateModule.forRoot() 
+                ]
     })
     .compileComponents();
   }));

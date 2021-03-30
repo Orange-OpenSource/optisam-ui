@@ -3,7 +3,7 @@
   <div class="container-fluid page-content-header">
     <div class="row">
       <div class="page-heading">
-        {{'Configuration' | translate}}
+        {{'Simulation Management' | translate}}
       </div>
       <div class="col-md-2" class="add-btn">
         <button id="createConfigButton" mat-raised-button class="btn-two" (click)="createNew()" *ngIf="(role === 'ADMIN') || ((role === 'SUPER_ADMIN'))">
@@ -82,8 +82,8 @@
               <p>{{'DELETE_CONFIRM_MSG' | translate}}</p>
           </mat-dialog-content>
           <mat-dialog-actions align="center">
-              <button mat-button [mat-dialog-close]="true" (click)="deleteConfiguration(successDialog,errorDialog)" cdkFocusInitial>{{'OK'|translate}}</button>
-              <button mat-button [mat-dialog-close]="true" cdkFocusInitial>{{'Cancel'|translate}}</button>
+              <button mat-button [mat-dialog-close]="true" class="btn-two" (click)="deleteConfiguration(successDialog,errorDialog)" cdkFocusInitial>{{'OK'|translate}}</button>
+              <button mat-button [mat-dialog-close]="true" class="btn-three" cdkFocusInitial>{{'Cancel'|translate}}</button>
             </mat-dialog-actions>
         </ng-template>
 
@@ -105,7 +105,7 @@
     <p>{{'DELETE_CONFIG_SUCCESS'|translate}}</p>
   </mat-dialog-content>
   <mat-dialog-actions align="center">
-    <button mat-button [mat-dialog-close]="true" cdkFocusInitial>{{'OK'|translate}}</button>
+    <button mat-button [mat-dialog-close]="true" class="btn-two" cdkFocusInitial>{{'OK'|translate}}</button>
   </mat-dialog-actions>
 </ng-template>
 <ng-template #errorDialog>
@@ -113,6 +113,6 @@
     <p>{{'DELETE_CONFIG_ERROR'|translate}}</p>
   </mat-dialog-content>
   <mat-dialog-actions align="center">
-    <button mat-button [mat-dialog-close]="true" cdkFocusInitial>{{'OK'|translate}}</button>
+    <button mat-button [mat-dialog-close]="true" class="btn-two" cdkFocusInitial>{{'OK'|translate}}</button>
   </mat-dialog-actions>
 </ng-template>

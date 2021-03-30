@@ -8,8 +8,7 @@ import { Component, OnInit, ViewChild, Inject } from '@angular/core';
 import { FormGroup, FormControl, Validators, FormBuilder, FormArray, FormGroupDirective, NgForm, NgModel } from '@angular/forms';
 import { GroupService } from 'src/app/core/services/group.service';
 import { Router } from '@angular/router';
-import { MAT_DIALOG_DATA, MatDialogRef, MatDialog } from '@angular/material';
-import { checkAndUpdateElementInline } from '@angular/core/src/view/element';
+import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-create-group',
@@ -17,11 +16,12 @@ import { checkAndUpdateElementInline } from '@angular/core/src/view/element';
   styleUrls: ['./create-group.component.scss']
 })
 export class CreateGroupComponent implements OnInit {
-  @ViewChild('checkAll') checkSelectAll;
+  @ViewChild('checkAll', {static: false}) checkSelectAll;
   // selectedYears: any[];
   years: any[];
   groupForm: FormGroup;
   groups: any;
+  _loading: Boolean;
   selectedScopes = [];
   selectedyears = [];
   group: any;
@@ -31,6 +31,7 @@ export class CreateGroupComponent implements OnInit {
   showErrorMsg: any;
   errorMsg: any;
   fully_qualified_name: String;
+  actionSuccessful:Boolean;
   constructor(private groupService: GroupService, private router: Router, private dialog: MatDialog, @Inject (MAT_DIALOG_DATA) public data) { }
 
   ngOnInit() {
@@ -78,24 +79,25 @@ export class CreateGroupComponent implements OnInit {
   }
 
   createGroup(successMsg, errorMsg) {
-    const data = this.groupForm.value;
-    delete data.groupName;
-    data.parent_id = this.data.ID;
-    this.groupService.createGroup(data).subscribe(res => {
-      this.groupForm.reset();
-      this.showMsg = true;
-      this.showErrorMsg = false;
+    this.groupForm.markAsPristine();
+    this._loading = true;
+    const body = {
+      "name": this.name.value,
+      "fully_qualified_name": this.data.fully_qualified_name,
+      "parent_id": this.data.ID,
+      "scopes": this.scopes.value
+    }
+    this.groupService.createGroup(body).subscribe(res => {
+      this._loading= false;
+      this.actionSuccessful = true;
       this.openModal(successMsg);
-     /*  this.listGroups(); */
     },
-    (error) => {
-      const keyArr = Object.keys(error);
-      if (keyArr.includes('error')) {
-        this.errorMsg = error.message;
-        this.showErrorMsg = true;
-        this.showMsg = false;
+    (err) => {
+        this._loading = false;
+        this.actionSuccessful = false;
+        this.errorMsg = err.error.message;
         this.openModal(errorMsg);
-      }});
+      });
   }
 
   changeParent() {
@@ -119,7 +121,7 @@ export class CreateGroupComponent implements OnInit {
   
   openModal(templateRef) {
     let dialogRef = this.dialog.open(templateRef, {
-        width: '50%',
+        width: '30%',
         disableClose: true
     });
   }

@@ -15,11 +15,17 @@
       <tr *ngFor="let item of acquireRights.acq_rights">
         <td>{{item.SKU}}</td>
         <td>{{item.metric}}</td>
-        <td>{{item.numCptLicences}}</td>
-        <td>{{item.numAcqLicences}}</td>
-        <td>{{item.deltaNumber}}</td>
-        <td>{{item.deltaCost}}</td>
-        <td>{{item.totalCost}}</td>
+        <td>{{item.numCptLicences||0}}</td>
+        <td>{{item.numAcqLicences||0}}</td>
+        <td>
+          <span class="greenText" *ngIf="(item.deltaNumber||0)>=0">{{item.deltaNumber||0}}</span>
+          <span class="redText" *ngIf="(item.deltaNumber||0) < 0" matTooltip="{{'The product is not compliant'|translate}}!" matTooltipClass="errorTooltip">{{item.deltaNumber}}</span>
+        </td>
+        <td>
+          <span class="greenText" *ngIf="(item.deltaCost||0)>=0">{{(item.deltaCost||0)|formatCost}}</span>
+          <span class="redText" *ngIf="(item.deltaCost||0) < 0" matTooltip="{{'The product is not compliant'|translate}}!" matTooltipClass="errorTooltip">{{item.deltaCost|formatCost}}</span>
+        </td>
+        <td>{{(item.totalCost||0)|formatCost}}</td>
       </tr>
     </tbody>
   </table>

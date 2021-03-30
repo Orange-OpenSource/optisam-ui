@@ -42,7 +42,6 @@ export class AuthInterceptorService implements HttpInterceptor {
       case 'simulation':
       case 'application':
       case 'product':
-      case 'acquired-rights':
       case 'metric':
       case 'equipment':
       case 'dps':
@@ -56,14 +55,13 @@ export class AuthInterceptorService implements HttpInterceptor {
           break;
     }
 
-    // Check for token to authorize
+    // Check for token to authorize & omit appending token for meta service request
     const token: string = localStorage.getItem('access_token');
-    if (token) {
+    if (token && request.url.search('/version.html') === -1) {
         request = request.clone({ headers: request.headers.set('Authorization', 'Bearer ' + token) });
     }
-
     //  To exclude Content-Type in import & config service call
-    if (request.url.search('/api/v1/import') === -1 && request.url.search('/api/v1/config') === -1) {
+    if (request.url.search('/api/v1/import') === -1 && request.url.search('/api/v1/config') === -1 && request.url.search('/version.html') === -1) {
       if (!request.headers.has('Content-Type')) {
           request = request.clone({ headers: request.headers.set('Content-Type', 'application/x-www-form-urlencoded') });
       }
@@ -87,7 +85,7 @@ export class UnauthorisedInterceptor implements HttpInterceptor {
     }, (err: any) => {
       if (err instanceof HttpErrorResponse) {
         this.sharedService.endHttpLoading();
-        if (err.status === 403 || err.status === 401) {
+        if (err.status === 401) { //TODO: Handling for err.status === 403
           window.location.href = '/';
         }
       }

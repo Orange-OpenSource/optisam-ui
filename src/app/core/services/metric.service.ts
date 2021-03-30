@@ -14,15 +14,20 @@ import { map } from 'rxjs/operators';
 })
 export class MetricService {
   apiMetricUrl = environment.API_METRIC_URL;
-
   constructor(private httpClient: HttpClient) { }
   
-  getMetricList() {
-    const url = this.apiMetricUrl + '/metric';
+  getMetricList(scope?:string) {
+    let url;
+    if(scope) {
+      url = this.apiMetricUrl + '/metric?scopes='+ scope;
+    }
+    else {
+      url = this.apiMetricUrl + '/metric?scopes='+localStorage.getItem('scope');
+    }
     return this.httpClient.get<any>(url);
   }
-  getMetricType() {
-    const url = this.apiMetricUrl + '/metric/types';
+  getMetricType(scopes:string) {
+    const url = this.apiMetricUrl + '/metric/types?scopes='+scopes;
     return this.httpClient.get<any>(url);
   }
   createMetric(metricData, href) {
@@ -34,7 +39,7 @@ export class MetricService {
   }
   getMetricDetails(metricType, metricName) {
     const url = this.apiMetricUrl + '/metric/config?metric_info.type=' + metricType 
-                + '&metric_info.name=' + metricName;
+                + '&metric_info.name=' + metricName +'&scopes='+localStorage.getItem('scope');
     return this.httpClient.get<any>(url);
   }
 }

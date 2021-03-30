@@ -5,7 +5,7 @@
           {{'List of Inventoried Products'|translate}}
         </div>
         <div class="col-md-3 search-div">
-          <app-advance-search [advanceSearchModel]="advanceSearchModel" (advFilterEvent)="advSearchTrigger($event)">
+          <app-advance-search [advanceSearchModel]="advanceSearchModel" [existingFilterFields]="searchFields" (advFilterEvent)="advSearchTrigger($event)">
           </app-advance-search>
         </div>
       </div>
@@ -37,21 +37,21 @@
 
                   <div *ngSwitchCase="'num_applications'">
                     <span *ngIf="!product.num_applications || product.num_applications == 0">{{product.num_applications || 0}}</span>
-                    <a *ngIf="product.num_applications" class="align-left mat-button-link" [routerLink]="['/optisam/pr/products/aggregations', product.name, 'applications']" matTooltip="{{'Click here to see related Applications'|translate}}">
+                    <a *ngIf="product.num_applications" class="align-left mat-button-link" (click)="prodAggrApplications(product.name)" matTooltip="{{'Click here to see related Applications'|translate}}" (click)="aggrAplDetails(product.swidtags)">
                       {{product.num_applications}}
                     </a>
                   </div>
                   <div *ngSwitchCase="'num_equipments'">
                     <span *ngIf="!product.num_equipments || product.num_equipments == 0">{{product.num_equipments || 0}}</span>
-                    <a *ngIf="product.num_equipments" class="align-left mat-button-link" [routerLink]="['/optisam/pr/products/aggregations', product.name, 'equipments']"  matTooltip="{{'Click here to see related Equipments'|translate}}">
+                    <a *ngIf="product.num_equipments" class="align-left mat-button-link" (click)="prodAggrEquipments(product.name)" matTooltip="{{'Click here to see related Equipments'|translate}}">
                       {{product.num_equipments}}
                     </a> 
                   </div>
 
-                  <ng-container matColumnDef="version">
+                  <!-- <ng-container matColumnDef="version">
                     <mat-header-cell *matHeaderCellDef mat-sort-header="version">{{'Release'| translate}}</mat-header-cell>
                     <mat-cell *matCellDef="let product"> {{product.version}} </mat-cell>
-                  </ng-container>
+                  </ng-container> -->
                   
                   <span *ngSwitchDefault>{{(product[column] || '-')}}</span> 
                 </div>
@@ -96,6 +96,7 @@
                   <mat-header-row *matHeaderRowDef="expandDisplayedColumns;"></mat-header-row>
                   <mat-row *matRowDef="let row; columns: expandDisplayedColumns;"></mat-row>
                 </mat-table>
+                <app-loading-spinner *ngIf="_loading && !aggregationDetails"></app-loading-spinner>
               </div>
             </mat-cell>
           </ng-container>
@@ -105,7 +106,8 @@
           <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
           <mat-row *matRowDef="let row; columns: ['expandedDetail']" class="agg-detail-row" [class.agg-expanded-row]="!expandedRow || expandedRow !== row"></mat-row>
         </mat-table>
-        <app-loading-spinner *ngIf="_loading || !productAggregationData"></app-loading-spinner>
+        <app-loading-spinner *ngIf="_loading && !productAggregationData"></app-loading-spinner>
+        <div class="no-data" *ngIf="!_loading && (!productAggregationData || (productAggregationData && productAggregationData.data.length === 0))">{{'No data available' | translate}}</div>
         <mat-paginator [length]="length" [pageSize]="page_size" [pageSizeOptions]="[10,20,30,50]"
           (page)="getPaginatorData($event)" showFirstLastButtons>
         </mat-paginator>

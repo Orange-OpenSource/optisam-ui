@@ -6,6 +6,8 @@
 
 export class ModifyJSONFormat {
   attributes: Attribute[];
+  scopes: String[];
+  parent_id: String;
 }
 
 export class Attribute {

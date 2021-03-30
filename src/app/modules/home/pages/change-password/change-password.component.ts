@@ -7,8 +7,8 @@
 import { GroupService } from './../../../../core/services/group.service';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { FormGroup, FormControl, Validators, FormBuilder, FormArray, FormGroupDirective, NgForm, NgModel } from '@angular/forms';
-import { MatDialog } from '@angular/material';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 
 
 @Component({
@@ -30,7 +30,7 @@ export class ChangePasswordComponent implements OnInit {
   ngOnInit() {
     this.groupForm = new FormGroup({
       'old': new FormControl('', [Validators.required]),
-      'new': new FormControl('', [Validators.required, Validators.pattern('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&].{7,}')]),
+      'new': new FormControl('', [Validators.required, Validators.pattern('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[.@#$&*_,])[A-Za-z0-9.@#$&*_,]{8,}')]),
       'confirm': new FormControl('', [Validators.required]),
     });
   }
@@ -68,7 +68,7 @@ export class ChangePasswordComponent implements OnInit {
 
   openModal(templateRef) {
     let dialogRef = this.dialog.open(templateRef, {
-        width: '50%',
+        width: '30%',
         disableClose: true
     });
   }

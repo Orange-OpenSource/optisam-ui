@@ -8,7 +8,7 @@ import { Component, OnInit, ViewChild, Inject } from '@angular/core';
 import { FormGroup, FormControl, Validators, NgModel } from '@angular/forms';
 import { GroupService } from 'src/app/core/services/group.service';
 import { Router } from '@angular/router';
-import { MAT_DIALOG_DATA, MatDialog } from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-edit-user',
@@ -16,7 +16,7 @@ import { MAT_DIALOG_DATA, MatDialog } from '@angular/material';
   styleUrls: ['./edit-user.component.scss']
 })
 export class EditUserComponent implements OnInit {
-  @ViewChild('checkAll') checkSelectAll;
+  @ViewChild('checkAll', {static: false}) checkSelectAll;
   groupForm: FormGroup;
   groups: any;
   roles = [];
@@ -41,16 +41,17 @@ export class EditUserComponent implements OnInit {
       'user_groups': new FormControl({value:'', disabled: true},[] ),
       'role': new FormControl('', [])
     });
-    console.log('data : ',this.data['datakey']);
     this.setFormData();
   }
 
   setFormData() {
-    this.first_name.setValue(this.data['datakey'].first_name);
-    this.last_name.setValue(this.data['datakey'].last_name);
-    this.user_id.setValue(this.data['datakey'].user_id);
-    this.user_groups.setValue((this.data['datakey'].groups)?this.data['datakey'].groups.toString():'-');
-    this.role.setValue(this.data['datakey'].role);
+    if(this.data['datakey']) {
+      this.first_name.setValue(this.data['datakey'].first_name);
+      this.last_name.setValue(this.data['datakey'].last_name);
+      this.user_id.setValue(this.data['datakey'].user_id);
+      this.user_groups.setValue((this.data['datakey'].groups)?this.data['datakey'].groups.toString():'-');
+      this.role.setValue(this.data['datakey'].role);
+    }
   }
   get first_name() {
     return this.groupForm.get('first_name');
@@ -70,12 +71,13 @@ export class EditUserComponent implements OnInit {
 
   openModal(templateRef) {
     let dialogRef = this.dialog.open(templateRef, {
-        width: '50%',
+        width: '30%',
         disableClose: true
     });
   } 
 
   updateUser(successMsg, errorMsg) {
+    this.groupForm.markAsPristine();
     const data = this.groupForm.value;
     data.user_id = this.user_id.value;
     data.first_name = this.first_name.value;

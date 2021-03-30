@@ -23,7 +23,7 @@
           <td>{{item.editor}}</td>
           <td>{{item.edition}}</td>
           <td>{{item.version || 0}}</td>
-          <td>{{item.metric || 0}}</td>
+          <td>{{(item.metric || 0)|formatCost}}</td>
         </tr>
       </tbody>
     </table>

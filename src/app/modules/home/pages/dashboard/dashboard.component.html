@@ -1,4 +1,306 @@
-<div class="landing-div">
-    <span class="large-text">{{'Dashboard Coming Soon' | translate}}</span>
-    <span class="small-text">{{'Please stay tuned' | translate}}</span>
+<div class="container-fluid-flex">
+    <div class="col-md-12 tabs">
+        <nav mat-tab-nav-bar>
+            <a mat-tab-link class="tab-anchor" *ngFor="let tab of tabList" (click)="currentTab = tab;generateCharts();" [active]="currentTab == tab"> {{tab | translate}} </a>
+        </nav>
+    </div>
+    <div class="col-md-12 content">
+        <div id="overviewSection" [hidden]="currentTab !== 'Overview'">
+            <mat-grid-list [cols]="2" rowHeight="3:2" [gutterSize]="'16px'">
+                <mat-grid-tile class="parentTile">
+                    <div class='internalMatGrid'>
+                        <mat-grid-list [cols]="2" rowHeight="9:4" [gutterSize]="'10px'">
+                            <mat-grid-tile class="contentTile">
+                                <div class="tileHeader">{{'Compliance'|translate}}</div>
+                                <div class="tileBody">
+                                    <div class="tileImage" *ngIf="complianceRibbonColor === 'Green'" matTooltipClass="alertTooltip"
+                                        matTooltip="{{'Overdeployment'|translate}} : {{overdeployment_percentage}}% &#13;{{'Counterfeiting'|translate}} : {{counterfeiting_percentage}}%">
+                                        <img src="assets/images/greenRibbon.svg">
+                                    </div>
+                                    <div class="tileImage" *ngIf="complianceRibbonColor === 'Orange'" matTooltipClass="alertTooltip"
+                                    matTooltip="{{'Overdeployment'|translate}} : {{overdeployment_percentage}}% &#13;{{'Counterfeiting'|translate}} : {{counterfeiting_percentage}}%">
+                                        <img src="assets/images/orangeRibbon.svg">
+                                    </div>
+                                    <div class="tileImage" *ngIf="complianceRibbonColor === 'Red'" matTooltipClass="alertTooltip"
+                                    matTooltip="{{'Overdeployment'|translate}} : {{overdeployment_percentage}}% &#13;{{'Counterfeiting'|translate}} : {{counterfeiting_percentage}}%">
+                                        <img src="assets/images/redRibbon.svg">
+                                    </div>
+                                    <div class="tileImage" *ngIf="complianceRibbonColor === 'Error'">
+                                        <div class="errorIcon" *ngIf="!alertComplianceNoDataForCalcErr"><mat-icon>error</mat-icon></div>
+                                        <div *ngIf="alertComplianceNetworkErr" class="errorMsg">{{"Network Error"|translate}}</div>
+                                        <div *ngIf="alertComplianceDbErr" class="errorMsg">{{"Server Error"|translate}}</div>
+                                    </div>
+                                </div>
+                            </mat-grid-tile>
+                            <mat-grid-tile class="contentTile">
+                                <div class="tileHeader">{{'Quality'|translate}}</div>
+                                <div class="tileBody">
+                                    <div class="tileImage" *ngIf="qualityRibbonColor === 'Green'" matTooltipClass="alertTooltip"
+                                        matTooltip="{{'Default Products'|translate}} : {{data_quality}}%">
+                                        <img src="assets/images/greenRibbon.svg">
+                                    </div>
+                                    <div class="tileImage" *ngIf="qualityRibbonColor === 'Orange'" matTooltipClass="alertTooltip"
+                                    matTooltip="{{'Default Products'|translate}} : {{data_quality}}%">
+                                        <img src="assets/images/orangeRibbon.svg">
+                                    </div>
+                                    <div class="tileImage" *ngIf="qualityRibbonColor === 'Red'" matTooltipClass="alertTooltip"
+                                    matTooltip="{{'Default Products'|translate}} : {{data_quality}}%">
+                                        <img src="assets/images/redRibbon.svg">
+                                    </div>
+                                    <div class="tileImage" *ngIf="qualityRibbonColor === 'Error'">
+                                        <div class="errorIcon" *ngIf="!alertComplianceNoDataForCalcErr"><mat-icon>error</mat-icon></div>
+                                        <div *ngIf="alertQualityNetworkErr" class="errorMsg">{{"Network Error"|translate}}</div>
+                                        <div *ngIf="alertQualityDbErr" class="errorMsg">{{"Server Error"|translate}}</div>
+                                    </div>
+                                </div>
+                            </mat-grid-tile>
+                            <mat-grid-tile class="contentTile">
+                                <div class="tileHeader">{{'Editors'|translate}}</div>
+                                <div class="tileBody">
+                                    <div class="tileText" *ngIf="noOfManagedEditors || noOfManagedEditors == 0">{{noOfManagedEditors}}</div>
+                                    <div class="tileImage" *ngIf="!noOfManagedEditors && noOfManagedEditors != 0">
+                                        <div class="errorIcon" *ngIf="getProductsNetworkError || getProductsDbError"><mat-icon>error</mat-icon></div>
+                                        <div *ngIf="getProductsNetworkError" class="errorMsg">{{"Network Error"|translate}}</div>
+                                        <div *ngIf="getProductsDbError" class="errorMsg">{{"Server Error"|translate}}</div>
+                                    </div>
+                                </div>
+                            </mat-grid-tile>
+                            <mat-grid-tile class="contentTile">
+                                <div class="tileHeader">{{'Products'|translate}}</div>
+                                <div class="tileBody">
+                                    <div class="tileText" *ngIf="noOfProducts || noOfProducts == 0">{{noOfProducts}}</div>
+                                    <div class="tileImage" *ngIf="!noOfProducts && noOfProducts != 0">
+                                        <div class="errorIcon" *ngIf="getProductsNetworkError || getProductsDbError"><mat-icon>error</mat-icon></div>
+                                        <div *ngIf="getProductsNetworkError" class="errorMsg">{{"Network Error"|translate}}</div>
+                                        <div *ngIf="getProductsDbError" class="errorMsg">{{"Server Error"|translate}}</div>
+                                    </div>
+                                </div>
+                            </mat-grid-tile>
+                            <mat-grid-tile class="contentTile">
+                                <div class="tileHeader">{{'Owned Licenses'|translate}}</div>
+
+                                <div class="tileBody">
+                                    <div class="tileText" *ngIf="valuationOfOwnedLicense || valuationOfOwnedLicense == 0">{{valuationOfOwnedLicense |formatCost}} €</div>
+                                    <div class="tileImage" *ngIf="!valuationOfOwnedLicense && valuationOfOwnedLicense != 0">
+                                        <div class="errorIcon" *ngIf="getProductsNetworkError || getProductsDbError"><mat-icon>error</mat-icon></div>
+                                        <div *ngIf="getProductsNetworkError" class="errorMsg">{{"Network Error"|translate}}</div>
+                                        <div *ngIf="getProductsDbError" class="errorMsg">{{"Server Error"|translate}}</div>
+                                    </div>
+                                </div></mat-grid-tile>
+                            <mat-grid-tile class="contentTile">
+                                <div class="tileHeader">{{'Maintenance Licenses'|translate}}</div>
+                                <div class="tileBody">
+                                    <div class="tileText" *ngIf="valuationOfOwnedLicenseMaintenance || valuationOfOwnedLicenseMaintenance == 0">{{valuationOfOwnedLicenseMaintenance |formatCost}} €</div>
+                                    <div class="tileImage" *ngIf="!valuationOfOwnedLicenseMaintenance && valuationOfOwnedLicenseMaintenance != 0">
+                                        <div class="errorIcon" *ngIf="getProductsNetworkError || getProductsDbError"><mat-icon>error</mat-icon></div>
+                                        <div *ngIf="getProductsNetworkError" class="errorMsg">{{"Network Error"|translate}}</div>
+                                        <div *ngIf="getProductsDbError" class="errorMsg">{{"Server Error"|translate}}</div>
+                                    </div>
+
+                                </div>
+                            </mat-grid-tile>
+                        </mat-grid-list>
+                    </div>
+                </mat-grid-tile>
+                <mat-grid-tile id="swLicComChartContainer" class="contentTile">
+                    <div class="tileHeader">{{'Software Licence Composition'|translate}}</div>
+                    <div class="loader" *ngIf="!(swLicCompData ||emptyLicCompFlag || getLicCompFailed)"></div>
+                    <div class="tileLoadingMsg" *ngIf="!(swLicCompData || emptyLicCompFlag || getLicCompFailed)">{{'Wait a moment while we set things up for you!'|translate}}</div>
+                    <div class="noDataImgContainer" *ngIf="emptyLicCompFlag"><img class="noDataImg" src="assets/images/NoDataFound.PNG"></div>
+                    <div class="noDataMsg" *ngIf="emptyLicCompFlag">{{'Unfortunately no data could be found.'|translate}}</div>
+                    <div class="noDataImgContainer" *ngIf="getLicCompFailed"><img class="noDataImg" src="assets/images/ConnectionError.PNG"></div>
+                    <canvas id="swLicComChart" width="350" height="250"></canvas>
+                </mat-grid-tile>
+                <mat-grid-tile id="equipmentDetailsContainer" class="contentTile">
+                    <div class="tileHeader">{{'Equipment Details'|translate}}</div>
+                    <div class="loader" *ngIf="!(equipsData || emptyequipsDataFlag || getEquipsFailed)"></div>
+                    <div class="tileLoadingMsg" *ngIf="!(equipsData || emptyequipsDataFlag || getEquipsFailed)">{{'Wait a moment while we set things up for you!'|translate}}</div>
+                    <div class="noDataImgContainer" *ngIf="emptyequipsDataFlag"><img class="noDataImg" src="assets/images/NoDataFound2.PNG"></div>
+                    <div class="noDataMsg" *ngIf="emptyequipsDataFlag">{{"Ummm.. Looks like there's no data here."|translate}}</div>
+                    <div class="noDataImgContainer" *ngIf="getEquipsFailed"><img class="noDataImg" src="assets/images/ConnectionError.PNG"></div>
+                    <canvas id="equipmentDetails" width="380" height="260"></canvas>
+                </mat-grid-tile>
+                <mat-grid-tile id="noOfProdsPerEditorContainer" class="contentTile">
+                    <div class="tileHeader">{{'Number of Products Per Editor'|translate}}</div>
+                    <div class="loader" *ngIf="!(productsPerEditorData || emptyproductsPerEditorFlag || getProductsPerEditorFailed)"></div>
+                    <div class="tileLoadingMsg" *ngIf="!(productsPerEditorData || emptyproductsPerEditorFlag || getProductsPerEditorFailed)">{{'Wait a moment while we set things up for you!'|translate}}</div>
+                    <div class="noDataImgContainer" *ngIf="emptyproductsPerEditorFlag"><img class="noDataImg" src="assets/images/CryingNoData.PNG"></div>
+                    <div class="noDataMsg" *ngIf="emptyproductsPerEditorFlag">{{'Oh no! I have got nothing for you.'|translate}}</div>
+                    <div class="noDataImgContainer" *ngIf="getProductsPerEditorFailed"><img class="noDataImg" src="assets/images/ConnectionError.PNG"></div>
+                    <canvas id="noOfProdsPerEditor" width="380" height="260"></canvas>
+                </mat-grid-tile>
+            </mat-grid-list>
+        </div>
+        <!-- Quality -->
+        <div id="qualitySection" [hidden]="currentTab !== 'Quality'">
+            <mat-grid-list [cols]="2" rowHeight="3:1" [gutterSize]="'16px'">
+
+                <mat-grid-tile class="parentTile">
+                    <div class='internalMatGrid'>
+                        <mat-grid-list [cols]="2" rowHeight="3:2" [gutterSize]="'10px'">
+                            <mat-grid-tile class="contentTile">
+                                <div class="tileHeader">{{'Not Deployed Products'|translate}}</div>
+                                <div class="tileBody">
+                                    <div class="tileText productsNo" *ngIf="productsNotDeployed || productsNotDeployed == 0" matTooltip="{{'Click to view details'|translate}}"
+                                    matTooltipClass="alertTooltip" (click)="openProductsInfo(notDeployedProductsInfoDialog);">{{productsNotDeployed}}</div>
+                                    <div class="tileImage" *ngIf="!productsNotDeployed && productsNotDeployed != 0">
+                                        <div class="errorIcon" *ngIf="alertQualityNetworkErr || alertQualityDbErr"><mat-icon>error</mat-icon></div>
+                                        <div *ngIf="alertQualityNetworkErr" class="errorMsg">{{"Network Error"|translate}}</div>
+                                        <div *ngIf="alertQualityDbErr" class="errorMsg">{{"Server Error"|translate}}</div>
+                                    </div>
+
+                                </div>
+                            </mat-grid-tile>
+                            <mat-grid-tile class="contentTile">
+                                <div class="tileHeader">{{'Not Licensed Products'|translate}}</div>
+                                <div class="tileBody">
+                                    <div class="tileText productsNo" *ngIf="productsNotAcquired || productsNotAcquired == 0" matTooltip="{{'Click to view details'|translate}}"
+                                    matTooltipClass="alertTooltip" (click)="openProductsInfo(notAcquiredProductsInfoDialog);">{{productsNotAcquired}}</div>
+                                    <div class="tileImage" *ngIf="!productsNotAcquired && productsNotAcquired != 0">
+                                        <div class="errorIcon" *ngIf="alertQualityNetworkErr || alertQualityDbErr"><mat-icon>error</mat-icon></div>
+                                        <div *ngIf="alertQualityNetworkErr" class="errorMsg">{{"Network Error"|translate}}</div>
+                                        <div *ngIf="alertQualityDbErr" class="errorMsg">{{"Server Error"|translate}}</div>
+                                    </div>
+                                </div>
+                            </mat-grid-tile>
+                        </mat-grid-list>
+                    </div>
+                </mat-grid-tile>
+                <mat-grid-tile class="contentTile">
+                    <div class="tileHeader">{{'Last Injection Failures(Last 30 days)'|translate}}</div>
+                    <div class="tileBody">
+                        <div class="tileText" *ngIf="failureRate && !(failureRateFailed || failureRateServerError || failureRateNoDataError)">
+                            {{failureRate}}%
+                        </div>
+                        <div class="tileImage" *ngIf="failureRateFailed || failureRateServerError || failureRateNoDataError">
+                            <div class="errorIcon" *ngIf="!failureRateNoDataError"><mat-icon>error</mat-icon></div>
+                            <div class="errorMsg" *ngIf="failureRateFailed">{{"Network Error"|translate}}</div>
+                            <div class="errorMsg" *ngIf="failureRateNoDataError">{{"No Data Found"|translate}}</div>
+                            <div class="errorMsg" *ngIf="failureRateServerError">{{"Server Error"|translate}}</div>
+                        </div>
+                    </div>
+                </mat-grid-tile>
+                <mat-grid-tile [rowspan]="2" id="devRateDetailsContainer" class="contentTile">
+                    <div class="tileHeader">{{'Development Rate Details'|translate}}</div>
+                    <div class="loader" *ngIf="!(devRateData ||emptydevRateDataFlag)"></div>
+                    <div class="tileLoadingMsg" *ngIf="!(devRateData || emptydevRateDataFlag)">{{'Wait a moment while we set things up for you!'|translate}}</div>
+                    <div class="noDataImgContainer" *ngIf="emptydevRateDataFlag"><img class="noDataImg" src="assets/images/NoDataFound.PNG"></div>
+                    <div class="noDataMsg" *ngIf="emptydevRateDataFlag">{{'Unfortunately no data could be found.'|translate}}</div>
+                    <div class="noDataImgContainer" *ngIf="getDevRatesFailed"><img class="noDataImg" src="assets/images/ConnectionError.PNG"></div>
+                    <canvas id="devRateDetails" width="400" height="270"></canvas>
+                </mat-grid-tile>
+                <mat-grid-tile [rowspan]="2" id="failureCausesContainer" class="contentTile">
+                    <div class="tileHeader">{{'Injection Errors(Last 30 days)'|translate}}</div>
+                    <div class="loader" *ngIf="!(failureCausesData || emptyFailureCausesFlag || getFailureCausesFailed || failureCausesNoDataError)"></div>
+                    <div class="tileLoadingMsg" *ngIf="!(failureCausesData || emptyFailureCausesFlag || getFailureCausesFailed || failureCausesNoDataError)">{{'Wait a moment while we set things up for you!'|translate}}</div>
+                    <div class="noDataImgContainer" *ngIf="emptyFailureCausesFlag || failureCausesNoDataError"><img class="noDataImg" src="assets/images/CryingNoData.PNG"></div>
+                    <div class="noDataMsg" *ngIf="emptyFailureCausesFlag || failureCausesNoDataError">{{'Oh no! I have got nothing for you.'|translate}}</div>
+                    <div class="noDataImgContainer" *ngIf="getFailureCausesFailed"><img class="noDataImg" src="assets/images/ConnectionError.PNG"></div>
+                    <canvas id="failureCauses" width="400" height="270"></canvas>
+                </mat-grid-tile>
+            </mat-grid-list>
+        </div>
+        <div id="complianceSection" [hidden]="currentTab !== 'Compliance'">
+            <div class="inputSection">
+                <mat-form-field id="selectEditor" appearance="outline">
+                    <mat-label>{{'Editor' | translate}}</mat-label>
+                    <mat-select id="editor" [(ngModel)]="selectedEditor" [disabled]="editorsList && editorsList.length == 0" (selectionChange)="editorSelected()">
+                      <!-- <mat-option>-- {{'Select Editor' | translate}} --</mat-option> -->
+                      <mat-option id="editor_option_{{i}}" *ngFor="let editor of editorsList;let i = index;" [value]="editor">
+                        {{editor}}</mat-option>
+                </mat-select>
+                  </mat-form-field>
+            </div>
+            <mat-grid-list [cols]="2" rowHeight="3:2" [gutterSize]="'16px'">
+                <mat-grid-tile id="odFVChartContainer" class="contentTile">
+                    <div class="tileHeader">{{'Overdeployment : Financial Volume'|translate}}</div>
+                    <div class="tileSubHeader">{{'High footprint overdeployed products'|translate}}</div>
+                    <div class="loader" *ngIf="!(odFVData ||emptyodFVFlag || getOverdeploymentFailed)"></div>
+                    <div class="tileLoadingMsg" *ngIf="!(odFVData || emptyodFVFlag || getOverdeploymentFailed)">{{'Wait a moment while we set things up for you!'|translate}}</div>
+                    <div class="noDataImgContainer" *ngIf="emptyodFVFlag"><img class="noDataImg" src="assets/images/NoComplianceData1.PNG"></div>
+                    <div class="noDataMsg" *ngIf="emptyodFVFlag">{{"Yay"|translate}}! {{"There are no overdeployed products."|translate}}</div>
+                    <div class="noDataImgContainer" *ngIf="getOverdeploymentFailed"><img class="noDataImg" src="assets/images/ConnectionError.PNG"></div>
+                    <canvas id="od_FV_chart" width="380" height="260" style="margin-top: 16px !important;"></canvas>
+                </mat-grid-tile>
+                <mat-grid-tile id="cfFVChartContainer" class="contentTile">
+                    <div class="tileHeader">{{'Counterfeiting : Financial Volume'|translate}}</div>
+                    <div class="tileSubHeader">{{'Top non-compliant products'|translate}}</div>
+                    <div class="loader" *ngIf="!(cfFVData ||emptycfFVFlag || getCounterfeitingFailed)"></div>
+                    <div class="tileLoadingMsg" *ngIf="!(cfFVData || emptycfFVFlag || getCounterfeitingFailed)">{{'Wait a moment while we set things up for you!'|translate}}</div>
+                    <div class="noDataImgContainer" *ngIf="emptycfFVFlag"><img class="noDataImg" src="assets/images/NoComplianceData2.PNG"></div>
+                    <div class="noDataMsg" *ngIf="emptycfFVFlag">{{"Hurray"|translate}}! {{"There are no counterfeited products."|translate}}</div>
+                    <div class="noDataImgContainer" *ngIf="getCounterfeitingFailed"><img class="noDataImg" src="assets/images/ConnectionError.PNG"></div>
+                    <canvas id="cf_FV_chart" width="380" height="260"></canvas>
+                </mat-grid-tile>
+                <mat-grid-tile id="odNLChartContainer" class="contentTile">
+                    <div class="tileHeader">{{'Overdeployment : Number of License'|translate}}</div>
+                    <div class="tileSubHeader">{{'Products with licenses least used'|translate}}</div>
+                    <div class="loader" *ngIf="!(odNLData || emptyodNLFlag || getOverdeploymentFailed)"></div>
+                    <div class="tileLoadingMsg" *ngIf="!(odNLData || emptyodNLFlag || getOverdeploymentFailed)">{{'Wait a moment while we set things up for you!'|translate}}</div>
+                    <div class="noDataImgContainer" *ngIf="emptyodNLFlag"><img class="noDataImg" src="assets/images/NoComplianceData2.PNG"></div>
+                    <div class="noDataMsg" *ngIf="emptyodNLFlag">{{"Hurray"|translate}}! {{"There are no overdeployed products."|translate}}</div>
+                    <div class="noDataImgContainer" *ngIf="getOverdeploymentFailed"><img class="noDataImg" src="assets/images/ConnectionError.PNG"></div>
+                    <canvas id="od_NL_chart" width="380" height="260"></canvas>
+                </mat-grid-tile>
+                <mat-grid-tile id="cfNLChartContainer" class="contentTile">
+                    <div class="tileHeader">{{'Counterfeiting : Number of License'|translate}}</div>
+                    <div class="tileSubHeader">{{'Top non-compliant products'|translate}}</div>
+                    <div class="loader" *ngIf="!(cfNLData || emptycfNLFlag || getCounterfeitingFailed)"></div>
+                    <div class="tileLoadingMsg" *ngIf="!(cfNLData || emptycfNLFlag || getCounterfeitingFailed)">{{'Wait a moment while we set things up for you!'|translate}}</div>
+                    <div class="noDataImgContainer" *ngIf="emptycfNLFlag"><img class="noDataImg" src="assets/images/NoComplianceData1.PNG"></div>
+                    <div class="noDataMsg" *ngIf="emptycfNLFlag">{{"Yay"|translate}}! {{"There are no counterfeited products."|translate}}</div>
+                    <div class="noDataImgContainer" *ngIf="getCounterfeitingFailed"><img class="noDataImg" src="assets/images/ConnectionError.PNG"></div>
+                    <canvas id="cf_NL_chart" width="380" height="260"></canvas>
+                </mat-grid-tile>
+            </mat-grid-list>
+        </div>
+    </div>
 </div>
+<ng-template #notDeployedProductsInfoDialog>
+    <div class="productsHeader">{{'Not Deployed Products'|translate}}</div>
+    <mat-dialog-content>
+        <div class="mat-elevation-z8">
+            <mat-table [dataSource]="productsNotDeployedInfo">
+                <ng-container matColumnDef="swidTag">
+                  <mat-header-cell *matHeaderCellDef>{{'SWIDtag'|translate}}</mat-header-cell>
+                  <mat-cell *matCellDef="let product">{{product.swid_tag}}
+                  </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="productName">
+                  <mat-header-cell *matHeaderCellDef>{{'Product Name'|translate}}</mat-header-cell>
+                  <mat-cell *matCellDef="let product">{{product.product_name}}
+                  </mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="['swidTag', 'productName']; sticky: true"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: ['swidTag', 'productName'];"></mat-row>
+            </mat-table>
+        </div>
+    </mat-dialog-content>
+    <mat-dialog-actions align="center">
+      <button mat-button [mat-dialog-close]="true" class="btn-two" cdkFocusInitial>{{'OK'|translate}}</button>
+    </mat-dialog-actions>
+</ng-template>
+<ng-template #notAcquiredProductsInfoDialog>
+    <div class="productsHeader">{{'Not Licensed Products'|translate}}</div>
+    <mat-dialog-content>
+        <div class="mat-elevation-z8">
+            <mat-table [dataSource]="productsNotAcquiredInfo">
+                <ng-container matColumnDef="swidTag">
+                  <mat-header-cell *matHeaderCellDef>{{'SWIDtag'|translate}}</mat-header-cell>
+                  <mat-cell *matCellDef="let product">{{product.swid_tag}}
+                  </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="productName">
+                  <mat-header-cell *matHeaderCellDef>{{'Product Name'|translate}}</mat-header-cell>
+                  <mat-cell *matCellDef="let product">{{product.product_name}}
+                  </mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="['swidTag', 'productName']; sticky: true"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: ['swidTag', 'productName'];"></mat-row>
+            </mat-table>
+        </div>
+    </mat-dialog-content>
+    <mat-dialog-actions align="center">
+      <button mat-button [mat-dialog-close]="true" class="btn-two" cdkFocusInitial>{{'OK'|translate}}</button>
+    </mat-dialog-actions>
+</ng-template>

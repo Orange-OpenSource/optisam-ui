@@ -7,6 +7,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { OptionsComponent } from './options.component';
+import { TranslateModule } from '@ngx-translate/core';
+import { SharedModule } from 'src/app/shared/shared.module';
 
 describe('OptionsComponent', () => {
   let component: OptionsComponent;
@@ -14,7 +16,11 @@ describe('OptionsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ OptionsComponent ]
+      declarations: [ OptionsComponent ],
+      imports : [
+                  SharedModule,
+                  TranslateModule.forRoot() 
+                ]
     })
     .compileComponents();
   }));

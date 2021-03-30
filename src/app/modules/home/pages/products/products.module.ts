@@ -22,6 +22,7 @@ import { ProductAggregationComponent } from './product-aggregation/product-aggre
 import { ProductTabsComponent } from './product-tabs/product-tabs.component';
 import { ProductAggregationEquipmentsComponent } from './product-aggregation-equipments/product-aggregation-equipments.component';
 import { ProductAggregationApplicationsComponent } from './product-aggregation-applications/product-aggregation-applications.component';
+import { AttributeDetailComponent } from '../equipments/attribute-detail/attribute-detail.component';
 
 @NgModule({
   imports: [
@@ -33,6 +34,19 @@ import { ProductAggregationApplicationsComponent } from './product-aggregation-a
     ReactiveFormsModule,
     SharedModule
   ],
-  declarations: [ProductsComponent, ProdAplComponent, AplInstanceComponent, ProdComponent, ProdEquiComponent, ProductAggregationComponent, ProductTabsComponent, ProductAggregationEquipmentsComponent, ProductAggregationApplicationsComponent],
+  entryComponents: [
+    AttributeDetailComponent
+  ],
+  declarations: [
+    ProductsComponent, 
+    ProdAplComponent, 
+    AplInstanceComponent, 
+    ProdComponent, 
+    ProdEquiComponent, 
+    ProductAggregationComponent, 
+    ProductTabsComponent, 
+    ProductAggregationEquipmentsComponent, 
+    ProductAggregationApplicationsComponent
+  ],
 })
 export class ProductsModule { }

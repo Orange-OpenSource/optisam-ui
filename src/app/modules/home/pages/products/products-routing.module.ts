@@ -28,7 +28,8 @@ const routes: Routes = [
       { path: 'products/equi/:swidTag', component: ProdEquiComponent },
       { path: 'products/aggregations/:agg_name/applications', component: ProductAggregationApplicationsComponent, pathMatch: 'full' },
       { path: 'products/aggregations/:agg_name/equipments', component: ProductAggregationEquipmentsComponent },
-      { path: 'instances/:swidTag/:app_id', component: AplInstanceComponent }
+      { path: 'instances/:swidTag/:app_id', component: AplInstanceComponent },
+      { path: 'apl/instances/:swidTag/:app_id/:inst_id', component:ProdEquiComponent}
     ]
   }
 ];

@@ -2,7 +2,7 @@
         <div class="container-fluid page-content-header">
           <div class="row">
             <div class="col-md-9 page-heading">
-              <span class="parentNode nav-path" routerLink="/optisam/apl/applications">{{'Application'|translate}}</span><span class="nav-path-desc"> : {{this.aplName}}</span><mat-icon class="arrow_icon">arrow_forward_ios</mat-icon> <span class="currentNode nav-path">{{'Products'|translate}}</span>
+              <span class="parentNode nav-path" (click)="backToApplication()">{{'Application'|translate}}</span><span class="nav-path-desc"> : {{this.aplName}}</span><mat-icon class="arrow_icon">arrow_forward_ios</mat-icon> <span class="currentNode nav-path">{{'Products'|translate}}</span>
             </div>
             <div class="col-md-3"></div>
 
@@ -59,7 +59,7 @@
 
         <ng-container matColumnDef="totalCost">
             <mat-header-cell *matHeaderCellDef mat-sort-header>{{'Total cost(€)'|translate}}</mat-header-cell>
-            <mat-cell *matCellDef="let product"> {{product.totalCost}}
+            <mat-cell *matCellDef="let product"> {{(product.totalCost||0)|formatCost}}
                </mat-cell>
           </ng-container>
 

@@ -6,11 +6,8 @@
 
 
 import { Component, OnInit, ViewChild, Inject } from '@angular/core';
-import { MatPaginator, MatTableDataSource, MatSort, MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material';
-import { ApplicationService } from 'src/app/core/services/application.service';
-import { Router } from '@angular/router';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { EquipmentTypeManagementService } from 'src/app/core/services/equipmenttypemanagement.service';
-import { DialogData } from 'src/app/modules/home/dialogs/product-details/details';
 import { FormArray, FormGroup, FormControl, Validators } from '@angular/forms';
 import { ModifyJSONFormat } from './model';
 import { RequiredJSONFormat } from '../model';
@@ -26,68 +23,93 @@ export class EditComponent implements OnInit {
   type: any;
   metadata_source: any;
   attributes: any;
-  parent_id: any;
   attributeForm: FormGroup;
-  createForm: FormGroup;
-  value1: string;
   selectedAttributes = [];
   types: any;
   metaData = [];
-  primaryKeyValue = [];
-  checked: Boolean = false;
-  selectDisabled = true;
-  showMsg: any;
-  pkMsg: any;
-  selectedParent: any;
-  value: any;
   parent_type: any;
   metadata_id: String;
   parentId: String;
+  scope: any = '';
+  parent: any;
+  attribute: any;
+  displayedColumns = ['name', 'data_type', 'mapped_to', 'searchable', 'displayed'];
+  errorMessage: string;
+  reqInProgress: Boolean;
 
-  constructor(public equipmentTypeService: EquipmentTypeManagementService,
-  public dialogRef: MatDialogRef<EditComponent>,
-  public dialog: MatDialog,
-  @Inject(MAT_DIALOG_DATA) public data: RequiredJSONFormat) { }
-
-  attribute = this.data.attributes;
-
-  displayedColumns = ['name', 'data_type', 'mapped_to', 'searchable', 'displayed' ];
-  public formDisabled = false;
+  constructor(
+    private equipmentTypeService: EquipmentTypeManagementService,
+    private dialogRef: MatDialogRef<EditComponent>,
+    private dialog: MatDialog,
+    @Inject(MAT_DIALOG_DATA) private data: RequiredJSONFormat) { }
 
   ngOnInit() {
-    console.log('modify data', this.data);
     this.type = this.data['type'];
-    this.id = this.data['id'];
+    this.id = this.data['ID'];
     this.metadata_id = this.data['metadata_id'];
     this.metadata_source = this.data['metadata_source'];
+    this.scope = this.data['scope'];
     this.parent_type = this.data['parent_type'];
-    console.log( 'play with parer----', this.parent_type);
-    if (this.parent_type === undefined || this.parent_type === 'undefined' || this.parent_type === null) {
-      this.parentId = '1';
-      this.getTypes();
-    } else {
-      this.parentId = '2';
-    }
-   this.getMappedSource();
-    // this.RenderDataTable();
-    const attributeArr = new FormArray([]);
-    this.attributeForm = new FormGroup({
-        'from': new FormControl({ disabled: true}),
-        'root': new FormControl(''),
-        // 'parentI': new FormControl('', [Validators.required]),
-      'attribute': attributeArr
-    });
-    this.attributeForm.markAsPristine();
+    this.attribute = this.data.attributes
+    this.getTypes();
+    this.getMappedSource();
+    this.initForm();
   }
+  initForm() {
+    this.attributeForm = new FormGroup({
+      'from': new FormControl({ disabled: true }),
+      'scope': new FormControl({ disabled: true }),
+      'root': new FormControl(null),
+      'attribute': new FormArray([])
+    });
+  }
+  get root() {
+    return this.attributeForm.get('root');
+  }
+  get attribute_form() {
+    return this.attributeForm.get('attribute') as FormArray;
+  }
+  getControls() {
+    return (<FormArray>this.attributeForm.get('attribute')).controls;
+  }
+  // Get data
   getTypes() {
-    this.equipmentTypeService.getTypes().subscribe(
+    this.equipmentTypeService.getTypes(this.scope).subscribe(
       (res: any) => {
-        this.types = res.equipment_types;
-       // this.TypeName = res.equipment_types;
+        const equipTypes = (res.equipment_types || []).reverse();
+        this.types = equipTypes.filter(eq => eq.type !== this.type);
+        this.parent = equipTypes.filter(eq => eq.type === this.parent_type)[0].ID;
+        this.root.setValue(this.parent);
       },
       error => {
         console.log('There was an error while retrieving Posts !!!' + error);
       });
+  }
+
+  getMappedSource() {
+    this.equipmentTypeService.getMappedSource(this.metadata_id).subscribe(
+      (res: any) => {
+        this.metaData = res.attributes;
+      },
+      error => {
+        console.log('There was an error while retrieving Posts !!!' + error);
+      });
+  }
+
+  get missingParentAttribute(): Boolean {
+    if (this.root.value) {
+      for (let i = 0; i < this.attribute_form.value.length; i++) {
+        if (this.attribute_form.controls[i].get('parent_identifier').value) {
+          return false;
+        }
+      }
+      this.selectedAttributes = this.attribute.map(atr => atr.mapped_to);
+      if (this.selectedAttributes.includes('parent_id')) return false;
+      return true;
+    }
+    else {
+      return false;
+    }
   }
   onAddAttribute() {
     (<FormArray>this.attributeForm.get('attribute')).push(
@@ -98,75 +120,66 @@ export class EditComponent implements OnInit {
         'displayed': new FormControl(null),
         'searchable': new FormControl(null),
         'mapped_to': new FormControl(null, [Validators.required]),
-        // 'pIdentity': new FormControl(null, [Validators.required]),
+        'parent_identifier': new FormControl(null)
       })
     );
   }
-  // RenderDataTable() {
-
-  // }
-  getControls() {
-    return (<FormArray>this.attributeForm.get('attribute')).controls;
-  }
   onDeleteAttribute(index: number) {
-    // const data = this.createForm.value;
-    // if (data.attribute[index].primary_key && this.primaryKey.length > 1) {
-    //   this.primaryKey.pop();
-    // }
-    // console.log(this.primaryKey);
     (<FormArray>this.attributeForm.get('attribute')).removeAt(index);
   }
-
-  modifyAttribute(successMsg, errorMsg) {
-    const attribute_data = this.attributeForm.value;
-    const attributeData = new ModifyJSONFormat;
-    // attributeData.parent_id = attribute_data.from;
-    attributeData.attributes = attribute_data.attribute;
-    if (attribute_data) {
-      this.equipmentTypeService.updateAttribute(this.id, attributeData)
-      .subscribe(res => {
-        this.attributeForm.reset();
-        this.openModal(successMsg);
-      },error => {
-        this.openModal(errorMsg);
-      });
+  onChangeParent(ev, i) {
+    if (ev.checked) {
+      this.parentId = i;
+    } else {
+      this.parentId = null;
     }
   }
+  compareWithFn(listOfItems, selectedItem) {
+    return listOfItems && selectedItem && listOfItems === selectedItem;
+  }
+
+  modifyAttribute(successMsg, errorMsg, parentErrorMsg, equipmentDataErrorMsg) {
+    this.reqInProgress = true;
+    this.attributeForm.markAsPristine();
+    const attribute_data = this.attributeForm.value;
+    const attributeData = new ModifyJSONFormat;
+    attributeData.attributes = attribute_data.attribute;
+    attributeData.parent_id = this.root.value;
+    attributeData.scopes = [localStorage.getItem('scope')];
+    if (attribute_data) {
+      this.equipmentTypeService.updateAttribute(this.id, attributeData)
+        .subscribe(res => {
+          this.openModal(successMsg);
+          this.reqInProgress = false;
+        }, error => {
+          this.reqInProgress = false;
+          console.log('Some error occured!' + error);
+          if (error.status == 400 && error.error.message == "child can not be parent") {
+            this.openModal(parentErrorMsg);
+          }
+          else if (error.status == 400 && error.error.message == "equipment type contains equipments data") {
+            this.openModal(equipmentDataErrorMsg);
+          }
+          else {
+            this.errorMessage = error.error.message;
+            this.openModal(errorMsg);
+          }
+        }); 
+    }
+  }
+
   onFormReset() {
-    // console.log('frm reset');
     this.attributeForm.reset();
-    // this.editMode=false;
+    this.root.setValue(this.parent);
+    this.attribute_form.clear();
   }
-  getMappedSource() {
-    this.equipmentTypeService.getMappedSource(this.metadata_id).subscribe(
-      (res: any) => {
-        this.metaData = res.attributes;
-        //  this.metaData.ID = this.metadata_id;
-        console.log('aagya', this.metaData);
-      },
-      error => {
-        console.log('There was an error while retrieving Posts !!!' + error);
-      });
-  }
-  // filterAttributes(ID) {
-  //   if (ID.isUserInput) {
-  //     this.selectedAttributes = this.metaData.filter(x => x.ID === ID.source.value).map(x => x.attributes);
-  //     console.log(this.selectedAttributes);
-  //   }
-  // }
-  onSelect(ID) {
-    this.selectedParent = ID;
-    console.log(this.selectedParent);
-  }
-    onNoClick(): void {
-    this.dialogRef.close();
-  }
+
   openModal(templateRef) {
     let dialogRef = this.dialog.open(templateRef, {
-      width: '50%',
+      width: '30%',
       disableClose: true
     });
-  } 
+  }
 
   ngOnDestroy() {
     this.dialog.closeAll();

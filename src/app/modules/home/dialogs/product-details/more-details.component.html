@@ -13,7 +13,7 @@
                         <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" 
                           aria-controls="nav-profile" aria-selected="false" (click)="getProductOptions()">{{'Options' | translate}}</a>
                         <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" 
-                        aria-controls="nav-contact" aria-selected="false" (click)="getAcquiredRights()">{{'Acquired rights' | translate}}</a>
+                        aria-controls="nav-contact" aria-selected="false" (click)="getAcquiredRights()">{{'Compliance' | translate}}</a>
                       </div>
                    </nav>
 
@@ -66,7 +66,7 @@
                                     <td>{{item.editor}}</td>
                                     <td>{{item.edition}}</td>
                                     <td>{{item.version||0}}</td>
-                                    <td>{{0}}</td>
+                                    <td>{{0|formatCost}}</td>
                                   </tr>
                                   <tr>
                                 </tbody>
@@ -96,11 +96,17 @@
                                     <tr *ngFor="let item of acquireRight.acq_rights">
                                       <td>{{item.SKU}}</td>
                                       <td>{{item.metric}}</td>
-                                      <td>{{item.numCptLicences}}</td>
-                                      <td>{{item.numAcqLicences}}</td>
-                                      <td>{{item.deltaNumber}}</td>
-                                      <td>{{item.deltaCost}}</td>
-                                      <td>{{item.totalCost}}</td>
+                                      <td>{{item.numCptLicences||0}}</td>
+                                      <td>{{item.numAcqLicences||0}}</td>
+                                      <td>
+                                        <span class="greenText" *ngIf="(item.deltaNumber||0)>=0">{{item.deltaNumber||0}}</span>
+                                        <span class="redText" *ngIf="(item.deltaNumber||0) < 0" matTooltip="{{'The product is not compliant'|translate}}!" matTooltipClass="errorTooltip">{{item.deltaNumber}}</span>
+                                      </td>
+                                      <td>
+                                        <span class="greenText" *ngIf="(item.deltaCost||0)>=0">{{(item.deltaCost||0)|formatCost}}</span>
+                                        <span class="redText" *ngIf="(item.deltaCost||0) < 0" matTooltip="{{'The product is not compliant'|translate}}!" matTooltipClass="errorTooltip">{{item.deltaCost|formatCost}}</span>
+                                      </td>
+                                      <td>{{(item.totalCost||0)|formatCost}}</td>
                                     </tr>
                                   </tbody>
                                 </table>
@@ -119,5 +125,5 @@
 </mat-dialog-content>
 
 <mat-dialog-actions align="right">
-    <button class="btn-two" mat-raised-button mat-dialog-close>{{'Cancel' | translate}}</button>
+    <button id="cancelBtn" class="btn-two" mat-raised-button mat-dialog-close>{{'Cancel' | translate}}</button>
   </mat-dialog-actions>

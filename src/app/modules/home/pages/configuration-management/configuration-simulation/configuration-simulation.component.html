@@ -46,9 +46,9 @@
                             <p>{{'CONFIRM_MSG'|translate}}</p>
                         </mat-dialog-content>
                         <mat-dialog-actions align="center">
-                            <button mat-button mat-dialog-close (click) = cancel()>{{'Cancel'|translate}}</button>
-                            <button mat-button [mat-dialog-close]="true" (click)="refreshAttributes()" cdkFocusInitial>{{'OK'|translate}}</button>
-                          </mat-dialog-actions>
+                            <button mat-button [mat-dialog-close]="true" class="btn-two" (click)="refreshAttributes()" cdkFocusInitial>{{'OK'|translate}}</button>
+                            <button mat-button mat-dialog-close class="btn-three" (click) = cancel()>{{'Cancel'|translate}}</button>
+                        </mat-dialog-actions>
                     </ng-template>
                 </mat-form-field>
             </div>
@@ -78,7 +78,7 @@
                         <mat-cell *matCellDef="let element, let i=index" style="position: relative;">
                             
                             <input id="csvFileUpload{{i}}" type="file" name="CSV File Upload" class="file-upload" title=""
-                                (change)="fileChangeListener($event, i)" style="position:absolute; top:i*20%; left:55%;" 
+                                (change)="fileChangeListener($event, i)" style="position:absolute; top:i*20%; left:35%;" 
                                 accept=".csv">
                                 <label *ngIf="!configObj.attributes[i].fileName" class="attach-file"><mat-icon>attach_file</mat-icon></label>
                                 <label *ngIf="configObj.attributes[i].fileName" class="attach-file">{{configObj.attributes[i].fileName}}</label>
@@ -117,7 +117,7 @@
                     <p>{{'UPLOAD_SUCCESSFUL'|translate}}</p>
                 </mat-dialog-content>
                 <mat-dialog-actions align="center">
-                    <button mat-button [mat-dialog-close]="true" (click)="backToList()" cdkFocusInitial>{{'OK'|translate}}</button>
+                    <button mat-button [mat-dialog-close]="true" class="btn-two" (click)="backToList()" cdkFocusInitial>{{'OK'|translate}}</button>
                   </mat-dialog-actions>
             </ng-template>
             <ng-template #errordialog>
@@ -125,7 +125,7 @@
                     <p>{{'UPLOAD_CONFIG_ERROR'|translate}}</p>
                 </mat-dialog-content>
                 <mat-dialog-actions align="center">
-                    <button mat-button [mat-dialog-close]="true" (click)="backToList()" cdkFocusInitial>{{'OK'|translate}}</button>
+                    <button mat-button [mat-dialog-close]="true" class="btn-two" (click)="backToList()" cdkFocusInitial>{{'OK'|translate}}</button>
                   </mat-dialog-actions>
             </ng-template>
         </div>

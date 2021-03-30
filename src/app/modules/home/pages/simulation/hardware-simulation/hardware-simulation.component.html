@@ -11,24 +11,15 @@
               </div>
             </mat-grid-tile>
           </mat-grid-list>
-          <!-- <div class="page-heading">{{'Environment' | translate}}</div> -->
-          <div class="entity-section row-flex">
-              <mat-form-field appearance="outline" class="entity-input">
-                  <input matInput placeholder="{{'Entity' | translate}}" disabled [value]="simulateObj.viewEntity.join('/')">
-                </mat-form-field>
-      
-            <mat-form-field appearance="outline" class="select">
-              <mat-label>{{(entityList.length > 0) ? ('Select Entity'|translate) : ('No Entity'|translate)}}</mat-label>
-              <mat-select [value]="simulateObj.currentEntity" [disabled]="HTTPActivity || entityList.length == 0" (selectionChange)="selectionChanged($event, 'entity')">
-                <mat-option *ngFor="let entity of entityList;" [value]="entity">{{entity.name}}</mat-option>
+            <mat-form-field appearance="outline">
+              <mat-label>{{'AGGREGATIONS.TEXTS.SCOPE' | translate}}</mat-label>
+              <mat-select id="metricScope" [(ngModel)]="selectedScope" [disabled]="scopesList && scopesList.length === 0"
+                (selectionChange)="selectionChanged($event, 'scope')" #scopeInput>
+                <mat-option>-- {{'AGGREGATIONS.TEXTS.SELECT_SCOPE' | translate}} --</mat-option>
+                <mat-option id="scope_option_{{idx}}" *ngFor="let scope of scopesList;let idx = index;" [value]="scope">{{scope}}
+                </mat-option>
               </mat-select>
             </mat-form-field>
-            <div class="resetEntity">
-              <button mat-flat-button class="btn-two" (click)="resetEntity()">
-                {{'AGGREGATIONS.ACTIONS.RESET' | translate}}
-              </button>
-            </div>
-          </div>
 
           <div class="row-flex">
             <mat-form-field appearance="outline" class="equipmentType">
@@ -65,7 +56,7 @@
                 <p>{{'NO_DATA_MSG'|translate}}</p>
             </mat-dialog-content>
             <mat-dialog-actions align="center">
-                <button mat-button [mat-dialog-close]="true" cdkFocusInitial>{{'OK'|translate}}</button>
+                <button mat-button class="btn-two" [mat-dialog-close]="true" cdkFocusInitial>{{'OK'|translate}}</button>
             </mat-dialog-actions>
         </ng-template>
         <div class="row-flex attribute-section">
@@ -158,7 +149,7 @@
     <p>{{'ATTR_CHANGE_CONFIRM_MSG' | translate}}</p>
   </mat-dialog-content>
   <mat-dialog-actions align="center">
-    <button mat-button [mat-dialog-close]="true" (click)="changeAttrValues()" cdkFocusInitial>{{'OK'|translate}}</button>&nbsp;
-    <button mat-button [mat-dialog-close]="true" (click)="restoreOldSelection()" cdkFocusInitial>{{'Cancel'|translate}}</button>
+    <button mat-button [mat-dialog-close]="true" class="btn-two" (click)="changeAttrValues()" cdkFocusInitial>{{'OK'|translate}}</button>&nbsp;
+    <button mat-button [mat-dialog-close]="true" class="btn-three" (click)="restoreOldSelection()" cdkFocusInitial>{{'Cancel'|translate}}</button>
   </mat-dialog-actions>
 </ng-template>  

@@ -5,12 +5,12 @@
 // or at 'http://www.apache.org/licenses/LICENSE-2.0'. 
 
 import { Component, OnInit, Inject } from '@angular/core';
-import { AggregationService } from 'src/app/core/services/aggregation.service';
-import { MAT_DIALOG_DATA, MatDialogRef, MatDialog } from '@angular/material';
 import { FormBuilder, Validators, FormGroup, FormControl } from '@angular/forms';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { ProductService } from 'src/app/core/services/product.service';
 
 function validateAggregationName(c: FormControl) {
-  const AGG_EXP = /[^a-zA-Z\d_]/g ;
+  const AGG_EXP = /[^a-zA-Z\d_]/g;
 
   return !AGG_EXP.test(c.value) ? null : {
     validAggName: true
@@ -36,14 +36,14 @@ export class EditAggregationDialogComponent implements OnInit {
   removeItem = []; // Removed orignal swidtags list
   msgtxt: string;
   noChangesMadeFlag: Boolean = true;
-  acqrights_products:any[]=[];
+  acqrights_products: any[] = [];
 
   constructor(
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<EditAggregationDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
-    private aggService: AggregationService,
-    private dialog:MatDialog
+    private productService: ProductService,
+    private dialog: MatDialog
   ) {
     this._loading = false;
     this.error = false;
@@ -55,55 +55,58 @@ export class EditAggregationDialogComponent implements OnInit {
   }
 
   setFormData() {
-    console.log('data :',this.data);
     this.updateForm = this.fb.group({
       name: [this.data.name, [Validators.required, validateAggregationName]],
-      scope: [{value: this.data.scope, disabled: true}, [Validators.required]],
-      editor: [{value: this.data.editor, disabled: true}, [Validators.required]],
-      metric: [{value: this.data.metric, disabled: true}, [Validators.required]],
+      scope: [{ value: this.data.scope, disabled: true }, [Validators.required]],
+      editor: [{ value: this.data.editor, disabled: true }, [Validators.required]],
+      metric: [{ value: this.data.metric, disabled: true }, [Validators.required]],
       product_names: [this.data.product_names, [Validators.required]]
     });
-    this.selectedSwidList = this.data.products.slice(); 
+    if (this.data.products) { this.selectedSwidList = this.data.products.slice(); }
     // Fetch all products
     this.getInitialProductsList();
-    
+
     this.updateForm.markAsPristine();
     this.noChangesMadeFlag = true;
   }
 
-  getProductsList(initReq?:boolean) {
+  getProductsList(initReq?: boolean) {
     const arr = this.acqrights_products || [];
-        this.swidList = arr.filter(v => ((this.data.product_names.indexOf(v.product_name) !== -1) && (this.selectedSwidList.findIndex(i => i === v.swidtag) === -1)));
-        // If the request is initial i.e when dialog opens
-        if (!initReq) {
-          for(let i=0; i<this.updateForm.value.product_names.length; i++) {
-            this.acqrights_products.filter(res=>{
-              console.log('res:',res, 'swidList : ',this.swidList);
-              if(res.product_name==this.updateForm.value.product_names[i] && this.swidList.indexOf(res) == -1)
-                {this.swidList.push(res);}
-              });
-          }
-          // this.swidList = this.swidList.concat(this.removeItem.filter(v => this.updateForm.value.product_names.includes(v.product_name)));
+    this.swidList = arr.filter(v => ((this.data.product_names.indexOf(v.product_name) !== -1) && (this.selectedSwidList.findIndex(i => i === v.swidtag) === -1)));
+    // If the request is initial i.e when dialog opens
+    if (!initReq) {
+      this.selectedSwidList = [];
+      for(let j=0; j< this.data.product_names.length; j++) {
+        if(this.updateForm.value.product_names.includes(this.data.product_names[j])) {
+          this.selectedSwidList.push(this.data.products[j]);
         }
+      }
+      for (let i = 0; i < this.updateForm.value.product_names.length; i++) {
+        this.acqrights_products.filter(res => {
+          if (res.product_name == this.updateForm.value.product_names[i] && this.swidList.indexOf(res) == -1) { this.swidList.push(res); }
+        });
+      }
+    }
   }
   // Get All Products/Swidtags based on Editor and Metrics
   getInitialProductsList() {
     this.errorMessage = '';
     this.prodLoading = true;
-    let query = '?scope='+this.data.scope +'&editor='+this.data.editor + '&metric='+ this.data.metric;
+    this.swidList = [];
+    let query = '?scope=' + this.data.scope + '&editor=' + this.data.editor + '&metric=' + this.data.metric;
 
-    this.aggService.getProductList(query).subscribe((response: any) => {
+    this.productService.getProductListAggr(query).subscribe((response: any) => {
       this.acqrights_products = response.acqrights_products || [];
       this.productList = this.acqrights_products.filter((v, i, s) => {
-                                return s.findIndex(pr => pr.product_name === v.product_name) === i;
-                            });
-        this.data.product_names.forEach(ele => {
-          if (this.productList.findIndex(p => p.product_name === ele) === -1) {
-            this.productList.push({product_name: ele});
-          }
-        });
+        return s.findIndex(pr => pr.product_name === v.product_name) === i;
+      });
+      this.data.product_names.forEach(ele => {
+        if (this.productList.findIndex(p => p.product_name === ele) === -1) {
+          this.productList.push({ product_name: ele });
+        }
+      });
       // Fetch all swidtags with products
-      this.getProductsList(true); 
+      this.getProductsList(true);
       this.prodLoading = false;
     }, (error) => {
       this.errorMessage = error && error.error ? error.error.message : 'Error fetching metric';
@@ -115,27 +118,27 @@ export class EditAggregationDialogComponent implements OnInit {
 
   openModal(templateRef) {
     let dialogRef = this.dialog.open(templateRef, {
-        width: '50%',
-        disableClose: true
+      width: '30%',
+      disableClose: true
     });
-  } 
+  }
 
   confirm(successMsg, errorMsg) {
+    this.updateForm.markAsPristine();
     if (this.updateForm.valid && this.selectedSwidList.length > 0) {
       this._loading = true;
       const body = {
-        ID : this.aggID,
-        name : this.updateForm.value.name,
-        scope : this.data.scope,
-        editor : this.data.editor,
-        metric : this.data.metric,
-        products : this.selectedSwidList
+        ID: this.aggID,
+        name: this.updateForm.value.name,
+        scope: this.data.scope,
+        editor: this.data.editor,
+        metric: this.data.metric,
+        products: this.selectedSwidList
       };
 
-      this.aggService.updateAggregation(this.aggID, body).subscribe(resp => {
+      this.productService.updateAggregation(this.aggID, body).subscribe(resp => {
         this._loading = false;
         this.openModal(successMsg);
-        // this.dialogRef.close(true);
       }, err => {
         this._loading = false;
         this.error = true;
@@ -156,7 +159,6 @@ export class EditAggregationDialogComponent implements OnInit {
         retArr.push(ele);
       }
     });
-    // return primary.filter(ele => !compare.includes(ele));
     return retArr;
   }
 
@@ -170,7 +172,7 @@ export class EditAggregationDialogComponent implements OnInit {
   removeSwidTag(swid: any, index: number) {
     this.noChangesMadeFlag = false;
     this.selectedSwidList.splice(index, 1);
-    this.swidList.push({swidtag : swid});
+    this.swidList.push({ swidtag: swid });
     if (this.data.products.findIndex(v => v === swid) !== -1) {
       this.removeItem.push(swid);
     }

@@ -12,29 +12,19 @@
       </mat-grid-tile>
     </mat-grid-list>
     
-    <div class="entity-section">
-        <mat-form-field appearance="outline" class="entity-input">
-            <input matInput placeholder="{{'Entity' | translate}}" disabled [value]="simulateObj.viewEntity.join('/')">
-          </mat-form-field>
-
-      <mat-form-field appearance="outline" class="select">
-        <mat-label>{{(entityList.length > 0) ? ('Select Entity'|translate) : ('No Entity'|translate) }}</mat-label>
-        <mat-select [value]="simulateObj.currentEntity" [disabled]="HTTPActivity || entityList.length == 0" (selectionChange)="selectionChanged($event, 'entity')">
-          <mat-option *ngFor="let entity of entityList;" [value]="entity">{{entity.name}}</mat-option>
+      <mat-form-field appearance="outline">
+        <mat-label>{{'AGGREGATIONS.TEXTS.SCOPE' | translate}}</mat-label>
+        <mat-select id="metricScope" [(ngModel)]="selectedScope" [disabled]="scopesList && scopesList.length === 0"
+          (selectionChange)="selectionChanged($event, 'scope')" #scopeInput>
+          <mat-option>-- {{'AGGREGATIONS.TEXTS.SELECT_SCOPE' | translate}} --</mat-option>
+          <mat-option id="scope_option_{{idx}}" *ngFor="let scope of scopesList;let idx = index;" [value]="scope">{{scope}}
+          </mat-option>
         </mat-select>
       </mat-form-field>
-      <div class="resetEntity">
-        <button mat-flat-button class="btn-two" (click)="resetEntity()">
-          {{'AGGREGATIONS.ACTIONS.RESET' | translate}}
-        </button>
-      </div>
-    </div>
-
-    
 
       <mat-form-field appearance="outline">
         <mat-label>{{'AGGREGATIONS.TEXTS.EDITOR'|translate}}</mat-label>
-        <mat-select [(ngModel)]="simulateObj.editor" [disabled]="!simulateObj.entity || editorList.length == 0" (selectionChange)="selectionChanged($event, 'editor')">
+        <mat-select [(ngModel)]="simulateObj.editor" [disabled]="editorList.length == 0" (selectionChange)="selectionChanged($event, 'editor')">
           <mat-option>-- {{'AGGREGATIONS.TEXTS.SELECT_PRODUCT' | translate}} --</mat-option>
           <mat-option *ngFor="let editor of editorList;" [value]="editor">{{editor}}</mat-option>
         </mat-select>
@@ -50,6 +40,7 @@
       </mat-form-field> -->
 
       <mat-form-field appearance="outline"  [ngClass]="{'has-error': invalidProductFlag}">
+        <mat-label>{{'AGGREGATIONS.TEXTS.PRODUCT' | translate}}</mat-label>
         <input type="text" placeholder="{{'AGGREGATIONS.TEXTS.PRODUCT' | translate}}" (keyup)="onChangeProduct($event)"
         (focusout)="onProductNotSelected()"  matInput [(ngModel)]="simulateObj.product" [matAutocomplete]="auto" [disabled]="!simulateObj.editor || HTTPActivity || productList.length === 0">
         <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selectionChanged($event, 'product')" [displayWith]="getOptionText">
@@ -59,7 +50,7 @@
         </mat-autocomplete>
       </mat-form-field>
 
-      <div class="metric-section">
+      <div *ngIf="metricList.length > 0" class="metric-section">
         <mat-table [dataSource]="metricList">
           <ng-container matColumnDef="metric">
             <mat-header-cell *matHeaderCellDef>{{'Metric' | translate}}
@@ -70,7 +61,7 @@
             </mat-cell>
           </ng-container>
           <ng-container matColumnDef="unitCost">
-            <mat-header-cell *matHeaderCellDef>{{'Unit Cost' | translate}}($)
+            <mat-header-cell *matHeaderCellDef>{{'Unit Cost' | translate}}(€)
             </mat-header-cell>
             <mat-cell *matCellDef="let metric"> 
               <mat-form-field appearance="outline" class="cost-input">
@@ -82,31 +73,6 @@
           <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
           <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
         </mat-table>
-          <!-- <table class="table">
-            <thead>
-              <tr>
-                <th scope="col"></th>
-                <th scope="col">{{'Metric'|translate}}</th>
-                <th scope="col">{{'Unit Cost'|translate}}($)</th>
-              </tr>
-            </thead>
-            
-            <tbody>
-              <tr *ngFor="let metric of metricList; index as i">
-                <td scope="row">
-                  <mat-checkbox [(ngModel)]="metric.checked" (change)="selectMetric($event, metric)"></mat-checkbox>
-                </td>
-                <td>
-                  {{metric.name}}
-                </td>
-                <td>
-                  <mat-form-field appearance="outline" class="cost-input">
-                    <input matInput placeholder="" (keydown)="validateCostPattern($event)" (keyup)="changeInput($event, metric)" [(ngModel)]="metric.avgUnitPrice">
-                  </mat-form-field>
-                </td>
-              </tr>
-            </tbody>
-          </table> -->
       </div>
 
   </div>
@@ -116,22 +82,18 @@
     <button id="simulateButton" class="btn-two" mat-raised-button (click)="simulate()" [disabled]="checkValidSimulation()">
       {{'Simulate'|translate}}
     </button>
-    <!-- <div >
-      <span class="progress-text">Simulating results</span>
-      <mat-progress-bar mode="determinate" value="40"></mat-progress-bar>
-    </div> -->
 
     <div class="simulate-result" *ngIf="simulatedResults && simulatedResults.length != 0">
-      <div class="result-section" *ngFor="let result of simulatedResults" [ngClass]="{'error': !result.exists && !result.success, 'success': !result.exists && result.success}">
+      <div class="result-section" *ngFor="let result of simulatedResults" [ngClass]="{'error': !result.exists && !result.success, 'success': result.exists || result.success}">
         <h6>{{result.metric_name}}</h6>
         <div class="simulate-body">
           <div *ngIf="result.exists || result.success">
             <p><strong>{{'Licenses'|translate}} :</strong> {{result.num_cpt_licences || '-'}}</p>
-            <p><strong>{{'Total Cost'|translate}} :</strong> {{result.total_cost ? '€' + result.total_cost : '-'}}</p>
+            <p><strong>{{'Total Cost'|translate}} :</strong> €{{(result.total_cost ? result.total_cost : 0)|formatCost}}</p>
             <p><strong>{{'Status' |translate}}: </strong> {{(result.exists ? 'Existing' : 'Not existing')}}</p>
           </div>
           <div class="simulation-failed" *ngIf="!result.exists && !result.success">
-            Simulation Failed
+            {{'Simulation Failed'|translate}}
           </div>
         </div>
       </div>

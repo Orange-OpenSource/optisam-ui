@@ -4,11 +4,19 @@
 }
 
 .mat-button {
-  text-transform: uppercase; margin-right: 5px;
+  margin-right: 5px;
 }
 .optisam-logo { 
   background-color: #EAEAEA; 
   height: 60px;
+}
+
+.optisam-logo:hover {
+  cursor: pointer;
+}
+
+.optisam-logo:focus {
+  outline-width: 0;
 }
 
 #app-logo {
@@ -38,6 +46,7 @@ mat-toolbar{
 ::ng-deep .mat-menu-panel {
   border-radius: unset !important;
   margin-top: 10px !important;
+  max-height: calc(100vh - 98px) !important;
 }
 .mat-menu-item.routeactive {
   color: #008AFC;
@@ -57,6 +66,6 @@ mat-toolbar{
 .mat-button {
   cursor: pointer !important;
 }
-.mat-button:hover {
-  color: #008AFC !important;
-}
+// .mat-button:hover {
+//   color: #008AFC !important;
+// }

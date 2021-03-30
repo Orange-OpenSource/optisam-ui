@@ -1,0 +1,49 @@
+<mat-card class="example-card">
+    <div class="container-fluid page-content-header">
+      <div class="upload-button-box">
+        <button id="refreshButton" mat-raised-button class="btn-three" matTooltip="{{'Refresh Global Data Table'|translate}}" (click)="getListData()"><mat-icon class="refreshIcon">refresh</mat-icon></button>
+          <button id="dataUpload" mat-raised-button class="btn-two" (click)="uploadDataFiles()">
+            <mat-icon>add</mat-icon>
+            {{'Upload File'|translate}}
+          </button>
+      </div>
+    </div>
+    <mat-card-content>
+      <div class="mat-elevation-z8">
+        <mat-table [dataSource]="MyDataSource" matSort (matSortChange)="sortData($event)">
+  
+          <ng-container matColumnDef="file_name">
+            <mat-header-cell *matHeaderCellDef mat-sort-header="file_name">{{'File Name' | translate}}
+            </mat-header-cell>
+            <mat-cell *matCellDef="let file"> {{file.file_name}} </mat-cell>
+          </ng-container>
+  
+          <ng-container matColumnDef="status">
+            <mat-header-cell *matHeaderCellDef mat-sort-header="status">{{'Status' | translate}}
+            </mat-header-cell>
+            <mat-cell *matCellDef="let file"> {{file.status}} </mat-cell>
+          </ng-container>
+  
+  
+          <ng-container matColumnDef="uploaded_by">
+            <mat-header-cell *matHeaderCellDef mat-sort-header="uploaded_by">{{'Uploaded By' | translate}}
+            </mat-header-cell>
+            <mat-cell *matCellDef="let file"> {{file.uploaded_by}} </mat-cell>
+          </ng-container>
+  
+          <ng-container matColumnDef="uploaded_on">
+            <mat-header-cell *matHeaderCellDef mat-sort-header="uploaded_on">{{'Uploaded On'| translate}}</mat-header-cell>
+            <mat-cell *matCellDef="let file"> {{file.uploaded_on}} </mat-cell>
+          </ng-container>
+  
+          <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        </mat-table>
+        <app-loading-spinner *ngIf="_loading"></app-loading-spinner>
+        <div id="noData" *ngIf="!_loading && (!MyDataSource || (MyDataSource && MyDataSource.data.length === 0))">{{'No global data details available' | translate}}</div>
+        <mat-paginator [length]="length" [pageSize]="page_size" [pageSizeOptions]="[10,20,30,50]"
+          (page)="getPaginatorData($event)" showFirstLastButtons>
+        </mat-paginator>
+      </div>
+    </mat-card-content>
+  </mat-card>

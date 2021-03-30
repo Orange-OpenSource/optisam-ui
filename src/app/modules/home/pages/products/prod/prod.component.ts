@@ -6,9 +6,12 @@
 
 import { ProductService } from 'src/app/core/services/product.service';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatPaginator, MatTableDataSource, MatSort, MatDialog } from '@angular/material';
 import { MoreDetailsComponent } from '../../../dialogs/product-details/more-details.component';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'app-prod',
@@ -28,18 +31,12 @@ export class ProdComponent implements OnInit {
   selected: any;
   page_size: any;
   pageEvent: any;
-  // saveSelectedPName: string;
-  // saveSelectedSWIDTag: string;
-  // saveSelectedEditor: string;
-  // saveSelectedEdition: string;
   current_page_num: any;
   filteringOrder: any;
-  // swidtagPlaceholder: any;
-  // productnamePlaceholder: any;
-  // EditorNamePlaceholder: any;
+  dialogRef:any;
 
 
-  displayedColumns: string[] = ['swidTag', 'name', 'editor' , 'version', 'edition', 'totalCost',
+  displayedColumns: string[] = ['swidTag', 'name', 'version', 'editor', 'category', 'totalCost',
    'numOfApplications', 'numofEquipments'];
   _loading: Boolean;
 
@@ -53,14 +50,28 @@ export class ProdComponent implements OnInit {
     ]
   };
   searchFields: any = {};
+  @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
+  @ViewChild(MatSort, {static: false}) sort: MatSort;
 
-  constructor(private productservice: ProductService, public dialog: MatDialog, private router: Router) { }
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
-
+  constructor(private productservice: ProductService, 
+    public dialog: MatDialog, 
+    private router: Router) {
+      this._loading = true;
+      this.current_page_num = 1;
+      const state = window.history.state||{};
+      if(state['swidTag'] != undefined || state['name'] != undefined || state['editor'] != undefined) {
+        this.searchFields = state;
+        this.applyFilter();
+      }
+      else {        
+        this.RenderDataTable();
+      }
+     }
+  ngOnInit() {
+  }
 
   openDialog(value, name): void {
-    const dialogRef = this.dialog.open(MoreDetailsComponent, {
+    this.dialogRef = this.dialog.open(MoreDetailsComponent, {
       width: '850px',
       disableClose: true,
       data: {
@@ -69,14 +80,8 @@ export class ProdComponent implements OnInit {
       }
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    this.dialogRef.afterClosed().subscribe(result => {
     });
-  }
-
-  ngOnInit() {
-    this._loading = true;
-    this.current_page_num = 1;
-    this.RenderDataTable();
   }
   RenderDataTable() {
     this.productservice.getProducts(10, 1).subscribe(
@@ -127,7 +132,6 @@ export class ProdComponent implements OnInit {
       (res: any) => {
         this.MyDataSource = new MatTableDataSource(res.products);
         this.MyDataSource.sort = this.sort;
-       // this.length = res.totalRecords;
         this._loading = false;
       },
       error => {
@@ -136,28 +140,6 @@ export class ProdComponent implements OnInit {
       });
     }
 
-  /* setSelectedSearch(param: string, value: number ) {
-    if (value === 1) {
-      this.saveSelectedSWIDTag = param;
-    }
-    if (value === 2) {
-      this.saveSelectedPName = param;
-    }
-    if (value === 3) {
-      this.saveSelectedEditor = param;
-    }
-  }
-  setSelected(param: string, value: number ) {
-    if (value === 1) {
-      this.saveSelectedSWIDTag = param;
-    }
-    if (value === 2) {
-      this.saveSelectedPName = param;
-    }
-    if (value === 3) {
-      this.saveSelectedEditor = param;
-    }
-  } */
   applyFilter() {
     this._loading = true;
     this.MyDataSource = null;
@@ -183,30 +165,22 @@ export class ProdComponent implements OnInit {
         }
       );
   }
-  /* clearFilter() {
-    this.saveSelectedSWIDTag  = undefined;
-    this.saveSelectedEditor = undefined;
-    this.saveSelectedPName = undefined;
-    this.swidtagPlaceholder = null;
-    this.productnamePlaceholder = null;
-    this.EditorNamePlaceholder = null;
-     this.applyFilter();
-  } */
   productApl(swidTag, prodName) {
     localStorage.setItem('prodName', prodName);
     localStorage.setItem('swidTag', swidTag);
+    console.log(JSON.stringify(this.searchFields))
+    localStorage.setItem('prodFilter', JSON.stringify(this.searchFields));
     this.router.navigate(['/optisam/pr/products', swidTag]);
   }
   productEqui(swidTag, prodName) {
-    console.log('OK');
     localStorage.setItem('prodName', prodName);
     localStorage.setItem('swidTag', swidTag);
+    localStorage.setItem('prodFilter', JSON.stringify(this.searchFields));
     this.router.navigate(['/optisam/pr/products/equi', swidTag]);
 
   }
 
   advSearchTrigger(event) {
-    // console.log('trigger event => ', event);
     this.searchFields = event;
     this.applyFilter();
   }

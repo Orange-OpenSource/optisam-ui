@@ -80,11 +80,11 @@
       <p>{{'EXPORT_REPORT_CONFIRM_MSG' | translate}}  {{selectedFileFormat}} {{'file'|translate}}.</p>
   </mat-dialog-content>
   <mat-dialog-actions align="center">
-      <button mat-button (click)="getReportById(successDialog,errorDialog)" cdkFocusInitial>
+      <button mat-button class="btn-two" (click)="getReportById(successDialog,errorDialog)" cdkFocusInitial>
         <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" *ngIf="isDownloading"></span>
         {{'OK'|translate}}
       </button>&nbsp;
-      <button mat-button [mat-dialog-close]="true" cdkFocusInitial>{{'Cancel'|translate}}</button>
+      <button mat-button [mat-dialog-close]="true" class="btn-three" cdkFocusInitial>{{'Cancel'|translate}}</button>
     </mat-dialog-actions>
 </ng-template> 
 <!-- Successful export -->
@@ -93,7 +93,7 @@
       <p>{{'EXPORT_REPORT_SUCCESS'|translate}}</p>
   </mat-dialog-content>
   <mat-dialog-actions align="center">
-      <button [mat-dialog-close]="true" mat-button cdkFocusInitial>{{'OK'|translate}}</button>
+      <button [mat-dialog-close]="true" mat-button class="btn-two" cdkFocusInitial>{{'OK'|translate}}</button>
     </mat-dialog-actions>
 </ng-template>
 <!-- Error in exporting report -->
@@ -102,6 +102,6 @@
       <p>{{'EXPORT_REPORT_ERROR'|translate}}</p>
   </mat-dialog-content>
   <mat-dialog-actions align="center">
-      <button [mat-dialog-close]="true" mat-button cdkFocusInitial>{{'OK'|translate}}</button>
+      <button [mat-dialog-close]="true" mat-button class="btn-two" cdkFocusInitial>{{'OK'|translate}}</button>
     </mat-dialog-actions>
 </ng-template>  

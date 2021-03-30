@@ -6,9 +6,10 @@
 
 import { ProductService } from 'src/app/core/services/product.service';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatPaginator, MatTableDataSource, MatSort, MatDialog } from '@angular/material';
-import { MoreDetailsComponent } from '../../../dialogs/product-details/more-details.component';
 import { ActivatedRoute, Router } from '@angular/router';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'app-apl-instance',
@@ -21,6 +22,7 @@ export class AplInstanceComponent implements OnInit {
   MyDataSource: any;
   searchKey: string;
   swidTag: any;
+  app_id:any;
   aplName: any;
   page_size: any;
   pageEvent: any;
@@ -35,19 +37,19 @@ export class AplInstanceComponent implements OnInit {
   displayedColumns: string[] = ['instance_id',  'environment',  'num_of_products' , 'num_of_equipments', ];
   _loading: Boolean;
   constructor(private productservice: ProductService, private router: Router, private route: ActivatedRoute) { }
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
+  @ViewChild(MatSort, {static: false}) sort: MatSort;
   ngOnInit() {
     this._loading = true;
     this.current_page_num = 1;
+    this.swidTag = (this.route.snapshot.paramMap.get('swidTag'));
+    this.app_id = (this.route.snapshot.paramMap.get('app_id'));
     this.RenderDataTable();
   }
   RenderDataTable() {
-    const swidTag = (this.route.snapshot.paramMap.get('swidTag'));
-    const app_id = (this.route.snapshot.paramMap.get('app_id'));
     this.prodName = localStorage.getItem('prodName');
     this.appName = localStorage.getItem('appName');
-    this.productservice.getprodInstances(swidTag, app_id, 10, 1).subscribe(
+    this.productservice.getprodInstances(this.swidTag, this.app_id, 10, 1).subscribe(
       (res: any) => {
         this.MyDataSource = new MatTableDataSource(res.instances);
         this.MyDataSource.sort = this.sort;
@@ -62,10 +64,8 @@ export class AplInstanceComponent implements OnInit {
   getPaginatorData(event) {
     this._loading = true;
     this.MyDataSource = null;
-    const swidTag = (this.route.snapshot.paramMap.get('swidTag'));
-    const app_id = (this.route.snapshot.paramMap.get('app_id'));
     const page_num = event.pageIndex;
-    this.current_page_num = page_num;
+    this.current_page_num = page_num +1;
     this.length = event.length;
     this.pageSize = event.pageSize;
     this.sort_order = localStorage.getItem( 'instance_direction');
@@ -76,10 +76,10 @@ export class AplInstanceComponent implements OnInit {
     if (this.sort_order === '' || this.sort_order === null) {
       this.sort_order = 'asc';
     }
-    this.productservice.getInstancesSort(swidTag, app_id, this.pageSize, page_num + 1,
+    this.productservice.getInstancesSort(this.swidTag, this.app_id, this.pageSize, page_num + 1,
       this.sort_by, this.sort_order).subscribe(
         (res: any) => {
-          this.MyDataSource = new MatTableDataSource(res.products);
+          this.MyDataSource = new MatTableDataSource(res.instances);
           this.MyDataSource.sort = this.sort;
           this._loading = false;
         }
@@ -88,12 +88,9 @@ export class AplInstanceComponent implements OnInit {
   sortData(sort) {
     this._loading = true;
     this.MyDataSource = null;
-    const swidTag = (this.route.snapshot.paramMap.get('swidTag'));
-    // console.log(swidTag);
-    const app_id = (this.route.snapshot.paramMap.get('app_id'));
     localStorage.setItem('instance_direction', sort.direction);
     localStorage.setItem('instance_active', sort.active);
-    this.productservice.getInstancesSort(swidTag, app_id, this.pageSize, this.current_page_num,
+    this.productservice.getInstancesSort(this.swidTag, this.app_id, this.pageSize, this.current_page_num,
       sort.active, sort.direction).subscribe(
       (res: any) => {
         this.MyDataSource = new MatTableDataSource(res.instances);
@@ -104,9 +101,29 @@ export class AplInstanceComponent implements OnInit {
         console.log('There was an error while retrieving Posts !!!' + error);
         this._loading = false;
       });
+  }
+  gotoApplications() {
+    const filters = JSON.parse(localStorage.getItem('aplFilter'));
+    if (this.swidTag) {
+      this.router.navigate(['/optisam/pr/products', this.swidTag], { state : { appName: filters['appName'], owner: filters['owner'] }});
     }
-    gotoApplications() {
-      this.swidTag = localStorage.getItem( 'swidTag');
-      this.router.navigate(['/optisam/pr/products', this.swidTag]);
-      }
+    else {
+      this.router.navigate(['/optisam/apl/applications'], { state : { appName: filters['appName'], owner: filters['owner'], domain: filters['domain'], risk: filters['risk'] }});
+    }
+  }
+
+  backToProductsPage() {
+    const filters = JSON.parse(localStorage.getItem('prodFilter'));
+    this.router.navigateByUrl('/optisam/pr/products', { state : { name : filters['name'], swidTag: filters['swidTag'], editor: filters['editor']} })
+  }
+
+  getEquipData(value) {
+    localStorage.setItem('instanceID', value.id);
+    const key = localStorage.getItem('key');
+    if (this.swidTag) {
+      this.router.navigate(['/optisam/pr/apl/instances', this.swidTag, key, value.id]);
+    } else {
+      this.router.navigate(['/optisam/apl/instances', key, value.id]);
+    }
+  }
 }

@@ -19,7 +19,6 @@ export const environment = {
   API_CONFIG_URL: 'simulation',
   API_APPLICATION_URL: 'application',
   API_PRODUCT_URL: 'product',
-  API_ACQRIGHTS_URL: 'acquired-rights',
   API_METRIC_URL: 'metric',
   API_EQUIPMENT_URL: 'equipment',
   API_REPORT_URL: 'report'

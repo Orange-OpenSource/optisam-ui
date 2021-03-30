@@ -6,10 +6,11 @@
 
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { GroupService } from 'src/app/core/services/group.service';
-import { MatTableDataSource, MatSort, MatDialog } from '@angular/material';
-import { element } from '@angular/core/src/render3';
 import { EditUserComponent } from '../edit-user/edit-user.component';
 import { CreateUserGrpComponent } from '../create-user-grp/create-user-grp.component';
+import { MatSort } from '@angular/material/sort';
+import { MatDialog } from '@angular/material/dialog';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'app-user-list-view',
@@ -21,7 +22,7 @@ export class UserListViewComponent implements OnInit {
   userList:any[]=[];
   dataSource:any;
   displayedColumns: string[];
-  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatSort, {static: false}) sort: MatSort;
   _loading:Boolean=true;
   userToUpdate:any;
   userToDelete:any;
@@ -39,7 +40,6 @@ export class UserListViewComponent implements OnInit {
   ngOnInit() {
     this.roles.push('ADMIN');
     this.roles.push('USER');
-    this.loadData();
   }
 
   loadData() {
@@ -63,9 +63,9 @@ export class UserListViewComponent implements OnInit {
     }
   }
 
-  openModal(templateRef) {
+  openModal(templateRef,width) {
     let dialogRef = this.dialog.open(templateRef, {
-        width: '50%',
+        width: width,
         disableClose: true
     });
   }
@@ -93,17 +93,17 @@ export class UserListViewComponent implements OnInit {
 
   deleteUserConfirmation(user, templateRef) {
     this.userToDelete = user;
-    this.openModal(templateRef);
+    this.openModal(templateRef,'40%');
   }
 
   deleteUser(successMsg, errorMsg) {
     console.log('user to delete', this.userToDelete.user_id);
     this.groupService.deleteUser(this.userToDelete.user_id).subscribe(res => {
-      this.openModal(successMsg);
+      this.openModal(successMsg,'30%');
       console.log('Successfully Deleted! ', this.userToDelete);
     },
       (error) => {
-        this.openModal(errorMsg);
+        this.openModal(errorMsg,'30%');
         console.log('Error occured while deleting user!');
       });
   }

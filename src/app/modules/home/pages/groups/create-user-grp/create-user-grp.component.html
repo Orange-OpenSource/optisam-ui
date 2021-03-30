@@ -1,89 +1,91 @@
 <div fxLayout="row" fxLayoutAlign="center center" class="login-main">
-
-    <mat-card class="card">
-      <mat-card-header>
-        <mat-card-title class="page-heading">{{'Add User'|translate}}</mat-card-title>
-      </mat-card-header>
-      <mat-card-content fxLayout="column">
-        <form [formGroup]="groupForm" (ngSubmit)="createGroup(successDialog,errorDialog)">
-          <mat-form-field appearance="outline">
-            <mat-label>{{'Name'|translate}}</mat-label>
-            <input matInput placeholder="Name" formControlName="first_name">
-          </mat-form-field>
-          <mat-error *ngIf="first_name.invalid && !first_name.pristine">
-            Name is required in ^[a-zA-Z0-9_]*$ format.
+  <mat-card class="card">
+    <mat-card-header>
+      <mat-card-title class="page-heading">{{'Add User'|translate}}</mat-card-title>
+    </mat-card-header>
+    <mat-card-content fxLayout="column">
+      <form [formGroup]="groupForm">
+        <mat-form-field appearance="outline">
+          <mat-label>{{'Name'|translate}}</mat-label>
+          <input matInput placeholder="Name" formControlName="first_name">
+        </mat-form-field>
+        <mat-error *ngIf="first_name.invalid && !first_name.pristine">
+          {{'Name is required in ^[a-zA-Z0-9_]*$ format.'|translate}}
+        </mat-error>
+        <mat-form-field appearance="outline">
+          <mat-label>{{'Surname'|translate}}</mat-label>
+          <input matInput placeholder="Surname" formControlName="last_name">
+        </mat-form-field>
+        <mat-error *ngIf="last_name.invalid && !last_name.pristine">
+          {{'Name is required in ^[a-zA-Z0-9_]*$ format.'|translate}}
+        </mat-error>
+        <mat-form-field appearance="outline">
+          <mat-label>{{'Email'|translate}}</mat-label>
+          <input matInput placeholder="Email" [formControl]="user_id">
+          <mat-hint>{{'Errors appear instantly!'|translate}}</mat-hint>
+          <mat-error *ngIf="user_id.hasError('email') && !user_id.hasError('required')">
+            {{'Please enter a valid email address'|translate}}!
           </mat-error>
-          <mat-form-field appearance="outline">
-              <mat-label>{{'Surname'|translate}}</mat-label>
-              <input matInput placeholder="Surname" formControlName="last_name">
-            </mat-form-field>
-            <mat-error *ngIf="last_name.invalid && !last_name.pristine">
-              Name is required in ^[a-zA-Z0-9_]*$ format.
-            </mat-error>
-            <mat-form-field  appearance="outline">
-                <mat-label>{{'Email'|translate}}</mat-label>
-              <input matInput placeholder="Email" [formControl]="user_id"
-                    >
-              <mat-hint>Errors appear instantly!</mat-hint>
-              <mat-error *ngIf="user_id.hasError('email') && !user_id.hasError('required')">
-                Please enter a valid email address
-              </mat-error>
-              <mat-error *ngIf="user_id.hasError('required')">
-                Email is <strong>required</strong>
-              </mat-error>
-            </mat-form-field>
-          <!-- <p *ngIf="name.invalid && !name.pristine">Name is required in ^[a-zA-Z0-9_]*$ format.</p> -->
+          <mat-error *ngIf="user_id.hasError('required')">
+            {{'Email is required'|translate}}!
+          </mat-error>
+        </mat-form-field>
 
+        <mat-form-field>
+          <mat-select placeholder="{{'Group'|translate}}" [formControl]="groups" multiple>
+            <mat-select-trigger>
+              {{groups.value && groups.value.length>0 ? groups.value[0].name : ''}}
+              <span *ngIf="groups.value?.length > 1" class="example-additional-selection">
+                (+{{groups.value.length - 1}} {{groups.value?.length === 2 ? 'other' : 'others'}})
+              </span>
+            </mat-select-trigger>
+            <mat-option matTooltip="{{group.fully_qualified_name}}" *ngFor="let group of groupsList"
+              [value]="group">{{group.name}}</mat-option>
+          </mat-select>
+        </mat-form-field>
 
+        <mat-form-field>
+          <mat-label>{{'Roles'|translate}}</mat-label>
+          <mat-select [formControl]="role">
+            <mat-option *ngFor="let role of roles" [value]="role">
+              {{role}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </form>
+    </mat-card-content>
+    <mat-card-actions align="center">
+      <button id="cancelBtn" mat-raised-button class="btn-four" [mat-dialog-close]="1">{{'Cancel'|translate}}</button>
+      <button id="resetBtn" mat-raised-button class="btn-three" [disabled]="groupForm.pristine"
+        (click)="resetGroup()">{{'Reset'|translate}}</button>
+      <button id="createBtn" mat-raised-button class="btn-two"
+        [disabled]="!groupForm.valid || groupForm.pristine"
+        (click)="createGroup(successDialog,errorDialog,duplicateUserErrorDialog)">{{'Create'|translate}}</button>
+    </mat-card-actions>
 
-          <mat-form-field>
-            <mat-select placeholder="{{'Group'|translate}}" [formControl]="toppings" (selectionChange)="selectGroup($event.value)" multiple>
-              <mat-select-trigger >
-                {{toppings.value ? toppings.value[0] : ''}}
-                <span *ngIf="toppings.value?.length > 1" class="example-additional-selection">
-                  (+{{toppings.value.length - 1}} {{toppings.value?.length === 2 ? 'other' : 'others'}})
-                </span>
-              </mat-select-trigger>
-              <mat-option matTooltip="{{topping.fully_qualified_name}}" *ngFor="let topping of groups" [value]="topping.name">{{topping.name}}</mat-option>
-            </mat-select>
-          </mat-form-field>
-
-          <mat-form-field>
-            <mat-label>{{'Roles'|translate}}</mat-label>
-            <mat-select [formControl]="role"  (selectionChange)="selectRole($event.value)">
-              <mat-option *ngFor="let role of roles"  [value]="role">
-                {{role}}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-
-
-
-        </form>
-      </mat-card-content>
-      <mat-card-actions align="center">
-        <button mat-raised-button class="btn-four" [mat-dialog-close]="1">{{'Cancel'|translate}}</button>
-        <button mat-raised-button class="btn-three" [disabled]="groupForm.pristine && toppings.pristine && role.pristine" (click)="resetGroup()">{{'Reset'|translate}}</button>
-        <button mat-raised-button class="btn-two" [disabled]="!((groupForm.valid) && (selectedRole == 'ADMIN'  || selectedRole == 'USER'))"
-          (click)="createGroup(successDialog,errorDialog)">{{'Create'|translate}}</button>
-      </mat-card-actions>
-
-    </mat-card>
-    <ng-template #successDialog>
-      <mat-dialog-content>
-        <p>{{'CREATE_USER_SUCCESS'|translate}}</p>
-      </mat-dialog-content>
-      <mat-dialog-actions align="center">
-        <button mat-button [mat-dialog-close]="true" cdkFocusInitial>{{'OK'|translate}}</button>
-      </mat-dialog-actions>
-    </ng-template>
-    <ng-template #errorDialog>
-      <mat-dialog-content>
-        <p>{{'CREATE_USER_ERROR'|translate}}</p>
-      </mat-dialog-content>
-      <mat-dialog-actions align="center">
-        <button mat-button [mat-dialog-close]="true" (click)="backToList()" cdkFocusInitial>{{'OK'|translate}}</button>
-      </mat-dialog-actions>
-    </ng-template>
-  </div>
-
+  </mat-card>
+  <ng-template #successDialog>
+    <mat-dialog-content>
+      <p>{{'CREATE_USER_SUCCESS'|translate}}</p>
+    </mat-dialog-content>
+    <mat-dialog-actions align="center">
+      <button mat-button [mat-dialog-close]="true" class="btn-two" cdkFocusInitial>{{'OK'|translate}}</button>
+    </mat-dialog-actions>
+  </ng-template>
+  <ng-template #errorDialog>
+    <mat-dialog-content>
+      <p>{{'CREATE_USER_ERROR'|translate}}</p>
+    </mat-dialog-content>
+    <mat-dialog-actions align="center">
+      <button mat-button [mat-dialog-close]="true" class="btn-two" (click)="backToList()" cdkFocusInitial>{{'OK'|translate}}</button>
+    </mat-dialog-actions>
+  </ng-template>
+  <ng-template #duplicateUserErrorDialog>
+    <mat-dialog-content>
+      <p>{{'DUPLICATE_USER_ERROR'|translate}}</p>
+    </mat-dialog-content>
+    <mat-dialog-actions align="center">
+      <button mat-button [mat-dialog-close]="true" class="btn-two" (click)="backToList()" cdkFocusInitial>{{'OK'|translate}}</button>
+    </mat-dialog-actions>
+  </ng-template>
+</div>

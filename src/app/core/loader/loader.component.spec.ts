@@ -4,17 +4,21 @@
 // license which can be found in the file 'License.txt' in this package distribution 
 // or at 'http://www.apache.org/licenses/LICENSE-2.0'. 
 
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { LoaderComponent } from './loader.component';
+import { LoaderService } from '../services/loader.service';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 describe('LoaderComponent', () => {
   let component: LoaderComponent;
   let fixture: ComponentFixture<LoaderComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ LoaderComponent ]
+      declarations: [ LoaderComponent ],
+      imports : [ MatProgressSpinnerModule ],
+      providers : [ LoaderService ]
     })
     .compileComponents();
   }));

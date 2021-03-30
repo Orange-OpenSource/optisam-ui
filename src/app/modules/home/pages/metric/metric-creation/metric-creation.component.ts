@@ -5,13 +5,14 @@
 // or at 'http://www.apache.org/licenses/LICENSE-2.0'. 
 
 import { RequiredJSONFormat } from './../../equipmenttypemanagement/dialogs/model';
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, ChangeDetectorRef } from '@angular/core';
 import { FormGroup} from '@angular/forms';
 import { EquipmentTypeManagementService } from 'src/app/core/services/equipmenttypemanagement.service';
-import {MAT_DIALOG_DATA, MatDialogRef, MatDialog } from '@angular/material';
+import {MAT_DIALOG_DATA, MatDialogRef, MatDialog } from '@angular/material/dialog';
 import { AddComponent } from '../../equipmenttypemanagement/dialogs/add/add.component';
 import { strictEqual } from 'assert';
 import { MetricService } from 'src/app/core/services/metric.service';
+import { GroupService } from 'src/app/core/services/group.service';
 @Component({
   selector: 'app-metric-creation',
   templateUrl: './metric-creation.component.html',
@@ -74,26 +75,45 @@ export class MetricCreationComponent implements OnInit {
   attrDataType: any;
   metricData: any;
   coefficient:any;
+  scopesList:any[]=[];
+  selectedscope:string;
+  scopes:string[]=[];
 
   constructor(public dialogRef: MatDialogRef<AddComponent>,
     public equipmentTypeService: EquipmentTypeManagementService,
     private metricService: MetricService,
+    private groupService: GroupService,
     public dialog: MatDialog,
+    private cd : ChangeDetectorRef,
     @Inject(MAT_DIALOG_DATA) public data: RequiredJSONFormat) { }
 
   ngOnInit() {
-    this.getTypes();
+    this.getScopes();
     this.getMetricList();
-    this.getMetricType();
   }
+  // Get Scopes
+  getScopes() {
+    this.groupService.getDirectGroups().subscribe((response: any) => {
+      response.groups.map(res=>{ res.scopes.map(s=>{this.scopesList.push(s);});});
+    }, (error) => {
+      console.log("Error fetching groups");
+    });
+  }
+
+  onScopeSelected() {
+    this.scopes.push(this.selectedscope);
+    this.getMetricType();
+    this.getTypes();
+  }
+
   getMetricType() {
-    this.metricService.getMetricType().subscribe(res => {
-      this.metricType = res.types;
+    this.metricService.getMetricType(this.scopes[0]).subscribe(res => {
+      this.metricType = res.types||[];
     });
   }
   getMetricList() {
     this.metricService.getMetricList().subscribe(res => {
-      this.metricList = res.metrices;
+      this.metricList = res.metrices||[];
     });
   }
   onChangefirstEqui($event, data) {
@@ -221,11 +241,11 @@ export class MetricCreationComponent implements OnInit {
     }
   }
   onChangeMetricType($event, data) {
-    if (this.metricTypRe !== $event.source.value) {
+    if (this.metricTypRe !== data) {
     this.metricTypData = data;
-    this.typeDescription = null;
+    this.typeDescription = '';
     this.value = null;
-    this.value = $event.source.value;
+    this.value = data;
     this.number_of_users = null;
     this.coefficient = null;
     for (let i = 0; i <= this.metricType.length - 1; i++) {
@@ -270,7 +290,7 @@ export class MetricCreationComponent implements OnInit {
     this.getValididty();
   }
 
-  onSubmit(successMsg, errorMsg) {
+  onSubmit(successMsg, errorMsg, parentErrorMsg) {
     const splithref = this.href.split('/v1');
     if(splithref[splithref.length - 1] === '/metric/acs'){
       this.metricData = {
@@ -278,14 +298,16 @@ export class MetricCreationComponent implements OnInit {
         'name': this.metricTypeName.trim(),
         'eq_type': this.equType,
         'attribute_name': this.attrName,
-        'value': this.attrValue
+        'value': this.attrValue,
+        'scopes': this.scopes
       }
     }
     else if(splithref[splithref.length - 1] === '/metric/inm') {
       this.metricData = {
         'ID': '',
         'Name': this.metricTypeName.trim(),
-        'Coefficient': this.coefficient
+        'Coefficient': this.coefficient,
+        'scopes': this.scopes
       }
     }
     else {
@@ -299,19 +321,24 @@ export class MetricCreationComponent implements OnInit {
       'base_eq_type_id': this.baseEquId,
       'aggerateLevel_eq_type_id': this.aggEquiId,
       'end_eq_type_id': this.endEquId,
-      'number_of_users': Number(this.number_of_users || 0)
+      'number_of_users': Number(this.number_of_users || 0),
+      'scopes': this.scopes
     };}
 
     this.metricService.createMetric(this.metricData, splithref[splithref.length - 1])
       .subscribe(res => {
         this.openModal(successMsg);
       },error => {
+        if(error.status == 400 && error.error.message == "child can not be parent") {
+          this.openModal(parentErrorMsg);
+        }
+        else {
+          this.openModal(errorMsg);
+        }
         console.log('An error occured.', error);
-        this.openModal(errorMsg);
       });
   }
   onFormReset() {
-    'use strict';
     this.typeName = null;
     this.startEquId = null;
     this.metricTypeName = null;
@@ -322,6 +349,7 @@ export class MetricCreationComponent implements OnInit {
     this.baseEquId = null;
     this.aggEquiId = null;
     this.endEquId = null;
+    this.type_id = null;
     // this.types = [];
     this.refEquArr = [];
     this.coreArr = [];
@@ -330,7 +358,7 @@ export class MetricCreationComponent implements OnInit {
     this.aggArr = [];
     this.lastEquiArr = [];
     // this.metricType = [];
-    this.typeDescription = null;
+    this.typeDescription = '';
     // this.getTypes();
     // this.getMetricList();
     // this.getMetricType();
@@ -345,7 +373,7 @@ export class MetricCreationComponent implements OnInit {
     this.lastEquiVal =  null;
     this.typeName = null;
     this.value = '';
-    this.searchTypeEvent.target.value = null;
+    // this.searchTypeEvent.target.value = null;
     this.creatBtnVis = true;
     this.metricTypData = null;
     this.number_of_users = null;
@@ -354,6 +382,7 @@ export class MetricCreationComponent implements OnInit {
     this.attrValue = null;
     this.attrDataType = null;
     this.TypeNameMsg = false;
+    this.cd.detectChanges();
   }
   getValididty() {
     // this.creatBtnVis = true;
@@ -395,9 +424,9 @@ export class MetricCreationComponent implements OnInit {
 
   }
   getTypes() {
-    this.equipmentTypeService.getTypes().subscribe(
+    this.equipmentTypeService.getTypes(this.scopes[0]).subscribe(
       (res: any) => {
-        this.types = res.equipment_types;
+        this.types = (res.equipment_types||[]).reverse();
       },
       error => {
         console.log('There was an error while retrieving Posts !!!' + error);
@@ -430,7 +459,7 @@ export class MetricCreationComponent implements OnInit {
     }
   openModal(templateRef) {
     let dialogRef = this.dialog.open(templateRef, {
-      width: '50%',
+      width: '30%',
       disableClose: true
     });
   } 

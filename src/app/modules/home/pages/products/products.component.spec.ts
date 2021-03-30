@@ -7,6 +7,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ProductsComponent } from './products.component';
+import { TranslateModule } from '@ngx-translate/core';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('ProductsComponent', () => {
   let component: ProductsComponent;
@@ -14,7 +16,11 @@ describe('ProductsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ProductsComponent ]
+      declarations: [ ProductsComponent ],
+      imports : [ 
+                  RouterTestingModule,
+                  TranslateModule.forRoot()
+                ]
     })
     .compileComponents();
   }));

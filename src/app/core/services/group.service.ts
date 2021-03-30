@@ -15,103 +15,60 @@ import { map, catchError } from 'rxjs/operators';
 })
 export class GroupService {
   apiUrl = environment.API_ACCOUNT_URL;
-  apiEquipUrl = environment.API_EQUIPMENT_URL;
-  token = localStorage.getItem('access_token');
-  lang = localStorage.getItem('language');
   public errorMsg: string;
   constructor(private http: HttpClient) { }
   getGroups(): Observable<any> {
   const url = this.apiUrl + '/admin/groups';
-  // const url = 'http://localhost:3002/groups';
     return this.http.get<any>(url);
-  }
-  updateAttribute(id, attributeData): Observable<any> {
-    const url = this.apiEquipUrl + '/equipments/types/' + id ;
-    return this.http.patch<any>(url, attributeData);
   }
   getDirectGroups(): Observable<any> {
     const url = this.apiUrl + '/admin/direct_groups';
-    // const url = 'http://localhost:3002/direct_groups';
     return this.http.get<any>(url);
   }
   getChildGroups(id): Observable<any> {
    const url = this.apiUrl + '/admin/groups/' + id + '/groups';
-   //  const url = 'http://localhost:3002/groupsByID';
      return this.http.get<any>(url);
-
   }
-
   deleteGroups(id): Observable<any> {
- //   const url = this.apiUrl + 'admin/direct_groups admin/groups/{group_id}';
     const url = this.apiUrl + '/admin/groups/' + id ;
     return this.http.delete<any>(url);
   }
-  editName(id, data): Observable<any> {
-   // const url = this.apiUrl + 'admin/direct_groups';
+  updateGroup(id, data): Observable<any> {
      const url = this.apiUrl + '/admin/groups/' + id ;
     return this.http.put<any>(url, data);
   }
   getGrpUserList(grpId): Observable<any> {
-    // const url = this.apiUrl + 'admin/direct_groups';
       const url = this.apiUrl + '/admin/groups/' + grpId + '/users' ;
      return this.http.get<any>(url);
    }
    deleteGrpUser(grpId, data): Observable<any> {
-    // const url = this.apiUrl + 'admin/direct_groups';
       const url = this.apiUrl + '/admin/groups/' + grpId + '/users/delete' ;
      return this.http.put<any>(url, data);
    }
    addGrpUser(grpId, data): Observable<any> {
-    // const url = this.apiUrl + 'admin/direct_groups';
       const url = this.apiUrl + '/admin/groups/' + grpId + '/users/add' ;
      return this.http.put<any>(url, data);
    }
    getAllUserList(allUsersFlag): Observable<any> {
-    // const url = this.apiUrl + 'admin/direct_groups';
       const url = this.apiUrl + '/accounts' + '?user_filter.all_users=' + allUsersFlag;
      return this.http.get<any>(url);
    }
    changePassword(data): Observable<any> {
-    return this.http.put<any>(this.apiUrl + '/account/changepassword', data)
-      .pipe(
-        map(res => {
-          return res;
-        }),
-        catchError(this.errorHandler));
+    return this.http.put<any>(this.apiUrl + '/account/changepassword', data);
   }
   createGroup(groupData): Observable<any> {
-    return this.http.post<any>(this.apiUrl + '/admin/groups', groupData)
-      .pipe(
-        map(res => {
-          return res;
-        }),
-        catchError(this.errorHandler));
+    return this.http.post<any>(this.apiUrl + '/admin/groups', groupData);
   }
   createUser(groupData): Observable<any> {
-    return this.http.post<any>(this.apiUrl + '/accounts', groupData)
-      .pipe(
-        map(res => {
-          return res;
-        }),
-        catchError(this.errorHandler));
+    return this.http.post<any>(this.apiUrl + '/accounts', groupData);
   }
 
   updateUser(groupData): Observable<any> {
-    return this.http.put<any>(this.apiUrl + '/accounts/' + groupData.user_id, groupData)
-      .pipe(
-        map(res => {
-          return res;
-        }),
-        catchError(this.errorHandler));
+    return this.http.put<any>(this.apiUrl + '/accounts/' + groupData.user_id, groupData);
   }
 
   deleteUser(userId): Observable<any> {
     const url = this.apiUrl + '/accounts/' + userId ;
     return this.http.delete<any>(url);
-  }
-
-  private errorHandler(error) {
-    this.errorMsg = error.error;
-    return throwError(this.errorMsg);
   }
 }

@@ -49,9 +49,9 @@
       </form>
     </mat-card-content>
     <mat-card-actions align="center">
-      <button mat-raised-button class="btn-four" [mat-dialog-close]="true" >{{'Cancel'|translate}}</button>
-      <button mat-raised-button class="btn-three" [disabled]="groupForm.pristine" (click)="resetGroup()">{{'Reset'|translate}}</button>
-      <button mat-raised-button class="btn-two" [disabled]="groupForm.invalid || groupForm.pristine"
+      <button id="cancelBtn" mat-raised-button class="btn-four" [mat-dialog-close]="true" >{{'Cancel'|translate}}</button>
+      <button id="resetBtn" mat-raised-button class="btn-three" [disabled]="groupForm.pristine" (click)="resetGroup()">{{'Reset'|translate}}</button>
+      <button id="createBtn" mat-raised-button class="btn-two" [disabled]="groupForm.invalid || groupForm.pristine"
         (click)="updateUser(successDialog, errorDialog)">{{'Update'|translate}}</button>
     </mat-card-actions>
 
@@ -62,7 +62,7 @@
       <p>{{'UPDATE_USER_SUCCESS'|translate}}</p>
     </mat-dialog-content>
     <mat-dialog-actions align="center">
-      <button mat-button [mat-dialog-close]="true" cdkFocusInitial>{{'OK'|translate}}</button>
+      <button mat-button [mat-dialog-close]="true" class="btn-two" cdkFocusInitial>{{'OK'|translate}}</button>
     </mat-dialog-actions>
   </ng-template>
   <ng-template #errorDialog>
@@ -70,7 +70,7 @@
       <p>{{'UPDATE_USER_ERROR'|translate}}</p>
     </mat-dialog-content>
     <mat-dialog-actions align="center">
-      <button mat-button [mat-dialog-close]="true" cdkFocusInitial>{{'OK'|translate}}</button>
+      <button mat-button [mat-dialog-close]="true" class="btn-two"  cdkFocusInitial>{{'OK'|translate}}</button>
     </mat-dialog-actions>
   </ng-template>
 </div>

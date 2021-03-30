@@ -4,18 +4,14 @@
 // license which can be found in the file 'License.txt' in this package distribution 
 // or at 'http://www.apache.org/licenses/LICENSE-2.0'. 
 
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {EquipmentTypeManagementService} from '../../../../core/services/equipmenttypemanagement.service';
 import {HttpClient} from '@angular/common/http';
-import {MatDialog, MatTableDataSource } from '@angular/material';
-import {Type} from './model';
-import {DataSource} from '@angular/cdk/collections';
 import {AddComponent} from './dialogs/add/add.component';
 import {EditComponent} from './dialogs/edit/edit.component';
-import {BehaviorSubject, fromEvent, merge, Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
 import { ListComponent } from './dialogs/list/list.component';
-import { RequiredJSONFormat } from './dialogs/model';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-equipmenttypemanagement',
@@ -25,8 +21,6 @@ import { RequiredJSONFormat } from './dialogs/model';
 export class EquipmenttypemanagementComponent implements OnInit {
   role: String;
   displayedColumns = ['type', 'metadata_source',  'parent_type', 'attributes' , 'actions'];
-  equipmentTypeService: EquipmentTypeManagementService | null;
-  // dataSource: ExampleDataSource | null;
   index: number;
   id: string;
   equipment_types = [];
@@ -34,98 +28,108 @@ export class EquipmenttypemanagementComponent implements OnInit {
   datasource: MatTableDataSource<{}>;
   mydatasource: MatTableDataSource<{}>;
   MyDataSource: MatTableDataSource<{}>;
+  typeToDelete:string;
+  parentTypeIDs:any[]=[];
+  _deleteLoading: Boolean;
+  errorMessage: string;
+
+
   constructor(public httpClient: HttpClient,
               public dialog: MatDialog,
-              public equipmentTypeManagementService: EquipmentTypeManagementService) {
-                this.dialog.afterAllClosed.subscribe(res=> this.loadData());
-              }
+              public equipmentTypeManagementService: EquipmentTypeManagementService) { }
 
   ngOnInit() {
- this.role = localStorage.getItem('role');
+    this.role = localStorage.getItem('role');
     this.loadData();
   }
 
-  refresh() {
-    this.loadData();
+// Flag showing if type can be deleted or not
+canDelete(IDToDelete):Boolean {
+  if(this.parentTypeIDs.includes(IDToDelete)) {
+    return false;
   }
+  return true;
+}
 
-  addNew() {
-    const dialogRef = this.dialog.open(AddComponent, {
-      data: {},
-      autoFocus:false,
-      maxHeight:'500px',
-      disableClose: true
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result === 1) {
-        // After dialog is closed we're doing frontend updates
-        // For add we're just pushing a new row inside DataService
-        this.loadData();
-      }
-    });
-  }
-
-  startEdit(id: string, type: string, metadata_id: string,
-    metadata_source: string, parent_type: string, parent_id: string, attributes: string) {
-    const dialogRef = this.dialog.open(EditComponent, {
-      // width: '850px',
-      maxHeight:'500px',
-      autoFocus:false,
-      data: {
-        id: id, type: type, metadata_id: metadata_id,
-        metadata_source: metadata_source, parent_type: parent_type, parent_id: parent_id, attributes: attributes
-      },
-      disableClose: true
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result === 1) {
-        // // When using an edit things are little different, firstly we find record inside DataService by id
-        // const foundIndex = this.equipmentTypeService.dataChange.value.findIndex(x => x.id === this.id);
-        // // Then you update that record using data from dialogData (values you enetered)
-        // this.equipmentTypeService.dataChange.value[foundIndex] = this.equipmentTypeManagementService.getDialogData();
-        // // And lastly refresh table
-        this.loadData();
-      }
-    });
-  }
-
-  listAttributes(name, attributes) {
-    console.log('list data', attributes);
-    const dialogRef = this.dialog.open(ListComponent, {
-      width: '850px',
-      maxHeight: '500px',
-      autoFocus: false,
-      data: { name, attributes },
-      disableClose: true
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result === 1) {
-        // // When using an edit things are little different, firstly we find record inside DataService by id
-        // const foundIndex = this.equipmentTypeService.dataChange.value.findIndex(x => x.id === this.id);
-        // // Then you update that record using data from dialogData (values you enetered)
-        // this.equipmentTypeService.dataChange.value[foundIndex] = this.equipmentTypeManagementService.getDialogData();
-        // // And lastly refresh table
-        this.loadData();
-      }
-    });
-  }
-
-  public loadData() {
+// Get list of equipments
+  loadData() {
     this._loading = true;
-    this.equipmentTypeManagementService.getAllTypes().subscribe(
+    this.equipmentTypeManagementService.getTypes().subscribe(
       (res: any) => {
-        this.MyDataSource = new MatTableDataSource(res.equipment_types);
-        console.log('data', this.MyDataSource);
-        // this.dataSource.sort = this.sort;
-        // this.length = res.totalRecords;
+        this.MyDataSource = new MatTableDataSource((res.equipment_types||[]).reverse());
+        this.parentTypeIDs = (res.equipment_types||[]).map(type => type.parent_id);
         this._loading = false;
       },
       error => {
         this._loading = false;
         console.log('There was an error while retrieving Posts !!!' + error);
       });
+  }
+// Add new Equipment Type
+  addNew() {
+    const dialogRef = this.dialog.open(AddComponent, {
+      autoFocus:false,
+      minWidth:'80vw',
+      maxHeight:'90vh',
+      disableClose: true
+    });
+    dialogRef.afterClosed().subscribe(res => {
+      this.loadData();
+    })
+  }
+// Edit existing Equipment Type
+  startEdit(equipment) {
+    const dialogRef = this.dialog.open(EditComponent, {
+      minWidth:'80vw',
+      maxHeight:'90vh',
+      autoFocus:false,
+      data: equipment,
+      disableClose: true
+    });
+    dialogRef.afterClosed().subscribe(res => {
+      this.loadData();
+    })
+  }
+
+  listAttributes(name, attributes) {
+    const dialogRef = this.dialog.open(ListComponent, {
+      minWidth:'80vw',
+      maxHeight:'90vh',
+      autoFocus: false,
+      data: { name, attributes },
+      disableClose: true
+    });
+  }
+  deleteEquipmentTypeConfirmation(type, templateRef) {
+    this.typeToDelete = type.type;
+    this.openModal(templateRef,'40%');
+  }
+
+  deleteEquipmentType(successMsg, errorMsg) {
+    this._deleteLoading = true;
+    this.equipmentTypeManagementService.deleteEquipmentType(this.typeToDelete).subscribe(res => {
+      this.dialog.closeAll();
+      this.openModal(successMsg,'30%');
+      this._deleteLoading = false;
+      console.log('Successfully Deleted! ', this.typeToDelete);
+    },
+      (error) => {
+        this.dialog.closeAll();
+        this.errorMessage = error.error.message||'Some error occured! Equipment type could not be deleted';
+        this.openModal(errorMsg,'30%');
+        this._deleteLoading = false;
+        console.log('Error occured while deleting equipment type!');
+      });
+  }
+
+  openModal(templateRef,width) {
+    let dialogRef = this.dialog.open(templateRef, {
+        width: width,
+        disableClose: true
+    });
+  }
+  
+  ngOnDestroy() {
+    this.dialog.closeAll();
   }
 }

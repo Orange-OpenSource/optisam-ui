@@ -12,7 +12,8 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./footer.component.scss']
 })
 export class FooterComponent implements OnInit {
-
+  version:any= localStorage.getItem('version');
+  
   constructor() { }
 
   ngOnInit() {

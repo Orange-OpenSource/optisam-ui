@@ -25,9 +25,9 @@ import { OptionsComponent } from './dialogs/product-aggregation-details/options/
 import { AqRightsComponent } from './dialogs/product-aggregation-details/aq-rights/aq-rights.component';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { ConfirmDialogComponent } from './dialogs/confirm-dialog/confirm-dialog.component';
-import { MatPaginatorIntl } from '@angular/material';
 import { PaginatorI18n } from 'src/app/shared/custom-mat-paginator-int';
 import { ProfileSettingsComponent } from './pages/settings/profile-settings/profile-settings.component';
+import { MatPaginatorIntl } from '@angular/material/paginator';
 
 @NgModule({
   declarations: [HeaderComponent, FooterComponent,

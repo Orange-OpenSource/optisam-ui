@@ -29,7 +29,7 @@
                 <div *ngFor="let x of keyArr; let colIndex = index">
                   <p><strong>{{x}}:</strong> {{valueArr[colIndex] }}</p>
                 </div>
-                <app-loading-spinner *ngIf="_loading && keyArr.length==0"></app-loading-spinner>
+                <app-loading-spinner *ngIf="_loading"></app-loading-spinner>
               </div>
             </div>
             <!-- Equipment Parent -->
@@ -47,13 +47,12 @@
                     <tbody>
                       <tr *ngFor="let item of reuseValueName; let colIndex = index">
                         <td *ngFor="let keyName of reuseKeyName">{{item[keyName]}}</td>
-
                       </tr>
                       <tr>
                     </tbody>
                   </table>
                 </div>
-                <app-loading-spinner *ngIf="_loading && reuseValueName.length==0"></app-loading-spinner>
+                <app-loading-spinner *ngIf="_loading"></app-loading-spinner>
               </div>
             </div>
             <!-- Equipment Children -->
@@ -133,55 +132,7 @@
 
                       <div class="col-md-3 search-div">
                         <app-advance-search [advanceSearchModel]="advanceSearchModel" (advFilterEvent)="advSearchTrigger($event)"></app-advance-search>       
-
-                        <!-- <mat-form-field [hidden]="productStatus" class="search-form-field" floatLabel="never">
-                          <input matInput placeholder="{{'Search by Product Name'|translate}}" autocomplete="on"
-                            [(ngModel)]="productnamePlaceholder" (keyup)="setSelected($event.target.value, 2 )">
-                          <button mat-button matSuffix mat-icon-button aria-label="Clear" *ngIf="productnamePlaceholder"
-                            (click)="applyFilter()">
-                            <mat-icon>search</mat-icon>
-                          </button>
-                          <button mat-button matSuffix mat-icon-button aria-label="Clear" (click)="clearFilter()"
-                            *ngIf="productnamePlaceholder">
-                            <mat-icon>clear</mat-icon>
-                          </button>
-                          <button mat-button matSuffix class="btn-toggle" [matMenuTriggerFor]="menu1">
-                            <mat-icon>keyboard_arrow_down</mat-icon>
-                          </button>
-                          <mat-menu #menu1>
-                            <div mat-menu-item mat-filter-item [disableRipple]="true" class="menu-title">
-                              {{'Advance Search' | translate}}
-                            </div>
-                            <div mat-menu-item mat-filter-item [disableRipple]="true">
-                              <mat-form-field>
-                                <input matInput placeholder="{{'SWIDtag'|translate}}" [(ngModel)]="swidtagPlaceholder"
-                                  (keyup)="setSelectedSearch($event.target.value, 1 )">
-                              </mat-form-field>
-                            </div>
-                            <div mat-menu-item mat-filter-item [disableRipple]="true">
-                              <mat-form-field>
-                                <input matInput placeholder="{{'Product name'|translate}}"
-                                  [(ngModel)]="productnamePlaceholder"
-                                  (keyup)="setSelectedSearch($event.target.value,2)">
-                              </mat-form-field>
-                            </div>
-                            <div mat-menu-item mat-filter-item [disableRipple]="true">
-                              <mat-form-field>
-                                <input matInput placeholder="{{'Editor name'|translate}}"
-                                  [(ngModel)]="EditorNamePlaceholder"
-                                  (keyup)="setSelectedSearch($event.target.value,3)">
-                              </mat-form-field>
-                            </div>
-
-                            <div mat-menu-item mat-filter-item [disableRipple]="true">
-                              <button mat-raised-button (click)="clearFilter()">{{'Clear'|translate}}</button>
-                              <button mat-raised-button color="primary"
-                                (click)="applyFilter()">{{'Search'|translate}}</button>
-                            </div>
-                          </mat-menu>
-                        </mat-form-field> -->
                       </div>
-
                     </div>
                   </div>
 
@@ -227,7 +178,7 @@
                         <mat-header-row *matHeaderRowDef="productColumn; sticky: true"></mat-header-row>
                         <mat-row *matRowDef="let row; columns: productColumn;"></mat-row>
                       </mat-table>
-                      <app-loading-spinner *ngIf="_loading"></app-loading-spinner>
+                      <!-- <app-loading-spinner *ngIf="_loading"></app-loading-spinner> -->
                       <mat-paginator [length]="productLength" [pageSize]="page_size" [pageSizeOptions]="[10,20,30,50]"
                         (page)="pageEvent = getProductPaginatorData($event)" showFirstLastButtons>
                       </mat-paginator>
@@ -238,7 +189,6 @@
 
               </div>
             </div>
-
           </div>
         </div>
       </div>

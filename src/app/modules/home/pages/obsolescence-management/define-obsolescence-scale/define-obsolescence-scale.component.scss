@@ -1,0 +1,171 @@
+.mat-card-content {
+    padding-left: 16px;
+}
+#cardContainer {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    overflow-y: auto;
+    padding-bottom: 20px;
+}
+#timeCriticityContainer {
+    width: 60%;
+}
+.card {
+    margin: 8px;
+    width: 180px;
+}
+.left-section, .right-section {
+    display: flex;
+    align-items: flex-start;
+}
+.icon-between {
+    min-height: 100%;
+    display: flex;
+    align-items: center;
+}
+.card-header {
+    background-color: #EAEAEA;
+    font-size: 14px;
+    font-weight: bold;
+}
+.card-body {
+    background: #F5F5F5;
+    padding: 8px 16px;
+    min-height: 125px;
+    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.25);
+    
+}
+.right-card-body {
+    background: #F5F5F5;
+    // padding: 8px 0;
+    min-height: 125px;
+    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.25);
+}
+ul {
+    list-style-type: none;
+    padding: unset;
+}
+.list-item{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 4px 16px;
+    border-bottom: 1px solid #ccc;
+    word-break: break-all;
+}
+.add-icon{
+    background-color: white;
+    color:#008AFC;
+    border-radius: 50%;
+    cursor: pointer;
+    margin-top: 7%;
+    font-size: 36px;
+    height: 36px;
+    width: 36px;
+}
+
+.remove-icon{
+    margin-top:2px;
+    background-color: white;
+    color:red;
+    border-radius: 50%;
+    cursor: pointer;
+}
+::ng-deep .mat-checkbox-checked.mat-accent .mat-checkbox-ripple .mat-ripple-element {
+    background-color: #008AFC!important;
+  }
+
+::ng-deep .mat-checkbox-checked.mat-accent .mat-checkbox-background,.mat-checkbox-indeterminate.mat-accent .mat-checkbox-background {
+    background-color: #008AFC;
+  }
+
+  .criticity-radio-group {
+    display: flex;
+    flex-direction: column;
+    margin: 3px 0;
+  }
+  
+  .criticity-radio-button {
+    margin: 2px;
+  }
+
+::ng-deep  .mat-radio-button.mat-accent.mat-radio-checked .mat-radio-outer-circle{
+    border-color:#008AFC; 
+  }
+  
+::ng-deep .mat-radio-button.mat-accent .mat-radio-inner-circle{
+    color:#008AFC;
+    background-color:#008AFC;
+  }
+  
+::ng-deep .mat-radio-button.mat-accent .mat-radio-ripple .mat-ripple-element {
+      background-color:#008AFC;
+  }
+
+.action-items {
+    display: flex;
+    justify-content:center;
+    padding-bottom: 16px;
+    padding-right: 16px;
+}
+
+.btn {
+    margin: 0 4px !important
+}
+.mat-grid-list {
+    margin: 8px;
+}
+.mat-grid-tile.riskMatrix {
+    background: white;
+    border: 2px solid #DBDADA;
+  }
+::ng-deep .mat-grid-tile.maintenanceTile .mat-figure {
+    display: flex;
+    justify-content: flex-start !important;
+    padding-left: 8px;
+    padding-right: 11px;
+    border: 2px solid #DBDADA;
+}
+.header {
+    background: #EAEAEA;
+}
+.section-body {
+    padding: 8px;
+}
+.tileText {
+    font-weight: bold;
+    font-size: 14px;
+}
+.rotate {
+    transform: rotate(-90deg);
+}
+.userMsg {
+    padding: 16px 0 0 16px;
+    font-size: 14px;
+    font-style: italic;
+}
+.smallText {
+    font-size: 10px;
+    font-style: italic;
+}
+p {
+    margin-bottom: unset;
+}
+.mat-error {
+    padding: 16px 0 0 16px;
+}
+.successMsg {
+    color: green;
+    padding: 16px 0 0 16px;
+}
+::ng-deep .mat-checkbox-layout .mat-checkbox-label {
+    line-height: 24px;
+    max-width: 125px;
+    white-space: normal;
+}
+
+::ng-deep .mat-checkbox-inner-container {
+    margin-top: 8px !important;    
+    margin-right: 8px !important;
+}

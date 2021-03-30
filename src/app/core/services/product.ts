@@ -47,7 +47,7 @@ export interface AggregationDetailsOptions {
   optioninfo: OptionInformation[];
 }
 
-interface OptionInformation {
+export interface OptionInformation {
   swidTag: string;
   Name: string;
   edition: string;
@@ -60,7 +60,7 @@ export interface AggregationDetailsAquiredRights {
   acq_rights: AquiredRightsInformation[];
 }
 
-interface AquiredRightsInformation {
+export interface AquiredRightsInformation {
   SKU: string;
   swidTag: string;
   metric: string;
@@ -76,7 +76,7 @@ export interface ProductAggregationApplications {
   applications: AggregationApplications[];
 }
 
-interface AggregationApplications {
+export interface AggregationApplications {
   application_id: string;
   name: string;
   app_owner: string;

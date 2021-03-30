@@ -9,13 +9,12 @@ import { SharedService } from 'src/app/shared/shared.service';
 import { GroupService } from 'src/app/core/services/group.service';
 import { EquipmentsService } from 'src/app/core/services/equipments.service';
 import { Papa } from 'ngx-papaparse';
-import { MatSnackBar, MatDialog, MatDialogRef } from '@angular/material';
 import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
 import { ConfigurationService } from 'src/app/core/services/configuration.service';
-import { template } from '@angular/core/src/render3';
 import { isUndefined } from 'util';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-configuration-simulation',
@@ -52,7 +51,6 @@ export class ConfigurationSimulationComponent implements OnInit {
     private equipmentService: EquipmentsService,
     private configurationService: ConfigurationService,
     private papa: Papa,
-    private snackBar: MatSnackBar,
     private _formBuilder: FormBuilder,
     private dialog:MatDialog,
     private router:Router) {
@@ -89,7 +87,7 @@ export class ConfigurationSimulationComponent implements OnInit {
   // Get All Equipment types
   getEquipmentList() {
     this.equipmentService.getTypes().subscribe((response: any) => {
-      this.equipmentList = response.equipment_types || [];
+      this.equipmentList = (response.equipment_types || []).reverse();
       this.getConfigNames();
     }, (error) => {
       console.log("Error fetching equipments list");
@@ -126,7 +124,7 @@ export class ConfigurationSimulationComponent implements OnInit {
       case 'equipment': //Get Attributes
       const changedAttributes = this.configObj.attributes.filter((res)=>(res.fileName)).length;
       if(changedAttributes>0) {
-        this.openModal(templateRef);
+        this.openModal(templateRef,'40%');
       }
       if(changedAttributes === 0) {
         this.selectedEqType = ev.value;
@@ -147,9 +145,9 @@ export class ConfigurationSimulationComponent implements OnInit {
     this.refreshAttributesFlag = false;
     this.configObj.equipmentType = this.selectedEqType;
   }
-  openModal(templateRef) {
+  openModal(templateRef,width) {
     let dialogRef = this.dialog.open(templateRef, {
-        width: '50%',
+        width: width,
         disableClose: true
     });
   } 
@@ -199,7 +197,6 @@ export class ConfigurationSimulationComponent implements OnInit {
             this.configObj.attributes[index].file = files;
             this.configObj.attributes[index].fileName = files[0].name;
             this.configObj.attributes[index].fileInvalid = false;
-            // this.openSnackBar('Successfully Uploaded!');
             this.filesArray.push(this.createItem(this.attributeList[index].name, files[0]));
             this.NoChangesFlag = false;
           } else {
@@ -207,7 +204,6 @@ export class ConfigurationSimulationComponent implements OnInit {
             this.configObj.attributes[index].file = {};
             this.configObj.attributes[index].fileName = files[0].name;
             this.configObj.attributes[index].fileInvalid = true;
-            // this.openSnackBar('Invalid File!')
             this.filesArray.removeAt(this.filesArray.value.findIndex(res => res.name === this.attributeList[index].name));
             this.NoChangesFlag = false;
           }
@@ -223,12 +219,6 @@ export class ConfigurationSimulationComponent implements OnInit {
     }
   }
 
-  //success/error alert
-  openSnackBar(msg) {
-    this.snackBar.open(msg, '', {
-      duration: 3000
-    });
-  }
   // Check if user can apply the uploaded files
   canApplyCheck() {
     this.formInvalidFlag= false;
@@ -279,6 +269,7 @@ export class ConfigurationSimulationComponent implements OnInit {
   //Apply changes
   uploadFile(successMsg, errorMsg) {
     this.loading = true;
+    this.NoChangesFlag = true;
     const formData = new FormData();
     formData.append('equipment_type', this.selectedEqType.type);
     formData.append('scopes', this.scopesList.toString());
@@ -286,11 +277,11 @@ export class ConfigurationSimulationComponent implements OnInit {
     this.filesArray.value.map((val)=>{if(val.name){formData.append(val.name, val.file)}});
 
     this.configurationService.uploadConfiguration(formData).subscribe(data => {
-      this.openModal(successMsg);
+      this.openModal(successMsg,'30%');
       this.loading = false;
       console.log('success! ',data);
     }, err => {
-      this.openModal(errorMsg);
+      this.openModal(errorMsg,'30%');
       this.loading = false;
       console.log('error ',err);
     });

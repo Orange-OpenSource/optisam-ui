@@ -26,7 +26,9 @@
 .mat-header-cell { color: inherit !important; font-size: inherit !important; font-weight: 700 !important;}
 .mat-form-field-infix { border-top: none !important; }
 .mat-form-field-wrapper { padding-bottom: 0 !important; }
-
+.highlight:after {
+  content:" *";
+}
 #addAttrButton {
   margin-right: 10px !important;
 }
@@ -51,4 +53,16 @@
   display: flex;
   justify-content: center;
   margin-top:5px;
+}
+
+::ng-deep .mat-checkbox-checked.mat-accent .mat-checkbox-ripple .mat-ripple-element {
+  opacity: 0.03 !important;
+  background-color: #008AFC!important;
+}
+
+::ng-deep .mat-checkbox-checked.mat-accent .mat-checkbox-background,::ng-deep .mat-checkbox-indeterminate.mat-accent .mat-checkbox-background {
+background-color: #008AFC !important;
+}
+::ng-deep .mat-primary .mat-pseudo-checkbox-checked,::ng-deep .mat-primary .mat-pseudo-checkbox-indeterminate {
+background: #008afc;
 }

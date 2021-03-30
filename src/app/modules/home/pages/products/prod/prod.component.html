@@ -5,7 +5,7 @@
         {{'List of Inventoried Products'|translate}}
       </div>
       <div class="col-md-3 search-div">
-        <app-advance-search [advanceSearchModel]="advanceSearchModel" (advFilterEvent)="advSearchTrigger($event)">
+        <app-advance-search [advanceSearchModel]="advanceSearchModel" [existingFilterFields]="searchFields" (advFilterEvent)="advSearchTrigger($event)">
         </app-advance-search>
       </div>
     </div>
@@ -23,8 +23,8 @@
         <ng-container matColumnDef="name">
           <mat-header-cell *matHeaderCellDef mat-sort-header="name">{{'Product name' | translate}}
           </mat-header-cell>
-          <mat-cell *matCellDef="let product">
-            <a class="ellipsis mat-button-link" matTooltip="{{product.name}}"
+          <mat-cell *matCellDef="let product; let i = index">
+            <a id="product_name_{{i}}" class="ellipsis mat-button-link" matTooltip="{{product.name}}"
               (click)="openDialog(product.swidTag,product.name)">
               {{product.name}}</a>
           </mat-cell>
@@ -38,13 +38,13 @@
         </ng-container>
 
         <ng-container matColumnDef="version">
-          <mat-header-cell *matHeaderCellDef mat-sort-header="version">{{'Release'| translate}}</mat-header-cell>
+          <mat-header-cell *matHeaderCellDef mat-sort-header="version">{{'Version'| translate}}</mat-header-cell>
           <mat-cell *matCellDef="let product"> {{product.version}} </mat-cell>
         </ng-container>
 
 
-        <ng-container matColumnDef="edition">
-          <mat-header-cell *matHeaderCellDef mat-sort-header>{{'Edition'| translate}}
+        <ng-container matColumnDef="category">
+          <mat-header-cell *matHeaderCellDef mat-sort-header="category">{{'Edition'| translate}}
           </mat-header-cell>
           <mat-cell *matCellDef="let product">{{product.category}}</mat-cell>
         </ng-container>
@@ -52,7 +52,7 @@
 
         <ng-container matColumnDef="totalCost">
           <mat-header-cell *matHeaderCellDef mat-sort-header>{{'Total cost(€)'|translate}}</mat-header-cell>
-          <mat-cell *matCellDef="let product"> {{totalCost || 0}} </mat-cell>
+          <mat-cell *matCellDef="let product"> {{(product.totalCost || 0)|formatCost}} </mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="numOfApplications">
@@ -81,7 +81,7 @@
         <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
       </mat-table>
       <app-loading-spinner *ngIf="_loading"></app-loading-spinner>
-      <!-- <mat-paginator #paginator [pageSize]="7" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons> -->
+      <div class="no-data" *ngIf="!_loading && (!MyDataSource || (MyDataSource && MyDataSource.data.length === 0))">{{'No data available' | translate}}</div>
       <mat-paginator [length]="length" [pageSize]="page_size" [pageSizeOptions]="[10,20,30,50]"
         (page)="pageEvent = getPaginatorData($event)" showFirstLastButtons>
       </mat-paginator>

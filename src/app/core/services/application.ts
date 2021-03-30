@@ -4,7 +4,7 @@
 // license which can be found in the file 'License.txt' in this package distribution 
 // or at 'http://www.apache.org/licenses/LICENSE-2.0'. 
 
- class Applications {
+ export class Applications {
   applicationId: string;
   name: string;
   application_owner: string;

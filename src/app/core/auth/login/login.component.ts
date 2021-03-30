@@ -10,7 +10,7 @@ import { AuthService } from '../auth.service';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { AccountService } from '../../services/account.service';
-
+import jwt_decode from 'jwt-decode';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -27,8 +27,18 @@ export class LoginComponent implements OnInit {
   error_code: any;
   loading:Boolean = false;
   firstLogInFlag: any = 'false';
+  version:any;
+  decodedScopes:any;
+
   constructor(private authservice: AuthService, private accountservice: AccountService,
     private router: Router, private translate: TranslateService) {
+    this.accountservice.getVersion().subscribe(res=>{
+      this.version = res; 
+      localStorage.setItem('version',this.version);
+    }, err => {
+      this.version = err.error.text; 
+      localStorage.setItem('version',this.version);
+    });
     translate.addLangs(['en', 'fr']);
     this.userLang = localStorage.getItem('language') ? localStorage.getItem('language') : 'en';
     this.currLang = this.userLang;
@@ -52,10 +62,16 @@ export class LoginComponent implements OnInit {
   onSubmit() {
     const val = this.loginForm.value;
     let token;
+    const email = val.email.trim();
     if (val.email && val.password) {
       this.loading = true;
-      this.authservice.login(val.email, val.password).subscribe(res => {
+      this.authservice.login(email, val.password).subscribe(res => {
         token = res.access_token;
+        const decodedToken = jwt_decode(token);
+        this.decodedScopes = decodedToken['Socpes'];
+        if(this.decodedScopes  && this.decodedScopes.length > 0) {
+          localStorage.setItem('scope', this.decodedScopes[0]);
+        }
       },
         (err: any) => {
           this.displayErrorMessage(err);
@@ -64,8 +80,8 @@ export class LoginComponent implements OnInit {
         () => {
           if (token) {
             localStorage.setItem('access_token', token);
-            localStorage.setItem('email', val.email);
-            this.accountservice.getUserInfo(val.email)
+            localStorage.setItem('email', email);
+            this.accountservice.getUserInfo(email)
               .subscribe((res: any) => {
                   this.currLang = res.locale;
                   this.lang = res.locale;
@@ -78,6 +94,9 @@ export class LoginComponent implements OnInit {
                   this.updateUserLanguage(this.currLang);
                   if(this.firstLogInFlag) {
                     this.router.navigate(['/optisam/changePassword']);
+                  }
+                  else if(!this.decodedScopes || this.decodedScopes.length === 0) {
+                    this.router.navigate(['/optisam/sm']);
                   }
                   else {
                     this.router.navigate(['/optisam/dashboard']);

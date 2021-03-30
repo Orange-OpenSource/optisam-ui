@@ -2,36 +2,43 @@
   <mat-card class="card">
     <mat-card-header>
       <mat-card-title class="page-heading" *ngIf="activeTab=='Data'">{{'Upload Data Files'|translate}}</mat-card-title>
-      <mat-card-title class="page-heading" *ngIf="activeTab!='Data'">{{'Upload Metadata Files'|translate}}</mat-card-title>
+      <mat-card-title class="page-heading" *ngIf="activeTab=='Metadata'">{{'Upload Metadata Files'|translate}}</mat-card-title>
+      <mat-card-title class="page-heading" *ngIf="activeTab=='Globaldata'">{{'Upload Global Data File'|translate}}</mat-card-title>
     </mat-card-header>
     <mat-card-content fxLayout="column">
       <form [formGroup]="uploadForm">
-        <div *ngIf="activeTab=='Data'">
+        <div>
           <mat-form-field appearance="outline">
             <mat-label>{{'Scope' | translate}}</mat-label>
-            <mat-select id="scope" formControlName="scope" [disabled]="scopesList.length == 0" (selectionChange)="scopeSelected(scope.value)" #scope>
+            <mat-select id="scope" formControlName="scope" [disabled]="scopesList.length == 0">
               <mat-option>-- {{'Select Scope' | translate}} --</mat-option>
               <mat-option id="scope_option_{{i}}" *ngFor="let scope of scopesList;let i = index;" [value]="scope">{{scope}}</mat-option>
             </mat-select>
+            <mat-error>
+              {{'Scope is mandatory'|translate}}
+            </mat-error>
           </mat-form-field>
         </div>
-        <span id="buttonHeader">{{'Select the files to upload. Files must be in csv format only.'|translate}}</span>
-        <!-- <div class="col-md-12 upload-div"> -->
+        <span id="buttonHeader" *ngIf="activeTab=='Globaldata'">{{'Select the file to upload.'|translate}}</span>
+        <span id="buttonHeader" *ngIf="activeTab!='Globaldata'">{{'Select the files to upload. Files must be in csv format only.'|translate}}</span>
           <div id="uploadButton">
-            <input class="inputfile" id="file" type="file" name="files" accept=".csv"  (change)="onFileSelect($event)" multiple/>
+            <input class="inputfile" id="file" type="file" name="files" accept=".csv" (change)="onFileSelect($event)" multiple *ngIf="activeTab!='Globaldata'"/>
+            <input class="inputfile" id="file" type="file" name="files" accept=".csv, .xlsx" (change)="onFileSelect($event)" multiple *ngIf="activeTab=='Globaldata'"/>
             <label class="browselabel" for="file">{{'Browse'|translate}}</label>
           </div>
           <div *ngIf="selectedFiles && selectedFiles.length>0" id="selectedFiles">
           <span *ngFor="let file of selectedFiles" class="filename col-md-6"><mat-icon>insert_drive_file</mat-icon> {{file.name}}</span>
           </div>
-        <!-- </div> -->
-        
+          <div id="dropDataCheckbox" *ngIf="activeTab=='Globaldata'">
+            <mat-checkbox formControlName="isDeleteOldInventory"></mat-checkbox>&nbsp;
+            <strong>{{'Check to drop the inventory data'|translate}}</strong>
+          </div>
       </form>
     </mat-card-content>
     <mat-card-actions align="center">
       <button id="cancelButton" class="btn-four" mat-raised-button mat-dialog-close="true">{{'Cancel'|translate}}</button>
-      <button id="resetButton"  class="btn-three" mat-raised-button [disabled]="uploadForm.pristine && selectedFiles.length == 0" (click)="resetForm()">{{'Reset'|translate}}</button>
-      <button id="submitButton" class="btn-two" mat-raised-button [disabled]="!uploadForm.valid" (click)="uploadFile(successDialog, errorDialog, duplicateScopeDialog, invalidFileNameDialog)">
+      <button id="resetButton"  class="btn-three" mat-raised-button [disabled]="uploadForm.pristine && (loading || selectedFiles.length == 0)" (click)="resetForm()">{{'Reset'|translate}}</button>
+      <button id="submitButton" class="btn-two" mat-raised-button [disabled]="!uploadForm.valid || (uploadForm.pristine)" (click)="uploadFile(successDialog, errorDialog, duplicateScopeDialog, invalidFileNameDialog)">
         <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" *ngIf="loading"></span>       
         {{'Submit'|translate}}
       </button>
@@ -42,17 +49,18 @@
 <ng-template #successDialog>
   <mat-dialog-content>
     <p>{{'UPLOAD_FILE_SUCCESS'|translate}}</p>
+    <p *ngIf="activeTab === 'Globaldata' && isDeleteOldInventory.value== true">{{'Inventory Deletion is in progress. It might take some time.'|translate}}</p>
   </mat-dialog-content>
   <mat-dialog-actions align="center">
-    <button mat-button [mat-dialog-close]="true" (click)="backToList()" cdkFocusInitial>{{'OK'|translate}}</button>
+    <button mat-button [mat-dialog-close]="true" class="btn-two" (click)="backToList()" cdkFocusInitial>{{'OK'|translate}}</button>
   </mat-dialog-actions>
 </ng-template>
 <ng-template #errorDialog>
   <mat-dialog-content>
-    <p>{{'UPLOAD_FILE_ERROR'|translate}}</p>
+    <p>{{'Error'|translate}}: {{errorMsg|translate}}</p>
   </mat-dialog-content>
   <mat-dialog-actions align="center">
-    <button mat-button [mat-dialog-close]="true" (click)="backToList()" cdkFocusInitial>{{'OK'|translate}}</button>
+    <button mat-button [mat-dialog-close]="true" class="btn-two" (click)="backToList()" cdkFocusInitial>{{'OK'|translate}}</button>
   </mat-dialog-actions>
 </ng-template>
 <ng-template #duplicateScopeDialog>
@@ -60,7 +68,7 @@
     <p>{{'DUPLICATE_SCOPE_ERROR'|translate}}</p>
   </mat-dialog-content>
   <mat-dialog-actions align="center">
-    <button mat-button [mat-dialog-close]="true" (click)="backToList()" cdkFocusInitial>{{'OK'|translate}}</button>
+    <button mat-button [mat-dialog-close]="true" class="btn-two" (click)="backToList()" cdkFocusInitial>{{'OK'|translate}}</button>
   </mat-dialog-actions>
 </ng-template>
 <ng-template #invalidFileNameDialog>
@@ -80,9 +88,9 @@
         <li>{{'equipment_[a-zA-Z]*.csv'}}</li>
       </ul>
     </div>
-    <p  *ngIf="activeTab != 'Data'">{{'INVALID_METADATA_FILE_NAME_ERROR'|translate}}</p>
+    <p  *ngIf="activeTab == 'Metadata'">{{'INVALID_METADATA_FILE_NAME_ERROR'|translate}}</p>
   </mat-dialog-content>
   <mat-dialog-actions align="center">
-    <button mat-button [mat-dialog-close]="true" (click)="backToList()" cdkFocusInitial>{{'OK'|translate}}</button>
+    <button mat-button [mat-dialog-close]="true" class="btn-two" (click)="backToList()" cdkFocusInitial>{{'OK'|translate}}</button>
   </mat-dialog-actions>
 </ng-template>

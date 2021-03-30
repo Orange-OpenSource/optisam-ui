@@ -2,7 +2,7 @@
     <div class="container-fluid page-content-header">
       <div class="row">
         <div class="col-md-9 page-heading" style="display:table-cell">
-          <span class="parentNode nav-path" routerLink="/optisam/pr/products/aggregations">{{'Product Aggregation'|translate}}</span><span class="nav-path-desc"> : {{aggregationName}}
+          <span class="parentNode nav-path" (click)="goBackToAggregation()">{{'Product Aggregation'|translate}}</span><span class="nav-path-desc"> : {{aggregationName}}
             </span> <mat-icon class="arrow_icon">arrow_forward_ios</mat-icon> <span class="currentNode nav-path">{{'Equipments'|translate}}</span>
         </div>
   
@@ -16,42 +16,34 @@
   
     <mat-card-content>
       <div class="table-container mat-elevation-z8">
-        <div class="mat-elevation-z8">
-              <mat-toolbar color="ThemePalette">
-                <mat-toolbar-row>
-                  <button  mat-button routerLinkActive="active" [ngClass]="{'active-column': selectedEquipment.type === disCol.type}" *ngFor="let disCol of equipmentTypes"
-                  matTooltip="Click here to see Equipment List" (click)="selectEquipment(disCol)">{{disCol.type|uppercase}}</button>
-                </mat-toolbar-row>
-              </mat-toolbar>
+        <div class="equip-container">
+              <nav mat-tab-nav-bar *ngIf="equipmentTypes">
+                <a mat-tab-link class="tab-anchor" *ngFor="let disCol of equipmentTypes" routerLinkActive="active"
+                  (click)="selectEquipment(disCol);getEquipmentsData(disCol);activeLink = disCol.type;" [active]="activeLink == disCol.type"> {{disCol.type|uppercase|translate}} </a>
+              </nav>
   
-              <div *ngIf="!_loading" class="table-section">
-                  <!-- <div class="no-equip" *ngIf="length == 0">No equipments available</div> -->
-                  <mat-table *ngIf="displayedrows && displayedrows.length > 0" [dataSource]="dataSource" matSort (matSortChange)="sortData($event)">
+              <div class="table-section">
+                  <mat-table *ngIf="displayedrows && displayedrows.length>0" [dataSource]="dataSource" matSort (matSortChange)="sortData($event)">
                     <ng-container *ngFor="let x of displayedrows; let colIndex = index" matColumnDef="{{x}}">
-                      <th>
-                        <mat-header-cell *matHeaderCellDef mat-sort-header matTooltip="{{x}}"> {{x}}</mat-header-cell>
-                      </th>
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> {{x}}</mat-header-cell>
                       <mat-cell *matCellDef="let element">
-                        <td *ngIf="colIndex===0">{{element[x]}} </td>
-                        <td *ngIf="colIndex > 0">{{element[x]}}</td>
+                        <a class="mat-button-link row-anchor" *ngIf="colIndex===0" color="primary"
+                        matTooltip="{{'Click to see attribute  details'|translate}}" (click)="openDialog(element,x)">
+                        {{element[x]}} </a>
+                        <span *ngIf="colIndex > 0">{{element[x]}}</span>
                       </mat-cell>
                     </ng-container>
   
-                    <tr>
-                      <mat-header-row *matHeaderRowDef="displayedrows;sticky:true;"></mat-header-row>
-                    </tr>
-                    <tr>
-                      <mat-row *matRowDef="let row; columns: displayedrows;"></mat-row>
-                    </tr>
-  
+                      <mat-header-row *matHeaderRowDef="displayedrows;sticky:true" [ngClass]="moreRows? 'extendrow' :''"></mat-header-row>
+                      <mat-row *matRowDef="let row; columns: displayedrows;" [ngClass]="moreRows? 'extendrow' :''"></mat-row>
                   </mat-table>
-                  <div id="dataUnavailableMsg" *ngIf="!_loading && displayedrows && displayedrows.length == 0">{{'No data available'|translate}}</div>
               </div>
-              <app-loading-spinner *ngIf="_loading"></app-loading-spinner>
+              <div id="dataUnavailableMsg" *ngIf="!_loading && !_equipLoading && displayedrows && displayedrows.length == 0">{{'No data available'|translate}}</div>
+              <app-loading-spinner *ngIf="_loading||_equipLoading"></app-loading-spinner>
   
-        <mat-paginator *ngIf="length != 0" [length]="length" [pageSize]="page_size" [pageSizeOptions]="[10,20,30,50]"
-        (page)="getPaginatorData($event)" showFirstLastButtons>
-        </mat-paginator>
+            <mat-paginator [hidden]="_loading || _equipLoading || !equipmentTypes || (displayedrows && displayedrows.length == 0)" [length]="length" [pageSize]="pageSize" [pageSizeOptions]="[10,20,30,50]"
+            (page)="pageEvent = getPaginatorData($event)" showFirstLastButtons>
+            </mat-paginator>
         </div>
       </div>
     </mat-card-content>

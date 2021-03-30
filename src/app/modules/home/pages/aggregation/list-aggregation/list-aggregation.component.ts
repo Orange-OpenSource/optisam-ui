@@ -5,11 +5,13 @@
 // or at 'http://www.apache.org/licenses/LICENSE-2.0'. 
 
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatPaginator, MatSort, MatTableDataSource, MatDialog } from '@angular/material';
-import { AggregationService } from 'src/app/core/services/aggregation.service';
 import { ConfirmDialogComponent } from '../../../dialogs/confirm-dialog/confirm-dialog.component';
 import { EditAggregationDialogComponent } from '../edit-aggregation-dialog/edit-aggregation-dialog.component';
 import { CreateAggregationComponent } from '../create-aggregation/create-aggregation.component';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { MatDialog } from '@angular/material/dialog';
+import { ProductService } from 'src/app/core/services/product.service';
 
 @Component({
   selector: 'app-list-aggregation',
@@ -17,17 +19,10 @@ import { CreateAggregationComponent } from '../create-aggregation/create-aggrega
   styleUrls: ['./list-aggregation.component.scss']
 })
 export class ListAggregationComponent implements OnInit {
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
+  @ViewChild(MatSort, {static: false}) sort: MatSort;
   aggregationData: any;
-  displayedColumns: string[] = [
-    'name',
-    'product_names',
-    'editor',
-    'metric',
-    'numofSwidTags',
-    'action'
-  ];
+  displayedColumns: string[];
   totalRecords: number;
   pageSize: number;
   pageSizeOptions: number[];
@@ -43,23 +38,32 @@ export class ListAggregationComponent implements OnInit {
   selectedAggregation:any;
 
   constructor(
-    private aggregationService: AggregationService,
-    public dialog: MatDialog,
-    private aggService: AggregationService
-  ) {
+    private productService: ProductService,
+    public dialog: MatDialog ) {
+    this.role = localStorage.getItem('role');
     this.pageSize = 10;
     this.pageSizeOptions = [10, 20, 30, 50];
+    this.displayedColumns = [
+      'name',
+      'product_names',
+      'editor',
+      'metric',
+      'numofSwidTags'
+    ]
+    if(this.role == 'ADMIN' || this.role == 'SUPER_ADMIN') {
+      this.displayedColumns.push('action');
+    }
     dialog.afterAllClosed.subscribe((res)=>this.getAggregations());
   }
 
   ngOnInit() {
-    this.role = localStorage.getItem('role');
+    
     // this.getAggregations();
   }
 
   getAggregations() {
     this._loading = true;
-    this.aggregationService.getAggregations('').subscribe(data => {
+    this.productService.getAggregations().subscribe(data => {
       this.aggregationData = data.aggregations || []; // new MatTableDataSource(data.aggregations);
       this._loading = false;
     }, error => {
@@ -78,16 +82,16 @@ export class ListAggregationComponent implements OnInit {
   getPaginatorData(ev: any) {
     console.log('pagination', ev);
   }
-  openModal(templateRef) {
+  openModal(templateRef,width) {
     let dialogRef = this.dialog.open(templateRef, {
-        width: '50%',
+        width: width,
         disableClose: true
     });
   }
 
   deleteAggregationConfirmation(aggregate:any, deleteConfirmation) {
     this.selectedAggregation = aggregate;
-    this.openModal(deleteConfirmation);
+    this.openModal(deleteConfirmation,'40%');
   }
   
   deleteAggregation(aggregate: any) {
@@ -111,12 +115,12 @@ export class ListAggregationComponent implements OnInit {
   }
 
   deleteProductAggregation(successMsg, errorMsg) {
-    this.aggService.deleteAggregation(this.selectedAggregation.ID).subscribe(resp => {
+    this.productService.deleteAggregation(this.selectedAggregation.ID).subscribe(resp => {
       this._loading = false;
-      this.openModal(successMsg);
+      this.openModal(successMsg,'30%');
     }, err => {
       this._loading = false;
-      this.openModal(errorMsg);
+      this.openModal(errorMsg,'30%');
     });
   }
 

@@ -5,13 +5,15 @@
 // or at 'http://www.apache.org/licenses/LICENSE-2.0'. 
 
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatPaginator, MatSort, MatTableDataSource, MatDialog } from '@angular/material';
 import { ProductService } from 'src/app/core/services/product.service';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { Router } from '@angular/router';
 import { ProductAggregationDetailsComponent } from '../../../dialogs/product-aggregation-details/product-aggregation-details.component';
 import { MoreDetailsComponent } from '../../../dialogs/product-details/more-details.component';
-import { ConfirmDialogComponent } from '../../../dialogs/confirm-dialog/confirm-dialog.component';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { MatDialog } from '@angular/material/dialog';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'app-product-aggregation',
@@ -43,13 +45,13 @@ export class ProductAggregationComponent implements OnInit {
 
 
   displayedColumns: string[] = ['swidTag', 'aggregateName', 'editor', 'total_cost', 'num_applications', 'num_equipments'];
-  expandDisplayedColumns: string[] = ['swidTag', 'name', 'editor' , 'version', 'totalCost', 'numOfApplications', 'numofEquipments'];
+  expandDisplayedColumns: string[] = ['swidTag', 'name', 'version', 'editor' , 'totalCost', 'numOfApplications', 'numofEquipments'];
   sortColumn: string[] = ['aggregateName', 'editor' , 'total_cost', 'num_applications', 'num_equipments'];
   tableKeyLabelMap: any = {
       'swidTag':  'SwidTag',
       'name': 'Product Name',
+      'version': 'Version',
       'editor': 'Editor',
-      'version': 'Release',
       'total_cost': 'Total cost(€)',
       'totalCost': 'Total cost(€)',
       'numOfApplications': 'Application Count',
@@ -62,16 +64,16 @@ export class ProductAggregationComponent implements OnInit {
 
   advanceSearchModel: any = {
     title: 'Search by Aggregation Name',
-    primary: 'search_params.name.filteringkey',
+    primary: 'name',
     other: [
-      {key: 'search_params.swidTag.filteringkey', label: 'SWIDtag'},
-      {key: 'search_params.name.filteringkey', label: 'Aggregation name'},
-      {key: 'search_params.editor.filteringkey', label: 'Editor name'}
+      {key: 'swidTag', label: 'SWIDtag'},
+      {key: 'name', label: 'Aggregation name'},
+      {key: 'editor', label: 'Editor name'}
     ]
   };
   searchFields: any = {};
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
+  @ViewChild(MatSort, {static: false}) sort: MatSort;
   expandedRow: any;
   searchQuery: string;
   sortQuery: string;
@@ -84,10 +86,17 @@ export class ProductAggregationComponent implements OnInit {
   ) {
     this.current_page_num = 1;
     this.page_size = 10;
+    const state = window.history.state||{};
+      if(state['swidTag'] != undefined || state['name'] != undefined || state['editor'] != undefined) {
+        this.searchFields = state;
+        this.applyFilter();
+      }
+      else {        
+        this.getProductAggregationData();
+      }
    }
 
   ngOnInit() {
-    this.getProductAggregationData();
   }
 
   getProductAggregationData() {
@@ -169,21 +178,30 @@ export class ProductAggregationComponent implements OnInit {
     });
   }
 
-  getSwidTags(products: any[]) {
-    if(products)
-      return products.map(d => d.swidTag).join(', ');
-    else
-      return '-';
+  aggrAplDetails(swidtags) {
+    localStorage.setItem('aggrSwidTags', swidtags);
+  }
+
+  prodAggrApplications(aggrName) {
+    localStorage.setItem('prodAggrFilter', JSON.stringify(this.searchFields));
+    this.router.navigate(['/optisam/pr/products/aggregations', aggrName, 'applications']);
+  }
+
+  prodAggrEquipments(aggrName) {
+    localStorage.setItem('prodAggrFilter', JSON.stringify(this.searchFields));
+    this.router.navigate(['/optisam/pr/products/aggregations', aggrName, 'equipments']);
   }
 
   productApl(swidTag, prodName) {
     localStorage.setItem('prodName', prodName);
     localStorage.setItem('swidTag', swidTag);
+    localStorage.setItem('prodAggrFilter', JSON.stringify(this.searchFields));
     this.router.navigate(['/optisam/pr/products', swidTag]);
   }
   productEqui(swidTag, prodName) {
     localStorage.setItem('prodName', prodName);
     localStorage.setItem('swidTag', swidTag);
+    localStorage.setItem('prodAggrFilter', JSON.stringify(this.searchFields));
     this.router.navigate(['/optisam/pr/products/equi', swidTag]);
 
   }
@@ -198,20 +216,20 @@ export class ProductAggregationComponent implements OnInit {
     this.sortQuery = '';
     Object.keys(this.searchFields).forEach((key) => {
       if (this.searchFields[key]) {
-        this.searchQuery += '&' + key + '=' + this.searchFields[key];
+        this.searchQuery += '&search_params.' + key + '.filteringkey=' + this.searchFields[key];
       }
     });
     this.getProductAggregationData();
   }
 
   advSearchTrigger(event) {
-    // console.log('trigger event => ', event);
     this.searchFields = event;
     this.applyFilter();
   }
 
   expandAggregation(product) {
     this._loading = true;
+    this.aggregationDetails = null;
     this.expandedRow = (this.expandedRow === product ? null : product);
     this.productservice.getAggregationProductDetails(product.ID).subscribe((res)=>{
       this.aggregationDetails = res.products;

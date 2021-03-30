@@ -4,20 +4,20 @@
 // license which can be found in the file 'License.txt' in this package distribution 
 // or at 'http://www.apache.org/licenses/LICENSE-2.0'. 
 
-interface EditorList {
+export interface EditorList {
     editors: Editor[];
 }
 
-interface Editor {
+export interface Editor {
     ID: string;
     Name: string;
 }
 
-interface MetricsList {
+export interface MetricsList {
     metrices: Editor[];
 }
 
-interface Metrics {
+export interface Metrics {
     type: string;
     name: string;
     description?: string;

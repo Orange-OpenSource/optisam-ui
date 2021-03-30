@@ -5,13 +5,15 @@
 // or at 'http://www.apache.org/licenses/LICENSE-2.0'. 
 
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatPaginator, MatSort, MatTableDataSource, MatDialog } from '@angular/material';
 import { SharedService } from 'src/app/shared/shared.service';
 import { Subscription, forkJoin } from 'rxjs';
 import { EquipmentsService } from 'src/app/core/services/equipments.service';
 import { ConfigurationService } from 'src/app/core/services/configuration.service';
 import { EditConfigurationComponent } from '../edit-configuration/edit-configuration.component';
 import { ConfigurationSimulationComponent } from '../configuration-simulation/configuration-simulation.component';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-configurations-list',
@@ -21,8 +23,8 @@ import { ConfigurationSimulationComponent } from '../configuration-simulation/co
 export class ConfigurationsListComponent implements OnInit {
   loadingSubscription: Subscription;
   HTTPActivity: Boolean;
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
+  @ViewChild(MatSort, {static: false}) sort: MatSort;
   configurationData: any[]=[];
   displayedColumns: string[] = [
     'id',
@@ -60,7 +62,7 @@ export class ConfigurationsListComponent implements OnInit {
     this._loading = true;
     this.configurationData = [];
     this.equipmentService.getTypes().subscribe((response: any) => {
-      this.equipmentList = response.equipment_types || [];
+      this.equipmentList = (response.equipment_types || []).reverse();
       this.getConfigurations();
     }, (error) => {
       console.log("Error fetching equipments list");
@@ -74,7 +76,7 @@ export class ConfigurationsListComponent implements OnInit {
       url.push(this.configurationService.listConfiguration(this.equipmentList[i].type));
     }
     forkJoin(url).subscribe(res => {
-      res.map(eq=>{if(eq.configurations) {
+      res.map((eq:any)=>{if(eq.configurations) {
         eq.configurations.map((config)=>{
           this.data.push({
             'config_id': config.config_id,
@@ -100,18 +102,18 @@ export class ConfigurationsListComponent implements OnInit {
 
   deleteConfigurationConfirmation(configuration, templateRef) {
     this.configToDelete = configuration;
-    this.openModal(templateRef);
+    this.openModal(templateRef,'40%');
   }
   deleteConfiguration(successMsg,errorMsg) {
     if(this.configurationData && this.configurationData.length>0) {
       this.configurationService.deleteConfiguration(this.configToDelete.config_id).subscribe(data => {
         var temp = this.configurationData.filter((res)=>{if(res.config_id !== this.configToDelete.config_id) {return res;}})
-        this.openModal(successMsg);
+        this.openModal(successMsg,'30%');
         this.configurationData = [];
         this.configurationData = temp;
         this._loading = false;
       }, (error) => {
-        this.openModal(errorMsg);
+        this.openModal(errorMsg,'30%');
         this._loading = false;
         console.log("Error fetching configurations list");
       });
@@ -143,9 +145,9 @@ export class ConfigurationsListComponent implements OnInit {
     });
   }
 
-  openModal(templateRef) {
+  openModal(templateRef,width) {
     let dialogRef = this.dialog.open(templateRef, {
-        width: '50%',
+        width: width,
         disableClose: true
     });
   }

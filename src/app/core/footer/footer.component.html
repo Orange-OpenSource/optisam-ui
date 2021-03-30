@@ -1,5 +1,8 @@
 <footer class="page-footer">
-  <div>
-    Copyright © Orange 2019 
-  </div>  
+  <div id="copyrightMsg">
+    {{'Copyright'|translate}} © Orange 2021
+  </div> 
+  <div id="version" *ngIf="version && version != 'undefined'">
+    v{{version}}
+  </div> 
 </footer>

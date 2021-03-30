@@ -5,13 +5,15 @@
 // or at 'http://www.apache.org/licenses/LICENSE-2.0'. 
 
 import { Component, OnInit, ViewChild, OnDestroy, HostListener, ElementRef } from '@angular/core';
-import { MatPaginator, MatTableDataSource, MatSort } from '@angular/material';
 import { ApplicationService } from 'src/app/core/services/application.service';
 import { Router } from '@angular/router';
 import { local } from 'd3';
 import { SharedService } from '../../../../../shared/shared.service';
 import { Subscription } from 'rxjs';
 import { MatInput } from '@angular/material/input';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'app-apl',
@@ -19,8 +21,8 @@ import { MatInput } from '@angular/material/input';
   styleUrls: ['./apl.component.scss']
 })
 export class AplComponent implements OnInit, OnDestroy {
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
+  @ViewChild(MatSort, {static: false}) sort: MatSort;
   MyDataSource: any;
   searchKey: string;
   length ;
@@ -32,21 +34,23 @@ export class AplComponent implements OnInit, OnDestroy {
   saveSelectedOwner: string;
   current_page_num: any;
   filteringOrder: any;
-  appnamePlaceholder: any;
-  ownerPlaceholder: any;
+  appName: any;
+  owner: any;
   page_size: any;
   pageEvent: any;
 
-  displayedColumns: string[] = ['name', 'owner', 'num_of_products', 'num_of_instances',  'num_of_equipment',  'total_cost'];
+  displayedColumns: string[] = ['name', 'owner', 'domain','obsolescence_risk', 'num_of_products', 'num_of_instances'];
   loadingSubscription: Subscription;
   _loading: Boolean;
 
   advanceSearchModel: any = {
     title: 'Search by Application Name',
-    primary: 'appnamePlaceholder',
+    primary: 'appName',
     other: [
-      {key: 'appnamePlaceholder', label: 'Application name'},
-      {key: 'ownerPlaceholder', label: 'Owner'}
+      {key: 'appName', label: 'Application name'},
+      {key: 'owner', label: 'Owner'},
+      {key: 'domain', label: 'Domain'},
+      {key: 'risk', label: 'Obsolescence Risk'}
     ]
   };
   searchFields: any = {};
@@ -59,12 +63,18 @@ export class AplComponent implements OnInit, OnDestroy {
       this.loadingSubscription = this.sharedService.httpLoading().subscribe(data => {
         this._loading = data;
       });
+      this.current_page_num = 1;
+      const state = window.history.state||{};
+      if(state['appName'] != undefined || state['owner'] != undefined || state['domain'] != undefined|| state['risk'] != undefined) {
+        this.searchFields = state;
+        this.applyFilter();
+      }
+      else {        
+        this.RenderDataTable();
+      }
   }
 
-  ngOnInit() {
-    this.current_page_num = 1;
-    this.RenderDataTable();
-  }
+  ngOnInit() { }
 
   RenderDataTable() {
     this.applicationservice.getApplications(10, 1).subscribe(
@@ -81,12 +91,11 @@ export class AplComponent implements OnInit, OnDestroy {
   getPaginatorData(event) {
     this.MyDataSource = null;
     const page_num = event.pageIndex;
-    this.current_page_num = page_num;
+    this.current_page_num = page_num + 1;
     this.length = event.length;
     this.pageSize = event.pageSize;
     this.sort_order = localStorage.getItem( 'application_direction');
     this.sort_by = localStorage.getItem( 'application_active');
-    // console.log('getting from paging data navgation', this.sort_order, this.sort_by);
     if (this.sort_by === '' || this.sort_by === null) {
       this.sort_by = 'name';
     }
@@ -94,7 +103,7 @@ export class AplComponent implements OnInit, OnDestroy {
       this.sort_order = 'asc';
     }
       this.applicationservice.filteredData(page_num + 1, this.pageSize,
-         this.sort_by, this.sort_order, this.searchFields.appnamePlaceholder, this.searchFields.ownerPlaceholder).subscribe(
+         this.sort_by, this.sort_order, this.searchFields.appName, this.searchFields.owner, this.searchFields.domain, this.searchFields.risk).subscribe(
         (res: any) => {
           this.MyDataSource = new MatTableDataSource(res.applications);
           this.MyDataSource.sort = this.sort;
@@ -109,7 +118,7 @@ export class AplComponent implements OnInit, OnDestroy {
     localStorage.setItem('application_direction', sort.direction);
     localStorage.setItem('application_active', sort.active);
     this.applicationservice.filteredData( this.current_page_num, this.pageSize, sort.active,
-      sort.direction, this.searchFields.appnamePlaceholder, this.searchFields.ownerPlaceholder).subscribe(
+      sort.direction, this.searchFields.appName, this.searchFields.owner, this.searchFields.domain, this.searchFields.risk).subscribe(
       (res: any) => {
         this.MyDataSource = new MatTableDataSource(res.applications);
         this.MyDataSource.sort = this.sort;
@@ -120,9 +129,17 @@ export class AplComponent implements OnInit, OnDestroy {
   }
 
   productDetails(aplName, key) {
-    localStorage.setItem('aplName', aplName);
+    localStorage.setItem('appName', aplName);
     localStorage.setItem('key', key);
+    localStorage.setItem('aplFilter', JSON.stringify(this.searchFields));
     this.router.navigate(['/optisam/apl/applications', key]);
+  }
+
+  instanceDetails(aplName, app_id) {
+    localStorage.setItem('appName', aplName);
+    localStorage.setItem('key', app_id);
+    localStorage.setItem('aplFilter', JSON.stringify(this.searchFields));
+    this.router.navigate(['/optisam/apl/instances', app_id]);
   }
 
   applyFilter() {
@@ -136,12 +153,9 @@ export class AplComponent implements OnInit, OnDestroy {
     if (this.sort_order === '' || this.sort_order === null) {
       this.sort_order = 'asc';
     }
-    if (this.current_page_num === 0) {
-      this.current_page_num = 1;
-    }
     this.applicationservice.filteredData(this.current_page_num, this.pageSize,
-      this.sort_by, this.sort_order, this.searchFields.appnamePlaceholder,
-      this.searchFields.ownerPlaceholder).subscribe(
+      this.sort_by, this.sort_order, this.searchFields.appName,
+      this.searchFields.owner, this.searchFields.domain, this.searchFields.risk).subscribe(
         (res: any) => {
           this.MyDataSource = new MatTableDataSource(res.applications);
           this.MyDataSource.sort = this.sort;
@@ -151,7 +165,6 @@ export class AplComponent implements OnInit, OnDestroy {
   }
 
   advSearchTrigger(event) {
-    // console.log('trigger event => ', event);
     this.searchFields = event;
     this.applyFilter();
   }

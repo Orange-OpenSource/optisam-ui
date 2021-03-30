@@ -12,10 +12,10 @@ import { NoAuthGuard } from './core/guards/no-auth.guard';
 const routes: Routes = [
 {
   path: 'optisam',
-  loadChildren: './modules/home/home.module#HomeModule',
+  loadChildren: () => import('./modules/home/home.module').then(m => m.HomeModule),
   canActivate : [AuthGuard]
 },
- {path: '', loadChildren: './core/auth/login/login.module#LoginModule', canActivate: [NoAuthGuard]}
+ {path: '', loadChildren: () => import('./core/auth/login/login.module').then(m => m.LoginModule), canActivate: [NoAuthGuard]}
 ];
 
 @NgModule({

@@ -5,11 +5,13 @@
 // or at 'http://www.apache.org/licenses/LICENSE-2.0'. 
 
 import { Component, OnInit, Inject, ViewChild, SystemJsNgModuleLoader } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef, MatDialog } from '@angular/material';
-import { MatTableDataSource, MatPaginator, MatSort } from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialogRef, MatDialog } from '@angular/material/dialog';
 import { EquipmentTypeManagementService } from 'src/app/core/services/equipmenttypemanagement.service';
 import { FormGroup, FormControl } from '@angular/forms';
 import { MoreDetailsComponent } from '../../../dialogs/product-details/more-details.component';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
 /*  import { DialogData } from './details'; */
 
 @Component({
@@ -76,8 +78,8 @@ export class AttributeDetailComponent implements OnInit {
   activeLink: any;
   _loading: boolean;
   moreRows: boolean;
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
+  @ViewChild(MatSort, {static: false}) sort: MatSort;
 
   advanceSearchModel: any = {
     title: 'Search by Product Name',
@@ -96,7 +98,7 @@ export class AttributeDetailComponent implements OnInit {
     private dialog: MatDialog,
     public dialogRef: MatDialogRef<AttributeDetailComponent>,
     @Inject(MAT_DIALOG_DATA) public data) { 
-      this.dialog.afterAllClosed.subscribe(res=>this.getProduct());
+      // this.dialog.afterAllClosed.subscribe(res=>this.getProduct());
     }
 
 
@@ -325,9 +327,9 @@ export class AttributeDetailComponent implements OnInit {
     this.productsort_order = sort.direction;
     this.productsort_by = sort.active;
     // if (sort.active.toUpperCase() === 'SWIDTAG') {
-    //   this.productsort_by = 'SWID_TAG';
+    //   this.productsort_by = 'swidtag';
     // }
-    this.equipmentTypeManagementService.productFilteredData(this.equimId, this.typeId, this.product_curr_num, this.productPageSize,
+    this.equipmentTypeManagementService.productFilteredData(this.equimId, this.typeName, this.product_curr_num, this.productPageSize,
       this.productsort_by, sort.direction, this.searchFields.swidTag, this.searchFields.productName, this.searchFields.editorName).subscribe(
         (res: any) => {
           this.productdataSource = new MatTableDataSource(res.products);
@@ -348,12 +350,12 @@ export class AttributeDetailComponent implements OnInit {
     /*   this.productsort_order = localStorage.getItem( 'product_direction');
       this.productsort_by = localStorage.getItem( 'product_active'); */
     if (this.productsort_by === '' || this.productsort_by === null) {
-      this.productsort_by = 'SWID_TAG';
+      this.productsort_by = 'swidtag';
     }
     if (this.productsort_order === '' || this.productsort_order === null) {
       this.productsort_order = 'ASC';
     }
-    this.equipmentTypeManagementService.productFilteredData(this.equimId, this.typeId, page_num + 1, this.productPageSize,
+    this.equipmentTypeManagementService.productFilteredData(this.equimId, this.typeName, page_num + 1, this.productPageSize,
       this.productsort_by, this.productsort_order, this.searchFields.swidTag, this.searchFields.productName, this.searchFields.editorName).subscribe(
         (res: any) => {
           this.productdataSource = new MatTableDataSource(res.products);
@@ -365,7 +367,7 @@ export class AttributeDetailComponent implements OnInit {
   setSelected(param: string, value: number) {
     if (value === 1) {
       this.saveSelectedSWIDTag = param;
-      this.productsort_by = 'SWID_TAG';
+      this.productsort_by = 'swidtag';
     }
     if (value === 2) {
       this.saveSelectedPName = param;
@@ -379,7 +381,7 @@ export class AttributeDetailComponent implements OnInit {
   setSelectedSearch(param: string, value: number) {
     if (value === 1) {
       this.saveSelectedSWIDTag = param;
-      this.productsort_by = 'SWID_TAG';
+      this.productsort_by = 'swidtag';
     }
     if (value === 2) {
       this.saveSelectedPName = param;
@@ -405,7 +407,7 @@ export class AttributeDetailComponent implements OnInit {
     /*   this.productsort_order = localStorage.getItem('product_direction');
       this.productsort_by = localStorage.getItem('product_active'); */
     if (this.productsort_by === '' || this.productsort_by === null) {
-      this.productsort_by = 'SWID_TAG';
+      this.productsort_by = 'swidtag';
     }
     if (this.productsort_order === '' || this.productsort_order === null) {
       this.productsort_order = 'ASC';
@@ -413,7 +415,7 @@ export class AttributeDetailComponent implements OnInit {
     if (this.product_curr_num === 0) {
       this.product_curr_num = 1;
     }
-    this.equipmentTypeManagementService.productFilteredData(this.equimId, this.typeId, this.product_curr_num, this.productPageSize,
+    this.equipmentTypeManagementService.productFilteredData(this.equimId, this.typeName, this.product_curr_num, this.productPageSize,
       this.productsort_by, this.productsort_order, this.searchFields.swidTag, this.searchFields.productName, this.searchFields.editorName).subscribe(
         (res: any) => {
           const testData = new MatTableDataSource(res.products);

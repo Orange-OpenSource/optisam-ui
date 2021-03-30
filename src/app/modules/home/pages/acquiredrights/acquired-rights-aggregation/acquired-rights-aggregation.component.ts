@@ -5,11 +5,14 @@
 // or at 'http://www.apache.org/licenses/LICENSE-2.0'. 
 
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { AcquiredrightsService } from 'src/app/core/services/acquiredrights.service';
 import { Router } from '@angular/router';
-import { MatDialog, MatSort, MatPaginator, MatTableDataSource } from '@angular/material';
 import { trigger, style, state, animate, transition } from '@angular/animations';
 import { MoreDetailsComponent } from '../../../dialogs/product-details/more-details.component';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { MatDialog } from '@angular/material/dialog';
+import { MatTableDataSource } from '@angular/material/table';
+import { ProductService } from 'src/app/core/services/product.service';
 
 @Component({
   selector: 'app-acquired-rights-aggregation',
@@ -41,13 +44,13 @@ export class AcquiredRightsAggregationComponent implements OnInit {
   productsListByAggrID: any[];
 
   displayedColumns: string[] = ['entity', 'SKU', 'swid_tag', 'aggregateName', 'editor', 'metric', 'total_cost'];
-  expandDisplayedColumns: string[] = ['entity', 'SKU', 'swid_tag', 'product_name', 'editor', 'metric', 'acquired_licenses_number', 'licenses_under_maintenance_number',  'avg_licenes_unit_price', 'avg_maintenance_unit_price', 'total_purchase_cost', 'total_maintenance_cost', 'total_cost'];
+  expandDisplayedColumns: string[] = ['entity', 'SKU', 'swid_tag', 'product_name', 'version', 'editor', 'metric', 'acquired_licenses_number', 'licenses_under_maintenance_number', 'start_of_maintenance', 'end_of_maintenance', 'licenses_under_maintenance',  'avg_licenes_unit_price', 'avg_maintenance_unit_price', 'total_purchase_cost', 'total_maintenance_cost', 'total_cost'];
   sortColumn: string[] = ['aggregateName', 'editor', 'metric', 'total_cost'];
   tableKeyLabelMap: any = {
       'swid_tag':  'SwidTag',
       'product_name': 'Product Name',
       'editor': 'Editor',
-      'version': 'Release',
+      'version': 'Version',
       'total_cost': 'Total cost(€)',
       'num_applications': 'Application Count',
       'num_equipments': 'Equipment Count',
@@ -55,7 +58,10 @@ export class AcquiredRightsAggregationComponent implements OnInit {
       'SKU': 'SKU',
       'entity': 'Entity',
       "acquired_licenses_number": "Acquired licenses",
-      "licenses_under_maintenance_number": "Licenses under maintenance",
+      'licenses_under_maintenance':"Licenses under maintenance",
+      "licenses_under_maintenance_number": "Licenses under maintenance number",
+      'start_of_maintenance':"Start of Maintenance",
+      'end_of_maintenance':"End of Maintenance",
       "avg_licenes_unit_price": 'AVG license unit price (€)',
       "avg_maintenance_unit_price": 'AVG Maintenance unit price (€)',
       "total_purchase_cost": 'Total purchase cost (€)',
@@ -76,14 +82,14 @@ export class AcquiredRightsAggregationComponent implements OnInit {
     ]
   };
   searchFields: any = {};
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
+  @ViewChild(MatSort, {static: false}) sort: MatSort;
   expandedRow: any;
   searchQuery: string;
   sortQuery: string;
 
   constructor(
-    private acquiredrightservice: AcquiredrightsService,
+    private productService: ProductService,
     public dialog: MatDialog,
     private router: Router
   ) {
@@ -103,7 +109,7 @@ export class AcquiredRightsAggregationComponent implements OnInit {
     this.searchQuery = this.searchQuery ? this.searchQuery : '&sort_by=NAME'
     query += this.searchQuery;
     console.log('query',this.searchQuery, '---', this.sortQuery);
-    this.acquiredrightservice.getAggregationAcquiredRights(query).subscribe(
+    this.productService.getAggregationAcquiredRights(query).subscribe(
       (res: any) => {
         this.arAggregationData = new MatTableDataSource(res.aggregations);
         this.arAggregationData.sort = this.sort;
@@ -160,8 +166,8 @@ export class AcquiredRightsAggregationComponent implements OnInit {
     if (this.current_page_num === 0) {
       this.current_page_num = 1;
     }
-    // this.searchQuery = '';
-    this.sortQuery = '';
+    this.searchQuery = '';
+    // this.sortQuery = '';
     Object.keys(this.searchFields).forEach((key) => {
       if (this.searchFields[key]) {
         this.searchQuery += '&' + key + '=' + this.searchFields[key];
@@ -178,7 +184,7 @@ export class AcquiredRightsAggregationComponent implements OnInit {
 
   getProductDetails(ID) {
     this._loading = true;
-    this.acquiredrightservice.getProductsByAggrID(ID).subscribe(res=>{
+    this.productService.getProductsByAggrID(ID).subscribe(res=>{
       this.productsListByAggrID = res.acquired_rights;
       console.log('acquired_rights : ', res.acquired_rights);
       this._loading = false;

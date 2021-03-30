@@ -1,7 +1,7 @@
 .mat-card-content {
-  width: 50% !important;
+  width: 100%;
   border: 1px solid #D6D6D6;
-  min-height: 400px;
+  min-height: 72vh;
   padding: 16px;
 }
 
@@ -29,6 +29,44 @@
   cursor: pointer;
 }
 
-#deleteBtn, #addBtn, #editBtn {
+#deleteButton, #addButton, #editButton {
   margin: 0 5px !important;
+}
+.strongText {
+    color: #005F93;
+    font-weight: 500;
+}
+.action-icon{
+  cursor: pointer;
+  height: 20px;
+  width: 20px;
+  font-size: 20px;
+}
+.action-icon.mat-icon {
+  color: #005F93 !important;
+}
+.tree-icon .mat-icon {
+  color: #005F93 !important;
+  margin:0 5px;
+}
+.mat-icon-rtl-mirror {
+   font-size: 32px;
+}
+.mat-menu-item {
+    min-width: 100px;
+    line-height: 42px;
+    height: 42px;
+    background: #8acef33d;
+}
+.mat-menu-item:hover {
+    background: #8acef33d;
+    cursor: default;
+}
+#groupName:hover {
+    cursor: default;
+}
+.clickable:hover {
+    color: #005F93;
+    cursor: pointer;
+    text-decoration: underline;
 }

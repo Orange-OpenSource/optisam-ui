@@ -7,43 +7,38 @@
     <app-loading-spinner *ngIf="_loading || !dataSource"></app-loading-spinner>
     <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
       <mat-tree-node *matTreeNodeDef="let node;" matTreeNodePadding>
-        <button *ngIf="isExpandable(node)" mat-icon-button [attr.aria-label]="'toggle ' + node.item" matTreeNodeToggle>
-          <mat-icon class="mat-icon-rtl-mirror">
-            {{treeControl.isExpanded(node) ? 'remove_circle_outline' : 'add_circle_outline'}}
+        <button *ngIf="isExpandable(node)" mat-icon-button [attr.aria-label]="'Toggle ' + node.item" matTreeNodeToggle>
+          <mat-icon class="mat-icon-rtl-mirror action-icon">
+            {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
           </mat-icon>
         </button>
         <button *ngIf="!isExpandable(node)" mat-icon-button disabled></button>
-
-        <div mat-menu-item matTooltip="{{node.item.fully_qualified_name}}"> {{node.item.name}}</div>
-
-        <div> 
-          <a style="margin-right: 16px;" mat-menu-item (click)="userManegment(node.item, node)">
-            {{node.item.num_of_users}} {{'users'|translate}}
-          </a>
+        <div id="groupName" mat-menu-item [ngClass]="isExpandable(node)?'strongText':''" matTooltip="{{node.item.fully_qualified_name}}">{{node.item.name}}</div>
+        <div id="groupUsers" class="clickable" mat-menu-item matTooltip="{{'Manage Users'|translate}}" (click)="manageUsers(node.item)"> 
+          {{node.item.num_of_users}}
+          <span *ngIf="node.item.num_of_users <= 1">{{'user'|translate}}</span>
+          <span *ngIf="node.item.num_of_users > 1">{{'users'|translate}}</span>
         </div>
-
-        <div>
-          <a mat-menu-item (click)="viewScope(node.item)"> 
-            {{'View Scope'|translate}}
-          </a>
-        </div>
-
-        <div id="deleteBtn" *ngIf="(role === 'ADMIN' || role === 'SUPER_ADMIN') && (node.item.num_of_users === '0') && (node.item.num_of_child_groups === '0')"
-          (click)="deleteConfirmation(node.item.ID, node, deleteConfirmationDialog)">
-          <mat-icon>delete_outline</mat-icon>
-        </div>
-
-        <div id="addBtn" *ngIf="(role === 'ADMIN') || (role === 'SUPER_ADMIN')" (click)="addNew(node.item)"> 
-          <mat-icon>add</mat-icon>
-        </div>
-
-        <div id="editBtn" *ngIf="(role === 'ADMIN') || (role === 'SUPER_ADMIN')" (click)="EditName(node.item,node)"> 
+        <div id="groupScopes" *ngIf="!node.item.scopes || (node.item.scopes && node.item.scopes.length === 0)" mat-menu-item> 
+            0 {{'scope'|translate}}
+        </div>  
+        <div id="groupScopes" *ngIf="node.item.scopes && node.item.scopes.length !== 0" mat-menu-item matTooltip="{{formatScopes(node.item.scopes)}}"> 
+            {{node.item.scopes.length}}
+            <span *ngIf="node.item.scopes.length === 1">{{'scope'|translate}}</span>
+            <span *ngIf="node.item.scopes.length > 1">{{'scopes'|translate}}</span>
+        </div>      
+        <div id="addButton" class="action-icon tree-icon" matTooltip="{{'Create Group'|translate}}" (click)="createNewGroup(node.item)"> 
+          <mat-icon>add_circle</mat-icon>
+        </div>    
+        <div id="editButton" class="action-icon tree-icon" matTooltip="{{'Edit Group Name'|translate}}" (click)="editGroup(node.item)"> 
           <mat-icon>edit</mat-icon>
         </div>
-        
+        <div id="deleteButton" class="action-icon tree-icon" matTooltip="{{'Delete Group'|translate}}" *ngIf="node.item.num_of_users == 0 && node.item.num_of_child_groups == 0"
+          (click)="deleteConfirmation(node.item.ID, node, deleteConfirmationDialog)">
+          <mat-icon>delete</mat-icon>
+        </div>        
         <mat-progress-bar *ngIf="node.isLoading" mode="indeterminate" class="example-tree-progress-bar">
         </mat-progress-bar>
-
       </mat-tree-node>
     </mat-tree>
   </mat-card-content>
@@ -53,7 +48,7 @@
         <p>{{'DELETE_GROUP_SUCCESS'|translate}}</p>
       </mat-dialog-content>
       <mat-dialog-actions align="center">
-        <button [mat-dialog-close]="true" mat-button cdkFocusInitial>{{'OK'|translate}}</button>
+        <button [mat-dialog-close]="true" class="btn-two" mat-button cdkFocusInitial (click)="processTree()">{{'OK'|translate}}</button>
       </mat-dialog-actions>
     </ng-template>
     <ng-template #errorGroupDeleteDialog>
@@ -61,7 +56,7 @@
         <p>{{'DELETE_GROUP_ERROR'|translate}}</p>
       </mat-dialog-content>
       <mat-dialog-actions align="center">
-        <button [mat-dialog-close]="true" mat-button cdkFocusInitial>{{'OK'|translate}}</button>
+        <button [mat-dialog-close]="true" class="btn-two" mat-button cdkFocusInitial>{{'OK'|translate}}</button>
       </mat-dialog-actions>
     </ng-template>
     <ng-template #deleteConfirmationDialog>
@@ -69,8 +64,8 @@
         <p>{{'DELETE_GROUP_CONFIRM_MSG' | translate}}</p>
       </mat-dialog-content>
       <mat-dialog-actions align="center">
-        <button mat-button [mat-dialog-close]="true" (click)="deleteGrp(succesGroupDeleteDialog,errorGroupDeleteDialog)"
+        <button mat-button [mat-dialog-close]="true" class="btn-two" (click)="deleteGrp(succesGroupDeleteDialog,errorGroupDeleteDialog)"
           cdkFocusInitial>{{'OK'|translate}}</button>
-        <button mat-button [mat-dialog-close]="true" cdkFocusInitial>{{'Cancel'|translate}}</button>
+        <button mat-button [mat-dialog-close]="true"class="btn-three" cdkFocusInitial>{{'Cancel'|translate}}</button>
       </mat-dialog-actions>
     </ng-template>

@@ -13,6 +13,7 @@ import { LoginComponent } from './login.component';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { CustomMaterialModule } from 'src/app/material.module';
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   imports: [
@@ -20,6 +21,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
     CommonModule,
     LoginRoutingModule,
     ReactiveFormsModule,
+    HttpClientModule,
     FormsModule,
     TranslateModule,
     CustomMaterialModule

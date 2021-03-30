@@ -1,4 +1,4 @@
-<mat-card class="example-card">
+<mat-card>
     <div class="container-fluid page-content-header">
       <div class="row">
         <div class="col-md-9 page-heading">
@@ -13,7 +13,6 @@
     <mat-card-content>
       <div class="mat-elevation-z8">
         <mat-table class="main-table" [dataSource]="arAggregationData" matSort (matSortChange)="sortData($event)" multiTemplateDataRows>
-  
           <ng-container matColumnDef="{{column}}" *ngFor="let column of displayedColumns">
               <div *ngIf="sortColumn.indexOf(column) !== -1">
                 <mat-header-cell *matHeaderCellDef mat-sort-header> {{tableKeyLabelMap[column]|translate}} </mat-header-cell>
@@ -23,26 +22,18 @@
               </div>
               <mat-cell *matCellDef="let rights"> 
                 <div [ngSwitch]="column">
-
-                  <!-- <span *ngSwitchCase="'SKU'" matTooltip="{{getJoinedString(rights.acqRights, 'SKU', ', ')}}">{{getJoinedString(rights.acqRights, 'SKU', ', ')}}</span>
-                  <span *ngSwitchCase="'swid_tag'" matTooltip="{{getJoinedString(rights.acqRights, 'swid_tag', ', ')}}">{{getJoinedString(rights.acqRights, 'swid_tag', ', ')}}</span> -->
                   <span *ngSwitchCase="'SKU'" matTooltip="{{rights.skus}}">{{rights.skus}}</span>
                   <span *ngSwitchCase="'swid_tag'" matTooltip="{{rights.swidtags}}">{{rights.swidtags}}</span>
-
                   <div *ngSwitchCase="'aggregateName'">
                     <mat-icon *ngIf="expandedRow !== rights" class="expand-icon" (click)="expandedRow = (expandedRow === rights ? null : rights);getProductDetails(rights.ID)">add_box</mat-icon>
                     <mat-icon *ngIf="expandedRow === rights" class="expand-icon" (click)="expandedRow = null">indeterminate_check_box</mat-icon>
                     {{rights.name}}
                   </div>
-
-                  <span *ngSwitchCase="'total_cost'">{{rights.total_cost || 0}}</span>
-                  
+                  <span *ngSwitchCase="'total_cost'">{{(rights.total_cost || 0)|formatCost}}</span>
                   <span *ngSwitchDefault>{{(rights[column] || '-')}}</span> 
                 </div>
               </mat-cell>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         ,
           </ng-container>
-
-
           <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
           <ng-container matColumnDef="expandedDetail">
             <mat-cell class="expand-cell" *matCellDef="let rights" [attr.colspan]="expandDisplayedColumns.length">
@@ -50,42 +41,35 @@
                 <mat-table class="detail-table" [dataSource]="productsListByAggrID">
                   <ng-container matColumnDef="{{column}}" *ngFor="let column of expandDisplayedColumns">
                       <mat-header-cell *matHeaderCellDef> {{tableKeyLabelMap[column]|translate}} </mat-header-cell>
-                      <mat-cell *matCellDef="let element"> 
-                          <div [ngSwitch]="column">
-                  
+                      <mat-cell *matCellDef="let element" [ngSwitch]="column"> 
                             <span *ngSwitchCase="'acquired_licenses_number'">{{element.acquired_licenses_number || 0}}</span>
                             <span *ngSwitchCase="'licenses_under_maintenance_number'">{{element.licenses_under_maintenance_number || 0}}</span>
-                            <span *ngSwitchCase="'avg_licenes_unit_price'">{{element.avg_licenes_unit_price || 0}}</span>
-                            <span *ngSwitchCase="'avg_maintenance_unit_price'">{{element.avg_maintenance_unit_price || 0}}</span>
-                            <span *ngSwitchCase="'total_purchase_cost'">{{element.total_purchase_cost || 0}}</span>
-                            <span *ngSwitchCase="'total_maintenance_cost'">{{element.total_maintenance_cost || 0}}</span>
-                            <span *ngSwitchCase="'total_cost'">{{element.total_cost || 0}}</span>
+                            <span *ngSwitchCase="'avg_licenes_unit_price'">{{(element.avg_licenes_unit_price || 0)|formatCost}}</span>
+                            <span *ngSwitchCase="'avg_maintenance_unit_price'">{{(element.avg_maintenance_unit_price || 0)|formatCost}}</span>
+                            <span *ngSwitchCase="'total_purchase_cost'">{{(element.total_purchase_cost || 0)|formatCost}}</span>
+                            <span *ngSwitchCase="'total_maintenance_cost'">{{(element.total_maintenance_cost || 0)|formatCost}}</span>
+                            <span *ngSwitchCase="'total_cost'">{{(element.total_cost || 0)|formatCost}}</span>
                             <span *ngSwitchCase="'product_name'"  matTooltip="{{element.product_name}}">
                               <a class="ellipsis mat-button-link" (click)="openDialog(element.swid_tag, element.product_name)">
                                 {{element.product_name}} 
                               </a>
                             </span>
-
                             <span *ngSwitchDefault>{{(element[column] || '-')}}</span> 
-                          </div>
-
                         </mat-cell>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         ,
                   </ng-container>
-
                   <mat-header-row *matHeaderRowDef="expandDisplayedColumns; sticky: true"></mat-header-row>
                   <mat-row *matRowDef="let row; columns: expandDisplayedColumns;"></mat-row>
                 </mat-table>
+                <app-loading-spinner *ngIf="_loading"></app-loading-spinner>
               </div>
             </mat-cell>
           </ng-container>
-
-  
           <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
           <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
           <mat-row *matRowDef="let row; columns: ['expandedDetail']" class="agg-detail-row" [class.agg-expanded-row]="!expandedRow || expandedRow !== row"></mat-row>
         </mat-table>
         <app-loading-spinner *ngIf="_loading"></app-loading-spinner>
-        <div class="no-data" *ngIf="!_loading && !arAggregationData">{{'No data available' | translate}}</div>
+        <div class="no-data" *ngIf="!_loading && arAggregationData && arAggregationData.data.length == 0">{{'No data available' | translate}}</div>
         <mat-paginator [length]="length" [pageSize]="page_size" [pageSizeOptions]="[10,20,30,50]"
           (page)="getPaginatorData($event)" showFirstLastButtons>
         </mat-paginator>

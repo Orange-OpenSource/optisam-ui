@@ -1,0 +1,36 @@
+<mat-card>
+    <div class="container-fluid page-content-header">
+        <div class="row">
+            <div class="page-heading">
+              {{'Failed Records' | translate}}
+            </div>
+      </div>
+    </div>
+    <mat-card-content>
+      <div class="mat-elevation-z8">
+        <div *ngIf="displayedColumns.length > 0">
+          <mat-table [dataSource]="dataSource"> 
+            <ng-container *ngFor="let x of displayedColumns; let colIndex = index" matColumnDef="{{x}}">
+              <mat-header-cell *matHeaderCellDef> {{formatAsColumnName(x)}}</mat-header-cell>
+              <mat-cell *matCellDef="let file">
+                  <span *ngIf="x != 'reason'">{{file.data[x]}}</span>
+                  <span *ngIf="x == 'reason'">{{file[x]}}</span>
+              </mat-cell>
+            </ng-container>  
+            <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+          </mat-table>
+          <app-loading-spinner *ngIf="_loading"></app-loading-spinner>
+          
+          <mat-paginator [length]="length" [pageSize]="page_size" [pageSizeOptions]="[50, 100]"
+            (page)="getPaginatorData($event)" showFirstLastButtons>
+          </mat-paginator>
+        </div>
+        <app-loading-spinner *ngIf="_loading && displayedColumns.length == 0"></app-loading-spinner>
+        <div id="noData" *ngIf="!_loading && (!dataSource || (dataSource && dataSource.data.length === 0))">{{'No Data details available' | translate}}</div>
+      </div>
+    </mat-card-content>
+    <mat-dialog-actions>
+      <button class="btn-two" mat-raised-button mat-dialog-close>{{'Cancel' | translate}}</button>
+    </mat-dialog-actions>
+  </mat-card>

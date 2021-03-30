@@ -28,6 +28,6 @@ import { AttributeDetailComponent } from './attribute-detail/attribute-detail.co
   entryComponents: [
     AttributeDetailComponent
   ],
-  declarations:  [ EquipmentsComponent, EquipmentsListComponent, AttributeDetailComponent],
+  declarations:  [ EquipmentsComponent, EquipmentsListComponent],
 })
 export class EquipmentsModule { }

@@ -1,53 +1,48 @@
-<div *ngIf="data.type == 'edit'">
-<span class="page-heading">{{fullyQualifyName}}</span>
-<div style="position: center;" *ngIf="showMsg">
-    <div class="col-xs-12">
-      <p class="alert alert-warning">
-        <strong>{{'Group Name Updated Succesfully'|translate}}!!!</strong>
-      </p>
-    </div>
-  </div>
-    <mat-form-field class="example-full-width">
-      <input #name matInput placeholder="{{'Group Name'|translate}}" (keyup)="validateName(name.value)" [(ngModel)]="editName">
+<mat-card>
+  <mat-card-title>{{group.fully_qualified_name}}: {{'Edit Group'|translate}}</mat-card-title>
+  <mat-card-content>
+    <form [formGroup]="groupForm">
+      <!-- Group Name -->
+      <mat-form-field>
+        <mat-label>{{'Name'|translate}}</mat-label>
+        <input id="name" matInput formControlName="name">
+        <mat-error *ngIf="name.invalid && (name.dirty || name.touched) && name.errors.required">
+            {{'Group name is mandatory'|translate}}
+        </mat-error>
+        <mat-error *ngIf="name.invalid && (name.dirty || name.touched) && name.errors.pattern">
+            {{'Invalid group name'|translate}}
+        </mat-error>
+        <mat-error *ngIf="name.invalid && (name.dirty || name.touched) && name.errors.minlength">
+            {{'Group name should have atleast 1 character'|translate}}
+        </mat-error>
+      </mat-form-field>
+    </form>
+  </mat-card-content>
+  <mat-card-actions align="center">
+    <button id="cancelButton" mat-raised-button class="btn-four m-b-5" [mat-dialog-close]="true">{{'Cancel'|translate}}</button>
+    <button id="resetButton" mat-raised-button class="btn-three m-b-5" [disabled]="groupForm.pristine || unchangedName()" (click)="resetGroup()">
+      {{'Reset'|translate}}
+    </button>
+    <button id="updateButton" mat-raised-button class="btn-two m-b-5" [disabled]="groupForm.invalid || groupForm.pristine || unchangedName()" (click)="updateGroup(successDialog,errorDialog)">
+      <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" *ngIf="_loading"></span>
+      {{'Update'|translate}}
+    </button>
+  </mat-card-actions>
+</mat-card>
 
-    </mat-form-field>
-    <span style="color:red"  *ngIf="nameRequired">
-      Group  name is <strong>required</strong>
-    </span>
-    <div class="row cta-button-bx" >
-        <div class="col-md-12">
-          <button id="cancelButton" class="btn-four" mat-raised-button [mat-dialog-close]="1">{{'Cancel'|translate}}</button>
-          <button id="resetButton" class="btn-three" [disabled]="cannotUpdateFlag" mat-raised-button (click)="setData()">{{'Reset'|translate}}</button>
-          <button id="saveButton" [disabled]="cannotUpdateFlag" mat-raised-button class="btn-two"
-          (click)="saveEditName(editName, succesGroupUpdateDialog, errorGroupUpdateDialog)">{{'Save'|translate}}</button>
-          </div>
-    </div>
-      </div>
-<div *ngIf="data.type == 'scope'">
-  <div class="closeDialog"><button [mat-dialog-close]="true" mat-icon-button><mat-icon>close</mat-icon></button></div>
-  <div class="page-heading">{{'Scopes'|translate}}</div>
-  <div class="scopesList">
-    <span *ngFor="let x of data.node.scopes; let colIndex = index">
-      {{x}}
-      <span *ngIf="((data.node.scopes.length - 1) != colIndex)">, </span>
-    </span> 
-  </div>
-       
-</div>
-
-<ng-template #succesGroupUpdateDialog>
+<ng-template #successDialog>
   <mat-dialog-content>
     <p>{{'UPDATE_GROUP_SUCCESS'|translate}}</p>
   </mat-dialog-content>
   <mat-dialog-actions align="center">
-    <button [mat-dialog-close]="true" mat-button cdkFocusInitial>{{'OK'|translate}}</button>
+    <button [mat-dialog-close]="true" class="btn-two" mat-button cdkFocusInitial>{{'OK'|translate}}</button>
   </mat-dialog-actions>
 </ng-template>
-<ng-template #errorGroupUpdateDialog>
+<ng-template #errorDialog>
   <mat-dialog-content>
     <p>{{'UPDATE_GROUP_ERROR'|translate}}</p>
   </mat-dialog-content>
   <mat-dialog-actions align="center">
-    <button [mat-dialog-close]="true" mat-button cdkFocusInitial>{{'OK'|translate}}</button>
+    <button [mat-dialog-close]="true" class="btn-two" mat-button cdkFocusInitial>{{'OK'|translate}}</button>
   </mat-dialog-actions>
 </ng-template>

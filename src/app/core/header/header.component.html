@@ -1,12 +1,25 @@
 <mat-toolbar color="ThemePalette" class="main-nav-bar">
     <mat-toolbar-row>
-      <span id="app-logo" class="optisam-logo" [hidden]="this.sidebarFlag" routerLink="/optisam/dashboard">
+      <span id="app-logo" class="optisam-logo" matTooltip="{{'Dashboard'|translate}}" [hidden]="this.sidebarFlag" routerLink="/optisam/dashboard">
         <img src="assets/images/OpTISAM-Logo.svg">
       </span>
-      <span id="app-logo-min" class="optisam-logo" [hidden]="!this.sidebarFlag" routerLink="/optisam/dashboard">
+      <span id="app-logo-min" class="optisam-logo" matTooltip="{{'Dashboard'|translate}}" [hidden]="!this.sidebarFlag" routerLink="/optisam/dashboard">
         <img src="assets/images/OpTISAM-Logo-app.svg">
       </span>
-      <button mat-icon-button (click)="toggleSideNavbar()"><mat-icon id="nav-menu">menu</mat-icon></button>
+      <button mat-icon-button (click)="toggleSideNavbar()"><mat-icon id="nav-menu">menu</mat-icon></button>          
+      <a id="nav-scopes-menu" *ngIf="selectedScope && scopesList.length === 0" matTooltip="{{'Scope'|translate}}" mat-button>
+        <img style="height: 24px;" src="\assets\images\scope-management-blue.svg"/>
+        {{ selectedScope }}
+      </a> 
+      <a id="nav-scopes-menu" *ngIf="selectedScope && scopesList.length>0" matTooltip="{{'Scope'|translate}}" mat-button [matMenuTriggerFor]="scopesMenu">
+        <img style="height: 24px;" src="\assets\images\scope-management-blue.svg"/>
+        {{ selectedScope }}
+        <mat-icon>arrow_drop_down</mat-icon>
+      </a>
+      <mat-menu #scopesMenu="matMenu">
+        <button id="nav-{{scope}}" mat-menu-item *ngFor="let scope of scopesList" (click)="setScope(scope,warningDialog,warningDashboardDialog)">{{scope}}</button>
+      </mat-menu>
+
       <span class="example-spacer"></span>
       <div fxShow="true" fxHide.lt-md="true">
         <a id="nav-management-menu" mat-button [matMenuTriggerFor]="menu2">
@@ -46,6 +59,10 @@
             <button id="nav-scope-management" mat-menu-item matTooltip="{{'Scope Management' | translate}}" *ngIf="role === 'SUPER_ADMIN'" [routerLink]="['/optisam/sm']" [routerLinkActive]="['routeactive']">
               <img style="height: 20px; margin-right: 16px;" src="\assets\images\scope-management.svg"/>
               {{'Scope Management' | translate}}
+            </button>
+            <button id="nav-obsolescence-management" mat-menu-item matTooltip="{{'Obsolescence Management' | translate}}" *ngIf="role === 'ADMIN' || role === 'SUPER_ADMIN'" [routerLink]="['/optisam/om/define-obsolescence']" [routerLinkActive]="['routeactive']">
+              <mat-icon class="mat-icon-admin">warning</mat-icon>
+              {{'Obsolescence Management' | translate}}
             </button>
         </mat-menu>
 
@@ -101,3 +118,24 @@
       </div>
     </mat-toolbar-row>
   </mat-toolbar>
+
+  <ng-template #warningDialog>
+    <mat-dialog-content>
+      <p>{{'Changing scope to '|translate}} <strong>{{newScope}}</strong>.</p>
+      <p>{{'You will be taken to the dashboard after clicking OK.'|translate}}</p>
+    </mat-dialog-content>
+    <mat-dialog-actions align="center">
+      <button mat-button [mat-dialog-close]="true" class="btn-two" (click)="backToHome();changeScope();" cdkFocusInitial>{{'OK'|translate}}</button>
+      <button mat-button [mat-dialog-close]="true" class="btn-three" cdkFocusInitial>{{'Cancel'|translate}}</button>
+    </mat-dialog-actions>
+  </ng-template>
+  <ng-template #warningDashboardDialog>
+    <mat-dialog-content>
+      <p>{{'Changing scope to '|translate}} <strong>{{newScope}}</strong>.</p>
+      <p>{{'You will see the new data after clicking OK.'|translate}}</p>
+    </mat-dialog-content>
+    <mat-dialog-actions align="center">
+      <button mat-button [mat-dialog-close]="true" class="btn-two" (click)="changeScope()" cdkFocusInitial>{{'OK'|translate}}</button>
+      <button mat-button [mat-dialog-close]="true" class="btn-three" cdkFocusInitial>{{'Cancel'|translate}}</button>
+    </mat-dialog-actions>
+  </ng-template>

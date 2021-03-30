@@ -4,183 +4,176 @@
 // license which can be found in the file 'License.txt' in this package distribution 
 // or at 'http://www.apache.org/licenses/LICENSE-2.0'. 
 
-import { Component, OnInit, Inject, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit, Inject, ViewChild, AfterViewInit, ViewChildren, QueryList } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
+import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { GroupService } from 'src/app/core/services/group.service';
 import { Router } from '@angular/router';
 import { MatSort } from '@angular/material/sort';
 import { FormControl } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-
-
-
-export interface PeriodicElement {
-  name: string;
-  position: number;
-  weight: number;
-  symbol: string;
-}
-
+import { forkJoin, Observable } from 'rxjs';
 @Component({
   selector: 'app-groupusrmanagement',
   templateUrl: './groupusrmanagement.component.html',
   styleUrls: ['./groupusrmanagement.component.scss']
 })
 export class GroupusrmanagementComponent implements OnInit {
-  deleteMsg: Boolean = false;
-  addMsg: Boolean = false;
-  errorMsg: Boolean = false;
-  eMessage: String;
-  dataSource: any;
-  grpUserList = [];
-  userList = [];
-  filterUserList = [];
-  emailList = [];
-  checkedUsr = [];
-  displayedColumns: string[];
+  _loading: Boolean;
+  errorMessage: string;
+  group: any;
+  usersList: any[]=[];
+  groupUsersList: any[]=[];
+  filteredUsersList:string[]=[];
   users = new FormControl();
-  fullyQualifiedName: String;
-  role: String;
-  @ViewChild(MatSort) sort: MatSort;
-  _loading: Boolean = true;
+  usersToDelete:any[]=[];
+  dataSource: MatTableDataSource<any>;
+  disableAddBtn: Boolean;
+  disableDeleteBtn: Boolean;
+  dialogRef:any;
+  displayedColumns:string[] = [
+    'last_name',
+    'first_name',
+    'user_id',
+    'action'
+  ];
+  @ViewChild(MatSort, {static: false}) sort: MatSort;
+  @ViewChildren('deleteCheckbox') private deleteCheckboxes : QueryList<any>;
+  actionSuccessful:Boolean;
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data, private groupService: GroupService, private router: Router,
-    private _snackBar: MatSnackBar) {
-    console.log('DATA-----', data);
-    this.role = localStorage.getItem('role');
-    this.fullyQualifiedName = data.fully_qualified_name;
+  constructor(@Inject(MAT_DIALOG_DATA) public data, 
+              private dialog: MatDialog,
+              private groupService: GroupService) {
+    this.group = this.data;
   }
 
   ngOnInit() {
-    this.dataLoad();
+    this.getAllUsersLists();
   }
-  loadMessageData() {
-    setTimeout(() => {
-      this.deleteMsg = false;
-      this.addMsg = false;
-      this.errorMsg = false;
-    }, 2000);
+  
 
-  }
-  dataLoad() {
-    this.filterUserList = [];
-    this.userList = [];
-    this.grpUserList = [];
-    this.emailList = [];
-    this.displayedColumns = ['last_name', 'first_name', 'user_id', 'action'];
-    if ((this.role === 'ADMIN') || (this.role === 'SUPER_ADMIN')) {
-      this.groupService.getAllUserList(true).subscribe// true implies all users will be listed
-        (res => {
-          this.userList = res.users;
-        },
-          error => {
-            console.log('There was an error while retrieving Posts !!!' + error);
-          });
+  formatAsColumnName(property) {
+    if (property === 'user_id') {
+      return 'Email';
     }
-    this.groupService.getGrpUserList(this.data.ID).subscribe
-      (res => {
-        this.grpUserList = res.users;
-        if (this.grpUserList === undefined || this.grpUserList.length === 0) {
-          this.grpUserList = [];
-        }
-        for (let j = 0; j < this.grpUserList.length; j++) {
-          this.emailList.push(this.grpUserList[j].user_id);
-        }
-        this.dataSource = new MatTableDataSource(this.grpUserList);
-        this.dataSource.sort = this.sort;
-        this.loadData();
-        this._loading = false;
-      },
-        error => {
-          this._loading = false;
-          console.log('There was an error while retrieving Posts !!!' + error);
-        });
-
-  }
-  loadData() {
-    for (let i = 0; i < this.userList.length; i++) {
-      if (!this.emailList.includes(this.userList[i].user_id)) {
-        this.filterUserList.push(this.userList[i]);
+    let formatedProperty = '';
+    const alphabets = property.split('_');
+    for (let i = 0; i < alphabets.length; i++) {
+      if (i === 0) {
+        formatedProperty = alphabets[i].split('')[0].toUpperCase() + alphabets[i].substring(1, alphabets[i].length).toLowerCase()
+      }
+      else {
+        formatedProperty += (' ' + alphabets[i].split('')[0].toUpperCase() + alphabets[i].substring(1, alphabets[i].length).toLowerCase());
       }
     }
+    return formatedProperty;
   }
-  applyFilter(filterValue: string) {
+
+  applyFilter(filterValue) {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
-  onCheked(data, userID) {
+
+  getAllUsersInfo(): Observable<any> {
+    return forkJoin([
+      this.groupService.getAllUserList(true),
+      this.groupService.getGrpUserList(this.group.ID)
+    ]);
+  }
+
+  // Get lists of all users, existing users of the Group & non-existing users of the Group
+  getAllUsersLists() {
+    this._loading = true;
+    this.getAllUsersInfo().subscribe(res=>{
+      this.usersList = res[0].users||[];
+      this.groupUsersList = res[1].users||[];
+      this.dataSource = new MatTableDataSource(this.groupUsersList);
+      this.dataSource.sort = this.sort;
+      this.filteredUsersList = this.usersList.filter(res=>{ 
+        if(!this.groupUsersList.map(user=>user.user_id).includes(res.user_id)) {return res}
+      });
+      this._loading = false;
+    }, err=>{
+      this._loading = false;
+      console.log('Could not get all users.',err);
+    });
+  }
+
+  addUser(successMsg,errorMsg) {
+    const body = {
+      "group_id": this.group.ID,
+      "user_id": this.users.value.map(user=>user.user_id)
+    }
+    this.disableAddBtn = true;
+    this.groupService.addGrpUser(this.group.ID, body).subscribe(res=>{
+      this.actionSuccessful = true;
+      this.openModal(successMsg,'30%');
+      this.resetUsers();
+      this.getAllUsersLists();
+      this.disableAddBtn = false;
+    }, err=>{
+      this.actionSuccessful = false;
+      this.disableAddBtn = false;
+      this.errorMessage = err.error.message;
+      this.openModal(errorMsg,'30%');
+      console.log('Could not delete selected users.', err);
+    });
+  }
+
+  selectForDelete(data,userId) {
     if (data.checked === true) {
-      this.checkedUsr.push(userID);
+      this.usersToDelete.push(userId);
     } else {
-      for (let i = 0; i < this.checkedUsr.length; i++) {
-        if (this.checkedUsr[i] === userID) {
-          this.checkedUsr.splice(this.checkedUsr.indexOf(userID), 1);
+      for (let i = 0; i < this.usersToDelete.length; i++) {
+        if (this.usersToDelete[i] === userId) {
+          this.usersToDelete.splice(this.usersToDelete.indexOf(userId), 1);
         }
       }
     }
-  }
-  delete() {
-    if(this.checkedUsr) {
-      const data = { 'group_id': this.data.ID, 'user_id': this.checkedUsr };
-      this.groupService.deleteGrpUser(this.data.ID, data).subscribe
-        (res => {
-          this.userList = res.users;
-          this.deleteMsg = true;
-          this.addMsg = false;
-          this.errorMsg = false;
-          this.dataLoad();
-          this.checkedUsr = [];
-          this.loadMessageData();
-        },
-          error => {
-            this.deleteMsg = false;
-            this.addMsg = false;
-            this.errorMsg = true;
-            this.eMessage = error.message;
-            this.loadMessageData();
-            console.log('There was an error while retrieving Posts !!!' + error);
-          });
-    }
-    else {
-      this.deleteMsg = false;
-      this.addMsg = false;
-      this.errorMsg = true;
-      this.eMessage = 'Please select User';
-      this.loadMessageData();
-    }
+    console.log(this.usersToDelete);
   }
 
-  addUser() {
-    const userId = [];
-    if(this.users.value) {
-      for (let i = 0; i < this.users.value.length; i++) {
-        userId.push(this.users.value[i].user_id);
-      }
-      const data = { 'group_id': this.data.ID, 'user_id': userId };
-      this.groupService.addGrpUser(this.data.ID, data).subscribe
-        (res => {
-          this.userList = res.users;
-          this.addMsg = true;
-          this.deleteMsg = false;
-          this.errorMsg = false;
-          this.dataLoad();
-          this.loadMessageData();
-        },
-          error => {
-            this.deleteMsg = false;
-            this.addMsg = false;
-            this.errorMsg = true;
-            this.eMessage = error.message;
-            this.loadMessageData();
-            console.log('There was an error while retrieving Posts !!!' + error);
-          });
+  deleteUser(successMsg,errorMsg) {
+    const body = {
+      "group_id": this.group.ID,
+      "user_id": this.usersToDelete
     }
-    else {
-      this.deleteMsg = false;
-      this.addMsg = false;
-      this.errorMsg = true;
-      this.eMessage = 'Please select User';
-      this.loadMessageData();
-    }
+    this.disableDeleteBtn = true;
+    this.groupService.deleteGrpUser(this.group.ID, body).subscribe(res=>{
+      this.actionSuccessful = true;
+      this.openModal(successMsg,'30%');
+      this.resetUsers();
+      this.getAllUsersLists();
+      this.disableDeleteBtn = false;
+    }, err=>{
+      this.actionSuccessful = false;
+      this.disableDeleteBtn = false;
+      this.errorMessage = err.error.message;
+      this.openModal(errorMsg,'30%');
+      console.log('Could not delete selected users.', err);
+    });
+  }
+
+  resetUsers() {
+    // clear users select list
+    this.users.reset();
+    // clear delete users list and selected checkboxes
+    this.usersToDelete = [];      
+    let checkboxes = this.deleteCheckboxes.toArray();
+    checkboxes.forEach(c=>c.checked = false);
+  }
+
+  openModal(templateRef,width) {
+    this.dialogRef = this.dialog.open(templateRef, {
+      width: width,
+      disableClose: true
+    });
+  }
+
+  closeDialog() {
+    this.dialogRef.close();
+  }
+  
+  ngOnDestroy() {
+    this.dialog.closeAll();
   }
 }

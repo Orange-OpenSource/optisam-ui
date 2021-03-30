@@ -4,17 +4,24 @@
 // license which can be found in the file 'License.txt' in this package distribution 
 // or at 'http://www.apache.org/licenses/LICENSE-2.0'. 
 
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { LoadingSpinnerComponent } from './loading-spinner.component';
+import { TranslateModule } from '@ngx-translate/core';
+import { CustomMaterialModule } from 'src/app/material.module';
 
 describe('LoadingSpinnerComponent', () => {
   let component: LoadingSpinnerComponent;
   let fixture: ComponentFixture<LoadingSpinnerComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ LoadingSpinnerComponent ]
+      declarations: [ LoadingSpinnerComponent ],
+      imports : [ 
+                  CustomMaterialModule,
+                  TranslateModule.forRoot()
+                ],
+      providers:[]
     })
     .compileComponents();
   }));

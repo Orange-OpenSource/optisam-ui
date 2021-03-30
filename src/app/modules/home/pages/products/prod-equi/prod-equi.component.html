@@ -2,12 +2,26 @@
   <mat-card class="example-card">
     <div class="container-fluid page-content-header">
       <div class="row">
+        <!-- Application -> Product -> Equipment -->
         <div *ngIf="path === 'applications/:key/:swidTag'" class="col-md-9 page-heading" style="display:table-cell">
-          <span class="parentNode nav-path" routerLink="/optisam/apl/applications">{{'Application'|translate}}</span> <mat-icon class="arrow_icon">arrow_forward_ios</mat-icon><span class="nav-path parentNode" [routerLink]="['/optisam/apl/applications/', appId]">{{'Product'|translate}} </span><span class="nav-path-desc">: {{this.productName}}</span>
+          <span class="parentNode nav-path" (click)="backToApplicationsPage()">{{'Application'|translate}}</span><span class="nav-path-desc"> : {{this.appName}}</span> <mat-icon class="arrow_icon">arrow_forward_ios</mat-icon><span class="nav-path parentNode" [routerLink]="['/optisam/apl/applications/', appId]">{{'Product'|translate}} </span><span class="nav-path-desc">: {{this.productName}}</span>
             <mat-icon class="arrow_icon">arrow_forward_ios</mat-icon><span class="nav-path currentNode">{{'Equipments'|translate}}</span>
         </div>
-        <div *ngIf="path !== 'applications/:key/:swidTag'" class="col-md-9 page-heading" style="display:table-cell">
-          <span class="parentNode nav-path" routerLink="/optisam/pr/products">{{'Product'|translate}}</span><span class="nav-path-desc"> : {{this.productName}}</span>
+        <!-- Application -> Instance -> Equipment -->
+        <div *ngIf="path === 'instances/:app_id/:inst_id'" class="col-md-9 page-heading" style="display:table-cell">
+          <span class="parentNode nav-path" (click)="backToApplicationsPage()">{{'Application'|translate}}</span><span class="nav-path-desc"> : {{this.appName}}</span> <mat-icon class="arrow_icon">arrow_forward_ios</mat-icon><span class="nav-path parentNode" [routerLink]="['/optisam/apl/instances/', appId]">{{'Instance'|translate}} </span><span class="nav-path-desc">: {{this.instanceID}}</span>
+            <mat-icon class="arrow_icon">arrow_forward_ios</mat-icon><span class="nav-path currentNode">{{'Equipments'|translate}}</span>
+        </div>
+        <!-- Product -> Equipment -->
+        <div *ngIf="path === 'products/equi/:swidTag'" class="col-md-9 page-heading" style="display:table-cell">
+          <span class="parentNode nav-path" (click)="backToProductsPage()">{{'Product'|translate}}</span><span class="nav-path-desc"> : {{this.productName}}</span>
+            <mat-icon class="arrow_icon">arrow_forward_ios</mat-icon><span class="nav-path currentNode">{{'Equipments'|translate}}</span>
+        </div>
+        <!-- Product -> Application -> Instance -> Equipment -->
+        <div *ngIf="path === 'apl/instances/:swidTag/:app_id/:inst_id'" class="col-md-9 page-heading" style="display:table-cell">
+          <span class="parentNode nav-path" (click)="backToProductsPage()">{{'Product'|translate}}</span><span class="nav-path-desc"> : {{this.productName}}</span>
+            <mat-icon class="arrow_icon">arrow_forward_ios</mat-icon>
+          <span class="parentNode nav-path" routerLink="['/optisam/pr/products', this.swidTag]">{{'Application'|translate}}</span><span class="nav-path-desc"> : {{this.appName}}</span> <mat-icon class="arrow_icon">arrow_forward_ios</mat-icon><span class="nav-path parentNode" [routerLink]="['/optisam/pr/instances', swidTag, appId]">{{'Instance'|translate}} </span><span class="nav-path-desc">: {{this.instanceID}}</span>
             <mat-icon class="arrow_icon">arrow_forward_ios</mat-icon><span class="nav-path currentNode">{{'Equipments'|translate}}</span>
         </div>
   
@@ -36,7 +50,9 @@
                     <ng-container *ngFor="let x of displayedrows; let colIndex = index" matColumnDef="{{x}}">
                         <mat-header-cell *matHeaderCellDef mat-sort-header> {{x}}</mat-header-cell>
                       <mat-cell *matCellDef="let element">
-                        <span *ngIf="colIndex===0">{{element[x]}} </span>
+                        <a class="mat-button-link row-anchor" *ngIf="colIndex===0" color="primary"
+                        matTooltip="{{'Click to see attribute  details'|translate}}" (click)="openDialog(element,x)">
+                        {{element[x]}} </a>
                         <span *ngIf="colIndex > 0">{{element[x]}}</span>
                       </mat-cell>
                     </ng-container>
@@ -45,10 +61,10 @@
                       <mat-row *matRowDef="let row; columns: displayedrows;" [ngClass]="moreRows? 'extendrow' :''"></mat-row>
                   </mat-table>
               </div>
-              <div id="dataUnavailableMsg" *ngIf="!_loading && displayedrows && displayedrows.length == 0">{{'No data available'|translate}}</div>
-              <app-loading-spinner *ngIf="_loading"></app-loading-spinner>
+              <div id="dataUnavailableMsg" *ngIf="!_loading && !_equipLoading && displayedrows && displayedrows.length == 0">{{'No data available'|translate}}</div>
+              <app-loading-spinner *ngIf="_loading||_equipLoading"></app-loading-spinner>
   
-        <mat-paginator [hidden]="_loading || !displayedColumns2 || (displayedrows && displayedrows.length == 0)" [length]="length" [pageSize]="page_size" [pageSizeOptions]="[10,20,30,50]"
+        <mat-paginator [hidden]="_loading ||_equipLoading || !displayedColumns2 || (displayedrows && displayedrows.length == 0)" [length]="length" [pageSize]="page_size" [pageSizeOptions]="[10,20,30,50]"
         (page)="pageEvent = getPaginatorData($event)" showFirstLastButtons>
         </mat-paginator>
         </div>

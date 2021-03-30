@@ -1,0 +1,31 @@
+.mat-column-reason {
+    flex: 0 0 40% !important;
+    width: 40% !important;
+}
+.row {
+    margin-left: 0;
+}
+.mat-table {
+    max-height: 60vh;
+    overflow: auto;
+}
+.mat-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  min-height: unset;
+  padding: unset;
+}
+.mat-card {
+    padding-bottom: 0;
+    padding-top: 0;
+}
+#noData {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+    padding: 16px;
+}
+.mat-cell, .mat-header-cell {
+    min-width: 10vw;
+    word-break: break-all;
+}

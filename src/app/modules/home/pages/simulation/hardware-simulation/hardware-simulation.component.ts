@@ -9,10 +9,10 @@ import { SharedService } from 'src/app/shared/shared.service';
 import { GroupService } from 'src/app/core/services/group.service';
 import { Subscription } from 'rxjs';
 import { EquipmentsService } from 'src/app/core/services/equipments.service';
-import { isUndefined, isNullOrUndefined } from 'util';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { ConfigurationService } from 'src/app/core/services/configuration.service';
 import { MetricService } from 'src/app/core/services/metric.service';
+import { isNullOrUndefined, isUndefined } from 'util';
 @Component({
   selector: 'app-hardware-simulation',
   templateUrl: './hardware-simulation.component.html',
@@ -49,6 +49,8 @@ export class HardwareSimulationComponent implements OnInit, OnDestroy {
   activeAttrValue:any;
   conflictingAttrFlag:Boolean;
   _loading:Boolean;
+  scopesList:any[]=[];
+  selectedScope:any;
 
   constructor(
     private sharedService: SharedService,
@@ -72,49 +74,42 @@ export class HardwareSimulationComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.getGroups();
-    this.getEquipmentList();
+    this.getScopesList();
   }
 
   // Get All Equipment types
   getEquipmentList() {
-    this.equipmentService.getTypes().subscribe((response: any) => {
-      this.equipmentList = response.equipment_types || [];
+    this._loading = true;
+    this.equipmentService.getTypes(this.selectedScope).subscribe((response: any) => {
+      this.equipmentList = (response.equipment_types || []).reverse();
       this.getEquipmentsWithConfigurations();
+      this._loading = false;
     }, (error) => {
-      console.log("Error fetching equipments list");
+      this._loading = false;
+      console.log("Error fetching equipments list", error);
     });
   }
 
-  // Get Groups
-  getGroups(groupId?: string) {
-    if (groupId) {
-      this.groupService.getChildGroups(groupId).subscribe((response: any) => {
-        this.entityList = response.groups || [];
-      }, (error) => {
-        console.log("Error fetching groups");
-      });
-    } else {
-      this.groupService.getDirectGroups().subscribe((response: any) => {
-        this.entityList = response.groups || [];
-      }, (error) => {
-        console.log("Error fetching groups");
-      });
-    }
+  getScopesList() {
+    this._loading = true;
+    this.groupService.getDirectGroups().subscribe((response: any) => {
+      response.groups.map(res=>{ res.scopes.map(s=>{this.scopesList.push(s);});});
+      this._loading = false;
+    }, (error) => {
+      this._loading = false;
+      console.log("Error fetching scopes.");
+    });
   }
 
   // Get Equipment based on identifier
   getEquipmentWithIdentifierList(templateRef) {
-    let query = '?scopeFilter.scopes=' + this.simulateObj.entity.scopes[0];
-    this.simulateObj.entity.scopes.slice(1,this.simulateObj.entity.scopes.length).forEach(scope => {
-      query += '&scopeFilter.scopes=' + scope;
-    });
+    let query = '?scopes=' + this.selectedScope;
     this.equipmentService.getEquipmentTypeWithIdentifier(this.simulateObj.equipmentType.ID, this.simulateObj.identifier, query).subscribe((response: any) => {
       this.identifierEquipment = JSON.parse(response.equipment);
       this.processEquipmentAttributes();
     }, (error) => {
       this.attributeArray = [];
-      this.openModal(templateRef);
+      this.openModal(templateRef,'30%');
       console.log("Error fetching metric");
     });
   }
@@ -146,8 +141,7 @@ export class HardwareSimulationComponent implements OnInit, OnDestroy {
 
   // Get Metrics of selected equipment type
   getEquipmentMetricListList() {
-    // this.equipmentService.getEquipmentTypeMetrics(this.simulateObj.equipmentType.type)
-    this.metricService.getMetricList().subscribe((response: any) => {
+    this.metricService.getMetricList(this.selectedScope).subscribe((response: any) => {
       this.equipmentMetricList = response.metrices || [];
     }, (error) => {
       console.log("Error fetching metric list");
@@ -172,9 +166,7 @@ export class HardwareSimulationComponent implements OnInit, OnDestroy {
         linkedAttrs:[]
       })
     })
-    // this.configurableAttributes =;
     // Get data for these attributes by calling service
-    // let query = '?scopes=1' + this.simulateObj.entity.scopes;
     for(let i=0;i<this.configurableAttributes.length;i++) {
       this.equipmentService.getEquipmentTypesAttributes(this.selectedConfigID, this.configurableAttributes[i].attribute_id).subscribe((res:any)=>{
         JSON.parse(atob(res.data)).map(res=>this.configurableAttrData.push(res));
@@ -245,7 +237,7 @@ export class HardwareSimulationComponent implements OnInit, OnDestroy {
     if(this.conflictingAttrFlag && this.activeAttrName != attrName) {
       this.tempActiveAttrName = attrName;
       this.activeAttrValue = value;
-      this.openModal(attrChangeConfirmationMsg);
+      this.openModal(attrChangeConfirmationMsg,'40%');
     }
     else {
       this.tempActiveAttrName = attrName;
@@ -284,22 +276,13 @@ export class HardwareSimulationComponent implements OnInit, OnDestroy {
 
   }
 
-  resetEntity() {
-    this.simulateObj.viewEntity = [];
-    this.simulateObj.entity = null;
-    this.getGroups();
-  }
-
   // Function for change in dropdown selection
   selectionChanged(ev: any, type: string) {
     switch (type) {
-      case 'entity':
-        this.simulateObj.entity = ev.value;
-        this.simulateObj.viewEntity.push(ev.value.name);
-        this.simulateObj.currentEntity = '';
+      case 'scope':
         this.simulateObj.editor = null;
         this.simulateObj.product = null;
-        this.getGroups(ev.value.ID);
+        this.getEquipmentList();
         break;
 
       case 'equipment':
@@ -330,7 +313,7 @@ export class HardwareSimulationComponent implements OnInit, OnDestroy {
       equip_type: this.simulateObj.equipmentType.type,
       equip_id: this.simulateObj.identifier,//this.simulateObj.equipmentType.ID,
       attributes: attributes_value,
-      // scopes: this.simulateObj.entity.scopes
+      scope: this.selectedScope,
       metric_details:[]
     };
     this.equipmentMetricList.map((res,idx)=> {
@@ -355,10 +338,11 @@ export class HardwareSimulationComponent implements OnInit, OnDestroy {
               });
             }
             if(res.sim_failure_reason) {
-              this.simulatedResults.push({
-                "metric_name" : res.metric_name,
-                "sim_failure_reason" : res.sim_failure_reason
-              });
+              // TODO: Uncomment this
+              // this.simulatedResults.push({
+              //   "metric_name" : res.metric_name,
+              //   "sim_failure_reason" : res.sim_failure_reason
+              // });
             }
             // this.simulatedResults = response.simulation_result;
           }
@@ -388,19 +372,19 @@ export class HardwareSimulationComponent implements OnInit, OnDestroy {
     // this.callRecursionSimulate(body);
   }
 
-  onlyUnique(value, index, self) { 
-    if(!isUndefined(value))
-    return self.indexOf(value) === index;
+  onlyUnique = (value, index, self) => {
+    return self.indexOf(value) === index
   }
   filterResults(ev, filter) {
-    this.filteredSimulatedResults = this.simulatedResults.filter(res => { 
-      if (filter === 'editor')  { return ((isUndefined(ev.value) || (res.product && res.product.editor === ev.value)) && (isUndefined(this.selectedProduct)||(res.product && res.product.name === this.selectedProduct))) } 
-      if (filter === 'product') { return ((isUndefined(ev.value) || (res.product && res.product.name === ev.value)) && (isUndefined(this.selectedEditor) ||(res.product && res.product.editor === this.selectedEditor))) } 
-    });
     if (filter === 'editor') {
-      this.simulatedProducts = this.simulatedResults.map(res => { if (isUndefined(ev.value) || (res.product && res.product.editor === ev.value)) return res.product.name });
+      this.selectedProduct = undefined;
+      this.simulatedProducts = this.simulatedResults.filter(res => { if ((ev.value == undefined) || (res.editor === ev.value)) return res }).map(p => p.product_name);
       this.distinctSimulatedProducts = this.simulatedProducts.filter(this.onlyUnique);
     }
+    this.filteredSimulatedResults = this.simulatedResults.filter(res => { 
+      if (filter === 'editor')  { return ((ev.value == undefined) || (res.editor === ev.value)) && ((this.selectedProduct == undefined)||(res.product_name === this.selectedProduct)) } 
+      if (filter === 'product') { return (((ev.value == undefined) || (res.product_name === ev.value)) && ((this.selectedEditor == undefined) ||(res.editor === this.selectedEditor))) } 
+    });
 
   }
 
@@ -408,9 +392,9 @@ export class HardwareSimulationComponent implements OnInit, OnDestroy {
   callRecursionSimulate(body: any) {
     if (!this.simulateHttpCount) {
       this.simulatedResults.sort((a, b) => a.delta - b.delta);
-      this.simulatedEditors = this.simulatedResults.map(res => {if(res.product) return res.product.editor});
+      this.simulatedEditors = this.simulatedResults.map(res => {if(res.editor) return res.editor});
       this.distinctSimulatedEditors = this.simulatedEditors.filter( this.onlyUnique ); 
-      this.simulatedProducts = this.simulatedResults.map(res => {if(res.product) return res.product.name});
+      this.simulatedProducts = this.simulatedResults.map(res => {if(res.product_name) return res.product_name});
       this.distinctSimulatedProducts = this.simulatedProducts.filter( this.onlyUnique );
       this.filteredSimulatedResults = this.simulatedResults.filter(()=>true);
       return false;
@@ -438,7 +422,7 @@ export class HardwareSimulationComponent implements OnInit, OnDestroy {
 
   // Check if all required parameters available for simulation
   checkValidSimulation(): boolean {
-    if (this.simulateObj.viewEntity.length === 0 || this.attributeArray.length === 0) {
+    if (this.attributeArray.length === 0) {
       return true;
     }
     // return !this.attributeArray.some(v => v.original_val != v[(v.data_type === 'FLOAT' ? 'float_val' : 'int_val')]);
@@ -454,9 +438,9 @@ export class HardwareSimulationComponent implements OnInit, OnDestroy {
     return true;
   }
 
-  openModal(templateRef) {
+  openModal(templateRef,width) {
     let dialogRef = this.dialog.open(templateRef, {
-        width: '50%',
+        width: width,
         disableClose: true
     });
   } 

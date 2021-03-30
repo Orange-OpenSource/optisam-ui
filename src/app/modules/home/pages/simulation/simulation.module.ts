@@ -15,7 +15,6 @@ import { CustomMaterialModule } from 'src/app/material.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { HardwareSimulationComponent } from './hardware-simulation/hardware-simulation.component';
 import { MetricSimulationComponent } from './metric-simulation/metric-simulation.component';
-import { PapaParseModule } from 'ngx-papaparse';
 
 @NgModule({
   declarations: [
@@ -31,7 +30,6 @@ import { PapaParseModule } from 'ngx-papaparse';
     CustomMaterialModule,
     ReactiveFormsModule,
     SharedModule,
-    PapaParseModule
   ]
 })
 export class SimulationModule { }

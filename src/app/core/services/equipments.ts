@@ -4,7 +4,7 @@
 // license which can be found in the file 'License.txt' in this package distribution 
 // or at 'http://www.apache.org/licenses/LICENSE-2.0'. 
 
-class Equipments {
+export class Equipments {
   'ID': 'string';
   'name': 'string';
       'type': 'string';

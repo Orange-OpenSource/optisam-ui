@@ -51,4 +51,9 @@ export class AccountService {
     const url = this.apiAccount + '/scopes';
     return this.http.post(url, body);
   }
+
+  getVersion() {
+    const url = 'https://optisam-meta-int.kermit-noprod-b.itn.intraorange/version.html';
+    return this.http.get(url);
+  }
 }

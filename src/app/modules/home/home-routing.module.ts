@@ -19,22 +19,23 @@ const routes: Routes = [
     children: [
       { path: 'dashboard', component: DashboardComponent },
       // { path: 'chngPassword', component: ChangePasswordComponent },
-      { path: 'apl', loadChildren: './pages/applications/applications.module#ApplicationsModule'},
-      { path: 'ma', loadChildren: './pages/metric/metrics.module#MetricsModule'},
-      { path: 'pr', loadChildren: './pages/products/products.module#ProductsModule'},
-      { path: 'eq',  loadChildren: './pages/equipments/equipments.module#EquipmentsModule'},
-      { path: 'eqm',  loadChildren: './pages/equipmenttypemanagement/equipmenttypemanagement.module#EquipmenttypemanagementModule'},
-      { path: 'ar', loadChildren: './pages/acquiredrights/acquiredrights.module#AcquiredrightsModule'},
-      { path: 'gr', loadChildren: './pages/groups/groups.module#GroupsModule'},
-      { path: 'dm', loadChildren: './pages/data-management/data-management.module#DataManagementModule'},
-      { path: 'cm', loadChildren: './pages/configuration-management/configuration-management.module#ConfigurationManagementModule'},
-      { path: 'ag', loadChildren: './pages/aggregation/aggregation.module#AggregationModule'},
-      { path: 'sm', loadChildren: './pages/scope-management/scope-management.module#ScopeManagementModule' },
+      { path: 'apl', loadChildren: () => import('./pages/applications/applications.module').then(m => m.ApplicationsModule)},
+      { path: 'ma', loadChildren: () => import('./pages/metric/metrics.module').then(m => m.MetricsModule)},
+      { path: 'pr', loadChildren: () => import('./pages/products/products.module').then(m => m.ProductsModule)},
+      { path: 'eq',  loadChildren: () => import('./pages/equipments/equipments.module').then(m => m.EquipmentsModule)},
+      { path: 'eqm',  loadChildren: () => import('./pages/equipmenttypemanagement/equipmenttypemanagement.module').then(m => m.EquipmenttypemanagementModule)},
+      { path: 'ar', loadChildren: () => import('./pages/acquiredrights/acquiredrights.module').then(m => m.AcquiredrightsModule)},
+      { path: 'gr', loadChildren: () => import('./pages/groups/groups.module').then(m => m.GroupsModule)},
+      { path: 'dm', loadChildren: () => import('./pages/data-management/data-management.module').then(m => m.DataManagementModule)},
+      { path: 'cm', loadChildren: () => import('./pages/configuration-management/configuration-management.module').then(m => m.ConfigurationManagementModule)},
+      { path: 'ag', loadChildren: () => import('./pages/aggregation/aggregation.module').then(m => m.AggregationModule)},
+      { path: 'sm', loadChildren: () => import('./pages/scope-management/scope-management.module').then(m => m.ScopeManagementModule) },
+      { path: 'om', loadChildren: () => import('./pages/obsolescence-management/obsolescence-management.module').then(m => m.ObsolescenceManagementModule) },
       { path: 'changePassword', component: ChangePasswordComponent},
       { path: 'settings', component: SettingsComponent },
       { path: 'metrics', component: MetricComponent },
-      { path: 'simulation', loadChildren: './pages/simulation/simulation.module#SimulationModule'},
-      { path: 'reports', loadChildren: './pages/reports/reports.module#ReportsModule'}
+      { path: 'simulation', loadChildren: () => import('./pages/simulation/simulation.module').then(m => m.SimulationModule)},
+      { path: 'reports', loadChildren: () => import('./pages/reports/reports.module').then(m => m.ReportsModule)}
     ]
   }
 ];

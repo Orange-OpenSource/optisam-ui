@@ -4,17 +4,30 @@
 // license which can be found in the file 'License.txt' in this package distribution 
 // or at 'http://www.apache.org/licenses/LICENSE-2.0'. 
 
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ProfileSettingsComponent } from './profile-settings.component';
+import { TranslateModule } from '@ngx-translate/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { CustomMaterialModule } from 'src/app/material.module';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('ProfileSettingsComponent', () => {
   let component: ProfileSettingsComponent;
   let fixture: ComponentFixture<ProfileSettingsComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ ProfileSettingsComponent ]
+      declarations: [ ProfileSettingsComponent ],
+      imports : [ 
+                  CustomMaterialModule,
+                  FormsModule,
+                  ReactiveFormsModule,
+                  HttpClientTestingModule, 
+                  BrowserAnimationsModule,
+                  TranslateModule.forRoot()
+                ]
     })
     .compileComponents();
   }));

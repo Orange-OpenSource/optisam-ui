@@ -1,0 +1,19 @@
+.upload-button-box {
+    margin-top: -16px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+.mat-table {
+    max-height: 70vh;
+    overflow-y: auto;
+}
+#noData {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+#refreshButton {
+    margin-right: 5px;
+    min-width: fit-content;
+}

@@ -46,3 +46,11 @@ docker-compose.yml
 # Refactoring for Github 
 ui-service.yml
 .gitlab-ci.yml
+
+# Configuration files 
+**/assets/config/dev/*
+**/assets/config/int/**/*
+**/assets/config/pprod/**/*
+**/assets/config/prod/**/*
+
+Dockerfile

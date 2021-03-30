@@ -8,7 +8,7 @@ import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { AccountService } from 'src/app/core/services/account.service';
 import { TranslateService } from '@ngx-translate/core';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { DomSanitizer } from '@angular/platform-browser';
 import { SharedService } from 'src/app/shared/shared.service';
 
@@ -92,7 +92,7 @@ export class ProfileSettingsComponent implements OnInit {
 
   openModal(templateRef, width) {
     let dialogRef = this.dialog.open(templateRef, {
-        width: width+'%',
+        width: width,
         disableClose: true
     });
   }
@@ -101,7 +101,7 @@ export class ProfileSettingsComponent implements OnInit {
     if (event.target.files && event.target.files[0]) {
       this.selectedFile = event.target.files[0];
       if(this.selectedFile.size > 1000000) {
-        this.openModal(errMsg, 30);
+        this.openModal(errMsg, '30%');
         console.log('Image too large!', this.selectedFile.size);
       }
       else {
@@ -142,11 +142,11 @@ export class ProfileSettingsComponent implements OnInit {
     this.accountService.updateProfileDetails(this.body,this.userID).subscribe(res=>{
       this.getUpdatedProfileDetails();
       this.profileForm.markAsPristine();
-      this.openModal(successMsg, 50);
+      this.openModal(successMsg, '30%');
       this.loading = false;
       console.log('Details updated successfully!')
     },(err)=> {
-      this.openModal(errorMsg, 50);
+      this.openModal(errorMsg, '30%');
       this.loading = false;
       console.log('Some error occured! ', err);
     });

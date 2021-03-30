@@ -15,12 +15,14 @@ export class SharedService {
   private _httpLoading: Subject<Boolean>;
   private _clearAdvSearch: BehaviorSubject<any>;
   private _emitProfileChange: Subject<any>;
+  public _emitScopeChange: Subject<any>;
 
   constructor() {
     this._navigationLoading = new Subject<Boolean>();
     this._httpLoading = new Subject<Boolean>();
     this._clearAdvSearch = new BehaviorSubject<any>('1');
     this._emitProfileChange = new Subject<any>();
+    this._emitScopeChange = new Subject<any>();
   }
 
   startLoading() {
@@ -61,5 +63,9 @@ export class SharedService {
 
   getChangedProfile() {
     return this._emitProfileChange.asObservable();
+  }
+
+  emitScopeChange(scope) {
+    this._emitScopeChange.next(scope);
   }
 }

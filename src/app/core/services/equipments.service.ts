@@ -9,12 +9,12 @@ import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { map, catchError } from 'rxjs/operators';
+import { Equipments } from './equipments';
 
 @Injectable({
   providedIn: 'root'
 })
 export class EquipmentsService {
-  apiUrl = environment.API_URL;
   apiConfigUrl = environment.API_CONFIG_URL;
   apiEquipUrl = environment.API_EQUIPMENT_URL;
   token = localStorage.getItem('access_token');
@@ -23,37 +23,19 @@ export class EquipmentsService {
   public errorMsg: string;
   constructor(private http: HttpClient) { }
 
-getMetaData(): Observable<Equipments[]> {
-  const url = this.apiEquipUrl + '/equipments/metadata';
-  return this.http.get<Equipments[]>(url);
-}
-getTypes(): Observable<Equipments[]> {
-  const url = this.apiEquipUrl + '/equipments/types';
-  return this.http.get<Equipments[]>(url);
-}
-getDirectGroups(): Observable<any> {
-  //  const url = this.apiUrl + 'admin/direct_groups';
-  const url = 'http://localhost:3002/direct_groups';
-  return this.http.get<any>(url);
-}
-postAccount(): Observable<any> {
-  //  const url = this.apiUrl + 'admin/accounts';
-  const url = 'http://localhost:3002/accounts';
-  return this.http.get<any>(url);
-}
+  getTypes(scope?:string): Observable<Equipments[]> {
+    let url;
+    if(scope) {
+      url = this.apiEquipUrl + '/equipments/types?scopes=' + scope;
+    }
+    else {
+      url = this.apiEquipUrl + '/equipments/types?scopes=' + localStorage.getItem('scope');
+    }   
+    return this.http.get<Equipments[]>(url);
+  }
 
 getEquipmentTypeWithIdentifier(equipmentID: string, identifier: string, query: string) {
-  const url = this.apiEquipUrl + '/equipments/' + equipmentID + '/' + identifier + query;
-  return this.http.get<any>(url);
-}
-
-getEquipmentTypeMetrics(type: string) {
-  const url = this.apiEquipUrl + '/equipments/types/' + type + '/metric';
-  return this.http.get<any>(url);
-}
-
-getEquipmentTypesMetadata(type: string) {
-  const url = this.apiConfigUrl +'/config/metadata/' + type;
+  const url = this.apiEquipUrl + '/equipments/' + equipmentID + '/equipments/' + identifier + query;
   return this.http.get<any>(url);
 }
 
@@ -63,34 +45,13 @@ getEquipmentTypesAttributes(configID: any, attrID: any) {
 }
 
 equipmentHardwareSimulation(body: any) {
-  // const url = this.apiUrl + '/equipments/types/' + body.equip_type + '/' + body.equip_id + '/metric/types/' + body.metric_type + '/' + body.metric_name;
   const url = this.apiConfigUrl + '/simulation/hardware';
   return this.http.post<any>(url, body);
 }
-// createEquipments(equipmentData): Observable<any> {
-//   const headers = new HttpHeaders({ 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + this.token });
-//   return this.http.post<any>(this.apiUrl + '/equipments/types' , equipmentData,  { headers: headers })
-//     .pipe(
-//       map(res => {
-//         this.dialogData = equipmentData;
-//         this.toasterService.showToaster('Successfully added', 3000);
-//         return res;
-//       }),
-//       catchError(this.errorHandler));
-//     }
-//     private errorHandler(error) {
-//       this.errorMsg = error.error;
-//        return throwError(this.errorMsg);
-//   }
 
-    // ADD, POST METHOD
-    // addItem(kanbanItem: KanbanItem): void {
-    //   this.httpClient.post(this.API_URL, kanbanItem).subscribe(data => {
-    //     this.dialogData = kanbanItem;
-    //     this.toasterService.showToaster('Successfully added', 3000);
-    //     },
-    //     (err: HttpErrorResponse) => {
-    //     this.toasterService.showToaster('Error occurred. Details: ' + err.name + ' ' + err.message, 8000);
-    //   });
-    //  }
+    // Dasboard- Overview
+    getEquipmentsOverview(scope) {
+      const url = this.apiEquipUrl + '/dashboard/types/equipments?scope=' + scope;
+      return this.http.get<any>(url);
+    }
 }

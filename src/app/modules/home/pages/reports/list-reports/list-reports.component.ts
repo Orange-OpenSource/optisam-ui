@@ -5,8 +5,11 @@
 // or at 'http://www.apache.org/licenses/LICENSE-2.0'. 
 
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
 import { Subscription } from 'rxjs';
-import { MatPaginator, MatSort, MatDialog, MatTableDataSource } from '@angular/material';
 import { ReportService } from 'src/app/core/services/report.service';
 import { CreateReportComponent } from '../create-report/create-report.component';
 
@@ -34,16 +37,13 @@ export class ListReportsComponent implements OnInit {
   selectedReportID:any;
   selectedReportType:any;
   isDownloading:Boolean;
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
+  @ViewChild(MatSort, {static: false}) sort: MatSort;
   constructor(private dialog: MatDialog,
-              private reportService: ReportService) { 
-    this.dialog.afterAllClosed.subscribe(res => {
-      this.getReportsData();
-    });
-  }
+              private reportService: ReportService) { }
 
   ngOnInit() {
+    this.getReportsData();
   }
 
   getReportsData() {
@@ -71,18 +71,21 @@ export class ListReportsComponent implements OnInit {
       maxHeight: '500px',
       width:'650px'
     });
+    dialogRef.afterClosed().subscribe(result => {
+      this.getReportsData();
+    });
   }
 
   setFileFormat(value, report, confirmMsg) {
     this.selectedReportID = report.report_id;
     this.selectedReportType = report.report_type;
     this.selectedFileFormat = value;
-    this.openModal(confirmMsg);
+    this.openModal(confirmMsg,'40%');
   }
 
-  openModal(templateRef) {
+  openModal(templateRef,width) {
     let dialogRef = this.dialog.open(templateRef, {
-        width: '50%',
+        width: width,
         disableClose: true
     });
   }
@@ -101,7 +104,7 @@ export class ListReportsComponent implements OnInit {
         this.isDownloading = false;
       },err=>{
         this.dialog.closeAll();
-        this.openModal(errorMsg);
+        this.openModal(errorMsg,'30%');
         this.isDownloading = false;
         console.log('Some error occured! Could not fetch report details.');
       });

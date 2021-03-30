@@ -17,6 +17,7 @@ import { SharedService } from './shared/shared.service';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
+  title:any = 'OpTISAM';
 
   constructor(
     private router: Router,

@@ -35,7 +35,7 @@
         <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="openDetails(row)"></mat-row>
       </mat-table>
       <app-loading-spinner *ngIf="_loading"></app-loading-spinner>
-      <div class="no-data" *ngIf="noDataAvailableFlag">{{'No data available'|translate}}</div>
+      <div class="no-data" *ngIf="!_loading && noDataAvailableFlag">{{'No data available'|translate}}</div>
     </div>
 
 </mat-card>

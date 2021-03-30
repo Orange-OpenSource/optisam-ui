@@ -10,3 +10,11 @@
     justify-content: flex-end;
     padding-right: 10px;
 }
+::ng-deep .errorTooltip {
+    color: #F92F2F;
+    font-weight: 500;
+    border-radius: 0;
+    background-color: white;
+    border: 2px solid #F92F2F;
+    border-left: 6px solid #F92F2F;
+}

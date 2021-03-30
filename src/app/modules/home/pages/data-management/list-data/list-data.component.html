@@ -51,13 +51,18 @@
 
         <ng-container matColumnDef="failed_records">
           <mat-header-cell *matHeaderCellDef>{{'Records Failed'|translate}}</mat-header-cell>
-          <mat-cell *matCellDef="let file"> {{file.failed_records||0}} </mat-cell>
+          <mat-cell *matCellDef="let file"> 
+            <a *ngIf="file.failed_records" class="mat-button-link" matTooltip="{{'Click here to see details of failed records'|translate}}"
+              (click)="failedRecords(file.upload_id)">
+              {{file.failed_records}}</a> 
+            <span *ngIf="!file.failed_records">0</span>
+          </mat-cell>
         </ng-container>
 
-        <ng-container matColumnDef="invalid_records">
-          <mat-header-cell *matHeaderCellDef> {{'Invalid Records'|translate}}
+        <ng-container matColumnDef="comments">
+          <mat-header-cell *matHeaderCellDef> {{'Comments'|translate}}
           </mat-header-cell>
-          <mat-cell *matCellDef="let file"> {{file.invalid_records||0}} </mat-cell>
+          <mat-cell *matCellDef="let file"> {{file.comments||''}} </mat-cell>
         </ng-container>
 
         <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>

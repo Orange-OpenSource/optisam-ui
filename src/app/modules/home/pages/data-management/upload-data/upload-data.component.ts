@@ -8,7 +8,7 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
 import { DataManagementService } from 'src/app/core/services/data-management.service';
-import { MAT_DIALOG_DATA, MatDialog } from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { DialogData } from '../../../dialogs/product-details/details';
 import { GroupService } from 'src/app/core/services/group.service';
 
@@ -20,16 +20,13 @@ import { GroupService } from 'src/app/core/services/group.service';
 export class UploadDataComponent implements OnInit {
 
   uploadForm: FormGroup;
-  // showMsg: Boolean = false;
-  // showErrorMsg: Boolean = false;
-  // errorMessage: String;
   filename: String;
   showFileErrorMessage: Boolean = false;
   loading: Boolean = false;
   activeTab: any;
   scopesList: any[]=[];
-  selectedScope: any;
   selectedFiles: any[]=[];
+  errorMsg:string;
 
   constructor(
     private fb: FormBuilder,
@@ -45,10 +42,21 @@ export class UploadDataComponent implements OnInit {
 
   ngOnInit() {
     this.uploadForm = this.fb.group({});
-    if(this.activeTab == 'Data'){
-      this.uploadForm.addControl('scope', new FormControl('',[Validators.required]))
-    }
+    this.uploadForm.addControl('scope', new FormControl('',[Validators.required]))
     this.uploadForm.addControl('file', new FormControl('',[Validators.required]));
+    if(this.activeTab=='Globaldata') {
+      this.uploadForm.addControl('isDeleteOldInventory', new FormControl(false));      
+    }
+  }
+
+  get scope() {
+    return this.uploadForm.get('scope');
+  }
+  get file() {
+    return this.uploadForm.get('file');
+  }
+  get isDeleteOldInventory() {
+    return this.uploadForm.get('isDeleteOldInventory');
   }
 
   getScopesList() {
@@ -59,29 +67,26 @@ export class UploadDataComponent implements OnInit {
     });
   }
 
-  scopeSelected(scope) {
-    this.selectedScope = scope;
-  }
-
   openModal(templateRef) {
     let dialogRef = this.dialog.open(templateRef, {
-        width: '50%',
+        width: '30%',
         disableClose: true
     });
   }
 
   uploadFile(successMsg, errorMsg, duplicateMsg, invalidFileNameMsg) {
+    this.uploadForm.markAsPristine();
     this.loading = true;
     const formData = new FormData();
-    if(this.activeTab == 'Data') {
-      formData.append('scope', this.selectedScope);
+    formData.append('scope', this.scope.value);
+    for(let i = 1; i <= this.file.value.length; i++) {
+      formData.append('file1', this.file.value[i-1]);
     }
-    for(let i = 1; i <= this.uploadForm.get('file').value.length; i++) {
-      formData.append('file'+i, this.uploadForm.get('file').value[i-1]);
+    if(this.activeTab === 'Globaldata') {
+      formData.append('isDeleteOldInventory',this.isDeleteOldInventory.value)
     }
     this.dataService.uploadDataManagementFiles(formData, this.activeTab.toLowerCase()).subscribe(data => {
       this.loading = false;
-      this.uploadForm.reset();
       this.openModal(successMsg);
     }, err => {
       this.loading = false;
@@ -93,6 +98,12 @@ export class UploadDataComponent implements OnInit {
         this.openModal(invalidFileNameMsg);
       }
       else {
+        if(err.error.trim() == 'FileExtensionValidationFailure') {
+          this.errorMsg = 'Invalid file extension. Please upload a .csv or .xlsx file.'
+        }
+        else {
+          this.errorMsg = err.error.message||'File(s) could not be uploaded.';
+        }
         this.openModal(errorMsg);
       }
     });
@@ -104,21 +115,32 @@ export class UploadDataComponent implements OnInit {
       for(let i=0; i<event.target.files.length;i++){
         this.selectedFiles.push(event.target.files[i]);
       }
-      this.uploadForm.get('file').setValue(this.selectedFiles);
+      this.file.setValue(this.selectedFiles);
     }
   }
 
   resetForm() {
     this.uploadForm.reset();
     this.selectedFiles = [];
-    this.selectedScope = '';
+    this.clearFileInput(document.getElementById("file"));
+  }
+
+  // Reset selected file
+  clearFileInput(ctrl:any) {
+    if (ctrl) {
+        ctrl.value = null;
+    }
   }
 
   backToList() {
-    if(this.activeTab=='Data') 
-    {this.router.navigate(['/optisam/dm/data']);}
-    else {
+    if(this.activeTab=='Data') {
+      this.router.navigate(['/optisam/dm/data']);
+    }
+    else if(this.activeTab=='Metadata') {
       this.router.navigate(['/optisam/dm/metadata']);
+    }
+    else {      
+      this.router.navigate(['/optisam/dm/globaldata']);
     }
   }
 

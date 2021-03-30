@@ -5,13 +5,16 @@
 // or at 'http://www.apache.org/licenses/LICENSE-2.0'. 
 
 import { Component, OnInit, ViewChild,  } from '@angular/core';
-import { MatTableDataSource, MatPaginator, MatSort, MatDialog  } from '@angular/material';
 import { EquipmentTypeManagementService } from 'src/app/core/services/equipmenttypemanagement.service';
 import { HttpClient } from '@angular/common/http';
-import { FormGroup, FormControl } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { debug } from 'util';
 import { SharedService } from 'src/app/shared/shared.service';
+import { AttributeDetailComponent } from '../../equipments/attribute-detail/attribute-detail.component';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatDialog } from '@angular/material/dialog';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
 
 
 
@@ -42,11 +45,18 @@ export class ProdEquiComponent implements OnInit {
   allType: any;
   equiId: any;
   productName: String;
+  instanceID: String;
   filterGroup: FormGroup;
   appId: any;
   path: any;
   _loading: Boolean;
+  _equipLoading: Boolean;
   moreRows:Boolean;
+  activeLink:any;
+  appName:String;
+  prodFilterKey:String;
+  aplFilterKey:String;
+  instFilterKey:String;
 
   advanceSearchModel: any = {
     title: '',
@@ -63,20 +73,51 @@ export class ProdEquiComponent implements OnInit {
     private route: ActivatedRoute,
     private sharedService: SharedService
   ) { }
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
+  @ViewChild(MatSort, {static: false}) sort: MatSort;
   swidTag: String;
 
   ngOnInit() {
     this.productName = localStorage.getItem('prodName');
+    this.instanceID = localStorage.getItem('instanceID');
+    this.appName = localStorage.getItem('appName');
     this.swidTag = (this.route.snapshot.paramMap.get('swidTag'));
-    this.path = this.route.snapshot.routeConfig.path;
+    this.appId = localStorage.getItem('key');
+    if(this.route.snapshot.routeConfig){
+      this.path = this.route.snapshot.routeConfig.path;
+    }
+    switch(this.path) {
+      case 'applications/:key/:swidTag':
+        this.prodFilterKey = this.swidTag;
+        this.aplFilterKey = this.appId;
+        this.instFilterKey = '';
+        break;
+      case 'instances/:app_id/:inst_id':
+        this.prodFilterKey = '';
+        this.aplFilterKey = this.appId;
+        this.instFilterKey = this.instanceID;
+        break;
+      case 'products/equi/:swidTag':
+        this.prodFilterKey = this.swidTag;;
+        this.aplFilterKey = '';
+        this.instFilterKey = '';
+        break;
+      case 'apl/instances/:swidTag/:app_id/:inst_id':
+        this.prodFilterKey = this.swidTag;
+        this.aplFilterKey = this.appId;
+        this.instFilterKey = this.instanceID;
+        break;
+      default:
+        this.prodFilterKey = '';
+        this.aplFilterKey = '';
+        this.instFilterKey = '';
+
+    }
     this.filterGroup = new FormGroup({});
     this._loading = true;
-    this.equipmentTypeManagementService.getAllTypes().subscribe(
+    this.equipmentTypeManagementService.getTypes().subscribe(
       (res: any) => {
-        this.allType = res.equipment_types;
-        console.log('res.equipment_types-----', res.equipment_types);
+        this.allType = (res.equipment_types||[]).reverse();
         this.MyDataSource = new MatTableDataSource(res.equipment_types);
         this.displayedColumns = [];
         const filteredData: any = this.MyDataSource.filteredData;
@@ -86,11 +127,11 @@ export class ProdEquiComponent implements OnInit {
           this.displayedColumns.push(pdata.type);
         }
         this.getEquipmentsData(this.displayedColumns2[0]);
+        this.activeLink = this.displayedColumns2[0].type;
         this._loading = false;
       },
       (err) => {
         this._loading = false;
-        // this.getEquipmentsData(this.displayedColumns2[0]);
       });
   }
 
@@ -123,12 +164,11 @@ export class ProdEquiComponent implements OnInit {
       }
     }
 
-    this._loading = true;
-    if(this.route.snapshot.routeConfig.path === "applications/:key/:swidTag") {
-      this.appId = localStorage.getItem('key');
-      this.equipmentTypeManagementService.getEquipmentDataWithFilters(this.id, this.name, 10, 1, this.swidTag, this.appId).subscribe(
+    this._equipLoading = true;
+    this.dataSource = null;
+    this.displayedrows = [];
+      this.equipmentTypeManagementService.getEquipmentDataWithFilters(this.id, 10, 1,'asc', this.name, this.prodFilterKey, this.aplFilterKey, this.instFilterKey).subscribe(
         (res:any) => {
-          this.displayedrows = [];
           const encodedEquipments = res.equipments;
           const decodedEquipments: any = atob(encodedEquipments);
           const testData = new MatTableDataSource(decodedEquipments);
@@ -145,50 +185,28 @@ export class ProdEquiComponent implements OnInit {
           if (this.dataSource[0]) {
             this.dataSource[0].ID = idValue;
           }
-          this._loading = false;
-        }
-      );
-    }
-    else {this.equipmentTypeManagementService.getProdWithEquipments(this.swidTag, this.id, this.name, 10, 1).subscribe(
-      (res: any) => {
-        this.displayedrows = [];
-        const encodedEquipments = res.equipments;
-        const decodedEquipments: any = atob(encodedEquipments);
-        const testData = new MatTableDataSource(decodedEquipments);
-        var headerList = [];
-        for(var k in JSON.parse(decodedEquipments)[0]) {headerList.push(k);}
-        if(headerList.length >= 8) {
-          this.moreRows = true;
-        } else {
-          this.moreRows = false;
-        }
-        this.dataSource = JSON.parse(this.getFilterData(testData));
-        this.length = res.totalRecords;
-         const idValue = this.dataSource[0] ? this.dataSource[0].ID : '';
-        if (this.dataSource.length > 0) {
-          delete this.dataSource[0].ID;
-          for (const x in this.dataSource[0]) {
-            this.displayedrows.push(x);
-          }
-        }
-        if (this.dataSource[0]) {
-          this.dataSource[0].ID = idValue;
-        }
-      this._loading = false;
-      });}
+          this._equipLoading = false;
+        },
+        error => {
+          this._equipLoading = false;
+          console.log('There was an error while retrieving Posts !!!' + error);
+        });
   }
   getPaginatorData(event) {
     const sort_by = this.name;
     const key = this.id;
     const page_num = event.pageIndex;
-    this.current_page_num = page_num;
+    this.current_page_num = page_num + 1;
     this.length = event.length;
     this.pageSize = event.pageSize;
-    this._loading = true;
+    this._equipLoading = true;
     const searchFilter = this.getSearchParams(this.searchFields);
-    this.equipmentTypeManagementService.getProdWithEquipments(this.swidTag, key, sort_by, this.pageSize, page_num + 1, searchFilter).subscribe(
+    this.dataSource = null;
+    this.displayedrows = [];
+
+    this.equipmentTypeManagementService.getEquipmentDataWithFilters(this.id, this.pageSize, page_num + 1, 'asc', sort_by, this.prodFilterKey, this.aplFilterKey, this.instFilterKey, searchFilter)
+    .subscribe(
       (res: any) => {
-        this.displayedrows = [];
         const encodedEquipments = res.equipments;
         const decodedEquipments: any = atob(encodedEquipments);
         const testData = new MatTableDataSource(decodedEquipments);
@@ -205,10 +223,10 @@ export class ProdEquiComponent implements OnInit {
         if (this.dataSource[0]) {
           this.dataSource[0].ID = idValue;
         }
-        this._loading = false;
+        this._equipLoading = false;
       },
       error => {
-        this._loading = false;
+        this._equipLoading = false;
         console.log('There was an error while retrieving Posts !!!' + error);
       });
   }
@@ -228,21 +246,19 @@ export class ProdEquiComponent implements OnInit {
   }
 
   applyFilter() {
-    this._loading = true;
+    this._equipLoading = true;
     const searchFilter = this.getSearchParams(this.searchFields);
     const sort_by = this.name;
     this.sort_order = localStorage.getItem('list_direction');
     this.sort_by = localStorage.getItem('list_active');
+    this.dataSource = null;
+    this.displayedrows = [];
     if (this.sort_order === '' || this.sort_order === null) {
       this.sort_order = 'asc';
     }
-    if (this.current_page_num === 0) {
-      this.current_page_num = 1;
-    }
-    this.equipmentTypeManagementService.getProdWithEquipmentSearch(this.swidTag, this.id, this.current_page_num, this.pageSize,
-      sort_by, this.sort_order, searchFilter).subscribe(
+    this.equipmentTypeManagementService.getEquipmentDataWithFilters(this.id, this.pageSize, this.current_page_num,'asc', this.name, this.prodFilterKey, this.aplFilterKey, this.instFilterKey, searchFilter)
+      .subscribe(
         (res: any) => {
-          this.displayedrows = [];
           const encodedEquipments = res.equipments;
           const decodedEquipments: any = atob(encodedEquipments);
           const testData = new MatTableDataSource(decodedEquipments);
@@ -259,20 +275,24 @@ export class ProdEquiComponent implements OnInit {
           if (this.dataSource[0]) {
             this.dataSource[0].ID = idValue;
           }
-          this._loading = false;
-        }
-      );
+          this._equipLoading = false;
+        },
+        error => {
+          this._equipLoading = false;
+          console.log('There was an error while retrieving Posts !!!' + error);
+        });
   }
   sortData(event) {
     const key = this.id;
-    this._loading = true;
+    this._equipLoading = true;
     localStorage.setItem('list_direction', event.direction);
     localStorage.setItem('list_active', event.active);
     const searchFilter = this.getSearchParams(this.searchFields);
-    this.equipmentTypeManagementService.sortEquipments(key, this.current_page_num, this.pageSize,
-      event.active, event.direction, this.swidTag, searchFilter).subscribe(
+    this.dataSource = null;
+    this.displayedrows = [];
+    this.equipmentTypeManagementService.getEquipmentDataWithFilters(this.id, this.pageSize, this.current_page_num,event.direction, event.active, this.prodFilterKey, this.aplFilterKey, this.instFilterKey,searchFilter)
+      .subscribe(
         (res: any) => {
-          this.displayedrows = [];
           const encodedEquipments = res.equipments;
           const decodedEquipments: any = atob(encodedEquipments);
           const testData = new MatTableDataSource(decodedEquipments);
@@ -287,25 +307,26 @@ export class ProdEquiComponent implements OnInit {
             }
             this.dataSource[0].ID = idValue;
           }
-          this._loading = false;
+          this._equipLoading = false;
         },
         error => {
-          this._loading = false;
+          this._equipLoading = false;
           console.log('There was an error while retrieving Posts !!!' + error);
         });
   }
-  openDialog(typeId): void {
-   /*  const dialogRef = this.dialog.open(AttributeDetailComponent, {
+  openDialog(ele,x): void {
+    const dialogRef = this.dialog.open(AttributeDetailComponent, {
       width: '1600px',
+      maxHeight: '550px',
+      disableClose: true,
       data: {
-        typeId : typeId,
+        typeId : ele.ID,
+        typeName : ele[x],
         equipName: this.equipName,
         equiId : this.equiId,
         types: this.allType
       }
     });
-    dialogRef.afterClosed().subscribe(result => {
-    }); */
   }
 
 
@@ -315,8 +336,15 @@ export class ProdEquiComponent implements OnInit {
    }
 
    advSearchTrigger(event) {
-    // console.log('trigger event => ', event);
     this.searchFields = event;
     this.applyFilter();
+  }
+  backToProductsPage() {
+    const filters = JSON.parse(localStorage.getItem('prodFilter'));
+    this.router.navigateByUrl('/optisam/pr/products', { state : { name : filters['name'], swidTag: filters['swidTag'], editor: filters['editor']} })
+  }
+  backToApplicationsPage() {
+    const filters = JSON.parse(localStorage.getItem('aplFilter'));
+    this.router.navigate(['/optisam/apl/applications'], { state : { appName: filters['appName'], owner: filters['owner'], domain: filters['domain'], risk: filters['risk'] }});
   }
 }

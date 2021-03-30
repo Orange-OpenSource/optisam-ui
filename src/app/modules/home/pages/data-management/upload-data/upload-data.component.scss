@@ -9,6 +9,9 @@
 .mat-card-title {
   font-size: 32px;
 }
+.mat-dialog-actions {
+  margin-top: -16px;
+}
 .mat-raised-button {
   box-sizing: initial;
 }
@@ -89,5 +92,24 @@
   display: flex;
   align-items: center;
 }
-
+#cancelButton {
+  margin-right: 8px;
+}
 .right-btn {text-align: right; padding: unset;}
+
+::ng-deep #scope-panel.mat-select-panel {
+  background: #fff;
+  min-width: calc(100% + 16px) !important;
+  margin-left: 8px;
+  margin-top: 36px;
+}
+
+#dropDataCheckbox {
+  padding-top: 12px;
+  display: flex;
+  align-items: flex-start;
+}
+
+::ng-deep .mat-checkbox-checked.mat-accent .mat-checkbox-background,::ng-deep .mat-checkbox-indeterminate.mat-accent .mat-checkbox-background {
+  background-color: #008AFC !important;
+}

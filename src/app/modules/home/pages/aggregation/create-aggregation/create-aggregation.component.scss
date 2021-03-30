@@ -45,11 +45,11 @@
         word-break: break-all;
     }
     .add{
-        color: #008AFC;
+        color: green;
         cursor: pointer;
     }
     .cancel{
-        color: #008AFC;
+        color: red;
         cursor: pointer;
     }
 .save-btn{
@@ -67,4 +67,13 @@
 .single-field {
     width: 49%;
     margin: 0 0px;
+}
+::ng-deep .mat-select-panel#aggrProduct-panel {
+    min-width: calc(100% + 16px) !important;
+    margin-left: 32px;
+    margin-top: 32px;
+    color: #008AFC;
+}
+::ng-deep .mat-primary .mat-pseudo-checkbox-checked, ::ng-deep .mat-primary .mat-pseudo-checkbox-indeterminate {
+    background: #008AFC;
 }

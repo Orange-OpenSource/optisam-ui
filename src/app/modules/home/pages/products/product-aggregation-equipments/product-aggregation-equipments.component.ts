@@ -5,9 +5,13 @@
 // or at 'http://www.apache.org/licenses/LICENSE-2.0'. 
 
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatSort, MatPaginator, MatTableDataSource } from '@angular/material';
 import { EquipmentTypeManagementService } from 'src/app/core/services/equipmenttypemanagement.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { AttributeDetailComponent } from '../../equipments/attribute-detail/attribute-detail.component';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatDialog } from '@angular/material/dialog';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
 
 @Component({
   selector: 'app-product-aggregation-equipments',
@@ -16,8 +20,8 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class ProductAggregationEquipmentsComponent implements OnInit {
 
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
+  @ViewChild(MatSort, {static: false}) sort: MatSort;
   advanceSearchModel: any = {
     title: '',
     primary: '',
@@ -27,43 +31,43 @@ export class ProductAggregationEquipmentsComponent implements OnInit {
   equipmentTypes: any[];
   selectedEquipment: any;
   pageSize: number;
+  pageEvent: any;
   current_page_num: number;
   searchQuery: string;
   sortQuery: string;
   aggregationName: string;
   dataSource: MatTableDataSource<any>;
-  displayedrows: string[];
+  displayedrows: string[]=[];
   length: number;
   _loading:Boolean;
+  _equipLoading:Boolean;
+  activeLink:any;
 
   constructor(
-    private router: ActivatedRoute,
+    private route: ActivatedRoute,
+    private dialog: MatDialog,
+    private router: Router,
     private equipmentTypeManagementService: EquipmentTypeManagementService,
   ) {
-    this.aggregationName = this.router.snapshot.params.agg_name;
+    if (this.route.snapshot.params) {
+      this.aggregationName = this.route.snapshot.params.agg_name;
+    }
     this.pageSize = 10;
     this.current_page_num = 1;
   }
 
   ngOnInit() {
     this._loading = true;
-    this.equipmentTypeManagementService.getAllTypes().subscribe(
+    this.equipmentTypeManagementService.getTypes().subscribe(
       (res: any) => {
-        // this.allType = res.equipment_types;
-        this.equipmentTypes = res.equipment_types || [];
+        this.equipmentTypes = (res.equipment_types || []).reverse();
         const MyDataSource = new MatTableDataSource(res.equipment_types);
-        console.log('res.equipment_types-----', res.equipment_types, MyDataSource.filteredData);
         this.selectEquipment(this.equipmentTypes[0]);
         this._loading = false;
-        /* this.MyDataSource = new MatTableDataSource(res.equipment_types);
-        this.displayedColumns = [];
-        const filteredData: any = this.MyDataSource.filteredData;
-        this.displayedColumns2 = filteredData;
-        this.MyDataSource.sort = this.sort;
-        for (const pdata of filteredData) {
-          this.displayedColumns.push(pdata.type);
-        }
-        this.getEquipmentsData(this.displayedColumns2[0]); */
+        this.activeLink = this.equipmentTypes[0].type;
+      },
+      (err) => {
+        this._loading = false;
       });
   }
 
@@ -113,7 +117,9 @@ export class ProductAggregationEquipmentsComponent implements OnInit {
   }
 
   getEquipmentsData() {
-    this._loading = true;
+    this._equipLoading = true;
+    this.dataSource = null;
+    this.displayedrows = [];
     let query = '?page_size=' + this.pageSize + '&page_num=' + this.current_page_num;
     query += '&' + this.getSearchParams();
     query += (this.sortQuery ? '&' + this.sortQuery : '&sort_order=asc&sort_by=' + this.advanceSearchModel.primary);
@@ -122,9 +128,9 @@ export class ProductAggregationEquipmentsComponent implements OnInit {
       this.dataSource = new MatTableDataSource(decodedData);
       this.length = res.totalRecords || 0;
       this.displayedrows = decodedData[0] ? Object.keys(decodedData[0]).filter(d => d !== 'ID') : [];
-      this._loading = false;
+      this._equipLoading = false;
     }, err => {
-      this._loading = false;
+      this._equipLoading = false;
       console.log('Error => ', err.error);
     });
   }
@@ -147,5 +153,24 @@ export class ProductAggregationEquipmentsComponent implements OnInit {
     // console.log('trigger event => ', event);
     this.searchFields = event;
     this.applyFilter();
+  }
+  openDialog(ele,x): void {
+    const dialogRef = this.dialog.open(AttributeDetailComponent, {
+      width: '1600px',
+      maxHeight: '550px',
+      disableClose: true,
+      data: {
+        typeId : ele.ID,
+        typeName : ele[x],
+        equipName: this.selectedEquipment.type,
+        equiId : this.selectedEquipment.ID,
+        types: this.equipmentTypes
+      }
+    });
+  }
+
+  goBackToAggregation() {
+    const filters = JSON.parse(localStorage.getItem('prodAggrFilter'));
+    this.router.navigateByUrl('/optisam/pr/products/aggregations', { state : { name : filters['name'], swidTag: filters['swidTag'], editor: filters['editor']} })
   }
 }

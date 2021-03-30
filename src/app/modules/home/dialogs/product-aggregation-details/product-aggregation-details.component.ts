@@ -5,7 +5,7 @@
 // or at 'http://www.apache.org/licenses/LICENSE-2.0'. 
 
 import { Component, OnInit, Inject, OnDestroy } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ProductService } from 'src/app/core/services/product.service';
 import { Subscription } from 'rxjs';
 import { SharedService } from 'src/app/shared/shared.service';

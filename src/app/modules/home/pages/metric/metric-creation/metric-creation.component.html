@@ -6,41 +6,50 @@
       
       <mat-card-content>
       <div class="row create-equipment">
-            <div class="col-md-3 equipments">
-              <mat-form-field class="demo-full-width" appearance="outline">
-                <input matInput (keydown)="search($event)" [value]="typeName" (keyup)="search($event)"
-                  placeholder="{{'Type Name'|translate}}" id="metricName">
-                <mat-error>
-                  {{'Type Name is required in ^[-_,A-Za-z0-9]+$ format.' | translate}}
-                </mat-error>
-              </mat-form-field>
-
-              <mat-error *ngIf="TypeNameMsg">
-                {{'Type Name Already Exist ' | translate }}
-              </mat-error>
-            </div>
-            
-            <!-- <label>{{'Source'|translate}}</label> -->
-            <div class="col-md-3 equipments">
-              <mat-form-field appearance="outline">
-                <mat-label>{{'Metric Type' | translate}}</mat-label>
-                <mat-select id="metricType" placeholder="{{'Metric Type'|translate}}" [(value)]="metricTypRe">
-                  <!-- <mat-option  (onSelectionChange)="filterAttributes($event)" [value]="select">
-                                    Select Metric type </mat-option> -->
-                  <mat-option *ngFor="let type of metricType" (onSelectionChange)="onChangeMetricType($event,type.name)"
-                    [value]="type.name">
-                    {{type.name }}</mat-option>
-                </mat-select>
-              </mat-form-field>
-            </div>
-
-            <div class="col-md-6 equipments">
-              <mat-form-field class="m-t-10">
-                <textarea id="metricDescription" class="example-full-width" matInput [value]="typeDescription" disabled></textarea>
-              </mat-form-field>
-            </div>
-            <!-- textarea disabled -->
-     </div>
+        <!-- Metric Name -->
+        <div class="col-md-3 equipments">
+          <mat-form-field class="demo-full-width" appearance="outline">
+            <input matInput (keydown)="search($event)" [value]="typeName" (keyup)="search($event)"
+              placeholder="{{'Type Name'|translate}}" id="metricName">
+            <mat-error>
+              {{'Type Name is required in ^[-_,A-Za-z0-9]+$ format.' | translate}}
+            </mat-error>
+          </mat-form-field>
+      
+          <mat-error *ngIf="TypeNameMsg">
+            {{'Type Name Already Exists' | translate }}
+          </mat-error>
+        </div>
+        <!--  Scope -->
+        <div class="col-md-3 equipments">
+          <mat-form-field appearance="outline">
+            <mat-label>{{'Scope' | translate}}</mat-label>
+            <mat-select id="scope" [(value)]="selectedscope" [disabled]="scopesList.length == 0"
+              (selectionChange)="onScopeSelected()">
+              <mat-option id="scope_option_{{i}}" *ngFor="let scope of scopesList;let i = index;" [value]="scope">{{scope}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <!-- Metric Type based on scope selected -->
+        <div class="col-md-3 equipments">
+          <mat-form-field appearance="outline">
+            <mat-label>{{'Metric Type' | translate}}</mat-label>
+            <mat-select id="metricType" placeholder="{{'Metric Type'|translate}}" [disabled]="metricType.length == 0" [(value)]="metricTypRe">
+              <mat-option *ngFor="let type of metricType" (onSelectionChange)="onChangeMetricType($event,type.name)"
+                [value]="type.name">
+                {{type.name }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      
+        <div class="col-md-3 equipments">
+          <mat-form-field class="m-t-10">
+            <textarea id="metricDescription" class="example-full-width" matInput [value]="typeDescription"
+              disabled></textarea>
+          </mat-form-field>
+        </div>
+      </div>
 
       <div *ngIf="metricTypRe && (type_id == 'Oracle_Processor' || type_id == 'Oracle_NUP')" class="row create-equipment">
           <div class="col-md-3 equipments">
@@ -66,7 +75,7 @@
               </mat-select>
             </mat-form-field>
             <mat-error *ngIf="reqAttri">
-              {{'Should have three attribute with (INT/Float)  ' | translate }}
+              {{'Selected equipment type does not have one of these: core factor, processor, or core value' | translate }}
             </mat-error>
           </div>
           
@@ -158,7 +167,7 @@
             </mat-select>
             </mat-form-field>
             <mat-error *ngIf="reqAttri">
-              {{'Should have three attribute with (INT/Float)  ' | translate }}
+              {{'Selected equipment type does not have one of these: core factor, processor, or core value' | translate }}
             </mat-error>
         </div>
 
@@ -248,7 +257,7 @@
 
         <div class="col-md-6 right-btn"> 
           <button id="createButton" type="submit" style="margin: 10px;" [disabled]="creatBtnVis || TypeNameMsg"  mat-raised-button class="btn-two"
-          (click)="onSubmit(succesCreateDialog, errorCreateDialog)">{{'Create'|translate}}</button>
+          (click)="onSubmit(succesCreateDialog, errorCreateDialog, errorChildAsParentDialog)">{{'Create'|translate}}</button>
         </div>
         
       </div>
@@ -263,7 +272,7 @@
     <p>{{'SUCCESS_METRIC_CREATE_MSG'|translate}}</p>
   </mat-dialog-content>
   <mat-dialog-actions align="center">
-     <button [mat-dialog-close]="true" mat-button cdkFocusInitial>{{'OK'|translate}}</button>
+     <button [mat-dialog-close]="true" class="btn-two" mat-button cdkFocusInitial>{{'OK'|translate}}</button>
   </mat-dialog-actions>
 </ng-template>
 <!-- Create error message -->
@@ -272,6 +281,14 @@
      <p>{{'ERROR_METRIC_CREATE_MSG'|translate}}</p>
   </mat-dialog-content>
   <mat-dialog-actions align="center">
-    <button [mat-dialog-close]="true" mat-button cdkFocusInitial>{{'OK'|translate}}</button>
+    <button [mat-dialog-close]="true" class="btn-two" mat-button cdkFocusInitial>{{'OK'|translate}}</button>
+  </mat-dialog-actions>
+</ng-template>
+<ng-template #errorChildAsParentDialog>
+  <mat-dialog-content>
+     <p>{{'Child equipment cannot be selected as a parent'|translate}}</p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="center">
+    <button [mat-dialog-close]="true" class="btn-two" mat-button cdkFocusInitial>{{'OK'|translate}}</button>
   </mat-dialog-actions>
 </ng-template>

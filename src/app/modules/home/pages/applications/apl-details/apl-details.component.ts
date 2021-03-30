@@ -5,10 +5,13 @@
 // or at 'http://www.apache.org/licenses/LICENSE-2.0'. 
 
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatPaginator, MatTableDataSource, MatSort, MatDialog } from '@angular/material';
 import { ApplicationService } from 'src/app/core/services/application.service';
 import { Router } from '@angular/router';
 import { MoreDetailsComponent } from '../../../dialogs/product-details/more-details.component';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { MatDialog } from '@angular/material/dialog';
+import { MatTableDataSource } from '@angular/material/table';
 
 
 @Component({
@@ -31,19 +34,19 @@ export class AplDetailsComponent implements OnInit {
   key: any;
 
   displayedColumns: string[] = ['swidTag', 'name', 'Editor', 'Edition', 'Version', 'totalCost', 'numOfInstances', 'numofEquipments'] ;
-  _loading: Boolean;
+  _loading: Boolean;  @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
+  @ViewChild(MatSort, {static: false}) sort: MatSort;
+
 
   constructor(private applicationservice: ApplicationService, private router: Router
     , public dialog: MatDialog) { }
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
 
   ngOnInit() {
     this._loading = true;
     this.RenderDataTable();
   }
   RenderDataTable() {
-    this.aplName = localStorage.getItem('aplName');
+    this.aplName = localStorage.getItem('appName');
     this.key = localStorage.getItem('key');
     this.applicationservice.getproductdetails(this.key,10, 1, 'name', 'asc').subscribe(
       (res: any) => {
@@ -64,7 +67,8 @@ export class AplDetailsComponent implements OnInit {
       disableClose: true,
       data: {
           datakey : value,
-          dataName : name
+          dataName : name,
+          appID : localStorage.getItem('key')
       }
     });
 
@@ -78,5 +82,10 @@ export class AplDetailsComponent implements OnInit {
     const key = localStorage.getItem('key');
     const swidTag = value.swidTag;
     this.router.navigate(['/optisam/apl/applications', key, swidTag]);
+  }
+
+  backToApplication() {
+    const filters = JSON.parse(localStorage.getItem('aplFilter'));
+    this.router.navigate(['/optisam/apl/applications'], { state : { appName: filters['appName'], owner: filters['owner'], domain: filters['domain'], risk: filters['risk'] }});
   }
 }

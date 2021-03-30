@@ -5,8 +5,7 @@
 // or at 'http://www.apache.org/licenses/LICENSE-2.0'. 
 
 import { Component, OnInit, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA } from '@angular/material';
-import { DialogData } from '../../../dialogs/product-details/details';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 import { SharedService } from 'src/app/shared/shared.service';
 import { MetricService } from 'src/app/core/services/metric.service';

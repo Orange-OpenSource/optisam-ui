@@ -14,6 +14,7 @@ import { Observable } from 'rxjs';
 })
 export class ConfigurationService {
   apiConfigUrl = environment.API_CONFIG_URL;
+  apiImportUrl = environment.API_IMPORT_URL;
 
   constructor(private http: HttpClient) { }
 
@@ -22,18 +23,18 @@ export class ConfigurationService {
     return this.http.get(url);
   }
 
+  deleteConfiguration(ConfigID): Observable<any> {
+    const url = this.apiConfigUrl +'/config/' + ConfigID;
+    return this.http.delete(url);
+  }
+// Import service
   uploadConfiguration(data: any): Observable<any> {
-    const url = this.apiConfigUrl +'/config';
+    const url = this.apiImportUrl +'/config';
     return this.http.post(url, data);
   }
 
   updateConfiguration(data:any, ConfigID): Observable<any> {
-    const url = this.apiConfigUrl + '/config/' + ConfigID;
+    const url = this.apiImportUrl + '/config/' + ConfigID;
     return this.http.put(url, data);
-  }
-
-  deleteConfiguration(ConfigID): Observable<any> {
-    const url = this.apiConfigUrl +'/config/' + ConfigID;
-    return this.http.delete(url);
   }
 }

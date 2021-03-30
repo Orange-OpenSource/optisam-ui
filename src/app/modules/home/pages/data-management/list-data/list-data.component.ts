@@ -5,17 +5,21 @@
 // or at 'http://www.apache.org/licenses/LICENSE-2.0'. 
 
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { MatTableDataSource, MatDialog, MatPaginator, MatSort } from '@angular/material';
 import { UploadDataComponent } from '../upload-data/upload-data.component';
 import { DataManagementService } from 'src/app/core/services/data-management.service';
 import { Subscription } from 'rxjs';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { MatDialog } from '@angular/material/dialog';
+import { MatTableDataSource } from '@angular/material/table';
+import { FailedRecordsDetailsComponent } from './failed-records-details/failed-records-details.component';
 
 @Component({
   selector: 'app-list-data',
   templateUrl: './list-data.component.html',
   styleUrls: ['./list-data.component.scss']
 })
-export class ListDataComponent implements OnInit, OnDestroy {
+export class ListDataComponent implements OnInit {
   subscription: Subscription;
   MyDataSource: any;
   displayedColumns: string[] = ['file_name',
@@ -25,24 +29,21 @@ export class ListDataComponent implements OnInit, OnDestroy {
                                 'total_records', 
                                 'success_records', 
                                 'failed_records',
-                                'invalid_records'
+                                'comments'
                                 ];
   _loading: Boolean = false;
   current_page_num: any = 1;
   page_size: any = 10;
   length:any;
   sortQuery: any;
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
+  @ViewChild(MatSort, {static: false}) sort: MatSort;
 
   constructor(private dialog: MatDialog,
-    private dataService: DataManagementService) {
-    this.dialog.afterAllClosed.subscribe(res => {
-      this.getListData();
-    });
-  }
+    private dataService: DataManagementService) { }
 
   ngOnInit() {
+    this.getListData();
   }
 
   getListData() {
@@ -67,8 +68,11 @@ export class ListDataComponent implements OnInit, OnDestroy {
       autoFocus: false,
       disableClose: true,
       data: 'Data',
-      maxHeight: '500px',
-      width:'390px'
+      maxHeight: '90vh',
+      width:'420px'
+    });
+    dialogRef.afterClosed().subscribe(res => {
+      this.getListData();
     });
   }
 
@@ -95,7 +99,13 @@ export class ListDataComponent implements OnInit, OnDestroy {
     this.getListData();
   }
 
-  ngOnDestroy() {
-    this.subscription.unsubscribe();
+  failedRecords(upload_id) {
+    this.dialog.open(FailedRecordsDetailsComponent, {
+      autoFocus: false,
+      disableClose: true,
+      data: {'upload_id' : upload_id},
+      maxHeight: '95vh',
+      width: '70vw'
+    });
   }
 }

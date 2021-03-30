@@ -7,7 +7,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { SharedService } from 'src/app/shared/shared.service';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { AccountService } from 'src/app/core/services/account.service';
 import { CreateScopeComponent } from '../create-scope/create-scope.component';
 

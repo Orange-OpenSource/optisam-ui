@@ -2,12 +2,12 @@
         <div class="container-fluid page-content-header">
           <div class="row">
             <div class="col-md-9 page-heading">
-              <span class="parentNode nav-path" routerLink="/optisam/pr/products">{{'Product'|translate}}</span><span class="nav-path-desc"> : {{this.prodName}}</span>
+              <span class="parentNode nav-path" (click)="backToProductsPage()">{{'Product'|translate}}</span><span class="nav-path-desc"> : {{this.prodName}}</span>
                 <mat-icon class="arrow_icon">arrow_forward_ios</mat-icon><span class="currentNode nav-path">{{'Applications'|translate}}</span>
             </div>
 
             <div class="col-md-3 search-div">
-              <app-advance-search [advanceSearchModel]="advanceSearchModel" (advFilterEvent)="advSearchTrigger($event)"></app-advance-search>       
+              <app-advance-search [advanceSearchModel]="advanceSearchModel" [existingFilterFields]="searchFields" (advFilterEvent)="advSearchTrigger($event)"></app-advance-search>       
             </div>
           </div>
         </div>
@@ -43,8 +43,9 @@
               <ng-container matColumnDef="num_of_equipments">
                 <mat-header-cell *matHeaderCellDef mat-sort-header="num_of_equipments"> {{'Equipment Count'|translate}}</mat-header-cell>
                 <mat-cell *matCellDef="let product">
-                  <a *ngIf="product.num_of_equipments" class="mat-button-link" >
-                    {{product.num_of_equipments}} </a>
+                  <!-- <a *ngIf="product.num_of_equipments" class="mat-button-link" > -->
+                  <span *ngIf="product.num_of_equipments">{{product.num_of_equipments}}</span>
+                  <!-- </a> -->
                   <span *ngIf="!product.num_of_equipments">0</span>
                 </mat-cell>
               </ng-container>

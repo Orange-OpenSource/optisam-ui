@@ -10,7 +10,7 @@
       "prefix": "app",
       "schematics": {
         "@schematics/angular:component": {
-          "styleext": "scss"
+          "style": "scss"
         }
       },
       "architect": {
@@ -24,8 +24,7 @@
             "tsConfig": "src/tsconfig.app.json",
             "assets": [
               "src/favicon.png",
-              "src/assets",
-              "src/configuration"
+              { "glob": "**/*", "input": "src/assets/", "ignore": ["src/assets/config/**"], "output": "/assets/" }
             ],
             "styles": [
               "./node_modules/bootstrap/dist/css/bootstrap.min.css",
@@ -35,7 +34,13 @@
               "./node_modules/jquery/dist/jquery.min.js",
               "./node_modules/popper.js/dist/umd/popper.min.js",
               "./node_modules/bootstrap/dist/js/bootstrap.min.js"
-             ]
+            ],
+            "allowedCommonJsDependencies": [
+              "util",
+              "hammerjs",
+              "jspdf-autotable",
+              "jspdf"
+            ]
           },
           "configurations": {
             "production": {

@@ -2,8 +2,8 @@
     <div class="container-fluid page-content-header">
       <div class="row">
         <div class="col-md-9 page-heading">
-          <span class="parentNode" routerLink="/optisam/pr/products/aggregations">{{'Product Aggregation'|translate}}:</span><span>{{aggregationName}}
-            </span> <mat-icon>arrow_forward_ios</mat-icon> <span class="currentNode">{{'Applications'|translate}}</span>
+          <span class="parentNode nav-path" (click)="goBackToAggregation()">{{'Product Aggregation'|translate}}</span><span class="nav-path-desc"> : {{aggregationName}}</span>
+            <mat-icon class="arrow_icon">arrow_forward_ios</mat-icon><span class="currentNode nav-path">{{'Applications'|translate}}</span>
         </div>
 
         <div class="col-md-3 search-div">
@@ -25,6 +25,7 @@
                 </div>
                   <mat-cell *matCellDef="let product"> 
                     <div [ngSwitch]="column">
+                      <span *ngSwitchCase="'num_of_equipments'">{{(product[column] || 0)}}</span>
                       <span *ngSwitchDefault>{{(product[column] || '-')}}</span> 
                     </div>
                   </mat-cell>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         ,
@@ -33,7 +34,7 @@
           <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
           <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
         </mat-table>
-        <!-- <app-loading-spinner *ngIf="_loading"></app-loading-spinner> -->
+        <app-loading-spinner *ngIf="_loading && !productAggregationAppData"></app-loading-spinner>
         <mat-paginator  [length]="length" [pageSize]="page_size" [pageSizeOptions]="[10,20,30,50]"
         (page)="getPaginatorData($event)" showFirstLastButtons>
     </mat-paginator>

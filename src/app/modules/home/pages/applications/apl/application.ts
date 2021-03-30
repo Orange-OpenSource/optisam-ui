@@ -17,7 +17,7 @@ export interface AdvanceSearch {
   other: AdvanceOtherFields[];
 }
 
-interface AdvanceOtherFields {
+export interface AdvanceOtherFields {
   key: string;
   label: string;
 }

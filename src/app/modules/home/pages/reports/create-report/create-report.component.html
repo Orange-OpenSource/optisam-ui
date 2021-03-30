@@ -31,7 +31,7 @@
         </div>
       </div>
 
-      <div *ngIf="selectedReportType === 'compliance' || selectedReportType === 'ProductEquipments'" class="row">
+      <div *ngIf="selectedReportType === 'Compliance' || selectedReportType === 'ProductEquipments'" class="row">
         <div class="col-md-6">
           <mat-form-field appearance="outline">
             <mat-label>{{'Editor' | translate}}</mat-label>
@@ -87,7 +87,7 @@
     <p>{{'SUCCESS_REPORT_CREATE_MSG'|translate}}</p>
   </mat-dialog-content>
   <mat-dialog-actions align="center">
-    <button [mat-dialog-close]="true" mat-button cdkFocusInitial>{{'OK'|translate}}</button>
+    <button [mat-dialog-close]="true" class="btn-two" mat-button cdkFocusInitial>{{'OK'|translate}}</button>
   </mat-dialog-actions>
 </ng-template>
 <!-- Create error message -->
@@ -96,6 +96,6 @@
     <p>{{'ERROR_REPORT_CREATE_MSG'|translate}}</p>
   </mat-dialog-content>
   <mat-dialog-actions align="center">
-    <button [mat-dialog-close]="true" mat-button cdkFocusInitial>{{'OK'|translate}}</button>
+    <button [mat-dialog-close]="true" class="btn-two" mat-button cdkFocusInitial>{{'OK'|translate}}</button>
   </mat-dialog-actions>
 </ng-template>

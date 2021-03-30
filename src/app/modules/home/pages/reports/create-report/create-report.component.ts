@@ -5,8 +5,7 @@
 // or at 'http://www.apache.org/licenses/LICENSE-2.0'. 
 
 import { Component, OnInit } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialog } from '@angular/material';
-import { DialogData } from '../../../dialogs/product-details/details';
+import { MatDialog } from '@angular/material/dialog';
 import { GroupService } from 'src/app/core/services/group.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ProductService } from 'src/app/core/services/product.service';
@@ -89,7 +88,7 @@ export class CreateReportComponent implements OnInit {
     this.editorsList = [];
     this.productsList = [];
     this.reportForm.markAsPristine();
-    if(this.reportType.value && (this.reportType.value.report_type_name == 'compliance' || this.reportType.value.report_type_name == 'ProductEquipments')) {
+    if(this.reportType.value && (this.reportType.value.report_type_name == 'Compliance' || this.reportType.value.report_type_name == 'ProductEquipments')) {
       this.reportForm.addControl('editor', new FormControl(null,[Validators.required]));
       this.reportForm.addControl('product', new FormControl(null,[Validators.required]));
       if(this.reportType.value.report_type_name == 'ProductEquipments') {
@@ -115,7 +114,7 @@ export class CreateReportComponent implements OnInit {
     this.reportForm.removeControl('product');
     this.reportForm.removeControl('equipmentType');
     this.selectedReportType = this.reportType.value.report_type_name;
-    if(this.reportType.value.report_type_name == 'compliance' || this.reportType.value.report_type_name == 'ProductEquipments') {
+    if(this.reportType.value.report_type_name == 'Compliance' || this.reportType.value.report_type_name == 'ProductEquipments') {
       this.reportForm.addControl('editor', new FormControl(null,[Validators.required]));
       this.reportForm.addControl('product', new FormControl(null,[Validators.required]));
       if(this.reportType.value.report_type_name == 'ProductEquipments') {
@@ -161,8 +160,8 @@ export class CreateReportComponent implements OnInit {
   // Get list of equipment types
   getEquipTypes() {
     this._loading = true;
-    this.equipmentService.getAllTypes().subscribe((res:any) => {
-        this.equipmentTypesList = res.equipment_types || [];
+    this.equipmentService.getTypes(this.scope.value).subscribe((res:any) => {
+        this.equipmentTypesList = (res.equipment_types || []).reverse();
         this._loading = false;
       },(error) => {
         this._loading = false;
@@ -173,7 +172,7 @@ export class CreateReportComponent implements OnInit {
   createReport(successMsg, errorMsg) {
     this.reqInProgress = true;
     let body;
-    if(this.reportType.value.report_type_name == 'compliance') {  
+    if(this.reportType.value.report_type_name == 'Compliance') {  
       body = {
         "scope"           : this.scope.value,
         "report_type_id"  : this.reportType.value.report_type_id,

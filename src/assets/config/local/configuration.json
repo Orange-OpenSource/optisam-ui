@@ -1,0 +1,14 @@
+{
+    "env": "local",
+    "license": "localhost:6081",
+    "simulation":"localhost:6082",
+    "account": "localhost:6083",
+    "auth": "localhost:6084",
+    "import": "localhost:6085",
+    "dps": "localhost:6086",
+    "application":"localhost:6087",
+    "product":"localhost:6088",
+    "metric":"localhost:6089",
+    "equipment":"localhost:6091",
+    "report":"localhost:6092"
+}

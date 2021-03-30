@@ -5,7 +5,9 @@
 // or at 'http://www.apache.org/licenses/LICENSE-2.0'. 
 
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatTableDataSource, MatPaginator, MatSort } from '@angular/material';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ProductService } from 'src/app/core/services/product.service';
 
@@ -29,7 +31,6 @@ export class ProdAplComponent implements OnInit {
   saveSelectedOwner: string;
   current_page_num: any;
   filteringOrder: any;
-  appnamePlaceholder: any;
   ownerPlaceholder: any;
   prodName: any;
   swidTag:any;
@@ -46,18 +47,26 @@ export class ProdAplComponent implements OnInit {
     ]
   };
   searchFields: any = {};
+  @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
+  @ViewChild(MatSort, {static: false}) sort: MatSort;
 
-  constructor(private productservice: ProductService, private router: Router, private route: ActivatedRoute) { }
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
-  ngOnInit() {
+  constructor(private productservice: ProductService, private router: Router, private route: ActivatedRoute) {
     this._loading = true;
-    this.current_page_num = 1;
-    this.RenderDataTable();
-  }
-  RenderDataTable() {
     this.swidTag = (this.route.snapshot.paramMap.get('swidTag'));
     this.prodName = localStorage.getItem('prodName');
+    this.current_page_num = 1;
+    const state = window.history.state;
+    if(state['appName'] != undefined || state['owner'] != undefined) {
+      this.searchFields = state;
+      this.applyFilter();
+    }
+    else {        
+      this.RenderDataTable();
+    }
+   }
+  ngOnInit() { }
+
+  RenderDataTable() {
     this.productservice.getprodApplications(this.swidTag, 10, 1, 'asc', 'name').subscribe(
       (res: any) => {
         this.MyDataSource = new MatTableDataSource(res.applications);
@@ -163,19 +172,23 @@ export class ProdAplComponent implements OnInit {
   clearFilter() {
     this.saveSelectedAppName  = undefined;
     this.saveSelectedOwner = undefined;
-    this.appnamePlaceholder = null;
-    this.ownerPlaceholder = null;
      this.applyFilter();
   }
   productInstances(app_id, appName) {
     const swidTag = (this.route.snapshot.paramMap.get('swidTag'));
     localStorage.setItem('appName', appName);
+    localStorage.setItem('key', app_id);
+    localStorage.setItem('aplFilter', JSON.stringify(this.searchFields));
     this.router.navigate(['/optisam/pr/instances', swidTag, app_id]);
   }
 
   advSearchTrigger(event) {
-    // console.log('trigger event => ', event);
     this.searchFields = event;
     this.applyFilter();
+  }
+
+  backToProductsPage() {
+    const filters = JSON.parse(localStorage.getItem('prodFilter'));
+    this.router.navigateByUrl('/optisam/pr/products', { state : { name : filters['name'], swidTag: filters['swidTag'], editor: filters['editor']} })
   }
 }

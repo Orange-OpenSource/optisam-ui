@@ -32,7 +32,7 @@
         <div class="horizontal single-field">
           <mat-form-field appearance="outline">
             <mat-label>{{'AGGREGATIONS.TEXTS.PRODUCT' | translate}}</mat-label>
-            <mat-select formControlName="product_names"
+            <mat-select id="products" formControlName="product_names"
               [disabled]="prodLoading || productList.length === 0"
               (selectionChange)="getProductsList()" multiple>
               <mat-option *ngFor="let product of productList;" [value]="product.product_name">{{product.product_name}}</mat-option>
@@ -77,7 +77,7 @@
 <mat-dialog-actions align="center">
   <button mat-raised-button class="btn-four" mat-dialog-close [disabled]="_loading">{{'Cancel' | translate}}</button>
   <button mat-raised-button class="btn-three" [disabled]="_loading || (noChangesMadeFlag && this.updateForm.pristine)" (click)="setFormData()">{{'Reset' | translate}}</button>
-  <button mat-raised-button class="confirm-btn btn-two" (click)="confirm(succesAggrUpdateDialog,errorAggrUpdateDialog)" [disabled]="_loading || (noChangesMadeFlag && this.updateForm.pristine)">
+  <button mat-raised-button class="confirm-btn btn-two" (click)="confirm(succesAggrUpdateDialog,errorAggrUpdateDialog)" [disabled]="_loading || updateForm.invalid|| (noChangesMadeFlag && updateForm.pristine) || selectedSwidList.length === 0">
     <span *ngIf="_loading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
     {{'Update' | translate}}
   </button>
@@ -87,7 +87,7 @@
       <p>{{'UPDATE_AGGR_SUCCESS'|translate}}</p>
   </mat-dialog-content>
   <mat-dialog-actions align="center">
-      <button [mat-dialog-close]="true" mat-button cdkFocusInitial>{{'OK'|translate}}</button>
+      <button [mat-dialog-close]="true" class="btn-two" mat-button cdkFocusInitial>{{'OK'|translate}}</button>
     </mat-dialog-actions>
 </ng-template>
 <ng-template #errorAggrUpdateDialog>
@@ -95,6 +95,6 @@
       <p>{{'UPDATE_AGGR_ERROR'|translate}}</p>
   </mat-dialog-content>
   <mat-dialog-actions align="center">
-      <button [mat-dialog-close]="true" mat-button cdkFocusInitial>{{'OK'|translate}}</button>
+      <button [mat-dialog-close]="true" class="btn-two" mat-button cdkFocusInitial>{{'OK'|translate}}</button>
     </mat-dialog-actions>
 </ng-template>

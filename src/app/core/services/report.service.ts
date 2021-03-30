@@ -26,12 +26,12 @@ export class ReportService {
   }
   
   getListOfReports(query):Observable<any> {
-    const url = this.reportUrl + '/reports' + query;
+    const url = this.reportUrl + '/reports' + query + '&scope=' + localStorage.getItem('scope');
     return this.http.get(url);
   }
 
   getReportById(reportID):Observable<any> {
-    const url = this.reportUrl + '/reports/' + reportID;
+    const url = this.reportUrl + '/reports/' + reportID + '?scope=' + localStorage.getItem('scope');
     return this.http.get(url);
   }
 
@@ -81,7 +81,7 @@ export class ReportService {
       this._isDownloading.next(true);
     }
     else if(format == 'PDF') {
-      var doc = new jsPDF();
+      var doc = new jsPDF('landscape');
       var col = headerList;
       var rows = [];
       var contentBody = typeof data != 'object' ? JSON.parse(data) : data
@@ -99,13 +99,11 @@ export class ReportService {
                       body : rows,
                       theme: 'grid',
                       styles: {
-                        fontSize: 5
-                      },
-                      columnStyles: {
-                        text: {
-                          autoSize : true
-                        }
-                      } 
+                        overflow: 'linebreak',
+                        cellWidth: 'auto',
+                        minCellWidth: 14,
+                        fontSize: 7
+                      }  
                     });
       doc.save(filename + '.pdf');
       this._isDownloading.next(true);

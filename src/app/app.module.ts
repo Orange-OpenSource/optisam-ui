@@ -23,16 +23,15 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { ApplicationService } from './core/services/application.service';
 import { AccountService } from './core/services/account.service';
 import { MoreDetailsComponent } from './modules/home/dialogs/product-details/more-details.component';
-import { AcquiredrightsService } from './core/services/acquiredrights.service';
 import { EquipmentTypeManagementService } from './core/services/equipmenttypemanagement.service';
 import {  AuthInterceptorService, UnauthorisedInterceptor } from './core/interceptors/auth.interceptor';
 import { LoaderService } from './core/services/loader.service';
 import { LoaderInterceptor } from './core/interceptors/loader.interceptor';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { DynamicDatabase } from './modules/home/pages/groups/groupmangement/groupmangement.component';
 import { ConfigurationServiceService } from './configuration-service/configuration-service.service';
-import { MatPaginatorModule } from '@angular/material';
 import { SharedModule } from './shared/shared.module';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
   declarations: [
@@ -52,6 +51,7 @@ import { SharedModule } from './shared/shared.module';
     BrowserAnimationsModule,
     MatProgressSpinnerModule,
     MatPaginatorModule,
+    MatIconModule,
     SharedModule,
     TranslateModule.forRoot({
       loader: {
@@ -73,7 +73,7 @@ import { SharedModule } from './shared/shared.module';
       multi: true
     },
     AuthService, LoaderService, ProductService, AuthGuard, ApplicationService,
-     AccountService, AcquiredrightsService, EquipmentTypeManagementService,
+     AccountService, EquipmentTypeManagementService,
     {
         provide: HTTP_INTERCEPTORS,
         useClass: AuthInterceptorService,

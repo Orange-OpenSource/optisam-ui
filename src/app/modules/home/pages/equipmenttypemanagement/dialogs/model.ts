@@ -6,11 +6,11 @@
 
 export class RequiredJSONFormat {
   ID: String = '';
-  id: String = '';
   type: String = '';
   parent_id: String = '';
   metadata_id: String = '';
   attributes: Attribute[];
+  scopes:String[] = [];
 }
 
 export class Attribute {

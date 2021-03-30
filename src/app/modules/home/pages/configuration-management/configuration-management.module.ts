@@ -12,7 +12,6 @@ import { ConfigurationManagementRoutingModule } from './configuration-management
 import { ConfigurationManagementComponent } from './configuration-management.component';
 import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
-import { PapaParseModule } from 'ngx-papaparse';
 import { ConfigurationSimulationComponent } from './configuration-simulation/configuration-simulation.component';
 import { ConfigurationsListComponent } from './configurations-list/configurations-list.component';
 import { SharedModule } from 'src/app/shared/shared.module';
@@ -27,7 +26,6 @@ import { EditConfigurationComponent } from './edit-configuration/edit-configurat
     TranslateModule,
     FormsModule,
     ReactiveFormsModule,
-    PapaParseModule,
     SharedModule
   ]
 })
