@@ -1,10 +1,4 @@
-// Copyright (C) 2019 Orange
-// 
-// This software is distributed under the terms and conditions of the 'Apache License 2.0'
-// license which can be found in the file 'License.txt' in this package distribution 
-// or at 'http://www.apache.org/licenses/LICENSE-2.0'. 
-
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { UploadDataComponent } from '../upload-data/upload-data.component';
 import { DataManagementService } from 'src/app/core/services/data-management.service';
 import { Subscription } from 'rxjs';
@@ -13,34 +7,45 @@ import { MatSort } from '@angular/material/sort';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { FailedRecordsDetailsComponent } from './failed-records-details/failed-records-details.component';
+import { ActivatedRoute } from '@angular/router';
+import { allowedScopes } from '@core/util/common.functions';
 
 @Component({
   selector: 'app-list-data',
   templateUrl: './list-data.component.html',
-  styleUrls: ['./list-data.component.scss']
+  styleUrls: ['./list-data.component.scss'],
 })
 export class ListDataComponent implements OnInit {
   subscription: Subscription;
   MyDataSource: any;
-  displayedColumns: string[] = ['file_name',
-                                'status', 
-                                'uploaded_by', 
-                                'uploaded_on', 
-                                'total_records', 
-                                'success_records', 
-                                'failed_records',
-                                'comments'
-                                ];
+  displayedColumns: string[] = [
+    'file_name',
+    'status',
+    'uploaded_by',
+    'uploaded_on',
+    'total_records',
+    'success_records',
+    'failed_records',
+    'comments',
+  ];
   _loading: Boolean = false;
   current_page_num: any = 1;
-  page_size: any = 10;
-  length:any;
+  page_size: any = 50;
+  length: any;
   sortQuery: any;
-  @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
-  @ViewChild(MatSort, {static: false}) sort: MatSort;
+  globalFileId: string;
+  @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
+  @ViewChild(MatSort, { static: false }) sort: MatSort;
 
-  constructor(private dialog: MatDialog,
-    private dataService: DataManagementService) { }
+  constructor(
+    private dialog: MatDialog,
+    private route: ActivatedRoute,
+    private dataService: DataManagementService
+  ) {
+    if (route.snapshot.params['globalFileId']) {
+      this.globalFileId = route.snapshot.params['globalFileId'];
+    }
+  }
 
   ngOnInit() {
     this.getListData();
@@ -49,18 +54,26 @@ export class ListDataComponent implements OnInit {
   getListData() {
     this._loading = true;
     this.MyDataSource = null;
-    let query = '?page_num=' + this.current_page_num + '&page_size=' + this.page_size;
-    this.sortQuery = (this.sortQuery ? this.sortQuery : '&sort_order=desc&sort_by=uploaded_on');
-    query += this.sortQuery;   
-    this.subscription = this.dataService.getUploadedData(query).subscribe(res => {
-      this.MyDataSource = new MatTableDataSource(res.uploads);
-      this.MyDataSource.sort = this.sort;
-      this.length = res.totalRecords;
-      this._loading = false;
-    },err => {
-      console.log('Data details could not be fetched!', err);
-      this._loading = false;
-    });
+    let query =
+      '?page_num=' + this.current_page_num + '&page_size=' + this.page_size;
+    this.sortQuery = this.sortQuery
+      ? this.sortQuery
+      : '&sort_order=desc&sort_by=uploaded_on';
+    query += this.sortQuery;
+    this.subscription = this.dataService
+      .getUploadedData(query, this.globalFileId)
+      .subscribe(
+        (res) => {
+          this.MyDataSource = new MatTableDataSource(res.uploads);
+          this.MyDataSource.sort = this.sort;
+          this.length = res.totalRecords;
+          this._loading = false;
+        },
+        (err) => {
+          console.log('Data details could not be fetched!', err);
+          this._loading = false;
+        }
+      );
   }
 
   uploadDataFiles() {
@@ -69,9 +82,9 @@ export class ListDataComponent implements OnInit {
       disableClose: true,
       data: 'Data',
       maxHeight: '90vh',
-      width:'420px'
+      width: '420px',
     });
-    dialogRef.afterClosed().subscribe(res => {
+    dialogRef.afterClosed().subscribe((res) => {
       this.getListData();
     });
   }
@@ -103,9 +116,13 @@ export class ListDataComponent implements OnInit {
     this.dialog.open(FailedRecordsDetailsComponent, {
       autoFocus: false,
       disableClose: true,
-      data: {'upload_id' : upload_id},
+      data: { upload_id: upload_id },
       maxHeight: '95vh',
-      width: '70vw'
+      width: '70vw',
     });
+  }
+
+  get allowedScope(): boolean {
+    return allowedScopes();
   }
 }

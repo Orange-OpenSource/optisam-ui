@@ -1,9 +1,3 @@
-// Copyright (C) 2019 Orange
-// 
-// This software is distributed under the terms and conditions of the 'Apache License 2.0'
-// license which can be found in the file 'License.txt' in this package distribution 
-// or at 'http://www.apache.org/licenses/LICENSE-2.0'. 
-
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { UploadDataComponent } from '../upload-data/upload-data.component';
 import { DataManagementService } from 'src/app/core/services/data-management.service';
@@ -16,47 +10,56 @@ import { MatTableDataSource } from '@angular/material/table';
 @Component({
   selector: 'app-list-metadata',
   templateUrl: './list-metadata.component.html',
-  styleUrls: ['./list-metadata.component.scss']
+  styleUrls: ['./list-metadata.component.scss'],
 })
 export class ListMetadataComponent implements OnInit {
   subscription: Subscription;
   MyDataSource: any;
-  displayedColumns: string[] = ['file_name',
-                                'status', 
-                                'uploaded_by', 
-                                'uploaded_on'
-                                ];
+  displayedColumns: string[] = [
+    'file_name',
+    'status',
+    'uploaded_by',
+    'uploaded_on',
+  ];
   _loading: Boolean = false;
   current_page_num: any = 1;
-  page_size: any = 10;
-  length:any;
+  page_size: any = 50;
+  length: any;
   sortQuery: any;
-  @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
-  @ViewChild(MatSort, {static: false}) sort: MatSort;
-                                
-  constructor(private dialog: MatDialog,
-    private dataService: DataManagementService) { }
+  @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
+  @ViewChild(MatSort, { static: false }) sort: MatSort;
 
-  ngOnInit() { 
+  constructor(
+    private dialog: MatDialog,
+    private dataService: DataManagementService
+  ) {}
+
+  ngOnInit() {
     this.getListData();
   }
 
   getListData() {
-      this._loading = true;
-      this.MyDataSource = null;
-      let query = '?page_num=' + this.current_page_num + '&page_size=' + this.page_size;
-      this.sortQuery = (this.sortQuery ? this.sortQuery : '&sort_order=desc&sort_by=uploaded_on');
-      query += this.sortQuery; 
-    
-      this.subscription = this.dataService.getUploadedMetadata(query).subscribe(res => {
-      this.MyDataSource = new MatTableDataSource(res.uploads);
-      this.MyDataSource.sort = this.sort;
-      this.length = res.totalRecords;
-      this._loading = false;
-    },err => {
-      console.log('Data details could not be fetched!', err);
-      this._loading = false;
-    });
+    this._loading = true;
+    this.MyDataSource = null;
+    let query =
+      '?page_num=' + this.current_page_num + '&page_size=' + this.page_size;
+    this.sortQuery = this.sortQuery
+      ? this.sortQuery
+      : '&sort_order=desc&sort_by=uploaded_on';
+    query += this.sortQuery;
+
+    this.subscription = this.dataService.getUploadedMetadata(query).subscribe(
+      (res) => {
+        this.MyDataSource = new MatTableDataSource(res.uploads);
+        this.MyDataSource.sort = this.sort;
+        this.length = res.totalRecords;
+        this._loading = false;
+      },
+      (err) => {
+        console.log('Data details could not be fetched!', err);
+        this._loading = false;
+      }
+    );
   }
 
   uploadDataFiles() {
@@ -65,13 +68,13 @@ export class ListMetadataComponent implements OnInit {
       disableClose: true,
       data: 'Metadata',
       maxHeight: '90vh',
-      width:'420px'
+      width: '420px',
     });
-    dialogRef.afterClosed().subscribe(res => {
+    dialogRef.afterClosed().subscribe((res) => {
       this.getListData();
     });
   }
-  
+
   sortData(ev) {
     if (!ev.direction) {
       return false;
@@ -98,5 +101,4 @@ export class ListMetadataComponent implements OnInit {
   ngOnDestroy() {
     // this.subscription.unsubscribe();
   }
-
 }

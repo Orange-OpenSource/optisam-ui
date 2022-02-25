@@ -1,9 +1,3 @@
-// Copyright (C) 2019 Orange
-// 
-// This software is distributed under the terms and conditions of the 'Apache License 2.0'
-// license which can be found in the file 'License.txt' in this package distribution 
-// or at 'http://www.apache.org/licenses/LICENSE-2.0'. 
-
 import { Component, OnInit, Inject } from '@angular/core';
 import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -29,27 +23,25 @@ export class AddComponent implements OnInit {
   selected = [];
   prntChckStats: Boolean = false;
   errorMsg: String = '';
-  scopesList: any[] = [];
-  selectedScope: any[] = [];
+  selectedScope: any;
   reqInProgress: Boolean;
 
-  constructor(private dialogRef: MatDialogRef<AddComponent>,
-              private equipmentTypeService: EquipmentTypeManagementService,
-              private groupService: GroupService,
-              private dialog: MatDialog,
-              @Inject(MAT_DIALOG_DATA) private data: RequiredJSONFormat
-            ) { }
+  constructor(private equipmentTypeService: EquipmentTypeManagementService,
+              private dialog: MatDialog
+            ) { 
+              this.selectedScope = localStorage.getItem('scope');
+            }
 
   ngOnInit() {
-    this.getScopes();
     this.initForm();
+    this.getAttributes();
+    this.getTypes();
   }
 
   initForm() {
     this.createForm = new FormGroup({
       'type': new FormControl(null, [Validators.required, Validators.minLength(1), Validators.pattern(/^[-_,A-Za-z0-9]+$/)]),
       'from': new FormControl(null, [Validators.required]),
-      'scope': new FormControl(null, [Validators.required]),
       'root': new FormControl(null),
       'attribute': new FormArray([])
     });
@@ -59,9 +51,6 @@ export class AddComponent implements OnInit {
   }
   get from() {
     return this.createForm.get('from');
-  }
-  get scope() {
-    return this.createForm.get('scope');
   }
   get root() {
     return this.createForm.get('root');
@@ -78,21 +67,9 @@ export class AddComponent implements OnInit {
     const typeNamesList = (this.types.length > 0) ? this.types.map(eq => eq.type) : [];
     return typeNamesList.includes(value.trim());
   }
-  // Get data
-  getScopes() {
-    this.groupService.getDirectGroups().subscribe((response: any) => {
-      response.groups.map(res => { res.scopes.map(s => { this.scopesList.push(s); }); });
-    }, (error) => {
-      console.log("Error fetching groups");
-    });
-  }
-  onScopeSelected() {
-    this.selectedScope.push(this.scope.value);
-    this.getAttributes();
-    this.getTypes();
-  }
+
   getTypes() { //TODO: scope based equipment types fetch
-    this.equipmentTypeService.getTypes(this.scope.value).subscribe(
+    this.equipmentTypeService.getTypes(this.selectedScope).subscribe(
       (res: any) => {
         this.types = (res.equipment_types || []).reverse();
       },
@@ -101,7 +78,7 @@ export class AddComponent implements OnInit {
       });
   }
   getAttributes() {
-    this.equipmentTypeService.getMetaData(this.scope.value).subscribe(
+    this.equipmentTypeService.getMetaData(this.selectedScope).subscribe(
       (res: any) => {
         this.metaData = res.metadata || [];
       },
@@ -113,6 +90,7 @@ export class AddComponent implements OnInit {
   filterAttributes(ID) {
     if (ID.isUserInput) {
       this.selectedAttributes = this.metaData.filter(x => x.ID === ID.source.value).map(x => x.attributes);
+      this.selectedAttributes.forEach(sa => sa.sort());
     }
   }
   // On mapped_to select
@@ -237,7 +215,7 @@ export class AddComponent implements OnInit {
     attributeData.type = form_data.type;
     attributeData.metadata_id = form_data.from;
     attributeData.attributes = form_data.attribute;
-    attributeData.scopes = this.selectedScope;
+    attributeData.scopes = [this.selectedScope];
     if (form_data) {
       this.equipmentTypeService.createEquipments(attributeData)
         .subscribe(res => {

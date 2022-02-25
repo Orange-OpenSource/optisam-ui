@@ -1,43 +1,74 @@
 <mat-card>
-    <div class="container-fluid page-content-header">
-      <div class="row">
-        <div class="col-md-9 page-heading">
-          <span class="parentNode nav-path" (click)="goBackToAggregation()">{{'Product Aggregation'|translate}}</span><span class="nav-path-desc"> : {{aggregationName}}</span>
-            <mat-icon class="arrow_icon">arrow_forward_ios</mat-icon><span class="currentNode nav-path">{{'Applications'|translate}}</span>
-        </div>
+  <div class="container-fluid page-content-header">
+    <div class="row">
+      <div class="col-md-9 page-heading">
+        <span class="parentNode nav-path" (click)="goBackToAggregation()">{{
+          "Product Aggregation" | translate
+        }}</span
+        ><span class="nav-path-desc"> : {{ aggregationName }}</span>
+        <mat-icon class="arrow_icon">arrow_forward_ios</mat-icon
+        ><span class="currentNode nav-path">{{
+          "Applications" | translate
+        }}</span>
+      </div>
 
-        <div class="col-md-3 search-div">
-          <app-advance-search [advanceSearchModel]="advanceSearchModel" (advFilterEvent)="advSearchTrigger($event)"></app-advance-search>       
-        </div>
+      <div class="col-md-3 search-div">
+        <app-advance-search
+          [advanceSearchModel]="advanceSearchModel"
+          (advFilterEvent)="advSearchTrigger($event)"
+        ></app-advance-search>
       </div>
     </div>
+  </div>
 
-    <mat-card-content>
-      <div class="mat-elevation-z8">
-        <mat-table [dataSource]="productAggregationAppData" matSort (matSortChange)="sortData($event)">
+  <mat-card-content>
+    <div class="mat-elevation-z8">
+      <mat-table
+        [dataSource]="productAggregationAppData"
+        matSort
+        (matSortChange)="sortData($event)"
+      >
+        <ng-container
+          matColumnDef="{{ column }}"
+          *ngFor="let column of displayedColumns"
+        >
+          <div *ngIf="sortColumn.indexOf(column) !== -1">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>
+              {{ tableKeyLabelMap[column] }}
+            </mat-header-cell>
+          </div>
+          <div *ngIf="sortColumn.indexOf(column) === -1">
+            <mat-header-cell *matHeaderCellDef>
+              {{ tableKeyLabelMap[column] }}
+            </mat-header-cell>
+          </div>
+          <mat-cell *matCellDef="let product">
+            <div [ngSwitch]="column">
+              <span *ngSwitchCase="'num_of_equipments'">{{
+                product[column] || 0
+              }}</span>
+              <span *ngSwitchDefault>{{ product[column] || "-" }}</span>
+            </div>
+          </mat-cell>
+          ,
+        </ng-container>
 
-            <ng-container matColumnDef="{{column}}" *ngFor="let column of displayedColumns">
-                <div *ngIf="sortColumn.indexOf(column) !== -1">
-                  <mat-header-cell *matHeaderCellDef mat-sort-header> {{tableKeyLabelMap[column]}} </mat-header-cell>
-                </div>
-                <div *ngIf="sortColumn.indexOf(column) === -1">
-                  <mat-header-cell *matHeaderCellDef> {{tableKeyLabelMap[column]}} </mat-header-cell>
-                </div>
-                  <mat-cell *matCellDef="let product"> 
-                    <div [ngSwitch]="column">
-                      <span *ngSwitchCase="'num_of_equipments'">{{(product[column] || 0)}}</span>
-                      <span *ngSwitchDefault>{{(product[column] || '-')}}</span> 
-                    </div>
-                  </mat-cell>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         ,
-              </ng-container>
-
-          <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
-          <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
-        </mat-table>
-        <app-loading-spinner *ngIf="_loading && !productAggregationAppData"></app-loading-spinner>
-        <mat-paginator  [length]="length" [pageSize]="page_size" [pageSizeOptions]="[10,20,30,50]"
-        (page)="getPaginatorData($event)" showFirstLastButtons>
-    </mat-paginator>
-      </div>
-    </mat-card-content>
+        <mat-header-row
+          *matHeaderRowDef="displayedColumns; sticky: true"
+        ></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+      </mat-table>
+      <app-loading-spinner
+        *ngIf="_loading && !productAggregationAppData"
+      ></app-loading-spinner>
+      <mat-paginator
+        [length]="length"
+        [pageSize]="page_size"
+        [pageSizeOptions]="[50, 100, 200]"
+        (page)="getPaginatorData($event)"
+        showFirstLastButtons
+      >
+      </mat-paginator>
+    </div>
+  </mat-card-content>
 </mat-card>

@@ -5,10 +5,11 @@
         <th>{{'SKU' | translate}}</th>
         <th>{{'Metrics' | translate}}</th>
         <th>{{'Computed licenses' | translate}}</th>
+        <th>{{'Computation Details' | translate}}</th>
         <th>{{'Acquired Licenses' | translate}}</th>
         <th>{{'Delta(Number)' | translate}}</th>
-        <th>{{'Delta(€)' | translate}}</th>
-        <th>{{'Total Cost(€)' | translate}}</th>
+        <th>{{'Delta' | translate}}</th>
+        <th>{{'Total Cost' | translate}}</th>
       </tr>
     </thead>
     <tbody *ngIf="acquireRights">
@@ -16,14 +17,25 @@
         <td>{{item.SKU}}</td>
         <td>{{item.metric}}</td>
         <td>{{item.numCptLicences||0}}</td>
+        <td>
+          <span class="error-msg" *ngIf="item.metricNotDefined">
+            {{ "Metric not Defined" }}</span>
+          <span *ngIf="!item.metricNotDefined">
+            {{ item.computedDetails || "-" }}
+          </span>
+        </td>
         <td>{{item.numAcqLicences||0}}</td>
         <td>
           <span class="greenText" *ngIf="(item.deltaNumber||0)>=0">{{item.deltaNumber||0}}</span>
-          <span class="redText" *ngIf="(item.deltaNumber||0) < 0" matTooltip="{{'The product is not compliant'|translate}}!" matTooltipClass="errorTooltip">{{item.deltaNumber}}</span>
+          <span class="redText" *ngIf="(item.deltaNumber||0) < 0"
+            matTooltip="{{'The product is not compliant'|translate}}!"
+            matTooltipClass="errorTooltip">{{item.deltaNumber}}</span>
         </td>
         <td>
           <span class="greenText" *ngIf="(item.deltaCost||0)>=0">{{(item.deltaCost||0)|formatCost}}</span>
-          <span class="redText" *ngIf="(item.deltaCost||0) < 0" matTooltip="{{'The product is not compliant'|translate}}!" matTooltipClass="errorTooltip">{{item.deltaCost|formatCost}}</span>
+          <span class="redText" *ngIf="(item.deltaCost||0) < 0"
+            matTooltip="{{'The product is not compliant'|translate}}!"
+            matTooltipClass="errorTooltip">{{item.deltaCost|formatCost}}</span>
         </td>
         <td>{{(item.totalCost||0)|formatCost}}</td>
       </tr>

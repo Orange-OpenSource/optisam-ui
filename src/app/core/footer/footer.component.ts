@@ -1,9 +1,3 @@
-// Copyright (C) 2019 Orange
-// 
-// This software is distributed under the terms and conditions of the 'Apache License 2.0'
-// license which can be found in the file 'License.txt' in this package distribution 
-// or at 'http://www.apache.org/licenses/LICENSE-2.0'. 
-
 import { Component, OnInit } from '@angular/core';
 
 @Component({
@@ -12,8 +6,8 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./footer.component.scss']
 })
 export class FooterComponent implements OnInit {
-  version:any= localStorage.getItem('version');
-  
+  version:string = localStorage.getItem('version');
+  copyright:string = localStorage.getItem('copyright');
   constructor() { }
 
   ngOnInit() {

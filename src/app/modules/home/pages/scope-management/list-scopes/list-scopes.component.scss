@@ -12,7 +12,7 @@
 }
 
 .mat-table {
-    max-height: 350px;
+    max-height: 80vh;
     overflow-y: scroll;
 }
 .add-btn {   
@@ -25,3 +25,10 @@
 .mat-button-link {
     cursor: auto;
 }
+.action-icon{
+    cursor: pointer;
+    color: #008AFC;
+    height: 20px;
+    width: 20px;
+    font-size: 20px;
+  }

@@ -1,4 +1,4 @@
-<div class="error-div" *ngIf="errorMsg"><span>Error: {{errorMsg}}</span></div>
+<!-- <div class="error-div" *ngIf="errorMsg"><span>Error: {{errorMsg}}</span></div> -->
 <mat-card>
   <mat-card-title color="primary" class="page-heading">
     {{'Create New Equipment'|translate}}
@@ -7,7 +7,7 @@
     <form [formGroup]="createForm">
       <div class="row create-equipment">
         <!-- Type Name -->
-        <div class="col-md-3 field-left">
+        <div class="col-md-4 field-left">
           <mat-form-field class="demo-full-width" appearance="outline">
             <mat-label>{{'Type Name' | translate}}</mat-label>
             <input matInput placeholder="{{'Type Name'|translate}}" id="type" formControlName="type">
@@ -22,24 +22,11 @@
             {{'Type Name already exists' | translate}}
           </mat-error>
         </div>
-        <!--  Scope -->
-        <div class="col-md-3 field-center">
-          <mat-form-field appearance="outline">
-            <mat-label>{{'Scope' | translate}}</mat-label>
-            <mat-select id="scope" formControlName="scope" [disabled]="scopesList.length == 0" (selectionChange)="onScopeSelected()">
-              <mat-option id="scope_option_{{i}}" *ngFor="let scope of scopesList;let i = index;"
-                [value]="scope">{{scope}}</mat-option>
-            </mat-select>
-            <mat-error *ngIf="scope.invalid && (scope.dirty || scope.touched) && scope.errors.required">
-              {{'Scope is mandatory' | translate}}
-            </mat-error>
-          </mat-form-field>
-        </div>
         <!-- Source -->
-        <div class="col-md-3 field-center">
+        <div class="col-md-4 field-center">
           <mat-form-field appearance="outline">
             <mat-label>{{'Source' | translate}}</mat-label>
-            <mat-select id="source" placeholder="{{'Source?'|translate}}" #name [formControlName]="'from'"  [disabled]="scopesList.length === 0 || metaData.length === 0">
+            <mat-select id="source" placeholder="{{'Source?'|translate}}" #name [formControlName]="'from'"  [disabled]="metaData.length === 0">
               <mat-option *ngFor="let type of metaData" (onSelectionChange)="filterAttributes($event)" [value]="type.ID">
                 {{type.name }}</mat-option>
             </mat-select>
@@ -49,10 +36,10 @@
           </mat-form-field>
         </div>
         <!-- Parent -->
-        <div class="col-md-3 field-right">
+        <div class="col-md-4 field-right">
           <mat-form-field appearance="outline">
             <mat-label>{{'Parent' | translate}}</mat-label>
-            <mat-select id="root" placeholder="{{'Parent'|translate}}" [disabled]="(scope.value && scope.value.length===0)||types.length === 0" [formControlName]="'root'">
+            <mat-select id="root" placeholder="{{'Parent'|translate}}" [disabled]="types.length === 0" [formControlName]="'root'">
               <mat-option>-- {{'Select' | translate}} --</mat-option>
               <mat-option *ngFor="let type of types" (click)="onSelect(type.ID)" [value]="type.ID">{{type.type }}
               </mat-option>

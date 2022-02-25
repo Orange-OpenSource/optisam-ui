@@ -1,9 +1,3 @@
-// Copyright (C) 2019 Orange
-// 
-// This software is distributed under the terms and conditions of the 'Apache License 2.0'
-// license which can be found in the file 'License.txt' in this package distribution 
-// or at 'http://www.apache.org/licenses/LICENSE-2.0'. 
-
 import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { EditComponent } from './edit.component';
@@ -18,26 +12,37 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 describe('EditComponent', () => {
   let component: EditComponent;
   let fixture: ComponentFixture<EditComponent>;
-  const attributes = [{ "ID": "x101a", "name": "abc_name", "data_type": "STRING", "primary_key": true, "displayed": true, "searchable": true, "mapped_to": "abc_name" }];
+  const attributes = [
+    {
+      ID: 'x101a',
+      name: 'abc_name',
+      data_type: 'STRING',
+      primary_key: true,
+      displayed: true,
+      searchable: true,
+      mapped_to: 'abc_name',
+    },
+  ];
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [EditComponent],
-      imports: [
-        ReactiveFormsModule,
-        CustomMaterialModule,
-        HttpClientTestingModule,
-        BrowserAnimationsModule,
-        TranslateModule.forRoot()
-      ],
-      providers: [
-        EquipmentTypeManagementService,
-        { provide: MatDialogRef, useValue: {} },
-        { provide: MAT_DIALOG_DATA, useValue: {} }
-      ]
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [EditComponent],
+        imports: [
+          ReactiveFormsModule,
+          CustomMaterialModule,
+          HttpClientTestingModule,
+          BrowserAnimationsModule,
+          TranslateModule.forRoot(),
+        ],
+        providers: [
+          EquipmentTypeManagementService,
+          { provide: MatDialogRef, useValue: {} },
+          { provide: MAT_DIALOG_DATA, useValue: {} },
+        ],
+      }).compileComponents();
     })
-      .compileComponents();
-  }));
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(EditComponent);
@@ -52,63 +57,81 @@ describe('EditComponent', () => {
   it('root field should be empty if no parent is specified already', () => {
     const rootValue = component.root.value;
     expect(rootValue).toBe(null);
-  })
+  });
 
   it('root field should be pre-populated if parent is specified already', () => {
     component.root.setValue('Abc');
     fixture.detectChanges();
     const rootValue = component.root.value;
     expect(rootValue).toBe('Abc');
-  })
+  });
 
   it('list of existing attributes should be visible', () => {
     component.attributes = attributes;
     fixture.detectChanges();
-    const attrListHeading = fixture.nativeElement.querySelector('mat-card-title');
+    const attrListHeading =
+      fixture.nativeElement.querySelector('mat-card-title');
     const header = fixture.nativeElement.querySelectorAll('mat-header-cell');
     expect(attrListHeading.innerText).toBe('Attribute List');
     expect(header[0].innerText).toBe('Name');
-  })
+  });
 
   it('modify button should be disabled if no changes are made', () => {
-    const modifyBtn = fixture.nativeElement.querySelector('button#modifyButton');
+    const modifyBtn = fixture.nativeElement.querySelector(
+      'button#modifyButton'
+    );
     expect(modifyBtn.disabled).toBe(true);
-  })
+  });
 
   it('modify button should be enabled if valid changes are made', () => {
     component.root.setValue('Abc');
-    const addAttrButton = fixture.nativeElement.querySelector('button#addAttrButton');
+    component.metaData = ['xyz', 'def'];
+    fixture.detectChanges();
+    const addAttrButton = fixture.nativeElement.querySelector(
+      'button#addAttrButton'
+    );
     addAttrButton.click();
-    component.attribute_form.setValue([{
-      'data_type': 'string',
-      'displayed': true,
-      'mapped_to': 'xyz',
-      'name': 'abc_name',
-      'searchable': true,
-      'parent_identifier':true
-    }]);
+    component.attribute_form.setValue([
+      {
+        data_type: 'string',
+        displayed: true,
+        mapped_to: 'xyz',
+        name: 'abc_name',
+        searchable: true,
+        parent_identifier: true,
+      },
+    ]);
     component.attributeForm.markAsDirty();
     fixture.detectChanges();
-    const modifyBtn = fixture.nativeElement.querySelector('button#modifyButton');
+    const modifyBtn = fixture.nativeElement.querySelector(
+      'button#modifyButton'
+    );
     expect(modifyBtn.disabled).toBe(false);
-  })
+  });
 
   it('reset button should clear all the entered values', () => {
     component.root.setValue('Abc');
-    const addAttrButton = fixture.nativeElement.querySelector('button#addAttrButton');
+    component.metaData = ['xyz', 'def'];
+    fixture.detectChanges();
+    const addAttrButton = fixture.nativeElement.querySelector(
+      'button#addAttrButton'
+    );
     addAttrButton.click();
-    component.attribute_form.setValue([{
-      'data_type': 'string',
-      'displayed': true,
-      'mapped_to': 'xyz',
-      'name': 'abc_name',
-      'searchable': true,
-      'parent_identifier':true
-    }]);
+    component.attribute_form.setValue([
+      {
+        data_type: 'string',
+        displayed: true,
+        mapped_to: 'xyz',
+        name: 'abc_name',
+        searchable: true,
+        parent_identifier: true,
+      },
+    ]);
     component.attributeForm.markAsDirty();
-    const resetButton = fixture.nativeElement.querySelector('button#resetButton');
+    const resetButton =
+      fixture.nativeElement.querySelector('button#resetButton');
     resetButton.click();
     fixture.detectChanges();
     expect(component.attribute_form.pristine).toBe(true);
-  })
+  });
 });

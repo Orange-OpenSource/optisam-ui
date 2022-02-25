@@ -2,7 +2,7 @@
   <input id="adv-search-input" matInput [(ngModel)]="filterFields[model.primary]" placeholder="{{model.title |translate}}"
     autocomplete="off" (keyup)="onFocusOut()" (keydown.enter)="pressEnter()" >
 
-  <button id="search" mat-button matSuffix mat-icon-button aria-label="Search" (click)="applyFilter()" [disabled]="!filterFields[model.primary] || filterFields[model.primary].length < 3">
+  <button id="search" mat-button matSuffix mat-icon-button aria-label="Search" (click)="applyFilter()" [disabled]="!filterFields[model.primary]">
     <mat-icon>search</mat-icon>
   </button>
   <button id="clear" mat-button matSuffix mat-icon-button aria-label="Clear" (click)="clearFilter()"

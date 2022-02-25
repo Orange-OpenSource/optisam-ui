@@ -1,9 +1,3 @@
-// Copyright (C) 2019 Orange
-// 
-// This software is distributed under the terms and conditions of the 'Apache License 2.0'
-// license which can be found in the file 'License.txt' in this package distribution 
-// or at 'http://www.apache.org/licenses/LICENSE-2.0'. 
-
 import { Component, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { SharedService } from 'src/app/shared/shared.service';
@@ -23,22 +17,26 @@ export class ListScopesComponent implements OnInit {
   displayedColumns: string[] = [
     'scope_code',
     'scope_name',
+    'scope_type',
     'created_by',
     'created_on',
-    'groups'
+    'groups',
+    'action'
   ];
   _loading: Boolean = true;
+  _deleteLoading: Boolean;
   role:any;
+  scopeToDelete:string;
+  errorMessage:string;
 
   constructor(
-    private sharedService: SharedService,
     private accountService: AccountService,
     public dialog: MatDialog) { 
-      dialog.afterAllClosed.subscribe((res)=>this.getScopesList());
+      this.role = localStorage.getItem('role');
     }
 
   ngOnInit() {
-    this.role = localStorage.getItem('role');
+    this.getScopesList();
   }
 
   getScopesList() {
@@ -59,6 +57,41 @@ export class ListScopesComponent implements OnInit {
       autoFocus: false,
       disableClose: true,
       maxHeight: '90vh'
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      const successEvent = dialogRef.componentInstance.actionSuccessful;
+      if(successEvent){
+        this.getScopesList();
+      }
+    });
+  }
+
+  deleteScopeConfirmation(scope, templateRef) {
+    this.scopeToDelete = scope.scope_code;
+    this.openModal(templateRef,'40%');
+  }
+
+  deleteScope(successMsg, errorMsg) {
+    this._deleteLoading = true;
+    this.accountService.deleteScope(this.scopeToDelete).subscribe(res => {
+      this.dialog.closeAll();
+      this._deleteLoading = false;
+      this.openModal(successMsg,'30%');
+      console.log('Successfully Deleted! ', this.scopeToDelete);
+    },
+      (error) => {
+        this.dialog.closeAll();
+        this._deleteLoading = false;
+        this.errorMessage = error.error.message || 'Some error occured! Could not delete scope';
+        this.openModal(errorMsg,'30%');
+        console.log('Error occured while deleting user!');
+      });
+  }
+
+  openModal(templateRef,width) {
+    let dialogRef = this.dialog.open(templateRef, {
+        width: width,
+        disableClose: true
     });
   }
 

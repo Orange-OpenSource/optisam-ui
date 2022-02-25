@@ -1,9 +1,3 @@
-// Copyright (C) 2019 Orange
-// 
-// This software is distributed under the terms and conditions of the 'Apache License 2.0'
-// license which can be found in the file 'License.txt' in this package distribution 
-// or at 'http://www.apache.org/licenses/LICENSE-2.0'. 
-
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { GroupService } from 'src/app/core/services/group.service';
 import { EditUserComponent } from '../edit-user/edit-user.component';
@@ -30,16 +24,18 @@ export class UserListViewComponent implements OnInit {
   editRoleFlag: Boolean = false;
   selectedUser: string ='';
   selectedRole: string = '';
+  _deleteInProgress:boolean;
+  errorMsg:string;
 
   constructor(private groupService:GroupService,
     public dialog: MatDialog) {
     this.role = localStorage.getItem('role');
-    dialog.afterAllClosed.subscribe((res)=>this.loadData());
    }
 
   ngOnInit() {
     this.roles.push('ADMIN');
     this.roles.push('USER');
+    this.loadData();
   }
 
   loadData() {
@@ -51,7 +47,6 @@ export class UserListViewComponent implements OnInit {
       this.groupService.getAllUserList(false).subscribe//false implies users will be listed depending on some conditions
       (res => {
         this.userList = res.users;
-        console.log('User data : ',this.userList);
         this.dataSource = new MatTableDataSource(this.userList);
         this.dataSource.sort = this.sort;
         this._loading = false;
@@ -76,17 +71,25 @@ export class UserListViewComponent implements OnInit {
       maxHeight:"500px",
       disableClose: true
     });
+    dialogRef.afterClosed().subscribe(result => {
+      const successEvent = dialogRef.componentInstance.actionSuccessful;
+      if(successEvent){
+        this.loadData();
+      }
+    });
   }
   editUser(user) {
-    this.openDialog(user);
-  }
-
-  openDialog(value): void {
     const dialogRef = this.dialog.open(EditUserComponent, {
       maxHeight: '500px',
       disableClose: true,
       data: {
-          datakey : value
+          datakey : user
+      }
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      const successEvent = dialogRef.componentInstance.actionSuccessful;
+      if(successEvent){
+        this.loadData();
       }
     });
   }
@@ -97,14 +100,17 @@ export class UserListViewComponent implements OnInit {
   }
 
   deleteUser(successMsg, errorMsg) {
-    console.log('user to delete', this.userToDelete.user_id);
+    this._deleteInProgress = true;
     this.groupService.deleteUser(this.userToDelete.user_id).subscribe(res => {
+      this.dialog.closeAll();
       this.openModal(successMsg,'30%');
-      console.log('Successfully Deleted! ', this.userToDelete);
+      this._deleteInProgress = false;
     },
       (error) => {
+        this.dialog.closeAll();
+        this.errorMsg = error.error.message||'Some error occured! User could not be deleted';
         this.openModal(errorMsg,'30%');
-        console.log('Error occured while deleting user!');
+        this._deleteInProgress = false;
       });
   }
   

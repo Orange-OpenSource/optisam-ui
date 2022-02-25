@@ -1,9 +1,3 @@
-// Copyright (C) 2019 Orange
-// 
-// This software is distributed under the terms and conditions of the 'Apache License 2.0'
-// license which can be found in the file 'License.txt' in this package distribution 
-// or at 'http://www.apache.org/licenses/LICENSE-2.0'. 
-
 export const environment = {
   production: true,
   name: 'production',
@@ -17,5 +11,6 @@ export const environment = {
   API_PRODUCT_URL: 'product',
   API_METRIC_URL: 'metric',
   API_EQUIPMENT_URL: 'equipment',
-  API_REPORT_URL: 'report'
+  API_REPORT_URL: 'report',
+  API_META_URL: 'meta'
 };

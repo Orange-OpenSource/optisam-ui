@@ -1,62 +1,107 @@
 <mat-card>
-        <div class="container-fluid page-content-header">
-          <div class="row">
-            <div class="col-md-9 page-heading">
-              <span class="parentNode nav-path" (click)="backToProductsPage()">{{'Product'|translate}}</span><span class="nav-path-desc"> : {{this.prodName}}</span>
-                <mat-icon class="arrow_icon">arrow_forward_ios</mat-icon><span class="currentNode nav-path">{{'Applications'|translate}}</span>
-            </div>
+  <div class="container-fluid page-content-header">
+    <div class="row">
+      <div class="col-md-9 page-heading">
+        <span class="parentNode nav-path" (click)="backToProductsPage()">{{
+          "Product" | translate
+        }}</span
+        ><span class="nav-path-desc"> : {{ this.prodName }}</span>
+        <mat-icon class="arrow_icon">arrow_forward_ios</mat-icon
+        ><span class="currentNode nav-path">{{
+          "Applications" | translate
+        }}</span>
+      </div>
 
-            <div class="col-md-3 search-div">
-              <app-advance-search [advanceSearchModel]="advanceSearchModel" [existingFilterFields]="searchFields" (advFilterEvent)="advSearchTrigger($event)"></app-advance-search>       
-            </div>
-          </div>
-        </div>
+      <div class="col-md-3 search-div">
+        <app-advance-search
+          [advanceSearchModel]="advanceSearchModel"
+          [existingFilterFields]="searchFields"
+          (advFilterEvent)="advSearchTrigger($event)"
+        ></app-advance-search>
+      </div>
+    </div>
+  </div>
 
-        <mat-card-content>
-          <div class="mat-elevation-z8">
-            <mat-table [dataSource]="MyDataSource" matSort (matSortChange)="sortData($event)">
+  <mat-card-content>
+    <div class="mat-elevation-z8">
+      <mat-table
+        [dataSource]="MyDataSource"
+        matSort
+        (matSortChange)="sortData($event)"
+      >
+        <ng-container matColumnDef="name">
+          <mat-header-cell *matHeaderCellDef mat-sort-header="name"
+            >{{ "Application name" | translate }}
+          </mat-header-cell>
+          <mat-cell *matCellDef="let product">
+            {{ product.name || 0 }}
+          </mat-cell>
+        </ng-container>
 
-              <ng-container matColumnDef="name">
-                <mat-header-cell *matHeaderCellDef mat-sort-header="name">{{'Application name' | translate}}
-                </mat-header-cell>
-                <mat-cell *matCellDef="let product">
-                    {{product.name ||0}}
-                </mat-cell>
-              </ng-container>
+        <ng-container matColumnDef="owner">
+          <mat-header-cell *matHeaderCellDef mat-sort-header="owner">{{
+            "Owner" | translate
+          }}</mat-header-cell>
+          <mat-cell *matCellDef="let product"
+            >{{ product.owner || 0 }}
+          </mat-cell>
+        </ng-container>
 
-              <ng-container matColumnDef="owner" >
-                  <mat-header-cell *matHeaderCellDef mat-sort-header="owner">{{'Owner' | translate}}</mat-header-cell>
-                  <mat-cell *matCellDef="let product">{{product.owner||0}}
-                  </mat-cell>
-                </ng-container>
+        <ng-container matColumnDef="num_of_instances">
+          <mat-header-cell *matHeaderCellDef mat-sort-header="num_of_instances"
+            >{{ "Instance Count" | translate
+            }}<mat-icon
+              class="mat-icon-info"
+              matTooltip="{{
+                'The number of instances is the total number of instances of the application.'
+                  | translate
+              }}"
+              >info</mat-icon
+            ></mat-header-cell
+          >
+          <mat-cell *matCellDef="let product">
+            <a
+              *ngIf="product.num_of_instances"
+              class="mat-button-link"
+              (click)="productInstances(product.application_id, product.name)"
+            >
+              {{ product.num_of_instances }}
+            </a>
+            <span *ngIf="!product.num_of_instances">0</span>
+          </mat-cell>
+        </ng-container>
 
-              <ng-container matColumnDef="num_of_instances">
-                  <mat-header-cell *matHeaderCellDef mat-sort-header="num_of_instances">{{'Instance Count' | translate}}</mat-header-cell>
-                  <mat-cell *matCellDef="let product">
-                    <a *ngIf="product.num_of_instances" class="mat-button-link"  (click)=productInstances(product.application_id,product.name) >
-                          {{product.num_of_instances}} </a>
-                    <span *ngIf="!product.num_of_instances">0</span>
-                  </mat-cell>
-                </ng-container>
+        <ng-container matColumnDef="num_of_equipments">
+          <mat-header-cell
+            *matHeaderCellDef
+            mat-sort-header="num_of_equipments"
+          >
+            {{ "Equipment Count" | translate }}</mat-header-cell
+          >
+          <mat-cell *matCellDef="let product">
+            <!-- <a *ngIf="product.num_of_equipments" class="mat-button-link" > -->
+            <span *ngIf="product.num_of_equipments">{{
+              product.num_of_equipments
+            }}</span>
+            <!-- </a> -->
+            <span *ngIf="!product.num_of_equipments">0</span>
+          </mat-cell>
+        </ng-container>
 
-
-              <ng-container matColumnDef="num_of_equipments">
-                <mat-header-cell *matHeaderCellDef mat-sort-header="num_of_equipments"> {{'Equipment Count'|translate}}</mat-header-cell>
-                <mat-cell *matCellDef="let product">
-                  <!-- <a *ngIf="product.num_of_equipments" class="mat-button-link" > -->
-                  <span *ngIf="product.num_of_equipments">{{product.num_of_equipments}}</span>
-                  <!-- </a> -->
-                  <span *ngIf="!product.num_of_equipments">0</span>
-                </mat-cell>
-              </ng-container>
-
-              <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
-              <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
-            </mat-table>
-            <app-loading-spinner *ngIf="_loading"></app-loading-spinner>
-            <mat-paginator  [length]="length" [pageSize]="page_size" [pageSizeOptions]="[10,20,30,50]"
-            (page)="pageEvent = getPaginatorData($event)" showFirstLastButtons>
-        </mat-paginator>
-          </div>
-        </mat-card-content>
+        <mat-header-row
+          *matHeaderRowDef="displayedColumns; sticky: true"
+        ></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+      </mat-table>
+      <app-loading-spinner *ngIf="_loading"></app-loading-spinner>
+      <mat-paginator
+        [length]="length"
+        [pageSize]="pageSize"
+        [pageSizeOptions]="[50, 100, 200]"
+        (page)="pageEvent = getPaginatorData($event)"
+        showFirstLastButtons
+      >
+      </mat-paginator>
+    </div>
+  </mat-card-content>
 </mat-card>

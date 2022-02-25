@@ -23,3 +23,17 @@
   margin-top: 5px;
   font-size: 12px;
 }
+::ng-deep .mat-select-panel#groups-panel {
+  min-width: calc(100% + 16px) !important;
+  margin-left: 32px;
+  margin-top: 32px;
+  color: #008AFC;
+}
+::ng-deep .mat-select-panel#role-panel {
+  min-width: calc(100% + 16px) !important;
+  margin-left: 16px;
+  margin-top: 32px;
+}
+::ng-deep .mat-primary .mat-pseudo-checkbox-checked, ::ng-deep .mat-primary .mat-pseudo-checkbox-indeterminate {
+  background: #008AFC;
+}

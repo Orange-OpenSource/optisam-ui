@@ -1,13 +1,6 @@
-// Copyright (C) 2019 Orange
-// 
-// This software is distributed under the terms and conditions of the 'Apache License 2.0'
-// license which can be found in the file 'License.txt' in this package distribution 
-// or at 'http://www.apache.org/licenses/LICENSE-2.0'. 
-
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { SharedService } from 'src/app/shared/shared.service';
-import { GroupService } from 'src/app/core/services/group.service';
 import { ProductService } from 'src/app/core/services/product.service';
 import { MetricSimulationRequest } from 'src/app/core/services/product';
 import { MetricService } from 'src/app/core/services/metric.service';
@@ -31,22 +24,21 @@ export class MetricSimulationComponent implements OnInit, OnDestroy {
   _loading: Boolean;
   filteredOptions: any[];
   invalidProductFlag: Boolean;
-  count:any = 0;
+  count: any = 0;
   displayedColumns: string[] = ['metric', 'unitCost'];
-  body:any;
-  scopesList:any[]=[];
-  selectedScope:any;
+  body: any;
+  selectedScope: any;
 
   constructor(
     private sharedService: SharedService,
-    private groupService: GroupService,
     private productService: ProductService,
     private metricService: MetricService
   ) {
     this.loadingSubscription = this.sharedService.httpLoading().subscribe(data => {
       this.HTTPActivity = data;
     });
-   }
+    this.selectedScope = localStorage.getItem('scope');
+  }
 
   ngOnInit() {
     this.simulateObj = {
@@ -56,55 +48,41 @@ export class MetricSimulationComponent implements OnInit, OnDestroy {
       product: '',
       currentEntity: ''
     };
-    // this.getGroups();
-    this.getScopesList();
+    this.getEditorsList();
   }
 
   private _filter(value: string): string[] {
     const filterValue = value.toLowerCase();
-
     return this.productList.filter(option => option.toLowerCase().includes(filterValue));
   }
-  
+
   onChangeProduct(ev) {
     this.filteredOptions = this.productList.filter(option => option.name.toLowerCase().startsWith(ev.target.value.toLowerCase()));
   }
   onProductNotSelected() {
     this.invalidProductFlag = false;
     let filteredProducts = this.productList.filter(option => {
-      if(this.simulateObj.product) {
-        (option.name+' - ' + option.swidTag) === (this.simulateObj.product.name+' - ' + this.simulateObj.product.swidTag)
+      if (this.simulateObj.product) {
+        (option.name + ' - ' + option.swidTag) === (this.simulateObj.product.name + ' - ' + this.simulateObj.product.swidTag)
       }
     });
-    if(filteredProducts.length === 0)
-    {this.invalidProductFlag = true;}
+    if (filteredProducts.length === 0) { this.invalidProductFlag = true; }
   }
   getOptionText(option) {
-    if(option) {return option.name+' - ' + option.swidTag;}
-  }
-
-  getScopesList() {
-    this._loading = true;
-    this.groupService.getDirectGroups().subscribe((response: any) => {
-      response.groups.map(res=>{ res.scopes.map(s=>{this.scopesList.push(s);});});
-      this._loading = false;
-    }, (error) => {
-      this._loading = false;
-      console.log("Error fetching scopes.");
-    });
+    if (option) { return option.name + ' - ' + option.swidTag; }
   }
 
   // Get All Editors
   getEditorsList() {
     this._loading = true;
     var query;
-    query = '?scopes='+ this.selectedScope;
+    query = '?scopes=' + this.selectedScope;
     this.productService.getEditorList(query).subscribe((response: any) => {
-        this.editorList = response.editors || [];
-        this._loading = false;
-      }, (error) => {
-        this._loading = false;
-        console.log("Error fetching editors");
+      this.editorList = response.editors || [];
+      this._loading = false;
+    }, (error) => {
+      this._loading = false;
+      console.log("Error fetching editors");
     });
   }
 
@@ -113,13 +91,14 @@ export class MetricSimulationComponent implements OnInit, OnDestroy {
     this._loading = true;
     this.metricService.getMetricList(this.selectedScope).subscribe((response: any) => {
       this.metricList = [];
-      response.metrices.map(res=>{
+      response.metrices.map(res => {
         const temp = {
           checked: false,
           avgUnitPrice: null,
           ...res
         };
-        this.metricList.push(temp)});
+        this.metricList.push(temp)
+      });
       this._loading = false;
     }, (error) => {
       this._loading = false;
@@ -130,10 +109,11 @@ export class MetricSimulationComponent implements OnInit, OnDestroy {
   // Get All Products based on Editor
   getProductsList(product?: string) {
     this._loading = true;
-    var query = '?scopes='+this.selectedScope;
-    query += '&editor='+ this.simulateObj.editor;
+    var query = '?scopes=' + this.selectedScope;
+    query += '&editor=' + this.simulateObj.editor;
     this.productService.getProductList(query).subscribe((response: any) => {
       this.productList = response.products || [];
+      this.filteredOptions = this.productList;
       this._loading = false;
     }, (error) => {
       this._loading = false;
@@ -150,14 +130,14 @@ export class MetricSimulationComponent implements OnInit, OnDestroy {
       this.simulateObj.acq_rights = response.acq_rights || [];
       // clear metricList
       this.simulationMetrics = [];
-      for(let i=0; i<this.metricList.length; i++) {
+      for (let i = 0; i < this.metricList.length; i++) {
         this.metricList[i].avgUnitPrice = null;
         this.metricList[i].checked = false;
       }
       // Map avg. unit cost to metric
       this.simulateObj.acq_rights.forEach(right => {
         const idx = this.metricList.findIndex(metric => metric.name === right.metric);
-        if(idx !== -1) {
+        if (idx !== -1) {
           this.metricList[idx].avgUnitPrice = right.avgUnitPrice;
           this.metricList[idx].simulationExists = true;
           this.metricList[idx].numCptLicences = right.numCptLicences;
@@ -172,12 +152,6 @@ export class MetricSimulationComponent implements OnInit, OnDestroy {
 
   selectionChanged(ev: any, type: string) {
     switch (type) {
-      case 'scope':
-        this.simulateObj.editor = null;
-        this.simulateObj.product = null;
-        this.metricList = [];
-        this.getEditorsList();
-        break;
       case 'editor':
         this.simulateObj.product = null;
         this.getProductsList();
@@ -232,22 +206,23 @@ export class MetricSimulationComponent implements OnInit, OnDestroy {
         });
       } else {
         indexArray.push(idx);
-        this.body.metric_details.push({"metric_name": this.simulationMetrics[idx].name,"unit_cost": this.simulationMetrics[idx].avgUnitPrice});
+        this.body.metric_details.push({ "metric_name": this.simulationMetrics[idx].name, "unit_cost": this.simulationMetrics[idx].avgUnitPrice });
       }
     });
 
     this.simulateHttpCount = indexArray.length;
     // call http request for non-existing metrices   
     this.productService.metricSimulation(this.body).subscribe((response: any) => {
-      if(response.metric_sim_result) {response.metric_sim_result.map((res)=>this.simulatedResults.push(res));}
+      if (response.metric_sim_result) { response.metric_sim_result.map((res) => this.simulatedResults.push(res)); }
       this._loading = false;
     }, (error) => {
-        this.simulationMetrics.forEach((metric)=> {
+      this.simulationMetrics.forEach((metric) => {
         if (!metric.simulationExists) {
-        this.simulatedResults.push({
-          "metric_name": metric.name,
-          success: false
-        });}
+          this.simulatedResults.push({
+            "metric_name": metric.name,
+            success: false
+          });
+        }
       });
       this._loading = false;
       console.log("Error simulating metric");
@@ -305,7 +280,7 @@ export class MetricSimulationComponent implements OnInit, OnDestroy {
 
   validateCostPattern(ev: any) {
     const regEx = new RegExp(/^\d*\.?\d*$/);
-    const specialKeys: Array<string> = [ 'Backspace', 'Delete', 'End', 'Home'];
+    const specialKeys: Array<string> = ['Backspace', 'Delete', 'End', 'Home'];
     if (!regEx.test(ev.key) && specialKeys.indexOf(ev.key) === -1) {
       return false;
     }
@@ -315,5 +290,4 @@ export class MetricSimulationComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.loadingSubscription.unsubscribe();
   }
-
 }

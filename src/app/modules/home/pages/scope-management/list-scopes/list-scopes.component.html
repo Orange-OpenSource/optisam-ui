@@ -30,6 +30,12 @@
           <mat-cell *matCellDef="let scope"> {{scope.scope_name}} </mat-cell>
         </ng-container>
 
+        <ng-container matColumnDef="scope_type">
+          <mat-header-cell *matHeaderCellDef > {{'Scope Type'| translate}}
+          </mat-header-cell>
+          <mat-cell *matCellDef="let scope"> {{scope.scope_type}} </mat-cell>
+        </ng-container>
+
         <ng-container matColumnDef="created_by">
           <mat-header-cell *matHeaderCellDef > {{'Created By'| translate}}
           </mat-header-cell>
@@ -52,12 +58,13 @@
           </mat-cell>
         </ng-container>
 
-        <!-- <ng-container matColumnDef="action">
+        <ng-container matColumnDef="action">
           <mat-header-cell *matHeaderCellDef >{{'Action' | translate}}</mat-header-cell>
           <mat-cell *matCellDef="let scope">
-              <mat-icon class="action-icon" matTooltip="Edit Scope" (click)="openDialog(scope)">edit</mat-icon>
+            <mat-icon id="deleteBtn_{{i}}" class="action-icon" matTooltip="{{'Delete Scope'|translate}}" 
+            (click)="deleteScopeConfirmation(scope, deleteConfirmationDialog)">delete</mat-icon>
           </mat-cell>
-        </ng-container> -->
+        </ng-container>
 
         <mat-header-row *matHeaderRowDef="displayedColumns; sticky:true"></mat-header-row>
         <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
@@ -67,3 +74,33 @@
     </div>
   </mat-card-content>
 </mat-card>
+<ng-template #deleteConfirmationDialog>
+  <mat-dialog-content>
+      <p>{{'DELETE_SCOPE_CONFIRM_MSG' | translate}}: <strong>{{scopeToDelete}}</strong>?</p>
+      <p>{{'This action is irreversible and all related data will be erased.'|translate}}</p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="center">
+      <button mat-button class="btn-two" (click)="deleteScope(successDialog,errorDialog)" cdkFocusInitial>
+        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" *ngIf="_deleteLoading"></span>  
+        {{'OK'|translate}}
+      </button>
+      <button mat-button [mat-dialog-close]="true" class="btn-three" cdkFocusInitial>{{'Cancel'|translate}}</button>
+    </mat-dialog-actions>
+</ng-template>  
+<ng-template #successDialog>
+  <mat-dialog-content>
+    <p>{{'DELETE_SCOPE_SUCCESS'|translate}}</p>
+    <p>{{'RELOGIN_MSG'|translate}}</p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="center">
+    <button mat-button [mat-dialog-close]="true" class="btn-two" (click)="getScopesList()" cdkFocusInitial>{{'OK'|translate}}</button>
+  </mat-dialog-actions>
+</ng-template>
+<ng-template #errorDialog>
+  <mat-dialog-content>
+    <p>{{'Error'|translate}}: {{errorMessage}}</p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="center">
+    <button mat-button [mat-dialog-close]="true" class="btn-two" cdkFocusInitial>{{'OK'|translate}}</button>
+  </mat-dialog-actions>
+</ng-template>

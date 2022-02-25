@@ -6,3 +6,30 @@
     justify-content: space-between;
     align-items: center;
 }
+.parentNode {
+    font-size: 20px;
+}
+img {
+    cursor: pointer;
+    max-height: 42px;
+    margin-top: -6px;
+}
+p {
+    margin-bottom: unset;
+}
+#dialog-header {
+    font-weight: bold;
+    font-size: larger;
+    margin-bottom: 8px;
+}
+::ng-deep .mat-checkbox-checked.mat-accent .mat-checkbox-background,::ng-deep .mat-checkbox-indeterminate.mat-accent .mat-checkbox-background {
+    background-color: #008AFC !important;
+  }
+::ng-deep .mat-checkbox-disabled .mat-checkbox-label {
+    color: unset;
+}
+
+.mat-dialog-actions#deleteInventoryActions {
+    padding-top: 16px;
+    padding-bottom: 24px;
+}

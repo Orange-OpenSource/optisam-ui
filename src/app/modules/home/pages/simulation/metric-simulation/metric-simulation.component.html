@@ -13,31 +13,12 @@
     </mat-grid-list>
     
       <mat-form-field appearance="outline">
-        <mat-label>{{'AGGREGATIONS.TEXTS.SCOPE' | translate}}</mat-label>
-        <mat-select id="metricScope" [(ngModel)]="selectedScope" [disabled]="scopesList && scopesList.length === 0"
-          (selectionChange)="selectionChanged($event, 'scope')" #scopeInput>
-          <mat-option>-- {{'AGGREGATIONS.TEXTS.SELECT_SCOPE' | translate}} --</mat-option>
-          <mat-option id="scope_option_{{idx}}" *ngFor="let scope of scopesList;let idx = index;" [value]="scope">{{scope}}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-
-      <mat-form-field appearance="outline">
         <mat-label>{{'AGGREGATIONS.TEXTS.EDITOR'|translate}}</mat-label>
         <mat-select [(ngModel)]="simulateObj.editor" [disabled]="editorList.length == 0" (selectionChange)="selectionChanged($event, 'editor')">
           <mat-option>-- {{'AGGREGATIONS.TEXTS.SELECT_PRODUCT' | translate}} --</mat-option>
           <mat-option *ngFor="let editor of editorList;" [value]="editor">{{editor}}</mat-option>
         </mat-select>
       </mat-form-field>
-
-      <!-- <mat-form-field appearance="outline">
-        <mat-label>{{'AGGREGATIONS.TEXTS.PRODUCT' | translate}}</mat-label>
-        <mat-select [(ngModel)]="simulateObj.product" [disabled]="!simulateObj.editor || HTTPActivity || productList.length === 0"
-          (selectionChange)="selectionChanged($event, 'product')">
-          <mat-option>-- {{'AGGREGATIONS.TEXTS.SELECT_PRODUCT' | translate}} --</mat-option>
-          <mat-option *ngFor="let product of productList;" [value]="product">{{product.name}} - ( {{product.swidTag}} )</mat-option>
-        </mat-select>
-      </mat-form-field> -->
 
       <mat-form-field appearance="outline"  [ngClass]="{'has-error': invalidProductFlag}">
         <mat-label>{{'AGGREGATIONS.TEXTS.PRODUCT' | translate}}</mat-label>
@@ -61,7 +42,7 @@
             </mat-cell>
           </ng-container>
           <ng-container matColumnDef="unitCost">
-            <mat-header-cell *matHeaderCellDef>{{'Unit Cost' | translate}}(€)
+            <mat-header-cell *matHeaderCellDef>{{'Unit Cost' | translate}}
             </mat-header-cell>
             <mat-cell *matCellDef="let metric"> 
               <mat-form-field appearance="outline" class="cost-input">
@@ -89,7 +70,7 @@
         <div class="simulate-body">
           <div *ngIf="result.exists || result.success">
             <p><strong>{{'Licenses'|translate}} :</strong> {{result.num_cpt_licences || '-'}}</p>
-            <p><strong>{{'Total Cost'|translate}} :</strong> €{{(result.total_cost ? result.total_cost : 0)|formatCost}}</p>
+            <p><strong>{{'Total Cost'|translate}} :</strong>{{(result.total_cost ? result.total_cost : 0)|formatCost}}</p>
             <p><strong>{{'Status' |translate}}: </strong> {{(result.exists ? 'Existing' : 'Not existing')}}</p>
           </div>
           <div class="simulation-failed" *ngIf="!result.exists && !result.success">

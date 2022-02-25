@@ -57,7 +57,7 @@ mat-toolbar{
 .mat-icon-header {  
   color: #008AFC !important;
 }
-.mat-icon-admin {
+.mat-icon-admin, .mat-icon-menu {
   color : #000000e3 !important;
 }
 #nav-menu {
@@ -66,6 +66,6 @@ mat-toolbar{
 .mat-button {
   cursor: pointer !important;
 }
-// .mat-button:hover {
-//   color: #008AFC !important;
-// }
+#nav-user-guide:hover {
+  text-decoration: none;
+}

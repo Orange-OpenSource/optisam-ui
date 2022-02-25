@@ -12,14 +12,55 @@
   background-image: url(/assets/images/login-bg3.jpg) ;
   background-size: cover;
   min-height: 100%;
+  padding-top: 8vh;
+  display: grid;
+}
+#loginFormContainer {
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-end;
 }
+#cookieBannerContainer {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+div#cookieBanner {
+  display: flex;
+    width: 500px;
+    justify-content: space-between;
+    padding: 16px 16px 16px 8px;
+    color: white;
+    background: black;
+    border-radius: 6px;
+    margin: 16px;
+}
+
+#bannerContent {
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+}
+#closeBannerIcon {
+  cursor: pointer;
+  background: #292929;
+  width: 18px;
+  height: 18px;
+  border-radius: 12px;
+  font-size: 14px;
+  padding: 2px;
+  color: #F1F1F1;
+}
+
 .loginTopHeading {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+.headerBtns .mat-button {
+  padding: 0 8px !important;
+  min-width: 52px;
 }
 .loginHeading {
   display: flex;

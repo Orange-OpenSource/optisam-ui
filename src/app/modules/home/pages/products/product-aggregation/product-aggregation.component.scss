@@ -24,24 +24,42 @@ mat-menu-item {
     width: 100%;
   }
 .expand-cell{padding: 0;}
+
+.mat-header-row{
+  display: inline-flex!important;
+  min-width: 100%;
+  width: fit-content;
+  flex-wrap: unset !important;
+  }
+
 .detail-table .mat-header-cell {
-    background-color: #005f93b5;
-    color: #fff;
-    font-weight: normal;
-    padding: 0px 10px;
+  background-color: #71C7E1;
+  color: #fff;
+font-weight: normal;
+// padding: 0px 10px;
+display: flex !important;
 }
+
 .detail-table .mat-header-row {
     min-height: 35px;
 }
 .detail-table .mat-row:nth-child(even) {
-    background-color: #6cb9f973;
+  background-color:#6CB9F929;
+  min-width: 100%;
+  word-break: break-word;
+  align-items: center;
+  justify-content: center;
 }
 .detail-table .mat-row:nth-child(odd) {
-    background-color: #b8dbf76b;
+  background-color: #B8DBF77A;
+  min-width: 100%;
+  word-break: break-word; 
+  align-items: center;
+  justify-content: center;
 }
 .expand-icon{vertical-align: middle;}
 .expand-icon:hover{cursor: pointer;}
-.detail-table .mat-cell{padding: 10px 10px;}
+// .detail-table .mat-cell{padding: 10px 10px;}
 // .main-table .mat-header-cell{padding: 0 10px;}
 // .main-table .mat-header-cell:first-of-type, .detail-table .mat-cell:first-of-type{padding-left: 20px!important;}
 
@@ -63,4 +81,62 @@ mat-menu-item {
 #AggrName {
   color: #008AFC; 
   cursor: pointer;
+}
+
+.mat-cell {
+  display: flex !important;
+  min-height: 100%;
+  align-items: center !important;
+}
+
+.mat-table {
+  overflow: auto;
+  max-height: 75vh;
+  width: 100%;
+}
+
+
+.mat-row{
+
+  // width: fit-content;
+  // min-width: 200%;
+  // flex-wrap: initial;
+  // display: inline-flex !important;
+
+  // display: inline-flex!important;
+  min-width: 100%;
+// width: 25%;
+// flex-wrap: unset !important;
+
+}
+
+.mat-header-row{
+  min-width: 100%;
+}
+
+.mat-column-Name {
+  flex: 0 0 14%;
+}
+.mat-column-version {
+  flex: 0 0 7%;
+}
+
+.mat-column-swidtag {
+  word-wrap: break-word !important;
+  white-space: unset !important;
+  overflow-wrap: break-word;
+  word-wrap: break-word;    
+  word-break: break-word;
+}
+
+.mat-column-aggregation_name {
+  flex: 0 0 21%;
+}
+
+.mat-column-Name {
+  word-wrap: break-word !important;
+  white-space: unset !important;
+  overflow-wrap: break-word;
+  word-wrap: break-word;    
+  word-break: break-word;
 }

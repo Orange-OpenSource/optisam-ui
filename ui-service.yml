@@ -1,0 +1,96 @@
+kind: "Template"
+apiVersion: "v1"
+metadata:
+  name: "deploy-template"
+  annotations:
+    description: "Template for deployment"
+objects:
+  - kind: Service
+    apiVersion: v1
+    metadata:
+      name: svc-optisam-ui
+      annotations:
+        description: Exposes and load balances the application pods
+      labels:
+        run: optisam-ui
+    spec:
+      ports:
+        - name: api
+          port: 80
+          targetPort: 8080
+          protocol: TCP
+      selector:
+          app: optisam-ui
+  - kind: Route
+    apiVersion: v1
+    metadata:
+      name: route-svc-optisam-ui
+      labels:
+        run: optisam-ui
+    spec:
+      host: optisam-ui-${ENV}.kermit-noprod-b.itn.intraorange
+      to:
+        kind: Service
+        name: svc-optisam-ui
+      tls:
+        termination: edge
+  - kind: DeploymentConfig
+    apiVersion: v1
+    metadata:
+      name: optisam-ui
+      labels:
+       app: optisam-ui
+    spec:
+      replicas: 1
+      selector:
+        app: optisam-ui
+      strategy:
+        type: Rolling
+      template:
+        metadata:
+         labels:
+           app: optisam-ui
+         name: optisam-ui
+        spec:
+         containers:
+         - name: optisam-ui
+           image: ${DOCKER_REGISTRY}/optisam/ui-service:${TAG}
+           imagePullPolicy: Always
+           env: 
+           - name: "ENV"
+             value: ${ENV}
+           ports:
+           - containerPort: 8080
+             protocol: TCP
+             initialDelaySeconds: 10
+             timeoutSeconds: 10
+             periodSeconds: 10
+             successThreshold: 1
+             failureThreshold: 5
+           resources:
+             requests:
+               cpu: "80m"
+               memory: "128Mi"
+             limits:
+               cpu: "80m"
+               memory: "128Mi"
+           volumeMounts:
+             - name: config-volume
+               mountPath: /usr/share/nginx/html/assets/config
+         volumes:
+         - name: config-volume
+           configMap:
+            name: config-ui-${ENV}               
+parameters:
+  - name: TAG
+    description: Tag for Docker image
+    required: true
+    value: latest
+  - name: ENV
+    description: Env for deployment
+    required: true
+    value: int
+  - name: DOCKER_REGISTRY
+    description: Artifactory URL to download images
+    required: true
+    value: dockerfactory-unstable-iva.si.francetelecom.fr

@@ -9,38 +9,27 @@
 
         <mat-form-field appearance="outline">
           <mat-label>{{'Name'|translate}}</mat-label>
-          <input matInput placeholder="Name" formControlName="first_name">
+          <input id="name" matInput placeholder="Name" formControlName="first_name">
         </mat-form-field>
-        <!-- <mat-error *ngIf="first_name.invalid && !first_name.pristine">
-          Name is required in ^[a-zA-Z0-9_]*$ format.
-        </mat-error> -->
 
         <mat-form-field appearance="outline">
             <mat-label>{{'Surname'|translate}}</mat-label>
-            <input matInput placeholder="Surname" formControlName="last_name">
+            <input id="surname" matInput placeholder="Surname" formControlName="last_name">
           </mat-form-field>
-          <!-- <mat-error *ngIf="last_name.invalid && !last_name.pristine">
-            Name is required in ^[a-zA-Z0-9_]*$ format.
-          </mat-error> -->
 
           <mat-form-field appearance="outline">
             <mat-label>{{'Email'|translate}}</mat-label>
-            <input matInput placeholder="Email" [formControl]="user_id">
+            <input id="email" matInput placeholder="Email" [formControl]="user_id">
           </mat-form-field>
           
           <mat-form-field>
             <mat-label>{{'Groups'|translate}}</mat-label>
-            <input matInput placeholder="Groups" [formControl]="user_groups">
-            <!-- <mat-select placeholder="Group" (selectionChange)="selectGroup($event.value)" multiple [formControl]="groups">
-              <mat-option *ngFor="let group of groups"  [value]="group.ID">
-                {{group.name}}
-              </mat-option>
-            </mat-select> -->
+            <input id="groups" matInput placeholder="Groups" [formControl]="user_groups">
           </mat-form-field>
 
         <mat-form-field>
           <mat-label>{{'Roles'|translate}}</mat-label>
-          <mat-select [formControl] = "role">
+          <mat-select id="role" [formControl] = "role">
             <mat-option *ngFor="let role of roles"  [value]="role">
               {{role}}
             </mat-option>
@@ -49,10 +38,13 @@
       </form>
     </mat-card-content>
     <mat-card-actions align="center">
-      <button id="cancelBtn" mat-raised-button class="btn-four" [mat-dialog-close]="true" >{{'Cancel'|translate}}</button>
+      <button id="cancelBtn" mat-raised-button class="btn-four" [disabled]="_loading" [mat-dialog-close]="true" >{{'Cancel'|translate}}</button>
       <button id="resetBtn" mat-raised-button class="btn-three" [disabled]="groupForm.pristine" (click)="resetGroup()">{{'Reset'|translate}}</button>
       <button id="createBtn" mat-raised-button class="btn-two" [disabled]="groupForm.invalid || groupForm.pristine"
-        (click)="updateUser(successDialog, errorDialog)">{{'Update'|translate}}</button>
+        (click)="updateUser(successDialog, errorDialog)">
+        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" *ngIf="_loading"></span>
+        {{'Update'|translate}}
+      </button>
     </mat-card-actions>
 
   </mat-card>

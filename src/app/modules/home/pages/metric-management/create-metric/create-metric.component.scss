@@ -1,0 +1,16 @@
+::ng-deep .mat-input-element:disabled, .mat-form-field-type-mat-native-select.mat-form-field-disabled .mat-form-field-infix::after {
+    color: black;
+  }
+.warningMsg {
+  font-size: 10px;
+  margin-top: -14px;
+  margin-left: 8px;
+}
+#btnsContainer {
+  padding: 16px 16px 0 16px;
+  display: flex;
+  justify-content: space-between;
+}
+#resetButton {
+  margin-left: 16px;
+}

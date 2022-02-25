@@ -1,0 +1,46 @@
+<h1 mat-dialog-title>
+  {{ "About" | translate }}
+  <mat-divider></mat-divider>
+</h1>
+<mat-dialog-content>
+  <div id="top-section">
+    <div id="version-copyright">
+      <p>{{ "OpTISAM IT Version" | translate }}: {{ version }}</p>
+      <p>{{ copyright }}</p>
+    </div>
+    <div id="optisam-logo-image">
+      <img src="assets/images/OpTISAM-Logo.svg" />
+    </div>
+  </div>
+  <div id="release-notes-section">
+    <p class="header1">{{ "Release Notes" | translate }}</p>
+    <ul>
+      <li *ngFor="let highlight of releaseNotes">
+        {{ highlight }}
+      </li>
+    </ul>
+    <p *ngIf="releaseNotes.length === 0">NA</p>
+  </div>
+  <div id="futures-section">
+    <p class="header1">{{ "Futures" | translate }}</p>
+    <!-- <p class="header2">{{ "By the end of 2021" | translate }}</p> -->
+    <!-- <ul>
+        <li *ngFor="let future of futures2021">
+            {{future}}
+        </li>
+    </ul> -->
+    <!-- <p *ngIf="futures2021.length === 0">NA</p> -->
+    <p class="header2">{{ "By the end of 2022" | translate }}</p>
+    <ul>
+      <li *ngFor="let future of futures2022">
+        {{ future }}
+      </li>
+    </ul>
+    <p *ngIf="futures2022.length === 0">NA</p>
+  </div>
+  <div id="btn-container">
+    <button id="closeBtn" class="btn-two" mat-raised-button mat-dialog-close>
+      {{ "Close" | translate }}
+    </button>
+  </div>
+</mat-dialog-content>

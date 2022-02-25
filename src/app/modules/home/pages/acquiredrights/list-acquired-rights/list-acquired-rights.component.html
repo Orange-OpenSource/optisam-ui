@@ -1,0 +1,381 @@
+<mat-card>
+  <div class="container-fluid page-content-header">
+    <div class="row page-heading">
+      {{ "Acquired Rights Management" | translate }}
+    </div>
+    <div class="row tabs">
+      <nav mat-tab-nav-bar>
+        <a mat-tab-link class="tab-anchor" *ngFor="let tab of tabList" (click)="currentTab = tab; refreshTable()"
+          [active]="currentTab == tab">
+          {{ tab | translate }}
+        </a>
+      </nav>
+    </div>
+  </div>
+  <mat-card-content>
+    <div class="action-bar" fxLayout="row" fxLayoutAlign="end end">
+      <button id="createAcqRightBtn" mat-raised-button class="btn-two" *ngIf="currentTab === tabList[0]"
+        (click)="createNewAcqRight()">
+        <mat-icon>add</mat-icon>
+        {{ "Create New" | translate }}
+      </button>
+
+      <button id="createAcqRightAggregationBtn" mat-raised-button class="btn-two" *ngIf="currentTab === tabList[2]"
+        (click)="createNewAcqRightAggregation()">
+        <mat-icon>add</mat-icon>
+        {{ "Create New" | translate }}
+      </button>
+    </div>
+
+    <div id="licensedProducts" class="mat-elevation-z8" *ngIf="currentTab === tabList[0]">
+      <mat-table [dataSource]="myLicensedDataSource" matSort (matSortChange)="sortData($event)">
+        <ng-container matColumnDef="SKU">
+          <mat-header-cell *matHeaderCellDef mat-sort-header="SKU">{{
+            "SKU" | translate
+            }}</mat-header-cell>
+          <mat-cell *matCellDef="let acquired_rights">
+            {{ acquired_rights.SKU || 0 }}
+          </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="swid_tag">
+          <mat-header-cell *matHeaderCellDef mat-sort-header="SWID_TAG">{{ "SWIDtag" | translate }}
+          </mat-header-cell>
+          <mat-cell *matCellDef="let acquired_rights">
+            {{ acquired_rights.swid_tag || 0 }}
+          </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="product_name">
+          <mat-header-cell *matHeaderCellDef mat-sort-header="PRODUCT_NAME">{{ "Product name" | translate }}
+          </mat-header-cell>
+          <mat-cell *matCellDef="let acquired_rights" matTooltip="{{ acquired_rights.product_name }}">
+            <a class="ellipsis mat-button-link" (click)="
+                openDialog(
+                  acquired_rights.swid_tag,
+                  acquired_rights.product_name
+                )
+              ">
+              {{ acquired_rights.product_name }}
+            </a>
+          </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="version">
+          <mat-header-cell *matHeaderCellDef>{{ "Version" | translate }}
+          </mat-header-cell>
+          <mat-cell *matCellDef="let acquired_rights">{{ acquired_rights.version || "-" }}
+          </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="editor">
+          <mat-header-cell *matHeaderCellDef mat-sort-header="EDITOR">{{ "Editor" | translate }}
+          </mat-header-cell>
+          <mat-cell *matCellDef="let acquired_rights">{{ acquired_rights.editor || 0 }}
+          </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="metric">
+          <mat-header-cell *matHeaderCellDef mat-sort-header="METRIC">
+            {{ "Metric" | translate }}</mat-header-cell>
+          <mat-cell *matCellDef="let acquired_rights">
+            {{ acquired_rights.metric || 0 }}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="acquired_licenses_number">
+          <mat-header-cell *matHeaderCellDef mat-sort-header="ACQUIRED_LICENSES_NUMBER">
+            {{ "Acquired Licenses" | translate }}</mat-header-cell>
+          <mat-cell *matCellDef="let acquired_rights">
+            {{ acquired_rights.acquired_licenses_number || 0 }}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="avg_licenes_unit_price">
+          <mat-header-cell *matHeaderCellDef mat-sort-header="AVG_LICENSE_UNIT_PRICE">
+            {{ "Unit Price" | translate }}</mat-header-cell>
+          <mat-cell *matCellDef="let acquired_rights">
+            {{
+            acquired_rights.avg_licenes_unit_price || 0 | formatCost
+            }}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="action">
+          <mat-header-cell *matHeaderCellDef>{{
+            "Action" | translate
+            }}</mat-header-cell>
+          <mat-cell *matCellDef="let acquired_rights; let i = index">
+            <mat-icon id="editBtn_{{ i }}" class="action-icon" matTooltip="{{ 'Edit Acquired Right' | translate }}"
+              (click)="editAcquiredRights(acquired_rights)">edit</mat-icon>
+            <mat-icon id="deleteBtn_{{ i }}" class="action-icon dlt"
+              matTooltip="{{ 'Delete Acquired Right' | translate }}" (click)="
+                deleteAcqRightsConfirmation(
+                  acquired_rights,
+                  deleteConfirmationDialog
+                )
+              ">delete
+            </mat-icon>
+          </mat-cell>
+        </ng-container>
+        <ng-template #deleteConfirmationDialog>
+          <mat-dialog-content>
+            <p>{{ "DELETE_ACQRIGHT_CONFIRM_MSG" | translate }}</p>
+          </mat-dialog-content>
+          <mat-dialog-actions align="center">
+            <button mat-button [mat-dialog-close]="true" class="btn-two"
+              (click)="deleteProductAcqRights(successDialog, errorDialog)" cdkFocusInitial>
+              <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
+                *ngIf="_deleteInProgress"></span>
+              {{ "OK" | translate }}
+            </button>
+            <button mat-button [mat-dialog-close]="true" class="btn-three" cdkFocusInitial>
+              {{ "Cancel" | translate }}
+            </button>
+          </mat-dialog-actions>
+        </ng-template>
+
+        <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+      </mat-table>
+      <app-loading-spinner *ngIf="_loading"></app-loading-spinner>
+      <div class="no-data" *ngIf="
+          !_loading &&
+          myLicensedDataSource &&
+          myLicensedDataSource.data.length == 0
+        ">
+        {{ "No data available" | translate }}
+      </div>
+      <mat-paginator [length]="length" [pageSize]="pageSize" [pageSizeOptions]="[50, 100, 200]"
+        (page)="pageEvent = getPaginatorData($event)" showFirstLastButtons>
+      </mat-paginator>
+    </div>
+    <div id="notLicensedProducts" class="mat-elevation-z8" *ngIf="currentTab === tabList[1]">
+      <mat-table [dataSource]="myNotLicensedDataSource" matSort (matSortChange)="sortData($event)">
+        <ng-container matColumnDef="swid_tag">
+          <mat-header-cell *matHeaderCellDef mat-sort-header="SWID_TAG">{{ "SWIDtag" | translate }}
+          </mat-header-cell>
+          <mat-cell *matCellDef="let acquired_rights">
+            {{ acquired_rights.swid_tag || 0 }}
+          </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="product_name">
+          <mat-header-cell *matHeaderCellDef mat-sort-header="PRODUCT_NAME">{{ "Product name" | translate }}
+          </mat-header-cell>
+          <mat-cell *matCellDef="let acquired_rights" matTooltip="{{ acquired_rights.product_name }}">
+            <a class="ellipsis mat-button-link" (click)="
+                openDialog(
+                  acquired_rights.swid_tag,
+                  acquired_rights.product_name
+                )
+              ">
+              {{ acquired_rights.product_name }}
+            </a>
+          </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="version">
+          <mat-header-cell *matHeaderCellDef>{{ "Version" | translate }}
+          </mat-header-cell>
+          <mat-cell *matCellDef="let acquired_rights">{{ acquired_rights.version || "-" }}
+          </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="editor">
+          <mat-header-cell *matHeaderCellDef mat-sort-header="EDITOR">{{ "Editor" | translate }}
+          </mat-header-cell>
+          <mat-cell *matCellDef="let acquired_rights">{{ acquired_rights.editor || 0 }}
+          </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="action">
+          <mat-header-cell *matHeaderCellDef>{{
+            "Action" | translate
+            }}</mat-header-cell>
+          <mat-cell *matCellDef="let acquired_rights; let i = index">
+            <mat-icon id="addBtn_{{ i }}" class="action-icon" matTooltip="{{ 'Add Acquired Right' | translate }}"
+              (click)="createNewAcqRight(acquired_rights)">add</mat-icon>
+          </mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+      </mat-table>
+      <app-loading-spinner *ngIf="_loading"></app-loading-spinner>
+      <div class="no-data" *ngIf="
+          !_loading &&
+          myLicensedDataSource &&
+          myLicensedDataSource.data.length == 0
+        ">
+        {{ "No data available" | translate }}
+      </div>
+      <mat-paginator [length]="length" [pageSize]="pageSize" [pageSizeOptions]="[50, 100, 200]"
+        (page)="pageEvent = getPaginatorData($event)" showFirstLastButtons>
+      </mat-paginator>
+    </div>
+
+    <div *ngIf="currentTab === tabList[2]" id="aggregation" class="mat-elevation-z8">
+      <mat-table [dataSource]="aggregationDataSource" matSort (matSortChange)="sortData($event)">
+        >
+        <ng-container matColumnDef="sku">
+          <mat-header-cell *matHeaderCellDef mat-sort-header="sku">{{
+            "SKU" | translate
+            }}</mat-header-cell>
+          <mat-cell *matCellDef="let aggregation">
+            {{ aggregation.sku || 0 }}
+          </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="aggregation_name">
+          <mat-header-cell *matHeaderCellDef mat-sort-header="aggregation_name">{{ "Aggregation Name" | translate }}
+          </mat-header-cell>
+          <mat-cell *matCellDef="let aggregation">
+            {{ aggregation.aggregation_name || 0 }}
+          </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="product_names">
+          <mat-header-cell *matHeaderCellDef mat-sort-header="product_names">{{ "Products" | translate }}
+          </mat-header-cell>
+          <mat-cell *matCellDef="let aggregation" matTooltip="{{ aggregation.product_names.join(', ') }}">
+            {{ aggregation.product_names.join(", ") }}
+          </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="editor">
+          <mat-header-cell *matHeaderCellDef mat-sort-header="editor">{{ "Editor" | translate }}
+          </mat-header-cell>
+          <mat-cell *matCellDef="let aggregation" matTooltip="{{ aggregation.editor }}">
+            {{ aggregation.product_editor || "-" }}
+          </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="metric_name">
+          <mat-header-cell *matHeaderCellDef>{{ "Metric Name" | translate }}
+          </mat-header-cell>
+          <mat-cell *matCellDef="let aggregation">{{ aggregation.metric_name || "-" }}
+          </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="swidtags">
+          <mat-header-cell *matHeaderCellDef mat-sort-header="swidtags">{{ "Number of Swidtags" | translate }}
+          </mat-header-cell>
+          <mat-cell *matCellDef="let aggregation" matTooltip="{{ aggregation.swidtags.join(', ') }}">
+            <a class="ellipsis mat-button-link">
+              {{ aggregation.swidtags.length || 0 }}
+            </a>
+          </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="num_licenses_acquired">
+          <mat-header-cell *matHeaderCellDef mat-sort-header="num_licenses_acquired">
+            {{ "Acquired Licenses" | translate }}</mat-header-cell>
+          <mat-cell *matCellDef="let aggregation">
+            {{ aggregation.num_licenses_acquired || 0 }}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="avg_unit_price">
+          <mat-header-cell *matHeaderCellDef mat-sort-header="avg_unit_price">
+            {{ "Unit price" | translate }}</mat-header-cell>
+          <mat-cell *matCellDef="let aggregation">
+            {{ aggregation.avg_unit_price || 0 }}</mat-cell>
+        </ng-container>
+
+
+        <!-- new -->
+        <ng-container matColumnDef="action">
+          <mat-header-cell *matHeaderCellDef>{{
+            "Action" | translate
+            }}</mat-header-cell>
+          <mat-cell *matCellDef="let aggregation">
+            <mat-icon
+              class="action-icon"
+              matTooltip="Edit Aggregation"
+              (click)="editAggregation(aggregation)"
+              >edit</mat-icon
+            >
+            <mat-icon class="action-icon dlt" matTooltip="Delete Aggregation" (click)="
+                deleteAggregationConfirmation(
+                  aggregation,
+                  deleteConfirmationDialog
+                )
+              ">delete</mat-icon>
+            <ng-template #deleteConfirmationDialog>
+              <mat-dialog-content>
+                <p>
+                  {{ "DELETE_AGGR_CONFIRM_MSG" | translate }}-
+                  {{ aggregation.aggregation_name }}
+                </p>
+              </mat-dialog-content>
+              <mat-dialog-actions align="center">
+                <button mat-button [mat-dialog-close]="true" class="btn-two"
+                  (click)="deleteProductAggregation(successAggDialog, errorAggDialog)" cdkFocusInitial>
+                  <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
+                  *ngIf="_deleteInProgress"></span>
+                {{ "OK" | translate }}
+              </button>
+                <button mat-button [mat-dialog-close]="true" class="btn-three" cdkFocusInitial>
+                  {{ "Cancel" | translate }}
+                </button>
+              </mat-dialog-actions>
+            </ng-template>
+          </mat-cell>
+        </ng-container>
+
+        <!-- new -->
+
+        <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+      </mat-table>
+      <app-loading-spinner *ngIf="_loading"></app-loading-spinner>
+      <div class="no-data" *ngIf="
+          !_loading &&
+          aggregationDataSource &&
+          aggregationDataSource.data.length == 0
+        ">
+        {{ "No data available" | translate }}
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<ng-template #successDialog>
+  <mat-dialog-content>
+    <p>{{ "DELETE_ACQRIGHT_SUCCESS" | translate }}</p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="center">
+    <button mat-button [mat-dialog-close]="true" class="btn-two" (click)="getAcquiredRights()" cdkFocusInitial>
+      {{ "OK" | translate }}
+    </button>
+  </mat-dialog-actions>
+</ng-template>
+<ng-template #errorDialog>
+  <mat-dialog-content>
+    <p>{{ "Error" | translate }} : {{ errorMsg }}.</p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="center">
+    <button mat-button [mat-dialog-close]="true" class="btn-two" cdkFocusInitial>
+      {{ "OK" | translate }}
+    </button>
+  </mat-dialog-actions>
+</ng-template>
+
+
+<ng-template #successAggDialog>
+  <mat-dialog-content>
+    <p>{{ "DELETE_AGGR_SUCCESS" | translate }}</p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="center">
+    <button mat-button [mat-dialog-close]="true" class="btn-two" (click)="refreshTable()" cdkFocusInitial>
+      {{ "OK" | translate }}
+    </button>
+  </mat-dialog-actions>
+</ng-template>
+<ng-template #errorAggDialog>
+  <mat-dialog-content>
+    <p>{{ "DELETE_AGGR_ERROR" | translate }}</p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="center">
+    <button mat-button [mat-dialog-close]="true" class="btn-two" cdkFocusInitial>
+      {{ "OK" | translate }}
+    </button>
+  </mat-dialog-actions>
+</ng-template>

@@ -1,9 +1,3 @@
-// Copyright (C) 2019 Orange
-// 
-// This software is distributed under the terms and conditions of the 'Apache License 2.0'
-// license which can be found in the file 'License.txt' in this package distribution 
-// or at 'http://www.apache.org/licenses/LICENSE-2.0'. 
-
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { SharedService } from 'src/app/shared/shared.service';
 import { GroupService } from 'src/app/core/services/group.service';
@@ -49,12 +43,10 @@ export class HardwareSimulationComponent implements OnInit, OnDestroy {
   activeAttrValue:any;
   conflictingAttrFlag:Boolean;
   _loading:Boolean;
-  scopesList:any[]=[];
   selectedScope:any;
 
   constructor(
     private sharedService: SharedService,
-    private groupService: GroupService,
     private equipmentService: EquipmentsService,
     private configurationService: ConfigurationService,
     private dialog: MatDialog,
@@ -71,10 +63,11 @@ export class HardwareSimulationComponent implements OnInit, OnDestroy {
       currentEntity: ''
     };
     this.simulateHttpCount = 0;
+    this.selectedScope = localStorage.getItem('scope');
   }
 
   ngOnInit() {
-    this.getScopesList();
+    this.getEquipmentList();
   }
 
   // Get All Equipment types
@@ -87,17 +80,6 @@ export class HardwareSimulationComponent implements OnInit, OnDestroy {
     }, (error) => {
       this._loading = false;
       console.log("Error fetching equipments list", error);
-    });
-  }
-
-  getScopesList() {
-    this._loading = true;
-    this.groupService.getDirectGroups().subscribe((response: any) => {
-      response.groups.map(res=>{ res.scopes.map(s=>{this.scopesList.push(s);});});
-      this._loading = false;
-    }, (error) => {
-      this._loading = false;
-      console.log("Error fetching scopes.");
     });
   }
 
@@ -279,12 +261,6 @@ export class HardwareSimulationComponent implements OnInit, OnDestroy {
   // Function for change in dropdown selection
   selectionChanged(ev: any, type: string) {
     switch (type) {
-      case 'scope':
-        this.simulateObj.editor = null;
-        this.simulateObj.product = null;
-        this.getEquipmentList();
-        break;
-
       case 'equipment':
         this.getConfigurationsList(ev.value.type);
         this.getEquipmentMetricListList();

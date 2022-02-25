@@ -1,0 +1,56 @@
+<mat-card>
+  <div
+    class="header-section"
+    fxLayout="row"
+    fxLayoutAlign="space-between center"
+  >
+    <div class="left-header">
+      <div class="page-heading" fxFlexAlign="center">
+        {{ "Core Factor Management" }}
+      </div>
+    </div>
+    <div class="right-header">
+      <button
+        (click)="openFileUploadPopup()"
+        id="upload-btn"
+        mat-raised-button
+        class="btn-two"
+      >
+        <mat-icon color="panel">add</mat-icon>
+        {{ "Upload File" | translate }}
+      </button>
+    </div>
+  </div>
+  <div class="mat-elevation-z8">
+    <mat-table [dataSource]="dataSource">
+      <ng-container *ngFor="let column of columnOriginal; let i = index">
+        <ng-container [ngSwitch]="column">
+          <ng-container *ngSwitchCase="test"> </ng-container>
+          <ng-container *ngSwitchDefault>
+            <ng-container matColumnDef="{{ column }}">
+              <mat-header-cell *matHeaderCellDef>
+                {{ displayedColumns[column] }}
+              </mat-header-cell>
+              <mat-cell *matCellDef="let element">{{
+                element[column]
+              }}</mat-cell>
+            </ng-container>
+          </ng-container>
+        </ng-container>
+      </ng-container>
+      <mat-header-row *matHeaderRowDef="columnOriginal"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: columnOriginal"></mat-row>
+    </mat-table>
+    <app-loading-spinner *ngIf="isLoading$ | async"></app-loading-spinner>
+    <mat-paginator
+      *ngIf="dataSource"
+      showFirstLastButtons
+      [length]="paginationLength"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="[50, 100, 200]"
+      (page)="getPaginatorData($event)"
+      aria-label="Select page of core factor"
+    >
+    </mat-paginator>
+  </div>
+</mat-card>

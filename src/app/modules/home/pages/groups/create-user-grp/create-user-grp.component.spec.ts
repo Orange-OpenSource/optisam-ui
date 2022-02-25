@@ -1,9 +1,3 @@
-// Copyright (C) 2019 Orange
-// 
-// This software is distributed under the terms and conditions of the 'Apache License 2.0'
-// license which can be found in the file 'License.txt' in this package distribution 
-// or at 'http://www.apache.org/licenses/LICENSE-2.0'. 
-
 import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CreateUserGrpComponent } from './create-user-grp.component';
@@ -53,12 +47,12 @@ describe('CreateUserGrpComponent', () => {
     expect(component.first_name.invalid).toBeTruthy();
   })
 
-  it("'Name' field should be invalid if its value is not in ^[a-zA-Z0-9_]*$ format", () => {
-    component.first_name.setValue('A Test*');
+  it("'Name' field should be invalid if its value is not in ^\S+(?: \S+)*$ format", () => {
+    component.first_name.setValue('   A Test*');
     expect(component.first_name.invalid).toBeTruthy();
   })
 
-  it("'Name' field should be valid if its value is in ^[a-zA-Z0-9_]*$ format", () => {
+  it("'Name' field should be valid if its value is in ^\S+(?: \S+)*$ format", () => {
     component.first_name.setValue('Test');
     expect(component.first_name.valid).toBeTruthy();
   })
@@ -68,12 +62,12 @@ describe('CreateUserGrpComponent', () => {
     expect(component.last_name.invalid).toBeTruthy();
   })
 
-  it("'Surname' field should be invalid if its value is not in ^[a-zA-Z0-9_]*$ format", () => {
-    component.last_name.setValue('A Test*');
+  it("'Surname' field should be invalid if its value is not in ^\S+(?: \S+)*$ format", () => {
+    component.last_name.setValue(' A Test* ');
     expect(component.last_name.invalid).toBeTruthy();
   })
 
-  it("'Surname' field should be valid if its value is in ^[a-zA-Z0-9_]*$ format", () => {
+  it("'Surname' field should be valid if its value is in ^\S+(?: \S+)*$ format", () => {
     component.last_name.setValue('Test');
     expect(component.last_name.valid).toBeTruthy();
   })

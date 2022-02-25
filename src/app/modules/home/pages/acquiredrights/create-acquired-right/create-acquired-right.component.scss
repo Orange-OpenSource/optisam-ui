@@ -1,0 +1,96 @@
+.width-clearfix {
+  clear: both;
+  width: 20px;
+}
+.horizontal {
+  display: flex;
+}
+
+.mat-hint {
+  margin-top: 5px;
+  font-size: 12px;
+  font-style: italic;
+}
+
+::ng-deep .mat-option {
+  line-height: 36px;
+  height: 36px;
+  font-size: 12px;
+}
+::ng-deep .mat-input-element:disabled {
+  color: black;
+}
+::ng-deep .mat-select-panel#acqMetrics-panel {
+  min-width: calc(100% + 16px) !important;
+  margin-left: 32px;
+  margin-top: 32px;
+  color: #008AFC;
+}
+::ng-deep .mat-primary .mat-pseudo-checkbox-checked, ::ng-deep .mat-primary .mat-pseudo-checkbox-indeterminate {
+  background: #008AFC;
+}
+::ng-deep .mat-datepicker-content .mat-calendar {
+  width: unset !important;
+  height: unset !important;
+}
+
+::ng-deep .mat-calendar-header {
+  padding: 8px 8px 0 8px;
+}
+
+.mat-card-actions {
+  padding-top: 16px !important;
+  margin-bottom: 0px;
+  padding-bottom: 0px !important;
+}
+.col-md-6 {
+  padding-right: 0px !important;
+  padding-left: 0px !important;
+}
+
+::ng-deep .mat-step-header .mat-step-icon-selected,
+::ng-deep .mat-step-header .mat-step-icon-state-done,
+::ng-deep .mat-step-header .mat-step-icon-state-edit {
+  background-color: #008afc !important;
+  color: #fff;
+}
+
+::ng-deep .mat-calendar-body-selected {
+  background-color: #008afc;
+  color: #fff;
+}
+
+#maintenanceAlert {
+  color: #f44336;
+}
+.textInline {
+  padding: 16px;
+  min-width: fit-content;
+}
+.flexLine {
+  display: flex;
+  //   flex-direction: column;
+}
+
+.p-l-0 {
+  padding-left: unset;
+}
+.m-l-6 {
+  margin-left: 6px;
+}
+.m-r-6 {
+  margin-right: 6px;
+}
+
+.comment {
+  border-color: #00000020;
+  padding: 8px;
+}
+#createBtn {
+  margin: unset;
+}
+::ng-deep .mat-step-icon-state-error .mat-icon {
+  font-size: 28px !important;
+  height: 28px !important;
+  width: 28px !important;
+}

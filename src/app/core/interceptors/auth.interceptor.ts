@@ -1,9 +1,3 @@
-// Copyright (C) 2019 Orange
-// 
-// This software is distributed under the terms and conditions of the 'Apache License 2.0'
-// license which can be found in the file 'License.txt' in this package distribution 
-// or at 'http://www.apache.org/licenses/LICENSE-2.0'. 
-
 import { Injectable } from '@angular/core';
 import {
     HttpInterceptor,
@@ -46,6 +40,7 @@ export class AuthInterceptorService implements HttpInterceptor {
       case 'equipment':
       case 'dps':
       case 'report':
+      case 'meta':
       case 'import':
           _url = this.config[caseValue] + _url;
           request = request.clone({url: _url});
@@ -86,9 +81,11 @@ export class UnauthorisedInterceptor implements HttpInterceptor {
       if (err instanceof HttpErrorResponse) {
         this.sharedService.endHttpLoading();
         if (err.status === 401) { //TODO: Handling for err.status === 403
+          localStorage.clear();
           window.location.href = '/';
         }
       }
     }));
   }
 }
+

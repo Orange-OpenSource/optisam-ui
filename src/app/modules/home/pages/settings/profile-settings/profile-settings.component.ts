@@ -1,9 +1,3 @@
-// Copyright (C) 2019 Orange
-// 
-// This software is distributed under the terms and conditions of the 'Apache License 2.0'
-// license which can be found in the file 'License.txt' in this package distribution 
-// or at 'http://www.apache.org/licenses/LICENSE-2.0'. 
-
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { AccountService } from 'src/app/core/services/account.service';
@@ -29,6 +23,7 @@ export class ProfileSettingsComponent implements OnInit {
   body:any;
   userID:any;
   profilePicture:any;
+  errorMessage:string;
 
   constructor(private accountService: AccountService, 
               private translate: TranslateService,
@@ -59,10 +54,8 @@ export class ProfileSettingsComponent implements OnInit {
   initForm() {
     this.profileForm = new FormGroup({
       'profilePic': new FormControl(null),
-      'firstName': new FormControl(null, [Validators.required, Validators.minLength(1),Validators.maxLength(15),
-        Validators.pattern(/^[a-zA-Z0-9_]*$/)]),
-      'lastName': new FormControl(null, [Validators.required, Validators.minLength(1),,Validators.maxLength(15),
-        Validators.pattern(/^[a-zA-Z0-9_]*$/)]),
+      'firstName': new FormControl(null, [Validators.required, Validators.pattern(/^\S+(?: \S+)*$/)]),
+      'lastName': new FormControl(null, [Validators.required, Validators.pattern(/^\S+(?: \S+)*$/)]),
       'language': new FormControl(null, [Validators.required])
     });
   }
@@ -146,6 +139,7 @@ export class ProfileSettingsComponent implements OnInit {
       this.loading = false;
       console.log('Details updated successfully!')
     },(err)=> {
+      this.errorMessage = err.error.message||'Some error occured! Profile could not be updated.';
       this.openModal(errorMsg, '30%');
       this.loading = false;
       console.log('Some error occured! ', err);

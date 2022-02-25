@@ -1,12 +1,5 @@
-// Copyright (C) 2019 Orange
-// 
-// This software is distributed under the terms and conditions of the 'Apache License 2.0'
-// license which can be found in the file 'License.txt' in this package distribution 
-// or at 'http://www.apache.org/licenses/LICENSE-2.0'. 
-
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { GroupService } from 'src/app/core/services/group.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ProductService } from 'src/app/core/services/product.service';
 import { ReportService } from 'src/app/core/services/report.service';
@@ -18,7 +11,6 @@ import { EquipmentTypeManagementService } from 'src/app/core/services/equipmentt
   styleUrls: ['./create-report.component.scss']
 })
 export class CreateReportComponent implements OnInit {
-  scopesList: any[]=[];
   selectedScope:any;
   reportTypesList: any[]=[];
   selectedReportType: any;
@@ -29,28 +21,24 @@ export class CreateReportComponent implements OnInit {
   _loading: Boolean = true;
   reqInProgress: Boolean;
 
-  constructor(private groupService: GroupService,
-              private productService: ProductService,
+  constructor(private productService: ProductService,
               private reportService: ReportService,
               private equipmentService: EquipmentTypeManagementService,
-              private dialog:MatDialog) { }
+              private dialog:MatDialog) { 
+                this.selectedScope = localStorage.getItem('scope');
+              }
 
   ngOnInit() {
     this.initForm();
-    this.getScopesList();
+    this.getEditorsList();
     this.getReportsList();
   }
 
   initForm() {
     this.reportForm = new FormGroup({
-      'scope': new FormControl(null, [Validators.required]),
       'reportType': new FormControl(null, [Validators.required])
     });
-  }
-
-  get scope() {
-    return this.reportForm.get('scope');
-  }  
+  } 
 
   get reportType() {
     return this.reportForm.get('reportType');
@@ -68,36 +56,6 @@ export class CreateReportComponent implements OnInit {
     return this.reportForm.get('equipmentType');
   }
   
-
-  getScopesList() {
-    this._loading = true;
-    this.groupService.getDirectGroups().subscribe((response: any) => {
-      response.groups.map(res=>{ res.scopes.map(s=>{this.scopesList.push(s);});});
-      this._loading = false;
-    }, (error) => {
-      this._loading = false;
-      console.log("Error fetching groups");
-    });
-  }
-
-  scopeSelected() {
-    this.selectedScope = this.scope.value;
-    this.reportForm.removeControl('editor');
-    this.reportForm.removeControl('product');
-    this.reportForm.removeControl('equipmentType');
-    this.editorsList = [];
-    this.productsList = [];
-    this.reportForm.markAsPristine();
-    if(this.reportType.value && (this.reportType.value.report_type_name == 'Compliance' || this.reportType.value.report_type_name == 'ProductEquipments')) {
-      this.reportForm.addControl('editor', new FormControl(null,[Validators.required]));
-      this.reportForm.addControl('product', new FormControl(null,[Validators.required]));
-      if(this.reportType.value.report_type_name == 'ProductEquipments') {
-        this.reportForm.addControl('equipmentType', new FormControl(null,[Validators.required]));
-      }
-      this.getEditorsList();
-    }
-  }
-
   getReportsList() {
     this._loading = true;
     this.reportService.getReportTypes().subscribe(res=>{
@@ -128,7 +86,7 @@ export class CreateReportComponent implements OnInit {
   // Get All Editors
   getEditorsList() {
     this._loading = true;
-    let query = '?scopes=' + this.scope.value;
+    let query = '?scopes=' + this.selectedScope;
     this.productService.getEditorList(query).subscribe((response: any) => {
         this.editorsList = response.editors || [];
         this._loading = false;
@@ -145,7 +103,7 @@ export class CreateReportComponent implements OnInit {
   // Get All Products based on Editor
   getProductsList() {
     this._loading = true;
-    let query = '?scopes=' + this.scope.value;
+    let query = '?scopes=' + this.selectedScope;
     query += '&editor='+ this.editor.value;
 
     this.productService.getProductList(query).subscribe((response: any) => {
@@ -160,7 +118,7 @@ export class CreateReportComponent implements OnInit {
   // Get list of equipment types
   getEquipTypes() {
     this._loading = true;
-    this.equipmentService.getTypes(this.scope.value).subscribe((res:any) => {
+    this.equipmentService.getTypes(this.selectedScope).subscribe((res:any) => {
         this.equipmentTypesList = (res.equipment_types || []).reverse();
         this._loading = false;
       },(error) => {
@@ -174,7 +132,7 @@ export class CreateReportComponent implements OnInit {
     let body;
     if(this.reportType.value.report_type_name == 'Compliance') {  
       body = {
-        "scope"           : this.scope.value,
+        "scope"           : this.selectedScope,
         "report_type_id"  : this.reportType.value.report_type_id,
         "acqrights_report": {
                               "editor": this.editor.value,
@@ -184,7 +142,7 @@ export class CreateReportComponent implements OnInit {
     }
     else if(this.reportType.value.report_type_name == 'ProductEquipments') {  
       body = {
-        "scope"           : this.scope.value,
+        "scope"           : this.selectedScope,
         "report_type_id"  : this.reportType.value.report_type_id,
         "product_equipments_report": {
                                         "editor": this.editor.value,
@@ -217,7 +175,6 @@ export class CreateReportComponent implements OnInit {
 
   resetForm() {
     this.reportForm.reset();
-    this.selectedScope = null;
     this.selectedReportType = null;
   }
 

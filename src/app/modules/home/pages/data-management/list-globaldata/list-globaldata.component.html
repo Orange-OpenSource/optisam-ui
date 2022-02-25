@@ -1,0 +1,123 @@
+<mat-card class="example-card">
+  <div class="container-fluid page-content-header">
+    <div class="upload-button-box">
+      <button
+        id="refreshButton"
+        mat-raised-button
+        class="btn-three"
+        matTooltip="{{ 'Refresh Global Data Table' | translate }}"
+        (click)="getListData()"
+      >
+        <mat-icon class="refreshIcon">refresh</mat-icon>
+      </button>
+      <button
+        id="dataUpload"
+        mat-raised-button
+        class="btn-two"
+        (click)="uploadDataFiles()"
+      >
+        <mat-icon>add</mat-icon>
+        {{ "Upload File" | translate }}
+      </button>
+    </div>
+  </div>
+  <mat-card-content>
+    <div class="mat-elevation-z8">
+      <mat-table
+        [dataSource]="MyDataSource"
+        matSort
+        (matSortChange)="sortData($event)"
+      >
+        <ng-container matColumnDef="file_name">
+          <mat-header-cell *matHeaderCellDef mat-sort-header="file_name"
+            >{{ "File Name" | translate }}
+          </mat-header-cell>
+          <mat-cell *matCellDef="let file">
+            <a
+              class="ellipsis mat-button-link"
+              matTooltip="{{ 'Click here to see related files' | translate }}"
+              (click)="viewRelatedDataFiles(file)"
+            >
+              {{ file.file_name }}
+            </a>
+          </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="status">
+          <mat-header-cell *matHeaderCellDef mat-sort-header="status"
+            >{{ "Status" | translate }}
+          </mat-header-cell>
+          <mat-cell *matCellDef="let file">
+            <span *ngIf="file.status !== 'FAILED'">{{ file.status }}</span>
+            <span
+              *ngIf="file.status === 'FAILED'"
+              matTooltip="{{ file.comments }}"
+              >{{ file.status }}</span
+            >
+            <mat-icon
+              *ngIf="file.error_file_api !== ''"
+              class="errorIcon"
+              matTooltip="{{
+                'Click here to download failed records' | translate
+              }}"
+              (click)="downloadFailureReport(file, errorDialog)"
+              >error</mat-icon
+            >
+          </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="uploaded_by">
+          <mat-header-cell *matHeaderCellDef mat-sort-header="uploaded_by"
+            >{{ "Uploaded By" | translate }}
+          </mat-header-cell>
+          <mat-cell *matCellDef="let file"> {{ file.uploaded_by }} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="uploaded_on">
+          <mat-header-cell *matHeaderCellDef mat-sort-header="uploaded_on">{{
+            "Uploaded On" | translate
+          }}</mat-header-cell>
+          <mat-cell *matCellDef="let file"> {{ file.uploaded_on }} </mat-cell>
+        </ng-container>
+
+        <mat-header-row
+          *matHeaderRowDef="displayedColumns; sticky: true"
+        ></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+      </mat-table>
+      <app-loading-spinner *ngIf="_loading"></app-loading-spinner>
+      <div
+        id="noData"
+        *ngIf="
+          !_loading &&
+          (!MyDataSource || (MyDataSource && MyDataSource.data.length === 0))
+        "
+      >
+        {{ "No global data details available" | translate }}
+      </div>
+      <mat-paginator
+        [length]="length"
+        [pageSize]="page_size"
+        [pageSizeOptions]="[50, 100, 200]"
+        (page)="getPaginatorData($event)"
+        showFirstLastButtons
+      >
+      </mat-paginator>
+    </div>
+  </mat-card-content>
+</mat-card>
+<ng-template #errorDialog>
+  <mat-dialog-content>
+    <p>{{ "Error" | translate }}: {{ errorMsg | translate }}.</p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="center">
+    <button
+      mat-button
+      [mat-dialog-close]="true"
+      class="btn-two"
+      cdkFocusInitial
+    >
+      {{ "OK" | translate }}
+    </button>
+  </mat-dialog-actions>
+</ng-template>

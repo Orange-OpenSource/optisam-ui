@@ -1,9 +1,3 @@
-// Copyright (C) 2019 Orange
-// 
-// This software is distributed under the terms and conditions of the 'Apache License 2.0'
-// license which can be found in the file 'License.txt' in this package distribution 
-// or at 'http://www.apache.org/licenses/LICENSE-2.0'. 
-
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -14,7 +8,7 @@ import { ProductService } from 'src/app/core/services/product.service';
 @Component({
   selector: 'app-product-aggregation-applications',
   templateUrl: './product-aggregation-applications.component.html',
-  styleUrls: ['./product-aggregation-applications.component.scss']
+  styleUrls: ['./product-aggregation-applications.component.scss'],
 })
 export class ProductAggregationApplicationsComponent implements OnInit {
   aggregationName: string;
@@ -22,30 +16,43 @@ export class ProductAggregationApplicationsComponent implements OnInit {
     title: 'Search by Application Name',
     primary: 'search_params.name.filteringkey',
     other: [
-      {key: 'search_params.name.filteringkey', label: 'Application name'},
-      {key: 'search_params.application_owner.filteringkey', label: 'Application Owner'}
-    ]
+      { key: 'search_params.name.filteringkey', label: 'Application name' },
+      {
+        key: 'search_params.application_owner.filteringkey',
+        label: 'Application Owner',
+      },
+    ],
   };
   searchFields: any = {};
-  swidTags:any[]=[];
+  swidTags: any[] = [];
   productAggregationAppData: any;
   length: number;
   pageSize: number;
   page_size: any;
   current_page_num: any;
-  @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
-  @ViewChild(MatSort, {static: false}) sort: MatSort;
+  @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
+  @ViewChild(MatSort, { static: false }) sort: MatSort;
   searchQuery: string;
   sortQuery: string;
 
-  displayedColumns: string[] = ['name', 'owner' , 'num_of_instances', 'num_of_equipments'];
-  sortColumn: string[] = ['name', 'owner' , 'num_of_instances', 'num_of_equipments'];
+  displayedColumns: string[] = [
+    'name',
+    'owner',
+    'num_of_instances',
+    'num_of_equipments',
+  ];
+  sortColumn: string[] = [
+    'name',
+    'owner',
+    'num_of_instances',
+    'num_of_equipments',
+  ];
   tableKeyLabelMap: any = {
-      'name': 'Application Name',
-      'owner': 'Application Owner',
-      'num_of_instances': 'Instance Count',
-      'num_of_equipments': 'Equipment Count',
-    };
+    name: 'Application Name',
+    owner: 'Application Owner',
+    num_of_instances: 'Instance Count',
+    num_of_equipments: 'Equipment Count',
+  };
   _loading: Boolean;
 
   constructor(
@@ -53,11 +60,12 @@ export class ProductAggregationApplicationsComponent implements OnInit {
     private productService: ProductService,
     private router: Router
   ) {
-    if(this.route.snapshot.params)
-    {this.aggregationName = this.route.snapshot.params.agg_name;}
+    if (this.route.snapshot.params) {
+      this.aggregationName = this.route.snapshot.params.agg_name;
+    }
     this.current_page_num = 1;
-    this.page_size = 10;
-    if(localStorage.getItem('aggrSwidTags')) {
+    this.page_size = 50;
+    if (localStorage.getItem('aggrSwidTags')) {
       this.swidTags = localStorage.getItem('aggrSwidTags').split(',');
     }
   }
@@ -68,20 +76,26 @@ export class ProductAggregationApplicationsComponent implements OnInit {
 
   getProductAggregationApplicationData() {
     this._loading = true;
-    let query = '?page_num=' + this.current_page_num + '&page_size=' + this.page_size;
-    query += (this.searchQuery ? this.searchQuery : '');
-    query += (this.sortQuery ? this.sortQuery : '');
-    this.productService.getProductAggregationApplications(this.swidTags, query).subscribe(
-      (res: any) => {
-        this.productAggregationAppData = new MatTableDataSource(res.applications);
-        this.productAggregationAppData.sort = this.sort;
-        this.length = res.totalRecords;
-        this._loading = false;
-      },
-      error => {
-        console.log('There was an error while retrieving Posts !!!' + error);
-        this._loading = false;
-      });
+    let query =
+      '?page_num=' + this.current_page_num + '&page_size=' + this.page_size;
+    query += this.searchQuery ? this.searchQuery : '';
+    query += this.sortQuery ? this.sortQuery : '';
+    this.productService
+      .getProductAggregationApplications(this.swidTags, query)
+      .subscribe(
+        (res: any) => {
+          this.productAggregationAppData = new MatTableDataSource(
+            res.applications
+          );
+          this.productAggregationAppData.sort = this.sort;
+          this.length = res.totalRecords;
+          this._loading = false;
+        },
+        (error) => {
+          console.log('There was an error while retrieving Posts !!!' + error);
+          this._loading = false;
+        }
+      );
   }
 
   getPaginatorData(ev) {
@@ -127,7 +141,7 @@ export class ProductAggregationApplicationsComponent implements OnInit {
     this.sortQuery = '';
     Object.keys(this.searchFields).forEach((key) => {
       if (this.searchFields[key]) {
-        this.searchQuery += '&' + key + '=' + this.searchFields[key];
+        this.searchQuery += '&' + key + '=' + this.searchFields[key]?.trim();
       }
     });
     this.getProductAggregationApplicationData();
@@ -141,7 +155,13 @@ export class ProductAggregationApplicationsComponent implements OnInit {
 
   goBackToAggregation() {
     const filters = JSON.parse(localStorage.getItem('prodAggrFilter'));
-    console.log('pp', filters)
-    this.router.navigateByUrl('/optisam/pr/products/aggregations', { state : { name : filters['name'], swidTag: filters['swidTag'], editor: filters['editor']} })
+    console.log('pp', filters);
+    this.router.navigateByUrl('/optisam/pr/products/aggregations', {
+      state: {
+        name: filters['name'],
+        swidTag: filters['swidTag'],
+        editor: filters['editor'],
+      },
+    });
   }
 }

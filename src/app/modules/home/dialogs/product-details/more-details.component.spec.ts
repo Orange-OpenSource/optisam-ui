@@ -1,9 +1,3 @@
-// Copyright (C) 2019 Orange
-// 
-// This software is distributed under the terms and conditions of the 'Apache License 2.0'
-// license which can be found in the file 'License.txt' in this package distribution 
-// or at 'http://www.apache.org/licenses/LICENSE-2.0'. 
-
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { MoreDetailsComponent } from './more-details.component';
@@ -14,6 +8,7 @@ import { ProductService } from 'src/app/core/services/product.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { CustomMaterialModule } from 'src/app/material.module';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('MoreDetailsComponent', () => {
   let component: MoreDetailsComponent;
@@ -29,6 +24,7 @@ describe('MoreDetailsComponent', () => {
                   CustomMaterialModule,
                   HttpClientTestingModule,
                   SharedModule,
+                  RouterTestingModule,
                   TranslateModule.forRoot() 
                 ],
       providers : [

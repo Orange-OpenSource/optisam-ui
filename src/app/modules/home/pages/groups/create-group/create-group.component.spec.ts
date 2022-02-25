@@ -1,9 +1,3 @@
-// Copyright (C) 2019 Orange
-// 
-// This software is distributed under the terms and conditions of the 'Apache License 2.0'
-// license which can be found in the file 'License.txt' in this package distribution 
-// or at 'http://www.apache.org/licenses/LICENSE-2.0'. 
-
 import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CreateGroupComponent } from './create-group.component';
@@ -78,23 +72,6 @@ describe('CreateGroupComponent', () => {
     expect(component.groupName.disabled).toBeTruthy();
   })
 
-  it("'Scope' field should be invalid if no option is selected", () => {
-    component.data.name = 'Parent';
-    component.ngOnInit();
-    component.name.setValue('Test');
-    fixture.detectChanges();
-    expect(component.scopes.invalid).toBeTruthy();
-  })
-
-  it("'Scope' field should be valid if the user selects one or more options", () => {
-    component.data.name = 'Parent';
-    component.ngOnInit();
-    component.name.setValue('Test');
-    component.scopes.setValue(['ABC', 'DEF']);
-    fixture.detectChanges();
-    expect(component.scopes.valid).toBeTruthy();
-  })
-
   it("reset button should be disabled if no change is made", () => {
     const resetButton = fixture.debugElement.nativeElement.querySelector('button#resetButton');
     expect(resetButton.disabled).toBe(true)
@@ -104,7 +81,6 @@ describe('CreateGroupComponent', () => {
     component.data.name = 'Parent';
     component.ngOnInit();
     component.name.setValue('Test');
-    component.scopes.setValue(['ABC', 'DEF']);
     component.groupForm.markAsTouched();
     component.groupForm.markAsDirty();
     fixture.detectChanges();
@@ -116,7 +92,6 @@ describe('CreateGroupComponent', () => {
     component.data.name = 'Parent';
     component.ngOnInit();
     component.name.setValue('Test');
-    component.scopes.setValue(['ABC', 'DEF']);
     component.groupForm.markAsTouched();
     component.groupForm.markAsDirty();
     fixture.detectChanges();
@@ -124,15 +99,13 @@ describe('CreateGroupComponent', () => {
     resetButton.click();
     fixture.detectChanges();
     expect(component.name.value).toBeNull;
-    expect(component.scopes.value).toBeNull;
     expect(resetButton.disabled).toBeTruthy();
   })
 
   it("create button should be disabled if any form field is invalid", () => {
     component.data.name = 'Parent';
     component.ngOnInit();
-    component.name.setValue('Test');
-    // Scope is mandatory, but we're not setting any value to test form invalid scenario
+    component.name.setValue('Test  *123'); //Invalid name pattern
     component.groupForm.markAsTouched();
     component.groupForm.markAsDirty();
     fixture.detectChanges();
@@ -145,7 +118,7 @@ describe('CreateGroupComponent', () => {
     component.data.name = 'Parent';
     component.ngOnInit();
     component.name.setValue('Test');
-    component.scopes.setValue(['ABC', 'DEF']);
+    component.scopes.setValue(['TST1', 'TST2']);
     component.groupForm.markAsTouched();
     component.groupForm.markAsDirty();
     fixture.detectChanges();

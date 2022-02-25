@@ -1,9 +1,3 @@
-// Copyright (C) 2019 Orange
-// 
-// This software is distributed under the terms and conditions of the 'Apache License 2.0'
-// license which can be found in the file 'License.txt' in this package distribution 
-// or at 'http://www.apache.org/licenses/LICENSE-2.0'. 
-
 import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ProdComponent } from './prod.component';
@@ -28,51 +22,215 @@ export class ProductServiceStub {
         return of({
           totalRecords: 12,
           products: [
-            { swidTag: "A_Swidtag", name: "A_Product", editor: "A_Editor", category: "A_Category", numofEquipments: 5 },
-            { swidTag: "C_Swidtag", name: "C_Product", editor: "C_Editor", category: "C_Category", numofEquipments: 15 },
-            { swidTag: "D_Swidtag", name: "D_Product", editor: "D_Editor", category: "D_Category", totalCost: "100", numOfApplications: 20 },
-            { swidTag: "B_Swidtag", name: "B_Product", editor: "B_Editor", version: "B_Version", category: "B_Category", numofEquipments: 10 },
-            { swidTag: "G_Swidtag", name: "G_Product", editor: "G_Editor", category: "G_Category", numofEquipments: 7 },
-            { swidTag: "I_Swidtag", name: "I_Product", editor: "I_Editor", category: "I_Category", numofEquipments: 17 },
-            { swidTag: "K_Swidtag", name: "K_Product", editor: "K_Editor", category: "K_Category", totalCost: "100", numOfApplications: 20 },
-            { swidTag: "H_Swidtag", name: "H_Product", editor: "H_Editor", version: "H_Version", category: "H_Category", numofEquipments: 10 },
-            { swidTag: "E_Swidtag", name: "E_Product", editor: "E_Editor", category: "E_Category", numofEquipments: 1 },
-            { swidTag: "J_Swidtag", name: "J_Product", editor: "J_Editor", category: "J_Category", numofEquipments: 9 }
-          ]
+            {
+              swidTag: 'A_Swidtag',
+              name: 'A_Product',
+              editor: 'A_Editor',
+              category: 'A_Category',
+              numofEquipments: 5,
+            },
+            {
+              swidTag: 'C_Swidtag',
+              name: 'C_Product',
+              editor: 'C_Editor',
+              category: 'C_Category',
+              numofEquipments: 15,
+            },
+            {
+              swidTag: 'D_Swidtag',
+              name: 'D_Product',
+              editor: 'D_Editor',
+              category: 'D_Category',
+              totalCost: '100',
+              numOfApplications: 20,
+            },
+            {
+              swidTag: 'B_Swidtag',
+              name: 'B_Product',
+              editor: 'B_Editor',
+              version: 'B_Version',
+              category: 'B_Category',
+              numofEquipments: 10,
+            },
+            {
+              swidTag: 'G_Swidtag',
+              name: 'G_Product',
+              editor: 'G_Editor',
+              category: 'G_Category',
+              numofEquipments: 7,
+            },
+            {
+              swidTag: 'I_Swidtag',
+              name: 'I_Product',
+              editor: 'I_Editor',
+              category: 'I_Category',
+              numofEquipments: 17,
+            },
+            {
+              swidTag: 'K_Swidtag',
+              name: 'K_Product',
+              editor: 'K_Editor',
+              category: 'K_Category',
+              totalCost: '100',
+              numOfApplications: 20,
+            },
+            {
+              swidTag: 'H_Swidtag',
+              name: 'H_Product',
+              editor: 'H_Editor',
+              version: 'H_Version',
+              category: 'H_Category',
+              numofEquipments: 10,
+            },
+            {
+              swidTag: 'E_Swidtag',
+              name: 'E_Product',
+              editor: 'E_Editor',
+              category: 'E_Category',
+              numofEquipments: 1,
+            },
+            {
+              swidTag: 'J_Swidtag',
+              name: 'J_Product',
+              editor: 'J_Editor',
+              category: 'J_Category',
+              numofEquipments: 9,
+            },
+          ],
         });
       } else {
         return of({
           totalRecords: 12,
           products: [
-            { swidTag: "F_Swidtag", name: "F_Product", editor: "F_Editor", category: "F_Category", totalCost: "100", numOfApplications: 20 },
-            { swidTag: "L_Swidtag", name: "L_Product", editor: "L_Editor", version: "L_Version", category: "L_Category", numofEquipments: 10 }
-          ]
+            {
+              swidTag: 'F_Swidtag',
+              name: 'F_Product',
+              editor: 'F_Editor',
+              category: 'F_Category',
+              totalCost: '100',
+              numOfApplications: 20,
+            },
+            {
+              swidTag: 'L_Swidtag',
+              name: 'L_Product',
+              editor: 'L_Editor',
+              version: 'L_Version',
+              category: 'L_Category',
+              numofEquipments: 10,
+            },
+          ],
         });
       }
     } else {
       return of({
         totalRecords: 12,
         products: [
-          { swidTag: "A_Swidtag", name: "A_Product", editor: "A_Editor", category: "A_Category", numofEquipments: 5 },
-          { swidTag: "C_Swidtag", name: "C_Product", editor: "C_Editor", category: "C_Category", numofEquipments: 15 },
-          { swidTag: "D_Swidtag", name: "D_Product", editor: "D_Editor", category: "D_Category", totalCost: "100", numOfApplications: 20 },
-          { swidTag: "B_Swidtag", name: "B_Product", editor: "B_Editor", version: "B_Version", category: "B_Category", numofEquipments: 10 },
-          { swidTag: "G_Swidtag", name: "G_Product", editor: "G_Editor", category: "G_Category", numofEquipments: 7 },
-          { swidTag: "I_Swidtag", name: "I_Product", editor: "I_Editor", category: "I_Category", numofEquipments: 17 },
-          { swidTag: "K_Swidtag", name: "K_Product", editor: "K_Editor", category: "K_Category", totalCost: "100", numOfApplications: 20 },
-          { swidTag: "H_Swidtag", name: "H_Product", editor: "H_Editor", version: "H_Version", category: "H_Category", numofEquipments: 10 },
-          { swidTag: "E_Swidtag", name: "E_Product", editor: "E_Editor", category: "E_Category", numofEquipments: 1 },
-          { swidTag: "J_Swidtag", name: "J_Product", editor: "J_Editor", category: "J_Category", numofEquipments: 9 },
-          { swidTag: "F_Swidtag", name: "F_Product", editor: "F_Editor", category: "F_Category", totalCost: "100", numOfApplications: 20 },
-          { swidTag: "L_Swidtag", name: "L_Product", editor: "L_Editor", version: "L_Version", category: "L_Category", numofEquipments: 10 }
-        ]
+          {
+            swidTag: 'A_Swidtag',
+            name: 'A_Product',
+            editor: 'A_Editor',
+            category: 'A_Category',
+            numofEquipments: 5,
+          },
+          {
+            swidTag: 'C_Swidtag',
+            name: 'C_Product',
+            editor: 'C_Editor',
+            category: 'C_Category',
+            numofEquipments: 15,
+          },
+          {
+            swidTag: 'D_Swidtag',
+            name: 'D_Product',
+            editor: 'D_Editor',
+            category: 'D_Category',
+            totalCost: '100',
+            numOfApplications: 20,
+          },
+          {
+            swidTag: 'B_Swidtag',
+            name: 'B_Product',
+            editor: 'B_Editor',
+            version: 'B_Version',
+            category: 'B_Category',
+            numofEquipments: 10,
+          },
+          {
+            swidTag: 'G_Swidtag',
+            name: 'G_Product',
+            editor: 'G_Editor',
+            category: 'G_Category',
+            numofEquipments: 7,
+          },
+          {
+            swidTag: 'I_Swidtag',
+            name: 'I_Product',
+            editor: 'I_Editor',
+            category: 'I_Category',
+            numofEquipments: 17,
+          },
+          {
+            swidTag: 'K_Swidtag',
+            name: 'K_Product',
+            editor: 'K_Editor',
+            category: 'K_Category',
+            totalCost: '100',
+            numOfApplications: 20,
+          },
+          {
+            swidTag: 'H_Swidtag',
+            name: 'H_Product',
+            editor: 'H_Editor',
+            version: 'H_Version',
+            category: 'H_Category',
+            numofEquipments: 10,
+          },
+          {
+            swidTag: 'E_Swidtag',
+            name: 'E_Product',
+            editor: 'E_Editor',
+            category: 'E_Category',
+            numofEquipments: 1,
+          },
+          {
+            swidTag: 'J_Swidtag',
+            name: 'J_Product',
+            editor: 'J_Editor',
+            category: 'J_Category',
+            numofEquipments: 9,
+          },
+          {
+            swidTag: 'F_Swidtag',
+            name: 'F_Product',
+            editor: 'F_Editor',
+            category: 'F_Category',
+            totalCost: '100',
+            numOfApplications: 20,
+          },
+          {
+            swidTag: 'L_Swidtag',
+            name: 'L_Product',
+            editor: 'L_Editor',
+            version: 'L_Version',
+            category: 'L_Category',
+            numofEquipments: 10,
+          },
+        ],
       });
     }
   }
   getMoreDetails() {
-    return of({ "swidTag": "ADOBE8", "editor": "ADOBE" });
+    return of({ swidTag: 'ADOBE8', editor: 'ADOBE' });
   }
-  filteredData(length, pageSize, sort_by, sort_order, filteringkey1, filteringkey2, filteringkey3) {
+  filteredData(
+    length,
+    pageSize,
+    sort_by,
+    sort_order,
+    filteringkey1,
+    filteringkey2,
+    filteringkey3
+  ) {
     if (sort_by == 'swidtag') {
       if (sort_order == 'asc') {
         if (pageSize == 10) {
@@ -80,191 +238,810 @@ export class ProductServiceStub {
             return of({
               totalRecords: 12,
               products: [
-                { swidTag: "A_Swidtag", name: "A_Product", editor: "A_Editor", category: "A_Category", numofEquipments: 5 },
-                { swidTag: "B_Swidtag", name: "B_Product", editor: "B_Editor", version: "B_Version", category: "B_Category", numofEquipments: 10 },
-                { swidTag: "C_Swidtag", name: "C_Product", editor: "C_Editor", category: "C_Category", numofEquipments: 15 },
-                { swidTag: "D_Swidtag", name: "D_Product", editor: "D_Editor", category: "D_Category", totalCost: "100", numOfApplications: 20 },
-                { swidTag: "E_Swidtag", name: "E_Product", editor: "E_Editor", category: "E_Category", numofEquipments: 1 },
-                { swidTag: "F_Swidtag", name: "F_Product", editor: "F_Editor", category: "F_Category", totalCost: "100", numOfApplications: 20 },
-                { swidTag: "G_Swidtag", name: "G_Product", editor: "G_Editor", category: "G_Category", numofEquipments: 7 },
-                { swidTag: "H_Swidtag", name: "H_Product", editor: "H_Editor", version: "H_Version", category: "H_Category", numofEquipments: 10 },
-                { swidTag: "I_Swidtag", name: "I_Product", editor: "I_Editor", category: "I_Category", numofEquipments: 17 },
-                { swidTag: "J_Swidtag", name: "J_Product", editor: "J_Editor", category: "J_Category", numofEquipments: 9 }
-              ]
+                {
+                  swidTag: 'A_Swidtag',
+                  name: 'A_Product',
+                  editor: 'A_Editor',
+                  category: 'A_Category',
+                  numofEquipments: 5,
+                },
+                {
+                  swidTag: 'B_Swidtag',
+                  name: 'B_Product',
+                  editor: 'B_Editor',
+                  version: 'B_Version',
+                  category: 'B_Category',
+                  numofEquipments: 10,
+                },
+                {
+                  swidTag: 'C_Swidtag',
+                  name: 'C_Product',
+                  editor: 'C_Editor',
+                  category: 'C_Category',
+                  numofEquipments: 15,
+                },
+                {
+                  swidTag: 'D_Swidtag',
+                  name: 'D_Product',
+                  editor: 'D_Editor',
+                  category: 'D_Category',
+                  totalCost: '100',
+                  numOfApplications: 20,
+                },
+                {
+                  swidTag: 'E_Swidtag',
+                  name: 'E_Product',
+                  editor: 'E_Editor',
+                  category: 'E_Category',
+                  numofEquipments: 1,
+                },
+                {
+                  swidTag: 'F_Swidtag',
+                  name: 'F_Product',
+                  editor: 'F_Editor',
+                  category: 'F_Category',
+                  totalCost: '100',
+                  numOfApplications: 20,
+                },
+                {
+                  swidTag: 'G_Swidtag',
+                  name: 'G_Product',
+                  editor: 'G_Editor',
+                  category: 'G_Category',
+                  numofEquipments: 7,
+                },
+                {
+                  swidTag: 'H_Swidtag',
+                  name: 'H_Product',
+                  editor: 'H_Editor',
+                  version: 'H_Version',
+                  category: 'H_Category',
+                  numofEquipments: 10,
+                },
+                {
+                  swidTag: 'I_Swidtag',
+                  name: 'I_Product',
+                  editor: 'I_Editor',
+                  category: 'I_Category',
+                  numofEquipments: 17,
+                },
+                {
+                  swidTag: 'J_Swidtag',
+                  name: 'J_Product',
+                  editor: 'J_Editor',
+                  category: 'J_Category',
+                  numofEquipments: 9,
+                },
+              ],
             });
           } else {
             return of({
               totalRecords: 12,
               products: [
-                { swidTag: "K_Swidtag", name: "K_Product", editor: "K_Editor", category: "K_Category", totalCost: "100", numOfApplications: 20 },
-                { swidTag: "L_Swidtag", name: "L_Product", editor: "L_Editor", version: "L_Version", category: "L_Category", numofEquipments: 10 }
-              ]
-            });
-          }
-        }
-        else {
-          return of({
-            totalRecords: 12,
-            products: [
-              { swidTag: "A_Swidtag", name: "A_Product", editor: "A_Editor", category: "A_Category", numofEquipments: 5 },
-              { swidTag: "B_Swidtag", name: "B_Product", editor: "B_Editor", version: "B_Version", category: "B_Category", numofEquipments: 10 },
-              { swidTag: "C_Swidtag", name: "C_Product", editor: "C_Editor", category: "C_Category", numofEquipments: 15 },
-              { swidTag: "D_Swidtag", name: "D_Product", editor: "D_Editor", category: "D_Category", totalCost: "100", numOfApplications: 20 },
-              { swidTag: "E_Swidtag", name: "E_Product", editor: "E_Editor", category: "E_Category", numofEquipments: 1 },
-              { swidTag: "F_Swidtag", name: "F_Product", editor: "F_Editor", category: "F_Category", totalCost: "100", numOfApplications: 20 },
-              { swidTag: "G_Swidtag", name: "G_Product", editor: "G_Editor", category: "G_Category", numofEquipments: 7 },
-              { swidTag: "H_Swidtag", name: "H_Product", editor: "H_Editor", version: "H_Version", category: "H_Category", numofEquipments: 10 },
-              { swidTag: "I_Swidtag", name: "I_Product", editor: "I_Editor", category: "I_Category", numofEquipments: 17 },
-              { swidTag: "J_Swidtag", name: "J_Product", editor: "J_Editor", category: "J_Category", numofEquipments: 9 },
-              { swidTag: "K_Swidtag", name: "K_Product", editor: "K_Editor", category: "K_Category", totalCost: "100", numOfApplications: 20 },
-              { swidTag: "L_Swidtag", name: "L_Product", editor: "L_Editor", version: "L_Version", category: "L_Category", numofEquipments: 10 }
-            ]
-          });
-        }
-      }
-      else if (sort_order == 'desc') {
-        if (pageSize == 10) {
-          if (length == 1) {
-            return of({
-              totalRecords: 12,
-              products: [
-                { swidTag: "L_Swidtag", name: "L_Product", editor: "L_Editor", version: "L_Version", category: "L_Category", numofEquipments: 10 },
-                { swidTag: "K_Swidtag", name: "K_Product", editor: "K_Editor", category: "K_Category", totalCost: "100", numOfApplications: 20 },
-                { swidTag: "J_Swidtag", name: "J_Product", editor: "J_Editor", category: "J_Category", numofEquipments: 9 },
-                { swidTag: "I_Swidtag", name: "I_Product", editor: "I_Editor", category: "I_Category", numofEquipments: 17 },
-                { swidTag: "H_Swidtag", name: "H_Product", editor: "H_Editor", version: "H_Version", category: "H_Category", numofEquipments: 10 },
-                { swidTag: "G_Swidtag", name: "G_Product", editor: "G_Editor", category: "G_Category", numofEquipments: 7 },
-                { swidTag: "F_Swidtag", name: "F_Product", editor: "F_Editor", category: "F_Category", totalCost: "100", numOfApplications: 20 },
-                { swidTag: "E_Swidtag", name: "E_Product", editor: "E_Editor", category: "E_Category", numofEquipments: 1 },
-                { swidTag: "D_Swidtag", name: "D_Product", editor: "D_Editor", category: "D_Category", totalCost: "100", numOfApplications: 20 },
-                { swidTag: "C_Swidtag", name: "C_Product", editor: "C_Editor", category: "C_Category", numofEquipments: 15 }
-              ]
-            });
-          } else {
-            return of({
-              totalRecords: 12,
-              products: [
-                { swidTag: "B_Swidtag", name: "B_Product", editor: "B_Editor", version: "B_Version", category: "B_Category", numofEquipments: 10 },
-                { swidTag: "A_Swidtag", name: "A_Product", editor: "A_Editor", category: "A_Category", numofEquipments: 5 }
-              ]
-            });
-          }
-        } else {
-          return of({
-            totalRecords: 12,
-            products: [
-              { swidTag: "L_Swidtag", name: "L_Product", editor: "L_Editor", version: "L_Version", category: "L_Category", numofEquipments: 10 },
-              { swidTag: "K_Swidtag", name: "K_Product", editor: "K_Editor", category: "K_Category", totalCost: "100", numOfApplications: 20 },
-              { swidTag: "J_Swidtag", name: "J_Product", editor: "J_Editor", category: "J_Category", numofEquipments: 9 },
-              { swidTag: "I_Swidtag", name: "I_Product", editor: "I_Editor", category: "I_Category", numofEquipments: 17 },
-              { swidTag: "H_Swidtag", name: "H_Product", editor: "H_Editor", version: "H_Version", category: "H_Category", numofEquipments: 10 },
-              { swidTag: "G_Swidtag", name: "G_Product", editor: "G_Editor", category: "G_Category", numofEquipments: 7 },
-              { swidTag: "F_Swidtag", name: "F_Product", editor: "F_Editor", category: "F_Category", totalCost: "100", numOfApplications: 20 },
-              { swidTag: "E_Swidtag", name: "E_Product", editor: "E_Editor", category: "E_Category", numofEquipments: 1 },
-              { swidTag: "D_Swidtag", name: "D_Product", editor: "D_Editor", category: "D_Category", totalCost: "100", numOfApplications: 20 },
-              { swidTag: "C_Swidtag", name: "C_Product", editor: "C_Editor", category: "C_Category", numofEquipments: 15 },
-              { swidTag: "B_Swidtag", name: "B_Product", editor: "B_Editor", version: "B_Version", category: "B_Category", numofEquipments: 10 },
-              { swidTag: "A_Swidtag", name: "A_Product", editor: "A_Editor", category: "A_Category", numofEquipments: 5 }
-            ]
-          });
-        }
-      }
-      else {
-        if (pageSize == 10) {
-          if (length == 1) {
-            return of({
-              totalRecords: 12,
-              products: [
-                { swidTag: "A_Swidtag", name: "A_Product", editor: "A_Editor", category: "A_Category", numofEquipments: 5 },
-                { swidTag: "C_Swidtag", name: "C_Product", editor: "C_Editor", category: "C_Category", numofEquipments: 15 },
-                { swidTag: "D_Swidtag", name: "D_Product", editor: "D_Editor", category: "D_Category", totalCost: "100", numOfApplications: 20 },
-                { swidTag: "B_Swidtag", name: "B_Product", editor: "B_Editor", version: "B_Version", category: "B_Category", numofEquipments: 10 },
-                { swidTag: "G_Swidtag", name: "G_Product", editor: "G_Editor", category: "G_Category", numofEquipments: 7 },
-                { swidTag: "I_Swidtag", name: "I_Product", editor: "I_Editor", category: "I_Category", numofEquipments: 17 },
-                { swidTag: "K_Swidtag", name: "K_Product", editor: "K_Editor", category: "K_Category", totalCost: "100", numOfApplications: 20 },
-                { swidTag: "H_Swidtag", name: "H_Product", editor: "H_Editor", version: "H_Version", category: "H_Category", numofEquipments: 10 },
-                { swidTag: "E_Swidtag", name: "E_Product", editor: "E_Editor", category: "E_Category", numofEquipments: 1 },
-                { swidTag: "J_Swidtag", name: "J_Product", editor: "J_Editor", category: "J_Category", numofEquipments: 9 }
-              ]
-            });
-          } else {
-            return of({
-              totalRecords: 12,
-              products: [
-                { swidTag: "F_Swidtag", name: "F_Product", editor: "F_Editor", category: "F_Category", totalCost: "100", numOfApplications: 20 },
-                { swidTag: "L_Swidtag", name: "L_Product", editor: "L_Editor", version: "L_Version", category: "L_Category", numofEquipments: 10 }
-              ]
+                {
+                  swidTag: 'K_Swidtag',
+                  name: 'K_Product',
+                  editor: 'K_Editor',
+                  category: 'K_Category',
+                  totalCost: '100',
+                  numOfApplications: 20,
+                },
+                {
+                  swidTag: 'L_Swidtag',
+                  name: 'L_Product',
+                  editor: 'L_Editor',
+                  version: 'L_Version',
+                  category: 'L_Category',
+                  numofEquipments: 10,
+                },
+              ],
             });
           }
         } else {
           return of({
             totalRecords: 12,
             products: [
-              { swidTag: "A_Swidtag", name: "A_Product", editor: "A_Editor", category: "A_Category", numofEquipments: 5 },
-              { swidTag: "C_Swidtag", name: "C_Product", editor: "C_Editor", category: "C_Category", numofEquipments: 15 },
-              { swidTag: "D_Swidtag", name: "D_Product", editor: "D_Editor", category: "D_Category", totalCost: "100", numOfApplications: 20 },
-              { swidTag: "B_Swidtag", name: "B_Product", editor: "B_Editor", version: "B_Version", category: "B_Category", numofEquipments: 10 },
-              { swidTag: "G_Swidtag", name: "G_Product", editor: "G_Editor", category: "G_Category", numofEquipments: 7 },
-              { swidTag: "I_Swidtag", name: "I_Product", editor: "I_Editor", category: "I_Category", numofEquipments: 17 },
-              { swidTag: "K_Swidtag", name: "K_Product", editor: "K_Editor", category: "K_Category", totalCost: "100", numOfApplications: 20 },
-              { swidTag: "H_Swidtag", name: "H_Product", editor: "H_Editor", version: "H_Version", category: "H_Category", numofEquipments: 10 },
-              { swidTag: "E_Swidtag", name: "E_Product", editor: "E_Editor", category: "E_Category", numofEquipments: 1 },
-              { swidTag: "J_Swidtag", name: "J_Product", editor: "J_Editor", category: "J_Category", numofEquipments: 9 },
-              { swidTag: "F_Swidtag", name: "F_Product", editor: "F_Editor", category: "F_Category", totalCost: "100", numOfApplications: 20 },
-              { swidTag: "L_Swidtag", name: "L_Product", editor: "L_Editor", version: "L_Version", category: "L_Category", numofEquipments: 10 }
-            ]
+              {
+                swidTag: 'A_Swidtag',
+                name: 'A_Product',
+                editor: 'A_Editor',
+                category: 'A_Category',
+                numofEquipments: 5,
+              },
+              {
+                swidTag: 'B_Swidtag',
+                name: 'B_Product',
+                editor: 'B_Editor',
+                version: 'B_Version',
+                category: 'B_Category',
+                numofEquipments: 10,
+              },
+              {
+                swidTag: 'C_Swidtag',
+                name: 'C_Product',
+                editor: 'C_Editor',
+                category: 'C_Category',
+                numofEquipments: 15,
+              },
+              {
+                swidTag: 'D_Swidtag',
+                name: 'D_Product',
+                editor: 'D_Editor',
+                category: 'D_Category',
+                totalCost: '100',
+                numOfApplications: 20,
+              },
+              {
+                swidTag: 'E_Swidtag',
+                name: 'E_Product',
+                editor: 'E_Editor',
+                category: 'E_Category',
+                numofEquipments: 1,
+              },
+              {
+                swidTag: 'F_Swidtag',
+                name: 'F_Product',
+                editor: 'F_Editor',
+                category: 'F_Category',
+                totalCost: '100',
+                numOfApplications: 20,
+              },
+              {
+                swidTag: 'G_Swidtag',
+                name: 'G_Product',
+                editor: 'G_Editor',
+                category: 'G_Category',
+                numofEquipments: 7,
+              },
+              {
+                swidTag: 'H_Swidtag',
+                name: 'H_Product',
+                editor: 'H_Editor',
+                version: 'H_Version',
+                category: 'H_Category',
+                numofEquipments: 10,
+              },
+              {
+                swidTag: 'I_Swidtag',
+                name: 'I_Product',
+                editor: 'I_Editor',
+                category: 'I_Category',
+                numofEquipments: 17,
+              },
+              {
+                swidTag: 'J_Swidtag',
+                name: 'J_Product',
+                editor: 'J_Editor',
+                category: 'J_Category',
+                numofEquipments: 9,
+              },
+              {
+                swidTag: 'K_Swidtag',
+                name: 'K_Product',
+                editor: 'K_Editor',
+                category: 'K_Category',
+                totalCost: '100',
+                numOfApplications: 20,
+              },
+              {
+                swidTag: 'L_Swidtag',
+                name: 'L_Product',
+                editor: 'L_Editor',
+                version: 'L_Version',
+                category: 'L_Category',
+                numofEquipments: 10,
+              },
+            ],
+          });
+        }
+      } else if (sort_order == 'desc') {
+        if (pageSize == 10) {
+          if (length == 1) {
+            return of({
+              totalRecords: 12,
+              products: [
+                {
+                  swidTag: 'L_Swidtag',
+                  name: 'L_Product',
+                  editor: 'L_Editor',
+                  version: 'L_Version',
+                  category: 'L_Category',
+                  numofEquipments: 10,
+                },
+                {
+                  swidTag: 'K_Swidtag',
+                  name: 'K_Product',
+                  editor: 'K_Editor',
+                  category: 'K_Category',
+                  totalCost: '100',
+                  numOfApplications: 20,
+                },
+                {
+                  swidTag: 'J_Swidtag',
+                  name: 'J_Product',
+                  editor: 'J_Editor',
+                  category: 'J_Category',
+                  numofEquipments: 9,
+                },
+                {
+                  swidTag: 'I_Swidtag',
+                  name: 'I_Product',
+                  editor: 'I_Editor',
+                  category: 'I_Category',
+                  numofEquipments: 17,
+                },
+                {
+                  swidTag: 'H_Swidtag',
+                  name: 'H_Product',
+                  editor: 'H_Editor',
+                  version: 'H_Version',
+                  category: 'H_Category',
+                  numofEquipments: 10,
+                },
+                {
+                  swidTag: 'G_Swidtag',
+                  name: 'G_Product',
+                  editor: 'G_Editor',
+                  category: 'G_Category',
+                  numofEquipments: 7,
+                },
+                {
+                  swidTag: 'F_Swidtag',
+                  name: 'F_Product',
+                  editor: 'F_Editor',
+                  category: 'F_Category',
+                  totalCost: '100',
+                  numOfApplications: 20,
+                },
+                {
+                  swidTag: 'E_Swidtag',
+                  name: 'E_Product',
+                  editor: 'E_Editor',
+                  category: 'E_Category',
+                  numofEquipments: 1,
+                },
+                {
+                  swidTag: 'D_Swidtag',
+                  name: 'D_Product',
+                  editor: 'D_Editor',
+                  category: 'D_Category',
+                  totalCost: '100',
+                  numOfApplications: 20,
+                },
+                {
+                  swidTag: 'C_Swidtag',
+                  name: 'C_Product',
+                  editor: 'C_Editor',
+                  category: 'C_Category',
+                  numofEquipments: 15,
+                },
+              ],
+            });
+          } else {
+            return of({
+              totalRecords: 12,
+              products: [
+                {
+                  swidTag: 'B_Swidtag',
+                  name: 'B_Product',
+                  editor: 'B_Editor',
+                  version: 'B_Version',
+                  category: 'B_Category',
+                  numofEquipments: 10,
+                },
+                {
+                  swidTag: 'A_Swidtag',
+                  name: 'A_Product',
+                  editor: 'A_Editor',
+                  category: 'A_Category',
+                  numofEquipments: 5,
+                },
+              ],
+            });
+          }
+        } else {
+          return of({
+            totalRecords: 12,
+            products: [
+              {
+                swidTag: 'L_Swidtag',
+                name: 'L_Product',
+                editor: 'L_Editor',
+                version: 'L_Version',
+                category: 'L_Category',
+                numofEquipments: 10,
+              },
+              {
+                swidTag: 'K_Swidtag',
+                name: 'K_Product',
+                editor: 'K_Editor',
+                category: 'K_Category',
+                totalCost: '100',
+                numOfApplications: 20,
+              },
+              {
+                swidTag: 'J_Swidtag',
+                name: 'J_Product',
+                editor: 'J_Editor',
+                category: 'J_Category',
+                numofEquipments: 9,
+              },
+              {
+                swidTag: 'I_Swidtag',
+                name: 'I_Product',
+                editor: 'I_Editor',
+                category: 'I_Category',
+                numofEquipments: 17,
+              },
+              {
+                swidTag: 'H_Swidtag',
+                name: 'H_Product',
+                editor: 'H_Editor',
+                version: 'H_Version',
+                category: 'H_Category',
+                numofEquipments: 10,
+              },
+              {
+                swidTag: 'G_Swidtag',
+                name: 'G_Product',
+                editor: 'G_Editor',
+                category: 'G_Category',
+                numofEquipments: 7,
+              },
+              {
+                swidTag: 'F_Swidtag',
+                name: 'F_Product',
+                editor: 'F_Editor',
+                category: 'F_Category',
+                totalCost: '100',
+                numOfApplications: 20,
+              },
+              {
+                swidTag: 'E_Swidtag',
+                name: 'E_Product',
+                editor: 'E_Editor',
+                category: 'E_Category',
+                numofEquipments: 1,
+              },
+              {
+                swidTag: 'D_Swidtag',
+                name: 'D_Product',
+                editor: 'D_Editor',
+                category: 'D_Category',
+                totalCost: '100',
+                numOfApplications: 20,
+              },
+              {
+                swidTag: 'C_Swidtag',
+                name: 'C_Product',
+                editor: 'C_Editor',
+                category: 'C_Category',
+                numofEquipments: 15,
+              },
+              {
+                swidTag: 'B_Swidtag',
+                name: 'B_Product',
+                editor: 'B_Editor',
+                version: 'B_Version',
+                category: 'B_Category',
+                numofEquipments: 10,
+              },
+              {
+                swidTag: 'A_Swidtag',
+                name: 'A_Product',
+                editor: 'A_Editor',
+                category: 'A_Category',
+                numofEquipments: 5,
+              },
+            ],
+          });
+        }
+      } else {
+        if (pageSize == 10) {
+          if (length == 1) {
+            return of({
+              totalRecords: 12,
+              products: [
+                {
+                  swidTag: 'A_Swidtag',
+                  name: 'A_Product',
+                  editor: 'A_Editor',
+                  category: 'A_Category',
+                  numofEquipments: 5,
+                },
+                {
+                  swidTag: 'C_Swidtag',
+                  name: 'C_Product',
+                  editor: 'C_Editor',
+                  category: 'C_Category',
+                  numofEquipments: 15,
+                },
+                {
+                  swidTag: 'D_Swidtag',
+                  name: 'D_Product',
+                  editor: 'D_Editor',
+                  category: 'D_Category',
+                  totalCost: '100',
+                  numOfApplications: 20,
+                },
+                {
+                  swidTag: 'B_Swidtag',
+                  name: 'B_Product',
+                  editor: 'B_Editor',
+                  version: 'B_Version',
+                  category: 'B_Category',
+                  numofEquipments: 10,
+                },
+                {
+                  swidTag: 'G_Swidtag',
+                  name: 'G_Product',
+                  editor: 'G_Editor',
+                  category: 'G_Category',
+                  numofEquipments: 7,
+                },
+                {
+                  swidTag: 'I_Swidtag',
+                  name: 'I_Product',
+                  editor: 'I_Editor',
+                  category: 'I_Category',
+                  numofEquipments: 17,
+                },
+                {
+                  swidTag: 'K_Swidtag',
+                  name: 'K_Product',
+                  editor: 'K_Editor',
+                  category: 'K_Category',
+                  totalCost: '100',
+                  numOfApplications: 20,
+                },
+                {
+                  swidTag: 'H_Swidtag',
+                  name: 'H_Product',
+                  editor: 'H_Editor',
+                  version: 'H_Version',
+                  category: 'H_Category',
+                  numofEquipments: 10,
+                },
+                {
+                  swidTag: 'E_Swidtag',
+                  name: 'E_Product',
+                  editor: 'E_Editor',
+                  category: 'E_Category',
+                  numofEquipments: 1,
+                },
+                {
+                  swidTag: 'J_Swidtag',
+                  name: 'J_Product',
+                  editor: 'J_Editor',
+                  category: 'J_Category',
+                  numofEquipments: 9,
+                },
+              ],
+            });
+          } else {
+            return of({
+              totalRecords: 12,
+              products: [
+                {
+                  swidTag: 'F_Swidtag',
+                  name: 'F_Product',
+                  editor: 'F_Editor',
+                  category: 'F_Category',
+                  totalCost: '100',
+                  numOfApplications: 20,
+                },
+                {
+                  swidTag: 'L_Swidtag',
+                  name: 'L_Product',
+                  editor: 'L_Editor',
+                  version: 'L_Version',
+                  category: 'L_Category',
+                  numofEquipments: 10,
+                },
+              ],
+            });
+          }
+        } else {
+          return of({
+            totalRecords: 12,
+            products: [
+              {
+                swidTag: 'A_Swidtag',
+                name: 'A_Product',
+                editor: 'A_Editor',
+                category: 'A_Category',
+                numofEquipments: 5,
+              },
+              {
+                swidTag: 'C_Swidtag',
+                name: 'C_Product',
+                editor: 'C_Editor',
+                category: 'C_Category',
+                numofEquipments: 15,
+              },
+              {
+                swidTag: 'D_Swidtag',
+                name: 'D_Product',
+                editor: 'D_Editor',
+                category: 'D_Category',
+                totalCost: '100',
+                numOfApplications: 20,
+              },
+              {
+                swidTag: 'B_Swidtag',
+                name: 'B_Product',
+                editor: 'B_Editor',
+                version: 'B_Version',
+                category: 'B_Category',
+                numofEquipments: 10,
+              },
+              {
+                swidTag: 'G_Swidtag',
+                name: 'G_Product',
+                editor: 'G_Editor',
+                category: 'G_Category',
+                numofEquipments: 7,
+              },
+              {
+                swidTag: 'I_Swidtag',
+                name: 'I_Product',
+                editor: 'I_Editor',
+                category: 'I_Category',
+                numofEquipments: 17,
+              },
+              {
+                swidTag: 'K_Swidtag',
+                name: 'K_Product',
+                editor: 'K_Editor',
+                category: 'K_Category',
+                totalCost: '100',
+                numOfApplications: 20,
+              },
+              {
+                swidTag: 'H_Swidtag',
+                name: 'H_Product',
+                editor: 'H_Editor',
+                version: 'H_Version',
+                category: 'H_Category',
+                numofEquipments: 10,
+              },
+              {
+                swidTag: 'E_Swidtag',
+                name: 'E_Product',
+                editor: 'E_Editor',
+                category: 'E_Category',
+                numofEquipments: 1,
+              },
+              {
+                swidTag: 'J_Swidtag',
+                name: 'J_Product',
+                editor: 'J_Editor',
+                category: 'J_Category',
+                numofEquipments: 9,
+              },
+              {
+                swidTag: 'F_Swidtag',
+                name: 'F_Product',
+                editor: 'F_Editor',
+                category: 'F_Category',
+                totalCost: '100',
+                numOfApplications: 20,
+              },
+              {
+                swidTag: 'L_Swidtag',
+                name: 'L_Product',
+                editor: 'L_Editor',
+                version: 'L_Version',
+                category: 'L_Category',
+                numofEquipments: 10,
+              },
+            ],
           });
         }
       }
-    }
-    else {
+    } else {
       if (pageSize == 10) {
         if (length == 1) {
           return of({
             totalRecords: 12,
             products: [
-              { swidTag: "A_Swidtag", name: "A_Product", editor: "A_Editor", category: "A_Category", numofEquipments: 5 },
-              { swidTag: "C_Swidtag", name: "C_Product", editor: "C_Editor", category: "C_Category", numofEquipments: 15 },
-              { swidTag: "D_Swidtag", name: "D_Product", editor: "D_Editor", category: "D_Category", totalCost: "100", numOfApplications: 20 },
-              { swidTag: "B_Swidtag", name: "B_Product", editor: "B_Editor", version: "B_Version", category: "B_Category", numofEquipments: 10 },
-              { swidTag: "G_Swidtag", name: "G_Product", editor: "G_Editor", category: "G_Category", numofEquipments: 7 },
-              { swidTag: "I_Swidtag", name: "I_Product", editor: "I_Editor", category: "I_Category", numofEquipments: 17 },
-              { swidTag: "K_Swidtag", name: "K_Product", editor: "K_Editor", category: "K_Category", totalCost: "100", numOfApplications: 20 },
-              { swidTag: "H_Swidtag", name: "H_Product", editor: "H_Editor", version: "H_Version", category: "H_Category", numofEquipments: 10 },
-              { swidTag: "E_Swidtag", name: "E_Product", editor: "E_Editor", category: "E_Category", numofEquipments: 1 },
-              { swidTag: "J_Swidtag", name: "J_Product", editor: "J_Editor", category: "J_Category", numofEquipments: 9 }
-            ]
+              {
+                swidTag: 'A_Swidtag',
+                name: 'A_Product',
+                editor: 'A_Editor',
+                category: 'A_Category',
+                numofEquipments: 5,
+              },
+              {
+                swidTag: 'C_Swidtag',
+                name: 'C_Product',
+                editor: 'C_Editor',
+                category: 'C_Category',
+                numofEquipments: 15,
+              },
+              {
+                swidTag: 'D_Swidtag',
+                name: 'D_Product',
+                editor: 'D_Editor',
+                category: 'D_Category',
+                totalCost: '100',
+                numOfApplications: 20,
+              },
+              {
+                swidTag: 'B_Swidtag',
+                name: 'B_Product',
+                editor: 'B_Editor',
+                version: 'B_Version',
+                category: 'B_Category',
+                numofEquipments: 10,
+              },
+              {
+                swidTag: 'G_Swidtag',
+                name: 'G_Product',
+                editor: 'G_Editor',
+                category: 'G_Category',
+                numofEquipments: 7,
+              },
+              {
+                swidTag: 'I_Swidtag',
+                name: 'I_Product',
+                editor: 'I_Editor',
+                category: 'I_Category',
+                numofEquipments: 17,
+              },
+              {
+                swidTag: 'K_Swidtag',
+                name: 'K_Product',
+                editor: 'K_Editor',
+                category: 'K_Category',
+                totalCost: '100',
+                numOfApplications: 20,
+              },
+              {
+                swidTag: 'H_Swidtag',
+                name: 'H_Product',
+                editor: 'H_Editor',
+                version: 'H_Version',
+                category: 'H_Category',
+                numofEquipments: 10,
+              },
+              {
+                swidTag: 'E_Swidtag',
+                name: 'E_Product',
+                editor: 'E_Editor',
+                category: 'E_Category',
+                numofEquipments: 1,
+              },
+              {
+                swidTag: 'J_Swidtag',
+                name: 'J_Product',
+                editor: 'J_Editor',
+                category: 'J_Category',
+                numofEquipments: 9,
+              },
+            ],
           });
         } else {
           return of({
             totalRecords: 12,
             products: [
-              { swidTag: "F_Swidtag", name: "F_Product", editor: "F_Editor", category: "F_Category", totalCost: "100", numOfApplications: 20 },
-              { swidTag: "L_Swidtag", name: "L_Product", editor: "L_Editor", version: "L_Version", category: "L_Category", numofEquipments: 10 }
-            ]
+              {
+                swidTag: 'F_Swidtag',
+                name: 'F_Product',
+                editor: 'F_Editor',
+                category: 'F_Category',
+                totalCost: '100',
+                numOfApplications: 20,
+              },
+              {
+                swidTag: 'L_Swidtag',
+                name: 'L_Product',
+                editor: 'L_Editor',
+                version: 'L_Version',
+                category: 'L_Category',
+                numofEquipments: 10,
+              },
+            ],
           });
         }
       } else {
         return of({
           totalRecords: 12,
           products: [
-            { swidTag: "A_Swidtag", name: "A_Product", editor: "A_Editor", category: "A_Category", numofEquipments: 5 },
-            { swidTag: "C_Swidtag", name: "C_Product", editor: "C_Editor", category: "C_Category", numofEquipments: 15 },
-            { swidTag: "D_Swidtag", name: "D_Product", editor: "D_Editor", category: "D_Category", totalCost: "100", numOfApplications: 20 },
-            { swidTag: "B_Swidtag", name: "B_Product", editor: "B_Editor", version: "B_Version", category: "B_Category", numofEquipments: 10 },
-            { swidTag: "G_Swidtag", name: "G_Product", editor: "G_Editor", category: "G_Category", numofEquipments: 7 },
-            { swidTag: "I_Swidtag", name: "I_Product", editor: "I_Editor", category: "I_Category", numofEquipments: 17 },
-            { swidTag: "K_Swidtag", name: "K_Product", editor: "K_Editor", category: "K_Category", totalCost: "100", numOfApplications: 20 },
-            { swidTag: "H_Swidtag", name: "H_Product", editor: "H_Editor", version: "H_Version", category: "H_Category", numofEquipments: 10 },
-            { swidTag: "E_Swidtag", name: "E_Product", editor: "E_Editor", category: "E_Category", numofEquipments: 1 },
-            { swidTag: "J_Swidtag", name: "J_Product", editor: "J_Editor", category: "J_Category", numofEquipments: 9 },
-            { swidTag: "F_Swidtag", name: "F_Product", editor: "F_Editor", category: "F_Category", totalCost: "100", numOfApplications: 20 },
-            { swidTag: "L_Swidtag", name: "L_Product", editor: "L_Editor", version: "L_Version", category: "L_Category", numofEquipments: 10 }
-          ]
+            {
+              swidTag: 'A_Swidtag',
+              name: 'A_Product',
+              editor: 'A_Editor',
+              category: 'A_Category',
+              numofEquipments: 5,
+            },
+            {
+              swidTag: 'C_Swidtag',
+              name: 'C_Product',
+              editor: 'C_Editor',
+              category: 'C_Category',
+              numofEquipments: 15,
+            },
+            {
+              swidTag: 'D_Swidtag',
+              name: 'D_Product',
+              editor: 'D_Editor',
+              category: 'D_Category',
+              totalCost: '100',
+              numOfApplications: 20,
+            },
+            {
+              swidTag: 'B_Swidtag',
+              name: 'B_Product',
+              editor: 'B_Editor',
+              version: 'B_Version',
+              category: 'B_Category',
+              numofEquipments: 10,
+            },
+            {
+              swidTag: 'G_Swidtag',
+              name: 'G_Product',
+              editor: 'G_Editor',
+              category: 'G_Category',
+              numofEquipments: 7,
+            },
+            {
+              swidTag: 'I_Swidtag',
+              name: 'I_Product',
+              editor: 'I_Editor',
+              category: 'I_Category',
+              numofEquipments: 17,
+            },
+            {
+              swidTag: 'K_Swidtag',
+              name: 'K_Product',
+              editor: 'K_Editor',
+              category: 'K_Category',
+              totalCost: '100',
+              numOfApplications: 20,
+            },
+            {
+              swidTag: 'H_Swidtag',
+              name: 'H_Product',
+              editor: 'H_Editor',
+              version: 'H_Version',
+              category: 'H_Category',
+              numofEquipments: 10,
+            },
+            {
+              swidTag: 'E_Swidtag',
+              name: 'E_Product',
+              editor: 'E_Editor',
+              category: 'E_Category',
+              numofEquipments: 1,
+            },
+            {
+              swidTag: 'J_Swidtag',
+              name: 'J_Product',
+              editor: 'J_Editor',
+              category: 'J_Category',
+              numofEquipments: 9,
+            },
+            {
+              swidTag: 'F_Swidtag',
+              name: 'F_Product',
+              editor: 'F_Editor',
+              category: 'F_Category',
+              totalCost: '100',
+              numOfApplications: 20,
+            },
+            {
+              swidTag: 'L_Swidtag',
+              name: 'L_Product',
+              editor: 'L_Editor',
+              version: 'L_Version',
+              category: 'L_Category',
+              numofEquipments: 10,
+            },
+          ],
         });
       }
     }
-
   }
 
   getPaginatorData(event) {
@@ -272,47 +1049,94 @@ export class ProductServiceStub {
   }
 
   advSearchTrigger(event) {
-    console.log('event : ', event)
+    console.log('event : ', event);
   }
 }
 describe('ProdComponent', () => {
   let component: ProdComponent;
   let fixture: ComponentFixture<ProdComponent>;
-  const tableColumns = ["swidTag", "name", "editor", "version", "edition", "totalCost", "numOfApplications", "numofEquipments"];
-  const SwidTagUnsorted = ['A_Swidtag', 'C_Swidtag', 'D_Swidtag', 'B_Swidtag', 'G_Swidtag', 'I_Swidtag', 'K_Swidtag', 'H_Swidtag', 'E_Swidtag', 'J_Swidtag', 'F_Swidtag', 'L_Swidtag'];
-  const SwidTagSortedAsc = ['A_Swidtag', 'B_Swidtag', 'C_Swidtag', 'D_Swidtag', 'E_Swidtag', 'F_Swidtag', 'G_Swidtag', 'H_Swidtag', 'I_Swidtag', 'J_Swidtag', 'K_Swidtag', 'L_Swidtag'];
-  const SwidTagSortedDesc = ['L_Swidtag', 'K_Swidtag', 'J_Swidtag', 'I_Swidtag', 'H_Swidtag', 'G_Swidtag', 'F_Swidtag', 'E_Swidtag', 'D_Swidtag', 'C_Swidtag', 'B_Swidtag', 'A_Swidtag'];
+  const tableColumns = [
+    'swidTag',
+    'name',
+    'editor',
+    'version',
+    'edition',
+    'totalCost',
+    'numOfApplications',
+    'numofEquipments',
+  ];
+  const SwidTagUnsorted = [
+    'A_Swidtag',
+    'C_Swidtag',
+    'D_Swidtag',
+    'B_Swidtag',
+    'G_Swidtag',
+    'I_Swidtag',
+    'K_Swidtag',
+    'H_Swidtag',
+    'E_Swidtag',
+    'J_Swidtag',
+    'F_Swidtag',
+    'L_Swidtag',
+  ];
+  const SwidTagSortedAsc = [
+    'A_Swidtag',
+    'B_Swidtag',
+    'C_Swidtag',
+    'D_Swidtag',
+    'E_Swidtag',
+    'F_Swidtag',
+    'G_Swidtag',
+    'H_Swidtag',
+    'I_Swidtag',
+    'J_Swidtag',
+    'K_Swidtag',
+    'L_Swidtag',
+  ];
+  const SwidTagSortedDesc = [
+    'L_Swidtag',
+    'K_Swidtag',
+    'J_Swidtag',
+    'I_Swidtag',
+    'H_Swidtag',
+    'G_Swidtag',
+    'F_Swidtag',
+    'E_Swidtag',
+    'D_Swidtag',
+    'C_Swidtag',
+    'B_Swidtag',
+    'A_Swidtag',
+  ];
   const dialogMock = {
-    close: () => { }
+    close: () => {},
   };
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-        ProdComponent,
-        MoreDetailsComponent
-      ],
-      imports: [
-        CustomMaterialModule,
-        FormsModule,
-        HttpClientTestingModule,
-        RouterTestingModule,
-        BrowserAnimationsModule,
-        SharedModule,
-        TranslateModule.forRoot()
-      ],
-      providers: [
-        { provide: ProductService, useClass: ProductServiceStub },
-        { provide: MatDialogRef, useValue: dialogMock },
-        { provide: MAT_DIALOG_DATA, useValue: {} }
-      ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA]
-    })
-      .overrideModule(BrowserDynamicTestingModule, {
-        set: { entryComponents: [MoreDetailsComponent] }
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [ProdComponent, MoreDetailsComponent],
+        imports: [
+          CustomMaterialModule,
+          FormsModule,
+          HttpClientTestingModule,
+          RouterTestingModule,
+          BrowserAnimationsModule,
+          SharedModule,
+          TranslateModule.forRoot(),
+        ],
+        providers: [
+          { provide: ProductService, useClass: ProductServiceStub },
+          { provide: MatDialogRef, useValue: dialogMock },
+          { provide: MAT_DIALOG_DATA, useValue: {} },
+        ],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
       })
-      .compileComponents();
-  }));
+        .overrideModule(BrowserDynamicTestingModule, {
+          set: { entryComponents: [MoreDetailsComponent] },
+        })
+        .compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ProdComponent);
@@ -338,7 +1162,7 @@ describe('ProdComponent', () => {
     expect(headerRow[0].children[2].innerText).toBe('Version');
     expect(headerRow[0].children[3].innerText).toBe('Editor name');
     expect(headerRow[0].children[4].innerText).toBe('Edition');
-    expect(headerRow[0].children[5].innerText).toBe('Total cost(€)');
+    expect(headerRow[0].children[5].innerText).toBe('Total cost');
     expect(headerRow[0].children[6].innerText).toBe('Application Count');
     expect(headerRow[0].children[7].innerText).toBe('Equipment Count');
   });
@@ -389,69 +1213,102 @@ describe('ProdComponent', () => {
 
   it('data should get sorted', () => {
     const tableRows = fixture.nativeElement.querySelectorAll('mat-row');
-    const sortButtons = fixture.nativeElement.querySelectorAll('.mat-sort-header-arrow');
+    const sortButtons = fixture.nativeElement.querySelectorAll(
+      '.mat-sort-header-arrow'
+    );
     expect(sortButtons.length).toBe(8);
-    // Swidtag Unsorted 
+    // Swidtag Unsorted
     for (let i = 0; i < tableRows.length; i++) {
       expect(tableRows[i].children[0].innerText).toBe(SwidTagUnsorted[i]);
     }
-    // Swidtag SortOrder ASC
+    // Swidtag SortOrder asc
     sortButtons[0].click();
     fixture.detectChanges();
-    const ascSortedTableRows = fixture.nativeElement.querySelectorAll('mat-row')
+    const ascSortedTableRows =
+      fixture.nativeElement.querySelectorAll('mat-row');
     for (let i = 0; i < ascSortedTableRows.length; i++) {
-      expect(ascSortedTableRows[i].children[0].innerText).toBe(SwidTagSortedAsc[i]);
+      expect(ascSortedTableRows[i].children[0].innerText).toBe(
+        SwidTagSortedAsc[i]
+      );
     }
     // Swidtag SortOrder DESC
     sortButtons[0].click();
     fixture.detectChanges();
-    const descSortedTableRows = fixture.nativeElement.querySelectorAll('mat-row')
+    const descSortedTableRows =
+      fixture.nativeElement.querySelectorAll('mat-row');
     for (let i = 0; i < descSortedTableRows.length; i++) {
-      expect(descSortedTableRows[i].children[0].innerText).toBe(SwidTagSortedDesc[i]);
+      expect(descSortedTableRows[i].children[0].innerText).toBe(
+        SwidTagSortedDesc[i]
+      );
     }
-  })
+  });
   // Pagination test cases
   it('page size should work', () => {
-    const rangeLabel_10 = fixture.nativeElement.querySelector('.mat-paginator-range-label');
-    expect(rangeLabel_10.innerText).toContain('10 of 12');
+    const rangeLabel_10 = fixture.nativeElement.querySelector(
+      '.mat-paginator-range-label'
+    );
+    console.log('rangeLabel_10.innerText ', rangeLabel_10.innerText);
+    expect(rangeLabel_10.innerText).toContain('1 – 12 of 12');
 
     component.paginator.pageSize = 20;
     fixture.detectChanges();
-    const rangeLabel_20 = fixture.nativeElement.querySelector('.mat-paginator-range-label');
+    const rangeLabel_20 = fixture.nativeElement.querySelector(
+      '.mat-paginator-range-label'
+    );
     expect(rangeLabel_20.innerText).toContain('12 of 12');
-  })
+  });
 
   it('next page button should work', () => {
-    const nextBtn = fixture.nativeElement.querySelector('.mat-paginator-navigation-next');
+    const nextBtn = fixture.nativeElement.querySelector(
+      '.mat-paginator-navigation-next'
+    );
     nextBtn.click();
     fixture.detectChanges();
-    expect(component.MyDataSource.data.length).toBe(2);
-  })
+    expect(component.MyDataSource.data.length).toBeLessThanOrEqual(
+      component.pageSize
+    );
+  });
 
   it('last page button should work', () => {
-    const lastBtn = fixture.nativeElement.querySelector('.mat-paginator-navigation-last');
+    const lastBtn = fixture.nativeElement.querySelector(
+      '.mat-paginator-navigation-last'
+    );
     lastBtn.click();
     fixture.detectChanges();
-    expect(component.MyDataSource.data.length).toBe(2);
-  })
+    expect(component.MyDataSource.data.length).toBeLessThanOrEqual(
+      component.pageSize
+    );
+  });
 
   it('previous page button should work', () => {
-    const nextBtn = fixture.nativeElement.querySelector('.mat-paginator-navigation-next');
+    const nextBtn = fixture.nativeElement.querySelector(
+      '.mat-paginator-navigation-next'
+    );
     nextBtn.click();
     fixture.detectChanges();
-    const prevBtn = fixture.nativeElement.querySelector('.mat-paginator-navigation-previous');
+    const prevBtn = fixture.nativeElement.querySelector(
+      '.mat-paginator-navigation-previous'
+    );
     prevBtn.click();
     fixture.detectChanges();
-    expect(component.MyDataSource.data.length).toBe(10);
-  })
+    expect(component.MyDataSource.data.length).toBeLessThanOrEqual(
+      component.pageSize
+    );
+  });
 
   it('first page button should work', () => {
-    const nextBtn = fixture.nativeElement.querySelector('.mat-paginator-navigation-next');
+    const nextBtn = fixture.nativeElement.querySelector(
+      '.mat-paginator-navigation-next'
+    );
     nextBtn.click();
     fixture.detectChanges();
-    const prevBtn = fixture.nativeElement.querySelector('.mat-paginator-navigation-first');
+    const prevBtn = fixture.nativeElement.querySelector(
+      '.mat-paginator-navigation-first'
+    );
     prevBtn.click();
     fixture.detectChanges();
-    expect(component.MyDataSource.data.length).toBe(10);
-  })
+    expect(component.MyDataSource.data.length).toBeLessThanOrEqual(
+      component.pageSize
+    );
+  });
 });

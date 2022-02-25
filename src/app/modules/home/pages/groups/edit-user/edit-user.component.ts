@@ -1,9 +1,3 @@
-// Copyright (C) 2019 Orange
-// 
-// This software is distributed under the terms and conditions of the 'Apache License 2.0'
-// license which can be found in the file 'License.txt' in this package distribution 
-// or at 'http://www.apache.org/licenses/LICENSE-2.0'. 
-
 import { Component, OnInit, ViewChild, Inject } from '@angular/core';
 import { FormGroup, FormControl, Validators, NgModel } from '@angular/forms';
 import { GroupService } from 'src/app/core/services/group.service';
@@ -16,40 +10,40 @@ import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
   styleUrls: ['./edit-user.component.scss']
 })
 export class EditUserComponent implements OnInit {
-  @ViewChild('checkAll', {static: false}) checkSelectAll;
+  @ViewChild('checkAll', { static: false }) checkSelectAll;
   groupForm: FormGroup;
   groups: any;
   roles = [];
   showMsg: any;
   showErrorMsg: any;
   errorMsg: any;
-  
-  constructor(private groupService: GroupService, 
-              private router: Router,
-              public dialog: MatDialog,
-              @Inject(MAT_DIALOG_DATA) public data) { }
+  _loading: boolean;
+  public actionSuccessful:boolean;
+
+  constructor(private groupService: GroupService,
+    private router: Router,
+    public dialog: MatDialog,
+    @Inject(MAT_DIALOG_DATA) public data) { }
 
   ngOnInit() {
     this.roles.push('ADMIN');
     this.roles.push('USER');
     this.groupForm = new FormGroup({
-      'first_name': new FormControl({value:'', disabled: true}, [Validators.required, Validators.minLength(1),
-      Validators.pattern(/^[a-zA-Z0-9_]*$/)]),
-      'last_name': new FormControl({value:'', disabled: true}, [Validators.required, Validators.minLength(1),
-      Validators.pattern(/^[a-zA-Z0-9_]*$/)]),
-      'user_id': new FormControl({value:'', disabled: true},[]),
-      'user_groups': new FormControl({value:'', disabled: true},[] ),
+      'first_name': new FormControl({ value: '', disabled: true }, []),
+      'last_name': new FormControl({ value: '', disabled: true }, []),
+      'user_id': new FormControl({ value: '', disabled: true }, []),
+      'user_groups': new FormControl({ value: '', disabled: true }, []),
       'role': new FormControl('', [])
     });
     this.setFormData();
   }
 
   setFormData() {
-    if(this.data['datakey']) {
+    if (this.data['datakey']) {
       this.first_name.setValue(this.data['datakey'].first_name);
       this.last_name.setValue(this.data['datakey'].last_name);
       this.user_id.setValue(this.data['datakey'].user_id);
-      this.user_groups.setValue((this.data['datakey'].groups)?this.data['datakey'].groups.toString():'-');
+      this.user_groups.setValue((this.data['datakey'].groups) ? this.data['datakey'].groups.toString() : '-');
       this.role.setValue(this.data['datakey'].role);
     }
   }
@@ -71,35 +65,29 @@ export class EditUserComponent implements OnInit {
 
   openModal(templateRef) {
     let dialogRef = this.dialog.open(templateRef, {
-        width: '30%',
-        disableClose: true
+      width: '30%',
+      disableClose: true
     });
-  } 
+  }
 
   updateUser(successMsg, errorMsg) {
+    this._loading = true;
     this.groupForm.markAsPristine();
     const data = this.groupForm.value;
     data.user_id = this.user_id.value;
     data.first_name = this.first_name.value;
     data.last_name = this.last_name.value;
-    // data.groups = this.user_groups.value;
     data.locale = this.data['datakey'].locale;
-    console.log('Updated data : ',data);
     this.groupService.updateUser(data).subscribe(res => {
-      // this.showMsg = true;
-      // this.showErrorMsg = false;
-      // this.groupForm.reset();
+      this.actionSuccessful = true;
       this.openModal(successMsg);
+      this._loading = false;
     },
       (error) => {
-        const keyArr = Object.keys(error);
-        if (keyArr.includes('error')) {
-          // this.errorMsg = error.message;
-          // this.showMsg = false;
-          // this.showErrorMsg = true;
-          // console.log('error!!!!!!')
-          this.openModal(errorMsg);
-        }
+        this.actionSuccessful = false;
+        this.errorMsg = error.error.message || 'Some error occured! User could not be updated';
+        this.openModal(errorMsg);
+        this._loading = false;
       });
   }
 
@@ -112,3 +100,4 @@ export class EditUserComponent implements OnInit {
     this.dialog.closeAll();
   }
 }
+

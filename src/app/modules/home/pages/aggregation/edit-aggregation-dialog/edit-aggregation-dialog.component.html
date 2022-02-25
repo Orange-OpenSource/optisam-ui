@@ -4,22 +4,17 @@
       <form [formGroup]="updateForm">
         <div class="horizontal">
           <mat-form-field appearance="outline">
-            <mat-label>{{'AGGREGATIONS.TEXTS.SCOPE' | translate}}</mat-label>
-            <input matInput formControlName="scope">
-          </mat-form-field>          
-          <div class="width-clearfix"></div>
-          <mat-form-field appearance="outline">
             <mat-label>{{'AGGREGATIONS.TEXTS.EDITOR' | translate}}</mat-label>
             <input matInput formControlName="editor">
           </mat-form-field>
-        </div>
-      
-        <div class="horizontal">
+          <div class="width-clearfix"></div>
           <mat-form-field appearance="outline">
             <mat-label>{{'AGGREGATIONS.TEXTS.METRICS' | translate}}</mat-label>
             <input matInput formControlName="metric">
           </mat-form-field>
-          <div class="width-clearfix"></div>
+        </div>
+      
+        <div class="horizontal">
           <mat-form-field appearance="outline">
               <mat-label>{{'AGGREGATIONS.TEXTS.NAME' | translate}}</mat-label>
               <input matInput placeholder="{{'AGGREGATIONS.TEXTS.NAME' | translate}}" formControlName="name">
@@ -27,17 +22,15 @@
                 No special characters or spaces are allowed
               </mat-error>
             </mat-form-field>
-        </div>
-
-        <div class="horizontal single-field">
-          <mat-form-field appearance="outline">
-            <mat-label>{{'AGGREGATIONS.TEXTS.PRODUCT' | translate}}</mat-label>
-            <mat-select id="products" formControlName="product_names"
-              [disabled]="prodLoading || productList.length === 0"
-              (selectionChange)="getProductsList()" multiple>
-              <mat-option *ngFor="let product of productList;" [value]="product.product_name">{{product.product_name}}</mat-option>
-            </mat-select>
-          </mat-form-field>
+            <div class="width-clearfix"></div>
+            <mat-form-field appearance="outline">
+              <mat-label>{{'AGGREGATIONS.TEXTS.PRODUCT' | translate}}</mat-label>
+              <mat-select id="products" formControlName="product_names"
+                [disabled]="prodLoading || productList.length === 0"
+                (selectionChange)="getProductsList()" multiple>
+                <mat-option *ngFor="let product of productList;" [value]="product.product_name">{{product.product_name}}</mat-option>
+              </mat-select>
+            </mat-form-field>
         </div>
 
         <div class="swidtabs" *ngIf="updateForm.value.product_names">
@@ -67,10 +60,6 @@
           </div>
       </form>
       <app-loading-spinner *ngIf="prodLoading"></app-loading-spinner>
-
-    <div class="alert alert-danger" *ngIf="error">
-      <span>{{errorMessage}}</span>
-    </div>
   </div>
 </mat-dialog-content>
 
@@ -92,7 +81,7 @@
 </ng-template>
 <ng-template #errorAggrUpdateDialog>
   <mat-dialog-content>
-      <p>{{'UPDATE_AGGR_ERROR'|translate}}</p>
+    <p>{{'Error'|translate}}: {{errorMessage}}</p>
   </mat-dialog-content>
   <mat-dialog-actions align="center">
       <button [mat-dialog-close]="true" class="btn-two" mat-button cdkFocusInitial>{{'OK'|translate}}</button>

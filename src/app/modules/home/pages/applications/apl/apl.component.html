@@ -1,93 +1,155 @@
 <!-- <mat-card class="example-card" style="padding:44px;z-index: 0;"> -->
-<mat-card class="example-card" style="z-index: 0;">
-
+<mat-card class="example-card" style="z-index: 0">
   <div class="container-fluid page-content-header">
     <div class="row">
       <div class="col-md-9 page-heading">
-        {{'List of Inventoried Applications'|translate}}
+        {{ "List of Inventoried Applications" | translate }}
       </div>
       <div class="col-md-3 search-div">
-        <app-advance-search [advanceSearchModel]="advanceSearchModel" [existingFilterFields]="searchFields" (advFilterEvent)="advSearchTrigger($event)"></app-advance-search>       
+        <app-advance-search
+          [advanceSearchModel]="advanceSearchModel"
+          [existingFilterFields]="searchFields"
+          (advFilterEvent)="advSearchTrigger($event)"
+        ></app-advance-search>
       </div>
     </div>
   </div>
 
   <mat-card-content>
     <div class="mat-elevation-z8">
-
-      <mat-table id="applications-table" [dataSource]="MyDataSource" matSort (matSortChange)="sortData($event)">
+      <mat-table
+        id="applications-table"
+        [dataSource]="MyDataSource"
+        matSort
+        (matSortChange)="sortData($event)"
+      >
         <ng-container matColumnDef="name">
-          <mat-header-cell *matHeaderCellDef mat-sort-header="name"> {{'Application name' | translate}}
+          <mat-header-cell *matHeaderCellDef mat-sort-header="name">
+            {{ "Application name" | translate }}
           </mat-header-cell>
-          <mat-cell *matCellDef="let application"> {{application.name}} </mat-cell>
+          <mat-cell *matCellDef="let application">
+            {{ application.name }}
+          </mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="owner">
-          <mat-header-cell *matHeaderCellDef mat-sort-header="owner">{{'Owner' | translate}}
+          <mat-header-cell *matHeaderCellDef mat-sort-header="owner"
+            >{{ "Owner" | translate }}
           </mat-header-cell>
-          <mat-cell *matCellDef="let application">{{application.owner}}
+          <mat-cell *matCellDef="let application"
+            >{{ application.owner }}
           </mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="domain">
-          <mat-header-cell *matHeaderCellDef mat-sort-header="domain">{{'Domain' | translate}}
+          <mat-header-cell *matHeaderCellDef mat-sort-header="domain"
+            >{{ "Domain" | translate }}
           </mat-header-cell>
-          <mat-cell *matCellDef="let application">{{application.domain}}
+          <mat-cell *matCellDef="let application"
+            >{{ application.domain }}
           </mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="obsolescence_risk">
-          <mat-header-cell *matHeaderCellDef mat-sort-header="obsolescence_risk">{{'Obsolescence Risk' | translate}}
+          <mat-header-cell *matHeaderCellDef mat-sort-header="obsolescence_risk"
+            >{{ "Obsolescence Risk" | translate }}
           </mat-header-cell>
-          <mat-cell *matCellDef="let application">{{application.obsolescence_risk || 'Not defined'}}
+          <mat-cell *matCellDef="let application"
+            >{{ application.obsolescence_risk || "Not defined" }}
           </mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="num_of_products">
-          <mat-header-cell *matHeaderCellDef mat-sort-header="num_of_products">{{'Product Count'| translate}}
+          <mat-header-cell *matHeaderCellDef mat-sort-header="num_of_products"
+            >{{ "Product Count" | translate }}
           </mat-header-cell>
           <mat-cell *matCellDef="let application">
-            <a class="mat-button-link" *ngIf="application.num_of_products" (click)="productDetails(application.name,application.application_id)">
-              {{application.num_of_products}} </a>
+            <a
+              class="mat-button-link"
+              *ngIf="application.num_of_products"
+              matTooltip="{{ 'Click here to see Product Details' | translate }}"
+              (click)="
+                productDetails(application.name, application.application_id)
+              "
+            >
+              {{ application.num_of_products }}
+            </a>
             <span *ngIf="!application.num_of_products">0</span>
           </mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="num_of_instances">
-          <mat-header-cell *matHeaderCellDef mat-sort-header="num_of_instances">{{'Instance Count' | translate}}
+          <mat-header-cell *matHeaderCellDef mat-sort-header="num_of_instances"
+            >{{ "Instance Count" | translate
+            }}<mat-icon
+              class="mat-icon-info"
+              matTooltip="{{
+                'The number of instances is the total number of instances of the application.'
+                  | translate
+              }}"
+              >info</mat-icon
+            >
           </mat-header-cell>
           <mat-cell *matCellDef="let application">
-            <a class="mat-button-link" matTooltip="{{'Click here to see Instance Details'|translate}}" (click)="instanceDetails(application.name,application.application_id)">
-              {{application.num_of_instances||0}} 
+            <a
+              class="mat-button-link"
+              *ngIf="application.num_of_instances"
+              matTooltip="{{
+                'Click here to see Instance Details' | translate
+              }}"
+              (click)="
+                instanceDetails(application.name, application.application_id)
+              "
+            >
+              {{ application.num_of_instances }}
             </a>
-            <!-- <a fxFlexFill class="mat-row-link"></a> -->
+            <span *ngIf="!application.num_of_instances">0</span>
           </mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="num_of_equipment">
-          <mat-header-cell *matHeaderCellDef>{{'Equipment Count'| translate}}</mat-header-cell>
+          <mat-header-cell *matHeaderCellDef>{{
+            "Equipment Count" | translate
+          }}</mat-header-cell>
           <mat-cell *matCellDef="let application">
             <!-- <a mat-icon-button color="primary"> -->
-              {{0}} 
+            {{ 0 }}
             <!-- </a> -->
             <!-- <a fxFlexFill class="mat-row-link"></a> -->
           </mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="total_cost">
-          <mat-header-cell *matHeaderCellDef>{{'Total cost(€)'|translate}}</mat-header-cell>
-          <mat-cell *matCellDef="let application"> {{0|formatCost}}
+          <mat-header-cell *matHeaderCellDef>{{
+            "Total cost" | translate
+          }}</mat-header-cell>
+          <mat-cell *matCellDef="let application">
+            {{ 0 | formatCost }}
           </mat-cell>
         </ng-container>
 
-
-        <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
-        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        <mat-header-row
+          *matHeaderRowDef="displayedColumns; sticky: true"
+        ></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
       </mat-table>
       <app-loading-spinner *ngIf="_loading"></app-loading-spinner>
-      <div class="no-data" *ngIf="!_loading && (!MyDataSource || (MyDataSource && MyDataSource.data.length === 0))">{{'No data available' | translate}}</div>
-      <mat-paginator [length]="length" [pageSize]="page_size" [pageSizeOptions]="[10,20,30,50]"
-        (page)="pageEvent = getPaginatorData($event)" showFirstLastButtons>
+      <div
+        class="no-data"
+        *ngIf="
+          !_loading &&
+          (!MyDataSource || (MyDataSource && MyDataSource.data.length === 0))
+        "
+      >
+        {{ "No data available" | translate }}
+      </div>
+      <mat-paginator
+        [length]="length"
+        [pageSize]="pageSize"
+        [pageSizeOptions]="[50, 100, 200]"
+        (page)="pageEvent = getPaginatorData($event)"
+        showFirstLastButtons
+      >
       </mat-paginator>
     </div>
   </mat-card-content>

@@ -1,0 +1,149 @@
+<router-outlet></router-outlet>
+<mat-card>
+  <div class="row">
+    <div class="page-heading" style="display: table-cell">
+      {{ "Metrics Management" | translate }}
+    </div>
+    <div
+      class="form add-btn-bx"
+      *ngIf="role === 'ADMIN' || role === 'SUPER_ADMIN'"
+    >
+      <button
+        id="addNewMetricButton"
+        mat-raised-button
+        (click)="addNew()"
+        class="btn-two"
+      >
+        <mat-icon color="panel">add</mat-icon> {{ "Add Metric" | translate }}
+      </button>
+    </div>
+  </div>
+
+  <div class="mat-elevation-z8">
+    <mat-table #table [dataSource]="MyDataSource" matSort>
+      <!-- Metric Type Column -->
+      <ng-container matColumnDef="type">
+        <mat-header-cell *matHeaderCellDef>{{
+          "Metric Type" | translate
+        }}</mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{ row.type || 0 }}</mat-cell>
+      </ng-container>
+      <!-- Metric Name Column -->
+      <ng-container matColumnDef="name">
+        <mat-header-cell *matHeaderCellDef>{{
+          "Name" | translate
+        }}</mat-header-cell>
+        <mat-cell
+          *matCellDef="let row"
+          class="highlight mat-button-link"
+          matTooltip="{{ 'View Metric Details' | translate }}"
+          (click)="openDetails(row)"
+        >
+          <span>{{ row.name }}</span>
+        </mat-cell>
+      </ng-container>
+      <!-- Metric Description Column -->
+      <ng-container matColumnDef="description">
+        <mat-header-cell *matHeaderCellDef>{{
+          "Description" | translate
+        }}</mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{ row.description || 0 }}</mat-cell>
+      </ng-container>
+      <!-- Action Column -->
+      <ng-container matColumnDef="action">
+        <div *ngIf="role === 'ADMIN' || role === 'SUPER_ADMIN'">
+          <mat-header-cell *matHeaderCellDef>
+            {{ "Action" | translate }}
+          </mat-header-cell>
+          <mat-cell *matCellDef="let element; let i = index">
+            <mat-icon
+              id="editBtn_{{ i }}"
+              class="action-icon"
+              matTooltip="{{ 'Edit Metric' | translate }}"
+              (click)="editMetrics(element)"
+              >edit</mat-icon
+            >
+            <mat-icon
+              id="deleteBtn_{{ i }}"
+              class="action-icon"
+              matTooltip="{{ 'Delete Metric' | translate }}"
+              (click)="
+                deleteMetricConfirmation(element, deleteConfirmationDialog)
+              "
+              >delete</mat-icon
+            >
+          </mat-cell>
+        </div>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+    </mat-table>
+    <app-loading-spinner *ngIf="_loading"></app-loading-spinner>
+    <div class="no-data" *ngIf="!_loading && noDataAvailableFlag">
+      {{ "No data available" | translate }}
+    </div>
+  </div>
+</mat-card>
+
+<ng-template #deleteConfirmationDialog>
+  <mat-dialog-content>
+    <p>{{ "DELETE_METRIC_CONFIRM_MSG" | translate }}</p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="center">
+    <button
+      mat-button
+      class="btn-two"
+      (click)="deleteMetric(successDialog, errorDialog)"
+      cdkFocusInitial
+    >
+      <span
+        class="spinner-border spinner-border-sm"
+        role="status"
+        aria-hidden="true"
+        *ngIf="_deleteLoading"
+      ></span>
+      {{ "OK" | translate }}
+    </button>
+    <button
+      mat-button
+      [mat-dialog-close]="true"
+      class="btn-three"
+      cdkFocusInitial
+    >
+      {{ "Cancel" | translate }}
+    </button>
+  </mat-dialog-actions>
+</ng-template>
+
+<ng-template #successDialog>
+  <mat-dialog-content>
+    <p>{{ "DELETE_METRIC_SUCCESS" | translate }}</p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="center">
+    <button
+      mat-button
+      [mat-dialog-close]="true"
+      class="btn-two"
+      (click)="loadData()"
+      cdkFocusInitial
+    >
+      {{ "OK" | translate }}
+    </button>
+  </mat-dialog-actions>
+</ng-template>
+<ng-template #errorDialog>
+  <mat-dialog-content>
+    <p>{{ "Error" | translate }}: {{ errorMessage }}</p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="center">
+    <button
+      mat-button
+      [mat-dialog-close]="true"
+      class="btn-two"
+      cdkFocusInitial
+    >
+      {{ "OK" | translate }}
+    </button>
+  </mat-dialog-actions>
+</ng-template>

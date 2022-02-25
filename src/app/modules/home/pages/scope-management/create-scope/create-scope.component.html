@@ -8,22 +8,29 @@
       <mat-form-field appearance="outline">
         <mat-label>{{'Scope ID'|translate}}</mat-label>
         <input id="scope_id" matInput placeholder="Scope ID" formControlName="scope_id">
+        <mat-error *ngIf="scope_id.invalid && !scope_id.pristine">
+          Please choose a 3-char code(all in uppercase).
+        </mat-error>
       </mat-form-field>
-      <mat-error *ngIf="scope_id.invalid && !scope_id.pristine">
-        Please choose a 3-char code(all in uppercase).
-      </mat-error>
       <!-- Scope Name -->
       <mat-form-field appearance="outline">
         <mat-label>{{'Scope Name'|translate}}</mat-label>
         <input id="scope_name" matInput placeholder="Scope Name" formControlName="scope_name">
+        <mat-error *ngIf="scope_name.invalid && !scope_name.pristine">
+          Name is required in ^[a-zA-Z0-9_]*$ format.
+        </mat-error>
       </mat-form-field>
-      <mat-error *ngIf="scope_name.invalid && !scope_name.pristine">
-        Name is required in ^[a-zA-Z0-9_]*$ format.
-      </mat-error>
+      <!-- Scope Type -->
+      <div>
+        <mat-radio-group id="scopeTypeBtns" formControlName="scope_type" aria-label="Select an option">
+          <mat-radio-button value="generic">{{'Use Generic Template'|translate}}</mat-radio-button>
+          <mat-radio-button value="specific">{{'Use Specific Template'|translate}}</mat-radio-button>
+        </mat-radio-group>
+      </div>
     </form>
   </mat-card-content>
   <mat-card-actions align="center">
-    <button id="cancelBtn" mat-raised-button class="btn-four" [mat-dialog-close]="true">{{'Cancel'|translate}}</button>
+    <button id="cancelBtn" mat-raised-button class="btn-four" [disabled]="_loading" [mat-dialog-close]="true">{{'Cancel'|translate}}</button>
     <button id="resetBtn" mat-raised-button class="btn-three" [disabled]="scopeForm.pristine" (click)="resetScope()">
       {{'Reset'|translate}}
     </button>
@@ -44,7 +51,7 @@
 </ng-template>
 <ng-template #errorDialog>
   <mat-dialog-content>
-    <p>{{'CREATE_SCOPE_ERROR'|translate}}</p>
+    <p>{{errorMessage|translate}}</p>
   </mat-dialog-content>
   <mat-dialog-actions align="center">
     <button mat-button [mat-dialog-close]="true" class="btn-two" cdkFocusInitial>{{'OK'|translate}}</button>

@@ -1,14 +1,8 @@
-// Copyright (C) 2019 Orange
-// 
-// This software is distributed under the terms and conditions of the 'Apache License 2.0'
-// license which can be found in the file 'License.txt' in this package distribution 
-// or at 'http://www.apache.org/licenses/LICENSE-2.0'. 
-
 import { Injectable } from '@angular/core';
 import { Subject, Observable, BehaviorSubject } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SharedService {
   private _navigationLoading: Subject<Boolean>;
@@ -19,7 +13,7 @@ export class SharedService {
 
   constructor() {
     this._navigationLoading = new Subject<Boolean>();
-    this._httpLoading = new Subject<Boolean>();
+    this._httpLoading = new BehaviorSubject<Boolean>(true);
     this._clearAdvSearch = new BehaviorSubject<any>('1');
     this._emitProfileChange = new Subject<any>();
     this._emitScopeChange = new Subject<any>();

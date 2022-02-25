@@ -1,29 +1,51 @@
 <mat-card class="mat-elevation-8">
     <div id="header-container">
         <div class="page-heading">
-            {{'Data Management' | translate}}
+            <ng-container *ngIf="!globalFileName">
+              {{'Data Management' | translate}}
+            </ng-container>
+            <ng-container *ngIf="globalFileName">
+              <span class="parentNode nav-path" (click)="backToAllDataFiles()">{{'Data Management' | translate}}</span><mat-icon class="arrow_icon">arrow_forward_ios</mat-icon> <span class="currentNode nav-path">{{globalFileName}}</span>
+            </ng-container>
         </div>
-        <button id="deleteInventoryBtn" mat-raised-button class="btn-two" (click)="deleteInventoryConfirmation(warningDialog)">
+        <div id="buttons-container">
+          <button id="deleteInventoryBtn" mat-raised-button class="btn-two" (click)="deleteInventoryConfirmation(warningDialog)">
             <mat-icon>delete</mat-icon>
             {{'Delete Inventory'|translate}}
-        </button>
+          </button>
+          <button mat-icon-button matTooltip="{{'Click here to view deletion logs'|translate}}"
+          (click)="viewDeletionLogs()">
+            <img src="assets/images/DeleteLogsIcon.svg">
+          </button>          
+        </div>
     </div>
     <nav mat-tab-nav-bar>
-        <a mat-tab-link class="tab-anchor" *ngFor="let menu of tabMenus" [routerLink]="menu.link"
+      <ng-container *ngFor="let menu of tabMenus" >
+        <a mat-tab-link class="tab-anchor" *ngIf="menu.show"  [routerLink]="menu.link"
             routerLinkActive="active" (click)="activeLink = menu.link" [active]="activeLink == menu.link">
-            {{menu.title | translate}} 
+            {{menu.title | translate}}
         </a>
+      </ng-container >
     </nav>
     <ng-template #warningDialog>
       <mat-dialog-content>
+        <section class="example-section" [formGroup]="deletionType">
+          <p id="dialog-header">{{'Select what to delete'|translate}}:</p>
+          <p><mat-checkbox formControlName="inventoryPark" [disabled]="_loading">
+            {{'Inventory Park(Equipments, applications and installed products)'|translate}}
+          </mat-checkbox></p>
+          <p><mat-checkbox formControlName="acquiredRights" [disabled]="_loading">
+            {{'Acquired Rights'|translate}}
+          </mat-checkbox></p>
+        </section>
         <p>{{'DELETE_INVENTORY_CONFIRMATION'|translate}}</p>
       </mat-dialog-content>
-      <mat-dialog-actions align="center">
-        <button mat-button class="btn-two" (click)="deleteInventory(successDialog, errorDialog);" cdkFocusInitial>
+      <mat-dialog-actions id="deleteInventoryActions" align="center">
+        <button mat-raised-button class="btn-two" [disabled]="noOptionSelected || _loading" (click)="deleteInventory(successDialog, errorDialog);" cdkFocusInitial>
             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" *ngIf="_loading"></span>
             {{'OK'|translate}}
         </button>
-        <button mat-button [mat-dialog-close]="true" class="btn-three" cdkFocusInitial>{{'Cancel'|translate}}</button>
+        <button mat-raised-button [mat-dialog-close]="true" [disabled]="_loading" class="btn-three" cdkFocusInitial>{{'Cancel'|translate}}</button>
       </mat-dialog-actions>
     </ng-template>
     <ng-template #successDialog>

@@ -1,9 +1,3 @@
-// Copyright (C) 2019 Orange
-// 
-// This software is distributed under the terms and conditions of the 'Apache License 2.0'
-// license which can be found in the file 'License.txt' in this package distribution 
-// or at 'http://www.apache.org/licenses/LICENSE-2.0'. 
-
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FilterItemDirective } from '../filter-item.directive';
@@ -15,16 +9,48 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { CustomMaterialModule } from '../material.module';
 import { AttributeDetailComponent } from '../modules/home/pages/equipments/attribute-detail/attribute-detail.component';
 import { FormatCostPipe } from './format-cost.pipe';
+import { FormatShortdatePipe } from './format-shortdate.pipe';
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
+import { PERFECT_SCROLLBAR_CONFIG } from 'ngx-perfect-scrollbar';
+import { PerfectScrollbarConfigInterface } from 'ngx-perfect-scrollbar';
+
+const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
+  suppressScrollX: true,
+};
 
 @NgModule({
-  declarations: [FilterItemDirective, LoadingSpinnerComponent, AdvanceSearchComponent, AttributeDetailComponent, FormatCostPipe],
-  exports : [FilterItemDirective, LoadingSpinnerComponent, AdvanceSearchComponent, FormatCostPipe],
+  declarations: [
+    FilterItemDirective,
+    LoadingSpinnerComponent,
+    AdvanceSearchComponent,
+    AttributeDetailComponent,
+    FormatCostPipe,
+    FormatShortdatePipe,
+  ],
+  exports: [
+    FilterItemDirective,
+    LoadingSpinnerComponent,
+    AdvanceSearchComponent,
+    FormatCostPipe,
+    FormatShortdatePipe,
+    FlexLayoutModule,
+    PerfectScrollbarModule,
+  ],
   imports: [
     CommonModule,
     TranslateModule,
     FormsModule,
     ReactiveFormsModule,
-    CustomMaterialModule
-  ]
+    CustomMaterialModule,
+    FlexLayoutModule,
+    PerfectScrollbarModule,
+  ],
+  providers: [
+    {
+      provide: PERFECT_SCROLLBAR_CONFIG,
+      useValue: DEFAULT_PERFECT_SCROLLBAR_CONFIG,
+    },
+  ],
 })
-export class SharedModule { }
+export class SharedModule {}

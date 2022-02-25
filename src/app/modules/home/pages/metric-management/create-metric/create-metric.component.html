@@ -1,0 +1,584 @@
+<mat-card>
+  <mat-card-title color="primary" class="page-heading">
+    {{ "Add New Metric" }}
+    <!-- <div class="closeDialog"><button [mat-dialog-close]="true" mat-icon-button>
+                <mat-icon>close</mat-icon>
+            </button></div> -->
+  </mat-card-title>
+
+  <mat-card-content>
+    <form [formGroup]="metricForm">
+      <!-- Common fields -->
+      <div class="row">
+        <!-- Metric Name -->
+        <div class="col-md-3 equipments">
+          <mat-form-field appearance="outline">
+            <mat-label>{{ "Type Name" | translate }}</mat-label>
+            <input
+              id="metricName"
+              matInput
+              placeholder="{{ 'Type Name' | translate }}"
+              formControlName="name"
+            />
+            <mat-error *ngIf="name.invalid && name.hasError('required')">
+              {{ "Type name is mandatory" | translate }}
+            </mat-error>
+            <mat-error *ngIf="name.invalid && name.hasError('pattern')">
+              {{
+                "Type name is required in ^[A-Za-z0-9-_.,]+$ format" | translate
+              }}
+            </mat-error>
+            <mat-error *ngIf="name.invalid && name.hasError('duplicateName')">
+              {{ "Type name already exists" | translate }}
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <!-- Metric Type based on scope selected -->
+        <div class="col-md-3 equipments">
+          <mat-form-field appearance="outline">
+            <mat-label>{{ "Metric Type" }}</mat-label>
+            <mat-select
+              id="metricType"
+              placeholder="{{ 'Metric Type' }}"
+              (selectionChange)="metricSelected($event.value)"
+              [disabled]="metricTypesList.length === 0"
+              formControlName="type"
+            >
+              <mat-option
+                *ngFor="let type of metricTypesList"
+                [value]="type.name"
+              >
+                {{ type.name }}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="type.invalid && type.hasError('required')">
+              {{ "Metric Type is mandatory" | translate }}
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-6 equipments">
+          <mat-form-field>
+            <mat-label>{{ "Description" }}</mat-label>
+            <textarea
+              id="metricDescription"
+              matInput
+              formControlName="description"
+            ></textarea>
+          </mat-form-field>
+        </div>
+      </div>
+      <!-- Configuration Parameters -->
+      <div
+        formGroupName="configuration"
+        *ngIf="type.valid"
+        id="configurationContainer"
+      >
+        <div class="row create-equipment">
+          <!-- First Equipment -->
+          <div
+            class="col-md-3 equipments"
+            *ngIf="
+              selectedMetricTypeId === 'Oracle_Processor' ||
+              selectedMetricTypeId === 'Oracle_NUP'
+            "
+          >
+            <mat-form-field appearance="outline">
+              <mat-label>{{ "First Equipment" | translate }}</mat-label>
+              <mat-select
+                id="firstEquipment"
+                formControlName="firstEquipment"
+                [disabled]="firstEquipmentsList.length === 0"
+                (selectionChange)="
+                  selectionChanged('firstEquipment', $event.value)
+                "
+              >
+                <mat-option
+                  *ngFor="let equipment of firstEquipmentsList"
+                  [value]="equipment.ID"
+                >
+                  {{ equipment.type }}
+                </mat-option>
+              </mat-select>
+              <mat-error
+                *ngIf="
+                  firstEquipment.invalid && firstEquipment.hasError('required')
+                "
+              >
+                {{ "First Equipment is mandatory" | translate }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <!-- Reference Equipment -->
+          <div
+            class="col-md-3 equipments"
+            *ngIf="
+              selectedMetricTypeId === 'Oracle_Processor' ||
+              selectedMetricTypeId === 'Oracle_NUP'
+            "
+          >
+            <mat-form-field appearance="outline">
+              <mat-label>{{ "Reference Equipment" | translate }}</mat-label>
+              <mat-select
+                id="referenceEquipment"
+                formControlName="referenceEquipment"
+                [disabled]="referenceEquipmentsList.length === 0"
+                (selectionChange)="
+                  selectionChanged('referenceEquipment', $event.value)
+                "
+              >
+                <mat-option
+                  *ngFor="let refEquiment of referenceEquipmentsList"
+                  [value]="refEquiment.ID"
+                >
+                  {{ refEquiment.type }}
+                </mat-option>
+              </mat-select>
+              <mat-error
+                *ngIf="
+                  referenceEquipment.invalid &&
+                  referenceEquipment.hasError('required')
+                "
+              >
+                {{ "Reference Equipment is mandatory" | translate }}
+              </mat-error>
+            </mat-form-field>
+            <mat-error
+              class="warningMsg"
+              *ngIf="referenceEquipment.dirty && coresList?.length === 0"
+            >
+              {{
+                "Selected equipment type does not have one of these: core factor, processor, or core value"
+                  | translate
+              }}
+            </mat-error>
+          </div>
+          <div
+            class="col-md-3 equipments"
+            *ngIf="
+              selectedMetricTypeId === 'SAG_Processor' ||
+              selectedMetricTypeId === 'IBM_PVU' ||
+              selectedMetricTypeId === 'Attr_Counter' ||
+              selectedMetricTypeId === 'Attr_Sum'
+            "
+          >
+            <mat-form-field appearance="outline">
+              <mat-label>{{ "Reference Equipment" | translate }}</mat-label>
+              <mat-select
+                id="referenceEquipment"
+                formControlName="referenceEquipment"
+                [disabled]="firstEquipmentsList.length === 0"
+                (selectionChange)="
+                  selectionChanged('referenceEquipment', $event.value)
+                "
+              >
+                <mat-option
+                  *ngFor="let refEquiment of firstEquipmentsList"
+                  [value]="refEquiment.ID"
+                >
+                  {{ refEquiment.type }}
+                </mat-option>
+              </mat-select>
+              <mat-error
+                *ngIf="
+                  referenceEquipment.invalid &&
+                  referenceEquipment.hasError('required')
+                "
+              >
+                {{ "Reference Equipment is mandatory" | translate }}
+              </mat-error>
+            </mat-form-field>
+            <mat-error
+              class="warningMsg"
+              *ngIf="referenceEquipment.dirty && coresList?.length === 0"
+            >
+              {{
+                "Selected equipment type does not have one of these: core factor, processor, or core value"
+                  | translate
+              }}
+            </mat-error>
+          </div>
+          <!-- Core -->
+          <div
+            class="col-md-3 equipments"
+            *ngIf="
+              selectedMetricTypeId === 'Oracle_Processor' ||
+              selectedMetricTypeId === 'SAG_Processor' ||
+              selectedMetricTypeId === 'IBM_PVU' ||
+              selectedMetricTypeId === 'Oracle_NUP'
+            "
+          >
+            <mat-form-field appearance="outline">
+              <mat-label>Core</mat-label>
+              <mat-select
+                id="core"
+                formControlName="core"
+                [disabled]="coresList?.length === 0"
+                (selectionChange)="selectionChanged('core', $event.value)"
+              >
+                <mat-option *ngFor="let core of coresList" [value]="core.ID">
+                  {{ core.name }}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="core.invalid && core.hasError('required')">
+                {{ "Core is mandatory" | translate }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <!-- CPU -->
+          <div
+            class="col-md-3 equipments"
+            *ngIf="
+              selectedMetricTypeId === 'Oracle_Processor' ||
+              selectedMetricTypeId === 'Oracle_NUP'
+            "
+          >
+            <mat-form-field appearance="outline">
+              <mat-label>{{ "CPU" | translate }}</mat-label>
+              <mat-select
+                id="cpu"
+                formControlName="cpu"
+                [disabled]="cpusList?.length === 0"
+                (selectionChange)="selectionChanged('cpu', $event.value)"
+              >
+                <mat-option *ngFor="let cpu of cpusList" [value]="cpu.ID">
+                  {{ cpu.name }}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="cpu.invalid && cpu.hasError('required')">
+                {{ "CPU is mandatory" | translate }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <!-- Corefactor -->
+          <div
+            class="col-md-3 equipments"
+            *ngIf="
+              selectedMetricTypeId === 'Oracle_Processor' ||
+              selectedMetricTypeId === 'SAG_Processor' ||
+              selectedMetricTypeId === 'IBM_PVU' ||
+              selectedMetricTypeId === 'Oracle_NUP'
+            "
+          >
+            <mat-form-field appearance="outline">
+              <mat-label>{{ "Corefactor" | translate }}</mat-label>
+              <mat-select
+                id="corefactor"
+                formControlName="corefactor"
+                [disabled]="corefactorsList?.length === 0"
+                (selectionChange)="selectionChanged('corefactor', $event.value)"
+              >
+                <mat-option *ngFor="let cf of corefactorsList" [value]="cf.ID">
+                  {{ cf.name }}
+                </mat-option>
+              </mat-select>
+              <mat-error
+                *ngIf="corefactor.invalid && corefactor.hasError('required')"
+              >
+                {{ "Corefactor is mandatory" | translate }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <!-- Aggregation Level -->
+          <div
+            class="col-md-3 equipments"
+            *ngIf="
+              selectedMetricTypeId === 'Oracle_Processor' ||
+              selectedMetricTypeId === 'Oracle_NUP'
+            "
+          >
+            <mat-form-field appearance="outline">
+              <mat-label>{{ "Aggregation Level" | translate }}</mat-label>
+              <mat-select
+                id="aggregationLevel"
+                formControlName="aggregationLevel"
+                [disabled]="aggregationLevelsList?.length === 0"
+                (selectionChange)="
+                  selectionChanged('aggregationLevel', $event.value)
+                "
+              >
+                <mat-option
+                  *ngFor="let aggrLevel of aggregationLevelsList"
+                  [value]="aggrLevel.ID"
+                >
+                  {{ aggrLevel.type }}
+                </mat-option>
+              </mat-select>
+              <mat-error
+                *ngIf="
+                  aggregationLevel.invalid &&
+                  aggregationLevel.hasError('required')
+                "
+              >
+                {{ "Aggregation level is mandatory" | translate }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <!-- Last Equipment -->
+          <div
+            class="col-md-3 equipments"
+            *ngIf="
+              selectedMetricTypeId === 'Oracle_Processor' ||
+              selectedMetricTypeId === 'Oracle_NUP'
+            "
+          >
+            <mat-form-field appearance="outline">
+              <mat-label>{{ "Last Equipment" | translate }}</mat-label>
+              <mat-select
+                id="lastEquipment"
+                formControlName="lastEquipment"
+                [disabled]="lastEquipmentsList?.length === 0"
+                (selectionChange)="
+                  selectionChanged('lastEquipment', $event.value)
+                "
+              >
+                <mat-option
+                  *ngFor="let lastEqui of lastEquipmentsList"
+                  [value]="lastEqui.ID"
+                >
+                  {{ lastEqui.type }}
+                </mat-option>
+              </mat-select>
+              <mat-error
+                *ngIf="
+                  lastEquipment.invalid && lastEquipment.hasError('required')
+                "
+              >
+                {{ "Last equipment is mandatory" | translate }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <!-- Number of user -->
+          <div
+            class="col-md-3 equipments"
+            *ngIf="selectedMetricTypeId === 'Oracle_NUP'"
+          >
+            <mat-form-field appearance="outline">
+              <mat-label>{{ "No. of Users" | translate }}</mat-label>
+              <input
+                id="noOfUsers"
+                matInput
+                formControlName="noOfUsers"
+                type="number"
+                min="1"
+                placeholder="{{ 'No. of Users' | translate }}"
+              />
+              <mat-error
+                *ngIf="noOfUsers.invalid && noOfUsers.hasError('required')"
+              >
+                {{ "No. of users is mandatory" | translate }}
+              </mat-error>
+              <mat-error
+                *ngIf="noOfUsers.invalid && noOfUsers.hasError('pattern')"
+              >
+                {{ "There must be atleast 1 user" | translate }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <!-- Attribute Name -->
+          <div
+            class="col-md-3 equipments"
+            *ngIf="
+              selectedMetricTypeId === 'Attr_Counter' ||
+              selectedMetricTypeId === 'Attr_Sum'
+            "
+          >
+            <mat-form-field appearance="outline">
+              <mat-label>{{ "Attribute Name" | translate }}</mat-label>
+              <mat-select
+                id="attributeName"
+                formControlName="attributeName"
+                [disabled]="
+                  referenceEquipment.pristine || attributesList?.length === 0
+                "
+                (selectionChange)="
+                  selectionChanged('attributeName', $event.value)
+                "
+              >
+                <mat-option
+                  *ngFor="let attr of attributesList"
+                  [value]="attr.name"
+                >
+                  {{ attr.name }}
+                </mat-option>
+              </mat-select>
+              <mat-error
+                *ngIf="
+                  attributeName.invalid && attributeName.hasError('required')
+                "
+              >
+                {{ "Attribute Name is mandatory" | translate }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <!-- Value -->
+          <div
+            class="col-md-3 equipments"
+            *ngIf="selectedMetricTypeId === 'Attr_Counter'"
+          >
+            <mat-form-field appearance="outline">
+              <mat-label>{{ "Value" | translate }}</mat-label>
+              <input
+                id="value"
+                matInput
+                formControlName="value"
+                (keydown)="validatePattern($event)"
+                placeholder="{{ 'Value' | translate }}"
+              />
+              <mat-error *ngIf="value.invalid && value.hasError('required')">
+                {{ "Value is mandatory" | translate }}
+              </mat-error>
+            </mat-form-field>
+            <mat-error
+              class="warningMsg"
+              *ngIf="value.dirty && value.valid && zeroValueMsg"
+            >
+              {{ zeroValueMsg | translate }}
+            </mat-error>
+          </div>
+          <!-- Reference Value -->
+          <div
+            class="col-md-3 equipments"
+            *ngIf="selectedMetricTypeId === 'Attr_Sum'"
+          >
+            <mat-form-field appearance="outline">
+              <mat-label>{{ "Reference Value" | translate }}</mat-label>
+              <input
+                id="referenceValue"
+                matInput
+                formControlName="referenceValue"
+                type="number"
+                min="1"
+                placeholder="{{ 'Reference Value' | translate }}"
+              />
+              <mat-error
+                *ngIf="
+                  referenceValue.invalid && referenceValue.hasError('required')
+                "
+              >
+                {{ "Reference Value is mandatory" | translate }}
+              </mat-error>
+            </mat-form-field>
+            <mat-error
+              class="warningMsg"
+              *ngIf="
+                referenceValue.dirty && referenceValue.valid && zeroValueMsg
+              "
+            >
+              {{ zeroValueMsg | translate }}
+            </mat-error>
+          </div>
+          <!-- No of deployments -->
+          <div
+            class="col-md-3 equipments"
+            *ngIf="selectedMetricTypeId === 'Instance_Number'"
+          >
+            <mat-form-field appearance="outline">
+              <mat-label>{{ "Number of deployments" | translate }}</mat-label>
+              <input
+                id="noOfDeployments"
+                matInput
+                formControlName="noOfDeployments"
+                placeholder="{{ 'Number of deployments' | translate }}"
+              />
+              <mat-error
+                *ngIf="
+                  noOfDeployments.invalid &&
+                  noOfDeployments.hasError('required')
+                "
+              >
+                {{ "Number of Deployments is mandatory" | translate }}
+              </mat-error>
+              <mat-error
+                *ngIf="
+                  noOfDeployments.invalid && noOfDeployments.hasError('pattern')
+                "
+              >
+                {{ "Only positive integer values are allowed" | translate }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+      <!-- Action Buttons -->
+      <div id="btnsContainer" class="row">
+        <div>
+          <button
+            id="cancelButton"
+            [disabled]="_loading"
+            mat-raised-button
+            class="btn-four"
+            [mat-dialog-close]="1"
+          >
+            {{ "Cancel" | translate }}
+          </button>
+          <button
+            id="resetButton"
+            [disabled]="metricForm.pristine || _loading"
+            mat-raised-button
+            class="btn-three"
+            (click)="resetForm()"
+          >
+            {{ "Reset" | translate }}
+          </button>
+        </div>
+
+        <div>
+          <button
+            id="createButton"
+            mat-raised-button
+            class="btn-two"
+            [disabled]="
+              metricForm.pristine ||
+              metricForm.invalid ||
+              _loading ||
+              zeroValueMsg
+            "
+            (click)="createMetric(succesCreateDialog, errorCreateDialog)"
+          >
+            <span
+              class="spinner-border spinner-border-sm"
+              role="status"
+              aria-hidden="true"
+              *ngIf="_loading"
+            ></span>
+            {{ "Create" | translate }}
+          </button>
+        </div>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>
+
+<!-- Create success message -->
+<ng-template #succesCreateDialog>
+  <mat-dialog-content>
+    <p>{{ "SUCCESS_METRIC_CREATE_MSG" | translate }}</p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="center">
+    <button
+      [mat-dialog-close]="true"
+      class="btn-two"
+      mat-button
+      cdkFocusInitial
+    >
+      {{ "OK" }}
+    </button>
+  </mat-dialog-actions>
+</ng-template>
+<!-- Create error message -->
+<ng-template #errorCreateDialog>
+  <mat-dialog-content>
+    <p>{{ errorMessage | translate }}</p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="center">
+    <button
+      [mat-dialog-close]="true"
+      class="btn-two"
+      mat-button
+      cdkFocusInitial
+    >
+      {{ "OK" }}
+    </button>
+  </mat-dialog-actions>
+</ng-template>

@@ -1,141 +1,309 @@
 <mat-toolbar color="ThemePalette" class="main-nav-bar">
-    <mat-toolbar-row>
-      <span id="app-logo" class="optisam-logo" matTooltip="{{'Dashboard'|translate}}" [hidden]="this.sidebarFlag" routerLink="/optisam/dashboard">
-        <img src="assets/images/OpTISAM-Logo.svg">
-      </span>
-      <span id="app-logo-min" class="optisam-logo" matTooltip="{{'Dashboard'|translate}}" [hidden]="!this.sidebarFlag" routerLink="/optisam/dashboard">
-        <img src="assets/images/OpTISAM-Logo-app.svg">
-      </span>
-      <button mat-icon-button (click)="toggleSideNavbar()"><mat-icon id="nav-menu">menu</mat-icon></button>          
-      <a id="nav-scopes-menu" *ngIf="selectedScope && scopesList.length === 0" matTooltip="{{'Scope'|translate}}" mat-button>
-        <img style="height: 24px;" src="\assets\images\scope-management-blue.svg"/>
-        {{ selectedScope }}
-      </a> 
-      <a id="nav-scopes-menu" *ngIf="selectedScope && scopesList.length>0" matTooltip="{{'Scope'|translate}}" mat-button [matMenuTriggerFor]="scopesMenu">
-        <img style="height: 24px;" src="\assets\images\scope-management-blue.svg"/>
-        {{ selectedScope }}
-        <mat-icon>arrow_drop_down</mat-icon>
+  <mat-toolbar-row>
+    <span
+      id="app-logo"
+      class="optisam-logo"
+      matTooltip="{{ 'Dashboard' | translate }}"
+      [hidden]="this.sidebarFlag"
+      routerLink="/optisam/dashboard"
+    >
+      <img src="assets/images/OpTISAM-Logo.svg" />
+    </span>
+    <span
+      id="app-logo-min"
+      class="optisam-logo"
+      matTooltip="{{ 'Dashboard' | translate }}"
+      [hidden]="!this.sidebarFlag"
+      routerLink="/optisam/dashboard"
+    >
+      <img src="assets/images/OpTISAM-Logo-app.svg" />
+    </span>
+    <button mat-icon-button (click)="toggleSideNavbar()">
+      <mat-icon id="nav-menu">menu</mat-icon>
+    </button>
+    <a
+      id="nav-scopes-menu"
+      *ngIf="selectedScope && scopesList.length === 0"
+      matTooltip="{{ 'Scope' | translate }}"
+      mat-button
+    >
+      <img
+        style="height: 24px"
+        src="\assets\images\scope-management-blue.svg"
+      />
+      {{ selectedScope.scope_code }}
+    </a>
+    <a
+      id="nav-scopes-menu"
+      *ngIf="selectedScope && scopesList.length > 0"
+      matTooltip="{{ 'Scope' | translate }}"
+      mat-button
+      [matMenuTriggerFor]="scopesMenu"
+    >
+      <img
+        style="height: 24px"
+        src="\assets\images\scope-management-blue.svg"
+      />
+      {{ selectedScope.scope_code }}
+      <mat-icon>arrow_drop_down</mat-icon>
+    </a>
+    <mat-menu #scopesMenu="matMenu">
+      <button
+        id="nav-{{ scope }}"
+        mat-menu-item
+        *ngFor="let scope of scopesList"
+        (click)="setScope(scope, warningDialog, warningDashboardDialog)"
+      >
+        {{ scope.scope_code }}
+      </button>
+    </mat-menu>
+
+    <span class="example-spacer"></span>
+    <div fxShow="true" fxHide.lt-md="true">
+      <a id="nav-management-menu" mat-button [matMenuTriggerFor]="menu2">
+        <img style="height: 24px" src="\assets\images\Admin-2.svg" />
+        {{ "ADMINISTRATION" | translate }}
       </a>
-      <mat-menu #scopesMenu="matMenu">
-        <button id="nav-{{scope}}" mat-menu-item *ngFor="let scope of scopesList" (click)="setScope(scope,warningDialog,warningDashboardDialog)">{{scope}}</button>
-      </mat-menu>
 
-      <span class="example-spacer"></span>
-      <div fxShow="true" fxHide.lt-md="true">
-        <a id="nav-management-menu" mat-button [matMenuTriggerFor]="menu2">
-            <img style="height: 24px;" src="\assets\images\Admin-2.svg"/>
-            {{'ADMINISTRATION' | translate}}
-        </a>
-
-        <mat-menu #menu2>
-            <button id="nav-equipment-management" mat-menu-item matTooltip="{{'Equipment Management' | translate}}" [routerLink]="['/optisam/eqm']" [routerLinkActive]="['routeactive']">
-              <img style="height: 20px; margin-right: 16px;" src="\assets\images\Equipment-managementSmall.png"/>
-              {{'Equipment Management' | translate}}
-            </button>
-            <button id="nav-metrics-management" mat-menu-item matTooltip="{{'Metrics Management' | translate}}" [routerLink]="['/optisam/ma']" [routerLinkActive]="['routeactive']">
-             <img style="height: 20px; margin-right: 16px;" src="\assets\images\Metrics-ManagementSmall.png"/>
-              {{'Metrics Management' | translate}}
-            </button>
-            <button id="nav-user-management" mat-menu-item matTooltip="{{'User Management' | translate}}" *ngIf="(role === 'ADMIN') || ((role === 'SUPER_ADMIN'))" [routerLink]="['/optisam/gr/viewUsers']" [routerLinkActive]="['routeactive']">
-              <mat-icon class="mat-icon-admin">person</mat-icon>
-              {{'User Management' | translate}}
-            </button>
-            <button id="nav-group-management" mat-menu-item matTooltip="{{'Group Management' | translate}}" [routerLink]="['/optisam/gr/groupMang']" [routerLinkActive]="['routeactive']">
-              <mat-icon class="mat-icon-admin">group_add</mat-icon>
-              {{'Group Management' | translate}}
-            </button>
-            <button id="nav-data-management" mat-menu-item matTooltip="{{'Data Management' | translate}}" *ngIf="(role === 'ADMIN') || ((role === 'SUPER_ADMIN'))" [routerLink]="['/optisam/dm/data']" [routerLinkActive]="['routeactive']">
-              <mat-icon class="mat-icon-admin">cloud_upload</mat-icon>
-              {{'Data Management' | translate}}
-            </button>
-            <button id="nav-products-management" mat-menu-item matTooltip="{{'Aggregation Management' | translate}}" [routerLink]="['/optisam/ag/list-aggregation']" [routerLinkActive]="['routeactive']">
+      <mat-menu #menu2>
+        <button
+          id="nav-acq-rights-management"
+          mat-menu-item
+          matTooltip="{{ 'Acquired Rights Management' | translate }}"
+          *ngIf="role === 'ADMIN' || role === 'SUPER_ADMIN'"
+          [routerLink]="['/optisam/ar/list-acquired-rights']"
+          [routerLinkActive]="['routeactive']"
+        >
+          <img
+            style="height: 20px; margin-right: 16px"
+            src="\assets\images\acquired-rights-admin.svg"
+          />
+          {{ "Acquired Rights Management" | translate }}
+        </button>
+        <!-- <button id="nav-products-management" mat-menu-item matTooltip="{{'Aggregation Management' | translate}}" [routerLink]="['/optisam/ag/list-aggregation']" [routerLinkActive]="['routeactive']">
               <mat-icon class="mat-icon-admin">devices_other</mat-icon>
               {{'Aggregation Management' | translate}}
-            </button>
-            <button id="nav-configuration-management" mat-menu-item matTooltip="{{'Simulation Management' | translate}}" *ngIf="(role === 'ADMIN') || ((role === 'SUPER_ADMIN'))" [routerLink]="['/optisam/cm/simulation-configuration']" [routerLinkActive]="['routeactive']">
-              <mat-icon class="mat-icon-admin">settings</mat-icon>
-              {{'Simulation Management' | translate}}
-            </button>
-            <button id="nav-scope-management" mat-menu-item matTooltip="{{'Scope Management' | translate}}" *ngIf="role === 'SUPER_ADMIN'" [routerLink]="['/optisam/sm']" [routerLinkActive]="['routeactive']">
-              <img style="height: 20px; margin-right: 16px;" src="\assets\images\scope-management.svg"/>
-              {{'Scope Management' | translate}}
-            </button>
-            <button id="nav-obsolescence-management" mat-menu-item matTooltip="{{'Obsolescence Management' | translate}}" *ngIf="role === 'ADMIN' || role === 'SUPER_ADMIN'" [routerLink]="['/optisam/om/define-obsolescence']" [routerLinkActive]="['routeactive']">
-              <mat-icon class="mat-icon-admin">warning</mat-icon>
-              {{'Obsolescence Management' | translate}}
-            </button>
-        </mat-menu>
+            </button> -->
+        <button
+          id="nav-data-management"
+          mat-menu-item
+          matTooltip="{{ 'Data Management' | translate }}"
+          *ngIf="role === 'ADMIN' || role === 'SUPER_ADMIN'"
+          [routerLink]="['/optisam/dm/data']"
+          [routerLinkActive]="['routeactive']"
+        >
+          <mat-icon class="mat-icon-admin">cloud_upload</mat-icon>
+          {{ "Data Management" | translate }}
+        </button>
+        <button
+          id="nav-equipment-management"
+          mat-menu-item
+          matTooltip="{{ 'Equipment Management' | translate }}"
+          [routerLink]="['/optisam/eqm']"
+          [routerLinkActive]="['routeactive']"
+        >
+          <img
+            style="height: 20px; margin-right: 16px"
+            src="\assets\images\Equipment-managementSmall.png"
+          />
+          {{ "Equipment Management" | translate }}
+        </button>
+        <button
+          id="nav-group-management"
+          mat-menu-item
+          matTooltip="{{ 'Group Management' | translate }}"
+          [routerLink]="['/optisam/gr/groupMang']"
+          [routerLinkActive]="['routeactive']"
+        >
+          <mat-icon class="mat-icon-admin">group_add</mat-icon>
+          {{ "Group Management" | translate }}
+        </button>
+        <button
+          id="nav-metrics-management"
+          mat-menu-item
+          matTooltip="{{ 'Metrics Management' | translate }}"
+          [routerLink]="['/optisam/ma']"
+          [routerLinkActive]="['routeactive']"
+        >
+          <img
+            style="height: 20px; margin-right: 16px"
+            src="\assets\images\Metrics-ManagementSmall.png"
+          />
+          {{ "Metrics Management" | translate }}
+        </button>
+        <button
+          id="nav-obsolescence-management"
+          mat-menu-item
+          matTooltip="{{ 'Obsolescence Management' | translate }}"
+          *ngIf="role === 'ADMIN' || role === 'SUPER_ADMIN'"
+          [routerLink]="['/optisam/om/define-obsolescence']"
+          [routerLinkActive]="['routeactive']"
+        >
+          <mat-icon class="mat-icon-admin">warning</mat-icon>
+          {{ "Obsolescence Management" | translate }}
+        </button>
+        <button
+          id="nav-scope-management"
+          mat-menu-item
+          matTooltip="{{ 'Scope Management' | translate }}"
+          *ngIf="role === 'SUPER_ADMIN'"
+          [routerLink]="['/optisam/sm']"
+          [routerLinkActive]="['routeactive']"
+        >
+          <img
+            style="height: 20px; margin-right: 16px"
+            src="\assets\images\scope-management.svg"
+          />
+          {{ "Scope Management" | translate }}
+        </button>
+        <button
+          id="nav-configuration-management"
+          mat-menu-item
+          matTooltip="{{ 'Simulation Management' | translate }}"
+          *ngIf="role === 'ADMIN' || role === 'SUPER_ADMIN'"
+          [routerLink]="['/optisam/cm/simulation-configuration']"
+          [routerLinkActive]="['routeactive']"
+        >
+          <mat-icon class="mat-icon-admin">settings</mat-icon>
+          {{ "Simulation Management" | translate }}
+        </button>
+        <button
+          id="nav-user-management"
+          mat-menu-item
+          matTooltip="{{ 'User Management' | translate }}"
+          *ngIf="role === 'ADMIN' || role === 'SUPER_ADMIN'"
+          [routerLink]="['/optisam/gr/viewUsers']"
+          [routerLinkActive]="['routeactive']"
+        >
+          <mat-icon class="mat-icon-admin">person</mat-icon>
+          {{ "User Management" | translate }}
+        </button>
+      </mat-menu>
 
-        <!-- <mat-menu #menu2>
-            <div>
-              <button mat-button matTooltip="equipments" [routerLink]="['/optisam/eq/createEquipment']"><mat-icon>build</mat-icon>
-                {{'Create Equipment' | translate}}
-              </button>
-            </div>
-            <div>
-              <button mat-button matTooltip="groups" [routerLink]="['/optisam/gr/createGroup']"><mat-icon>group_add</mat-icon>
-                {{'Create Group' | translate}}
-              </button>
-            </div>
-          </mat-menu> -->
-        <!-- <a mat-button [matMenuTriggerFor]="menu2">
-          <mat-icon matsuffix>account_balance</mat-icon>
-        </a>
-        <mat-menu #menu2="matMenu" style="height: 200px;">
-          <button mat-menu-item style="line-height: 15px;">
-            <mat-icon matsuffix>add</mat-icon>
-            <span class="gb_m"
-              [routerLink]="['/optisam/equipments/createEquipment']"> {{'Create
-              Equipment'| translate}}</span>
-          </button>
-        </mat-menu> -->
-        <a id="nav-admin-menu" mat-button [matMenuTriggerFor]="menu">
-          <mat-icon class="mat-icon-header" matsuffix>face</mat-icon>
-          {{userName}}
-        </a>
+      <a id="nav-admin-menu" mat-button [matMenuTriggerFor]="menu">
+        <mat-icon class="mat-icon-header" matsuffix>face</mat-icon>
+        {{ userName }}
+      </a>
 
-        <mat-menu #menu="matMenu">
-          <button id="nav-settings" mat-menu-item (click)="langchange()">
-            <mat-icon class="mat-icon-admin" matsuffix>settings</mat-icon>
-            {{'Settings' |translate}}
-          </button>
-          <button id="nav-logout" mat-menu-item (click)="logout()">
-            <mat-icon class="mat-icon-admin" matsuffix>logout</mat-icon>
-            {{'Logout' | translate}}
-          </button>
-        </mat-menu>
-        <a id="nav-language-menu" mat-button [matMenuTriggerFor]="menu1" (click)="checkLanguage()">
-          <mat-icon class="mat-icon-header" matsuffix>language</mat-icon>
-          {{ 'language' | translate }}
-          <mat-icon>arrow_drop_down</mat-icon>
-        </a>
-        <mat-menu #menu1="matMenu">
-          <button id="nav-language-en" mat-menu-item *ngIf="currLang=='fr'"
-            (click)="updateUserLanguage('en')"><img class="flags" src="assets/images/en.png">English</button>
-          <button id="nav-language-fr" mat-menu-item *ngIf="currLang=='en'"
-            (click)="updateUserLanguage('fr')"><img class="flags" src="assets/images/fr.png">French</button>
-        </mat-menu>
-      </div>
-    </mat-toolbar-row>
-  </mat-toolbar>
+      <mat-menu #menu="matMenu">
+        <button id="nav-settings" mat-menu-item (click)="langchange()">
+          <mat-icon class="mat-icon-admin" matsuffix>settings</mat-icon>
+          {{ "Settings" | translate }}
+        </button>
+        <button id="nav-logout" mat-menu-item (click)="logout()">
+          <mat-icon class="mat-icon-admin" matsuffix>logout</mat-icon>
+          {{ "Logout" | translate }}
+        </button>
+      </mat-menu>
 
-  <ng-template #warningDialog>
-    <mat-dialog-content>
-      <p>{{'Changing scope to '|translate}} <strong>{{newScope}}</strong>.</p>
-      <p>{{'You will be taken to the dashboard after clicking OK.'|translate}}</p>
-    </mat-dialog-content>
-    <mat-dialog-actions align="center">
-      <button mat-button [mat-dialog-close]="true" class="btn-two" (click)="backToHome();changeScope();" cdkFocusInitial>{{'OK'|translate}}</button>
-      <button mat-button [mat-dialog-close]="true" class="btn-three" cdkFocusInitial>{{'Cancel'|translate}}</button>
-    </mat-dialog-actions>
-  </ng-template>
-  <ng-template #warningDashboardDialog>
-    <mat-dialog-content>
-      <p>{{'Changing scope to '|translate}} <strong>{{newScope}}</strong>.</p>
-      <p>{{'You will see the new data after clicking OK.'|translate}}</p>
-    </mat-dialog-content>
-    <mat-dialog-actions align="center">
-      <button mat-button [mat-dialog-close]="true" class="btn-two" (click)="changeScope()" cdkFocusInitial>{{'OK'|translate}}</button>
-      <button mat-button [mat-dialog-close]="true" class="btn-three" cdkFocusInitial>{{'Cancel'|translate}}</button>
-    </mat-dialog-actions>
-  </ng-template>
+      <a
+        id="nav-language-menu"
+        mat-button
+        [matMenuTriggerFor]="menu1"
+        (click)="checkLanguage()"
+      >
+        <mat-icon class="mat-icon-header" matsuffix>language</mat-icon>
+        {{ "language" | translate }}
+        <mat-icon>arrow_drop_down</mat-icon>
+      </a>
+      <mat-menu #menu1="matMenu">
+        <button
+          id="nav-language-en"
+          mat-menu-item
+          *ngIf="currLang == 'fr'"
+          (click)="updateUserLanguage('en')"
+        >
+          <img class="flags" src="assets/images/en.png" />English
+        </button>
+        <button
+          id="nav-language-fr"
+          mat-menu-item
+          *ngIf="currLang == 'en'"
+          (click)="updateUserLanguage('fr')"
+        >
+          <img class="flags" src="assets/images/fr.png" />French
+        </button>
+      </mat-menu>
+
+      <a id="nav-help" mat-button [matMenuTriggerFor]="menu3">
+        <mat-icon class="mat-icon-header" matsuffix>help_outline</mat-icon>
+      </a>
+      <mat-menu #menu3="matMenu">
+        <a
+          id="nav-user-guide"
+          mat-menu-item
+          href="https://optisam.pages.gitlab.tech.orange/optisam-it/optisam-guide/"
+          target="_blank"
+        >
+          <mat-icon class="mat-icon-menu">help_outline</mat-icon
+          >{{ "User Guide" | translate }}
+        </a>
+        <button id="nav-about" mat-menu-item (click)="openAboutUs()">
+          <mat-icon class="mat-icon-menu">info_outline</mat-icon
+          >{{ "About" | translate }}
+        </button>
+      </mat-menu>
+    </div>
+  </mat-toolbar-row>
+</mat-toolbar>
+
+<ng-template #warningDialog>
+  <mat-dialog-content>
+    <p>
+      {{ "Changing scope to " | translate }}
+      <strong>{{ newScope.scope_code }}</strong
+      >.
+    </p>
+    <p>
+      {{ "You will be taken to the dashboard after clicking OK." | translate }}
+    </p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="center">
+    <button
+      mat-button
+      [mat-dialog-close]="true"
+      class="btn-two"
+      (click)="backToHome(); changeScope()"
+      cdkFocusInitial
+    >
+      {{ "OK" | translate }}
+    </button>
+    <button
+      mat-button
+      [mat-dialog-close]="true"
+      class="btn-three"
+      cdkFocusInitial
+    >
+      {{ "Cancel" | translate }}
+    </button>
+  </mat-dialog-actions>
+</ng-template>
+<ng-template #warningDashboardDialog>
+  <mat-dialog-content>
+    <p>
+      {{ "Changing scope to " | translate }}
+      <strong>{{ newScope.scope_code }}</strong
+      >.
+    </p>
+    <p>{{ "You will see the new data after clicking OK." | translate }}</p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="center">
+    <button
+      mat-button
+      [mat-dialog-close]="true"
+      class="btn-two"
+      (click)="changeScope()"
+      cdkFocusInitial
+    >
+      {{ "OK" | translate }}
+    </button>
+    <button
+      mat-button
+      [mat-dialog-close]="true"
+      class="btn-three"
+      cdkFocusInitial
+    >
+      {{ "Cancel" | translate }}
+    </button>
+  </mat-dialog-actions>
+</ng-template>

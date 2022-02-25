@@ -14,21 +14,21 @@
     <mat-form-field appearance="outline" class="group">
       <mat-label>{{'First Name'|translate}}</mat-label>
       <input matInput placeholder="" formControlName="firstName">
-      <mat-error *ngIf="firstName.errors?.pattern">
-        {{'First name is required in ^[a-zA-Z0-9_]*$ format.'}}
+      <mat-error *ngIf="firstName.invalid && firstName.hasError('required')">
+        {{'First name is mandatory'|translate}}
       </mat-error>
-      <mat-error *ngIf="firstName.errors?.maxlength">
-        {{'First name can be max 15 characters long.'|translate}}
+      <mat-error *ngIf="firstName.invalid && firstName.hasError('pattern')">
+        {{'Invalid name'|translate}}
       </mat-error>
     </mat-form-field>
     <mat-form-field appearance="outline" class="group">
       <mat-label>{{'Last Name'|translate}}</mat-label>
       <input matInput placeholder="" formControlName="lastName">
-      <mat-error *ngIf="lastName.errors?.pattern">
-        {{'Last name is required in ^[a-zA-Z0-9_]*$ format.'}}
+      <mat-error *ngIf="lastName.invalid && lastName.hasError('required')">
+        {{'Last name is mandatory'|translate}}
       </mat-error>
-      <mat-error *ngIf="lastName.errors?.maxlength">
-        {{'Last name can be max 15 characters long.'|translate}}
+      <mat-error *ngIf="lastName.invalid && lastName.hasError('pattern')">
+        {{'Invalid name'|translate}}
       </mat-error>
     </mat-form-field>
     <mat-form-field appearance="outline" class="group">
@@ -59,7 +59,7 @@
 </ng-template>
 <ng-template #errorProfileUpdateDialog>
   <mat-dialog-content>
-    <p>{{'PROFILE_UPDATE_ERROR'|translate}}</p>
+    <p>{{'Error'|translate}}: {{errorMessage}}</p>
   </mat-dialog-content>
   <mat-dialog-actions align="center">
     <button mat-button [mat-dialog-close]="true" class="btn-two" cdkFocusInitial>{{'OK'|translate}}</button>

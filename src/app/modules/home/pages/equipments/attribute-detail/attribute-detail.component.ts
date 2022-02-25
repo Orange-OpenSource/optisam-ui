@@ -1,11 +1,15 @@
-// Copyright (C) 2019 Orange
-// 
-// This software is distributed under the terms and conditions of the 'Apache License 2.0'
-// license which can be found in the file 'License.txt' in this package distribution 
-// or at 'http://www.apache.org/licenses/LICENSE-2.0'. 
-
-import { Component, OnInit, Inject, ViewChild, SystemJsNgModuleLoader } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef, MatDialog } from '@angular/material/dialog';
+import {
+  Component,
+  OnInit,
+  Inject,
+  ViewChild,
+  SystemJsNgModuleLoader,
+} from '@angular/core';
+import {
+  MAT_DIALOG_DATA,
+  MatDialogRef,
+  MatDialog,
+} from '@angular/material/dialog';
 import { EquipmentTypeManagementService } from 'src/app/core/services/equipmenttypemanagement.service';
 import { FormGroup, FormControl } from '@angular/forms';
 import { MoreDetailsComponent } from '../../../dialogs/product-details/more-details.component';
@@ -17,10 +21,9 @@ import { MatSort } from '@angular/material/sort';
 @Component({
   selector: 'app-attribute-detail',
   templateUrl: './attribute-detail.component.html',
-  styleUrls: ['./attribute-detail.component.scss']
+  styleUrls: ['./attribute-detail.component.scss'],
 })
 export class AttributeDetailComponent implements OnInit {
-
   page_size: any;
   pageEvent: any;
   equiDetails: any;
@@ -51,10 +54,10 @@ export class AttributeDetailComponent implements OnInit {
   dataSource: any;
   childRefId;
   length;
-  pageSize = 10;
+  pageSize = 50;
   current_page_num = 1;
   product_curr_num = 1;
-  productPageSize = 10;
+  productPageSize = 50;
   SortName: String;
   filterGroup: FormGroup;
   productColumn = [];
@@ -62,10 +65,10 @@ export class AttributeDetailComponent implements OnInit {
   saveSelectedSWIDTag;
   saveSelectedPName;
   saveSelectedEditor;
-  productsort_order = 'ASC';
+  productsort_order = 'asc';
   productsort_by = '';
   productLength;
-  sort_order: String = 'ASC';
+  sort_order: String = 'asc';
   productStartPageNum;
   filteringOrder: any;
   swidtagPlaceholder: any;
@@ -78,8 +81,8 @@ export class AttributeDetailComponent implements OnInit {
   activeLink: any;
   _loading: boolean;
   moreRows: boolean;
-  @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
-  @ViewChild(MatSort, {static: false}) sort: MatSort;
+  @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
+  @ViewChild(MatSort, { static: false }) sort: MatSort;
 
   advanceSearchModel: any = {
     title: 'Search by Product Name',
@@ -87,20 +90,21 @@ export class AttributeDetailComponent implements OnInit {
     other: [
       { key: 'swidTag', label: 'SWIDtag' },
       { key: 'productName', label: 'Product name' },
-      { key: 'editorName', label: 'Editor name' }
-    ]
+      { key: 'editorName', label: 'Editor name' },
+    ],
   };
   searchFields: any = {};
 
   /*
      productdetails: DialogData = new DialogData();  */
-  constructor(public equipmentTypeManagementService: EquipmentTypeManagementService,
+  constructor(
+    public equipmentTypeManagementService: EquipmentTypeManagementService,
     private dialog: MatDialog,
     public dialogRef: MatDialogRef<AttributeDetailComponent>,
-    @Inject(MAT_DIALOG_DATA) public data) { 
-      // this.dialog.afterAllClosed.subscribe(res=>this.getProduct());
-    }
-
+    @Inject(MAT_DIALOG_DATA) public data
+  ) {
+    // this.dialog.afterAllClosed.subscribe(res=>this.getProduct());
+  }
 
   ngOnInit() {
     this.filterGroup = new FormGroup({});
@@ -110,7 +114,7 @@ export class AttributeDetailComponent implements OnInit {
     this.type = this.data['types'];
     this.equipName = this.data['equipName'];
     this.equipNameCapitalized = this.equipName.toUpperCase();
-    console.log('data : ',this.type);
+    console.log('data : ', this.type);
     for (let i = 0; i <= this.type.length - 1; i++) {
       if (this.type[i].ID === this.equimId) {
         this.parentId = this.type[i].ID;
@@ -118,7 +122,7 @@ export class AttributeDetailComponent implements OnInit {
         if (ObjKey.includes('parent_id')) {
           this.parentDisplay = false;
         } else {
-        this.parentDisplay = true;
+          this.parentDisplay = true;
         }
       }
     }
@@ -134,52 +138,56 @@ export class AttributeDetailComponent implements OnInit {
       }
     }
     this._loading = true;
-    this.equipmentTypeManagementService.getEquipmentDetail(this.equimId, this.typeName).subscribe(
-      (res: any) => {
-        this.equiObj = JSON.parse(res.equipment);
-        this.keyArr = Object.keys(this.equiObj);
-        this.valueArr = Object.values(this.equiObj);
-        this.keyArr.shift();
-        this.valueArr.shift();
-        this.MyDataSource = new MatTableDataSource(this.childRefrenceArr);
-        this._loading = false;
-        //  this.getParent();
-      },
-      error => {
-        this._loading = false;
-        //   console.log('There was an error while retrieving Posts !!!' + error);
-      });
+    this.equipmentTypeManagementService
+      .getEquipmentDetail(this.equimId, this.typeName)
+      .subscribe(
+        (res: any) => {
+          this.equiObj = JSON.parse(res.equipment);
+          this.keyArr = Object.keys(this.equiObj);
+          this.valueArr = Object.values(this.equiObj);
+          this.keyArr.shift();
+          this.valueArr.shift();
+          this.MyDataSource = new MatTableDataSource(this.childRefrenceArr);
+          this._loading = false;
+          //  this.getParent();
+        },
+        (error) => {
+          this._loading = false;
+          //   console.log('There was an error while retrieving Posts !!!' + error);
+        }
+      );
   }
   onNoClick(): void {
     this.dialogRef.close();
   }
   getParent(): void {
     this._loading = true;
-    this.equipmentTypeManagementService.getParentDetail(this.equimId, this.typeId).subscribe(
-      (res: any) => {
-        const decodedEquipments: any = atob(res.equipments);
-        const parentObj = JSON.parse(decodedEquipments);
-        for (let k = 0; k <= parentObj.length - 1; k++) {
-          const keyObj = Object.keys(parentObj[k]);
-          for (let l = 0; l <= keyObj.length - 1; l++) {
-            if (this.reuseKeyName.includes(keyObj[l])) {
-              this.reuseKeyName.push(keyObj[l]);
+    this.equipmentTypeManagementService
+      .getParentDetail(this.equimId, this.typeId)
+      .subscribe(
+        (res: any) => {
+          const decodedEquipments: any = atob(res.equipments);
+          const parentObj = JSON.parse(decodedEquipments);
+          for (let k = 0; k <= parentObj.length - 1; k++) {
+            const keyObj = Object.keys(parentObj[k]);
+            for (let l = 0; l <= keyObj.length - 1; l++) {
+              if (this.reuseKeyName.includes(keyObj[l])) {
+                this.reuseKeyName.push(keyObj[l]);
+              }
             }
           }
+          this.reuseKeyName = Object.keys(parentObj[0]);
+          this.reuseKeyName.shift();
+          this.reuseValueName = parentObj;
+          this._loading = false;
+        },
+        (error) => {
+          this._loading = false;
+          console.log('There was an error while retrieving Posts !!!' + error);
         }
-        this.reuseKeyName = Object.keys(parentObj[0]);
-        this.reuseKeyName.shift();
-        this.reuseValueName = parentObj;
-        this._loading = false;
-      },
-      error => {
-        this._loading = false;
-        console.log('There was an error while retrieving Posts !!!' + error);
-      });
-
+      );
   }
-  tabClick(tab) {
-  }
+  tabClick(tab) {}
   getFilterData(testData: any): string {
     return testData.filteredData;
   }
@@ -188,39 +196,50 @@ export class AttributeDetailComponent implements OnInit {
     this.filterGroup.reset();
     this.childRefId = '';
     const length = 1;
-    const pageSize = 10;
+    const pageSize = 50;
     const sortBy = this.SortName;
-    const sortOrder = 'ASC';
+    const sortOrder = 'asc';
     this.childRefId = obj.ID;
     this._loading = true;
-    this.equipmentTypeManagementService.getChildDetail(this.equimId, this.typeId, obj.ID, length, pageSize, sortBy, sortOrder).subscribe(
-      (res: any) => {
-        this.displayedrows = [];
-        const encodedEquipments = res.equipments;
-        const decodedEquipments: any = atob(encodedEquipments);
-        const testData = new MatTableDataSource(decodedEquipments);
-        this.dataSource = JSON.parse(this.getFilterData(testData));
-        this.length = res.totalRecords;
-        const idValue = this.dataSource[0].ID;
-        if (this.dataSource.length > 0) {
-          delete this.dataSource[0].ID;
-          for (const x in this.dataSource[0]) {
-            this.displayedrows.push(x);
-            this.filterGroup.addControl(x, new FormControl(null));
+    this.equipmentTypeManagementService
+      .getChildDetail(
+        this.equimId,
+        this.typeId,
+        obj.ID,
+        length,
+        pageSize,
+        sortBy,
+        sortOrder
+      )
+      .subscribe(
+        (res: any) => {
+          this.displayedrows = [];
+          const encodedEquipments = res.equipments;
+          const decodedEquipments: any = atob(encodedEquipments);
+          const testData = new MatTableDataSource(decodedEquipments);
+          this.dataSource = JSON.parse(this.getFilterData(testData));
+          this.length = res.totalRecords;
+          const idValue = this.dataSource[0].ID;
+          if (this.dataSource.length > 0) {
+            delete this.dataSource[0].ID;
+            for (const x in this.dataSource[0]) {
+              this.displayedrows.push(x);
+              this.filterGroup.addControl(x, new FormControl(null));
+            }
+            this.dataSource[0].ID = idValue;
+            if (this.displayedrows.length > 6) {
+              this.moreRows = true;
+            } else {
+              this.moreRows = false;
+            }
           }
-          this.dataSource[0].ID = idValue;
-          if(this.displayedrows.length > 6) {
-            this.moreRows = true;
-          } else {
-            this.moreRows = false;
-          }
+          this._loading = false;
+        },
+        (error) => {
+          this._loading = false;
+          console.log('There was an error while retrieving Posts !!!' + error);
         }
-        this._loading = false;
-      },
-      error => {
-        this._loading = false;
-        console.log('There was an error while retrieving Posts !!!' + error);
-      });
+      );
   }
   /* */
   getPaginatorData(event) {
@@ -231,8 +250,16 @@ export class AttributeDetailComponent implements OnInit {
     this.length = event.length;
     this.pageSize = event.pageSize;
     this._loading = true;
-    this.equipmentTypeManagementService.getChildPaginatedData(this.equimId, this.typeId, this.childRefId,
-      page_num + 1, this.pageSize, sort_by).subscribe(
+    this.equipmentTypeManagementService
+      .getChildPaginatedData(
+        this.equimId,
+        this.typeId,
+        this.childRefId,
+        page_num + 1,
+        this.pageSize,
+        sort_by
+      )
+      .subscribe(
         (res: any) => {
           this.displayedrows = [];
           const encodedEquipments = res.equipments;
@@ -249,18 +276,28 @@ export class AttributeDetailComponent implements OnInit {
           }
           this._loading = false;
         },
-        error => {
+        (error) => {
           this._loading = false;
           console.log('There was an error while retrieving Posts !!!' + error);
-        });
+        }
+      );
   }
 
   sortData(event) {
     this.sort_order = event.direction;
     this.SortName = event.active;
     this._loading = true;
-    this.equipmentTypeManagementService.sortChildEquipments(this.equimId, this.typeId, this.childRefId, this.current_page_num, this.pageSize,
-      event.active, event.direction).subscribe(
+    this.equipmentTypeManagementService
+      .sortChildEquipments(
+        this.equimId,
+        this.typeId,
+        this.childRefId,
+        this.current_page_num,
+        this.pageSize,
+        event.active,
+        event.direction
+      )
+      .subscribe(
         (res: any) => {
           this.displayedrows = [];
           const encodedEquipments = res.equipments;
@@ -277,10 +314,11 @@ export class AttributeDetailComponent implements OnInit {
           }
           this._loading = false;
         },
-        error => {
+        (error) => {
           this._loading = false;
           console.log('There was an error while retrieving Posts !!!' + error);
-        });
+        }
+      );
   }
   getchildRef(): void {
     const Obj = this.childRefrenceArr[0];
@@ -291,34 +329,33 @@ export class AttributeDetailComponent implements OnInit {
           this.SortName = Obj.attributes[i].name;
         }
       }
-
     }
     this.getChild(Obj); // g
-
   }
 
   getProduct(): void {
     const length = 1;
     this.productStatus = true;
-    const pageSize = 10;
+    const pageSize = 50;
     const sortBy = 'swidtag';
     this._loading = true;
-    this.equipmentTypeManagementService.getProductDetail(this.equimId, this.typeName, length, pageSize, sortBy).subscribe(
-      (res: any) => {
-        this.productColumn = ['swidTag', 'name', 'editor', 'numofEquipments'];//'version'];
-        this.productdataSource = new MatTableDataSource(res.products);
-        this.productdataSource.sort = this.sort;
-        this.productLength = res.totalRecords;
-        this.productStatus = false;
-        this._loading = false;
-      },
-      error => {
-        this.productStatus = true;
-        this._loading = false;
-        console.log('There was an error while retrieving Posts !!!' + error);
-      });
-
-
+    this.equipmentTypeManagementService
+      .getProductDetail(this.equimId, this.typeName, length, pageSize, sortBy)
+      .subscribe(
+        (res: any) => {
+          this.productColumn = ['swidTag', 'name', 'editor', 'numofEquipments']; //'version'];
+          this.productdataSource = new MatTableDataSource(res.products);
+          this.productdataSource.sort = this.sort;
+          this.productLength = res.totalRecords;
+          this.productStatus = false;
+          this._loading = false;
+        },
+        (error) => {
+          this.productStatus = true;
+          this._loading = false;
+          console.log('There was an error while retrieving Posts !!!' + error);
+        }
+      );
   }
   productSortData(sort) {
     /*   localStorage.setItem('product_direction', sort.direction);
@@ -329,17 +366,29 @@ export class AttributeDetailComponent implements OnInit {
     // if (sort.active.toUpperCase() === 'SWIDTAG') {
     //   this.productsort_by = 'swidtag';
     // }
-    this.equipmentTypeManagementService.productFilteredData(this.equimId, this.typeName, this.product_curr_num, this.productPageSize,
-      this.productsort_by, sort.direction, this.searchFields.swidTag, this.searchFields.productName, this.searchFields.editorName).subscribe(
+    this.equipmentTypeManagementService
+      .productFilteredData(
+        this.equimId,
+        this.typeName,
+        this.product_curr_num,
+        this.productPageSize,
+        this.productsort_by,
+        sort.direction,
+        this.searchFields.swidTag?.trim(),
+        this.searchFields.productName?.trim(),
+        this.searchFields.editorName?.trim()
+      )
+      .subscribe(
         (res: any) => {
           this.productdataSource = new MatTableDataSource(res.products);
           this.productdataSource.sort = this.sort;
           this._loading = false;
         },
-        error => {
+        (error) => {
           this._loading = false;
           console.log('There was an error while retrieving Posts !!!' + error);
-        });
+        }
+      );
   }
   getProductPaginatorData(event) {
     const page_num = event.pageIndex;
@@ -353,16 +402,25 @@ export class AttributeDetailComponent implements OnInit {
       this.productsort_by = 'swidtag';
     }
     if (this.productsort_order === '' || this.productsort_order === null) {
-      this.productsort_order = 'ASC';
+      this.productsort_order = 'asc';
     }
-    this.equipmentTypeManagementService.productFilteredData(this.equimId, this.typeName, page_num + 1, this.productPageSize,
-      this.productsort_by, this.productsort_order, this.searchFields.swidTag, this.searchFields.productName, this.searchFields.editorName).subscribe(
-        (res: any) => {
-          this.productdataSource = new MatTableDataSource(res.products);
-          this.productdataSource.sort = this.sort;
-          this._loading = false;
-        }
-      );
+    this.equipmentTypeManagementService
+      .productFilteredData(
+        this.equimId,
+        this.typeName,
+        page_num + 1,
+        this.productPageSize,
+        this.productsort_by,
+        this.productsort_order,
+        this.searchFields.swidTag?.trim(),
+        this.searchFields.productName?.trim(),
+        this.searchFields.editorName?.trim()
+      )
+      .subscribe((res: any) => {
+        this.productdataSource = new MatTableDataSource(res.products);
+        this.productdataSource.sort = this.sort;
+        this._loading = false;
+      });
   }
   setSelected(param: string, value: number) {
     if (value === 1) {
@@ -410,22 +468,31 @@ export class AttributeDetailComponent implements OnInit {
       this.productsort_by = 'swidtag';
     }
     if (this.productsort_order === '' || this.productsort_order === null) {
-      this.productsort_order = 'ASC';
+      this.productsort_order = 'asc';
     }
     if (this.product_curr_num === 0) {
       this.product_curr_num = 1;
     }
-    this.equipmentTypeManagementService.productFilteredData(this.equimId, this.typeName, this.product_curr_num, this.productPageSize,
-      this.productsort_by, this.productsort_order, this.searchFields.swidTag, this.searchFields.productName, this.searchFields.editorName).subscribe(
-        (res: any) => {
-          const testData = new MatTableDataSource(res.products);
-          this.productdataSource = new MatTableDataSource(res.products);
-          this.productdataSource.sort = this.sort;
-          this.productLength = res.totalRecords;
-          this.length = res.totalRecords;
-          this._loading = false;
-        }
-      );
+    this.equipmentTypeManagementService
+      .productFilteredData(
+        this.equimId,
+        this.typeName,
+        this.product_curr_num,
+        this.productPageSize,
+        this.productsort_by,
+        this.productsort_order,
+        this.searchFields.swidTag?.trim(),
+        this.searchFields.productName?.trim(),
+        this.searchFields.editorName?.trim()
+      )
+      .subscribe((res: any) => {
+        const testData = new MatTableDataSource(res.products);
+        this.productdataSource = new MatTableDataSource(res.products);
+        this.productdataSource.sort = this.sort;
+        this.productLength = res.totalRecords;
+        this.length = res.totalRecords;
+        this._loading = false;
+      });
   }
   clearFilter() {
     ///  this.filterGroup.reset();
@@ -444,9 +511,9 @@ export class AttributeDetailComponent implements OnInit {
     for (const key in this.filterGroup.value) {
       if (this.filterGroup.value[key]) {
         if (searchFilter === 'search_params=') {
-          searchFilter += key + '=' + this.filterGroup.value[key];
+          searchFilter += key + '=' + this.filterGroup.value[key]?.trim();
         } else {
-          searchFilter += ',' + key + '=' + this.filterGroup.value[key];
+          searchFilter += ',' + key + '=' + this.filterGroup.value[key]?.trim();
         }
       }
     }
@@ -457,30 +524,38 @@ export class AttributeDetailComponent implements OnInit {
     const sort_by = this.SortName;
     // this.sort_order = this.sort_order;
     if (this.sort_order === '' || this.sort_order === null) {
-      this.sort_order = 'ASC';
+      this.sort_order = 'asc';
     }
     if (this.current_page_num === 0) {
       this.current_page_num = 1;
     }
-    this.equipmentTypeManagementService.sortFilterChildEquipments(this.equimId, this.typeId, this.childRefId, this.current_page_num,
-      this.pageSize, sort_by, this.sort_order, searchFilter).subscribe(
-        (res: any) => {
-          this.displayedrows = [];
-          const encodedEquipments = res.equipments;
-          const decodedEquipments: any = atob(encodedEquipments);
-          const testData = new MatTableDataSource(decodedEquipments);
-          this.dataSource = JSON.parse(this.getFilterData(testData));
-          this.length = res.totalRecords;
-          if (this.dataSource.length > 0) {
-            delete this.dataSource[0].ID;
-            // tslint:disable-next-line:forin
-            for (const x in this.dataSource[0]) {
-              this.displayedrows.push(x);
-            }
+    this.equipmentTypeManagementService
+      .sortFilterChildEquipments(
+        this.equimId,
+        this.typeId,
+        this.childRefId,
+        this.current_page_num,
+        this.pageSize,
+        sort_by,
+        this.sort_order,
+        searchFilter
+      )
+      .subscribe((res: any) => {
+        this.displayedrows = [];
+        const encodedEquipments = res.equipments;
+        const decodedEquipments: any = atob(encodedEquipments);
+        const testData = new MatTableDataSource(decodedEquipments);
+        this.dataSource = JSON.parse(this.getFilterData(testData));
+        this.length = res.totalRecords;
+        if (this.dataSource.length > 0) {
+          delete this.dataSource[0].ID;
+          // tslint:disable-next-line:forin
+          for (const x in this.dataSource[0]) {
+            this.displayedrows.push(x);
           }
-          this._loading = false;
         }
-      );
+        this._loading = false;
+      });
   }
   clearChildFilter() {
     //  this.setChildSearch('test', 3);
@@ -499,12 +574,11 @@ export class AttributeDetailComponent implements OnInit {
       width: '850px',
       disableClose: true,
       data: {
-          datakey : value,
-          dataName : name
-      }
+        datakey: value,
+        dataName: name,
+      },
     });
 
-    dialogRef.afterClosed().subscribe(result => {
-    });
+    dialogRef.afterClosed().subscribe((result) => {});
   }
 }

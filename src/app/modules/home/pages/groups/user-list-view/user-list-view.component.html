@@ -62,7 +62,10 @@
               <p>{{'DELETE_USER_CONFIRM_MSG' | translate}}</p>
           </mat-dialog-content>
           <mat-dialog-actions align="center">
-              <button mat-button [mat-dialog-close]="true" class="btn-two" (click)="deleteUser(successDialog,errorDialog)" cdkFocusInitial>{{'OK'|translate}}</button>
+              <button mat-button class="btn-two" (click)="deleteUser(successDialog,errorDialog)" cdkFocusInitial>
+                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" *ngIf="_deleteInProgress"></span>
+                {{'OK'|translate}}
+              </button>
               <button mat-button [mat-dialog-close]="true" class="btn-three" cdkFocusInitial>{{'Cancel'|translate}}</button>
             </mat-dialog-actions>
         </ng-template>      
@@ -71,9 +74,6 @@
         <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
       </mat-table>
       <app-loading-spinner *ngIf="_loading"></app-loading-spinner>
-      <!-- <mat-paginator #paginator [length]="length" [pageSize]="page_size" [pageSizeOptions]="[5,10,20,30,50]"
-       (page)="pageEvent = getPaginatorData($event)"showFirstLastButtons>
-      </mat-paginator> -->
       <div class="no-data" *ngIf="!_loading && userList && userList.length === 0">{{'No data available' | translate}}</div>
     </div>
   </mat-card-content>
@@ -84,12 +84,12 @@
     <p>{{'DELETE_USER_SUCCESS'|translate}}</p>
   </mat-dialog-content>
   <mat-dialog-actions align="center">
-    <button mat-button [mat-dialog-close]="true" class="btn-two" cdkFocusInitial>{{'OK'|translate}}</button>
+    <button mat-button [mat-dialog-close]="true" class="btn-two" (click)="loadData()" cdkFocusInitial>{{'OK'|translate}}</button>
   </mat-dialog-actions>
 </ng-template>
 <ng-template #errorDialog>
   <mat-dialog-content>
-    <p>{{'DELETE_USER_ERROR'|translate}}</p>
+    <p>{{'Error'|translate}}: {{errorMsg}}.</p>
   </mat-dialog-content>
   <mat-dialog-actions align="center">
     <button mat-button [mat-dialog-close]="true" class="btn-two" cdkFocusInitial>{{'OK'|translate}}</button>

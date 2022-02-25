@@ -1,12 +1,18 @@
 <div class="bg">
-    <mat-card>
+    <div id="loginFormContainer">
+      <mat-card>
         <mat-card-title>
             <div class="loginTopHeading">
               <img src="assets/images/OpTISAM-Logo-2.png">
-              <a href="#" mat-button [matMenuTriggerFor]="menu">
-                <mat-icon>language</mat-icon>
-                {{ 'language' | translate }}
-              </a>
+              <div class="headerBtns">
+                <a mat-button [matMenuTriggerFor]="menu">
+                  <mat-icon>language</mat-icon>
+                  {{ 'language' | translate }}
+                </a>
+                <a id="user-guide" href="https://optisam.pages.gitlab.tech.orange/optisam-it/optisam-guide/" target="_blank" mat-button  matTooltip="{{'User Guide'|translate}}">
+                  <mat-icon>help_outline</mat-icon>
+                </a>
+              </div>
             </div>
             <mat-menu #menu="matMenu">
               <a mat-menu-item *ngIf="currLang=='fr'"
@@ -61,6 +67,15 @@
         <mat-card-actions>
           <span id="version" *ngIf="version && version != 'undefined'">v{{version}}</span>
         </mat-card-actions>
-      </mat-card>
-
+    </mat-card>
+    </div>
+    <div id="cookieBannerContainer">
+      <div id="cookieBanner" *ngIf="!cookieInfoAcknowledged" class="mat-elevation-z8">
+        <div id="bannerContent">
+          <img src="assets/images/cookieImage.png" style="height: 32px; margin-right:4px;">
+          {{'COOKIE-BANNER-TEXT'|translate}}
+        </div>
+        <mat-icon id="closeBannerIcon" (click)="closeInfoBanner()">close</mat-icon>
+      </div>
+    </div>
 </div>

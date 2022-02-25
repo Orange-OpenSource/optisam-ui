@@ -1,35 +1,34 @@
-// Copyright (C) 2019 Orange
-// 
-// This software is distributed under the terms and conditions of the 'Apache License 2.0'
-// license which can be found in the file 'License.txt' in this package distribution 
-// or at 'http://www.apache.org/licenses/LICENSE-2.0'. 
-
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
+import {
+  FormGroup,
+  FormBuilder,
+  Validators,
+  FormControl,
+} from '@angular/forms';
 import { Router } from '@angular/router';
 import { SharedService } from 'src/app/shared/shared.service';
 import { Subscription } from 'rxjs';
-import { debounceTime, switchMap } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
-import { GroupService } from 'src/app/core/services/group.service';
 import { Editor, Metrics } from '../aggregation.model';
 import { ProductService } from 'src/app/core/services/product.service';
+import { MetricService } from 'src/app/core/services/metric.service';
 
 function validateAggregationName(c: FormControl) {
   const EMAIL_REGEXP = /[^a-zA-Z\d_]/g;
 
-  return !EMAIL_REGEXP.test(c.value) ? null : {
-    validAggName: true
-  };
+  return !EMAIL_REGEXP.test(c.value)
+    ? null
+    : {
+        validAggName: true,
+      };
 }
 @Component({
   selector: 'app-create-aggregation',
   templateUrl: './create-aggregation.component.html',
-  styleUrls: ['./create-aggregation.component.scss']
+  styleUrls: ['./create-aggregation.component.scss'],
 })
 export class CreateAggregationComponent implements OnInit, OnDestroy {
   createForm: FormGroup;
-  scopeList: any[] = [];
   productList: any[] = [];
   editorList: Editor[] = [];
   metricesList: Metrics[] = [];
@@ -44,76 +43,78 @@ export class CreateAggregationComponent implements OnInit, OnDestroy {
   constructor(
     private fb: FormBuilder,
     private productService: ProductService,
+    protected metricService: MetricService,
     private router: Router,
     private sharedService: SharedService,
-    private groupService: GroupService,
     public dialog: MatDialog
   ) {
-    this.loadingSubscription = this.sharedService.httpLoading().subscribe(data => {
-      this.HTTPActivity = data;
-    });
+    this.loadingSubscription = this.sharedService
+      .httpLoading()
+      .subscribe((data) => {
+        this.HTTPActivity = data;
+      });
+    this.selectedScope = localStorage.getItem('scope');
   }
 
   ngOnInit() {
     this.createForm = this.fb.group({
       name: ['', [Validators.required, validateAggregationName]],
-      scope: ['', [Validators.required]],
       editor: ['', [Validators.required]],
       metric: ['', [Validators.required]],
-      product_names: ['', [Validators.required]]
+      product_names: ['', [Validators.required]],
     });
-
-    this.getScopes();
-  }
-
-  // Get Scopes
-  getScopes() {
-    this.groupService.getDirectGroups().subscribe((response: any) => {
-      response.groups.map(res => { res.scopes.map(s => { this.scopeList.push(s); }); });
-    }, (error) => {
-      console.log("Error fetching groups");
-    });
+    this.getEditorsList();
+    this.getMetricesList();
   }
 
   // Get All Editors
   getEditorsList() {
-    this.productService.getEditorListAggr(this.selectedScope).subscribe((response: any) => {
-      this.editorList = response.editor || [];
-    }, (error) => {
-      console.log("Error fetching editors");
-    });
+    this.productService.getEditorListAggr(this.selectedScope).subscribe(
+      (response: any) => {
+        this.editorList = response.editor || [];
+      },
+      (error) => {
+        console.log('Error fetching editors');
+      }
+    );
   }
 
   // Get All Metrices based on Editor
   getMetricesList() {
-    this.productService.getMetricListAggr(this.selectedScope).subscribe((response: any) => {
-      this.metricesList = response.metric || [];
-    }, (error) => {
-      console.log("Error fetching metric");
-    });
+    this.metricService.getMetricList().subscribe(
+      (res) => {
+        this.metricesList = res.metrices.map((metric) => metric.name).sort();
+      },
+      (err) => {
+        console.log('Some error occured! Could not fetch metrics list.');
+      }
+    );
   }
 
   // Get All Products based on Editor and Metrics
   getProductsList() {
     this.errorMessage = '';
-    let query = '?scope=' + this.selectedScope + '&editor=' + this.createForm.value.editor + '&metric=' + this.createForm.value.metric;
-    this.productService.getProductListAggr(query).subscribe((response: any) => {
-      this.acqrights_products = response.acqrights_products;
-      this.productList = response.acqrights_products.filter((v, i, s) => {
-        return s.findIndex(pr => pr.product_name === v.product_name) === i;
-      });
-    }, (error) => {
-      this.errorMessage = error && error.error ? error.error.message : '';
-      console.log("Error fetching metric");
-    });
+    const query: any = {
+      scope: this.selectedScope,
+      editor: this.createForm.value.editor,
+      metric: this.createForm.value.metric,
+    };
+    this.productService.getProductListAggr(query).subscribe(
+      (response: any) => {
+        this.acqrights_products = response.acqrights_products;
+        this.productList = response.acqrights_products.filter((v, i, s) => {
+          return s.findIndex((pr) => pr.product_name === v.product_name) === i;
+        });
+      },
+      (error) => {
+        this.errorMessage = error && error.error ? error.error.message : '';
+        console.log('Error fetching metric');
+      }
+    );
   }
 
   selectionChanged(ev: any, type: string) {
     switch (type) {
-      case 'scope':
-        this.selectedScope = this.createForm.value.scope;
-        this.getEditorsList();
-        this.getMetricesList();
       case 'editor':
         this.createForm.controls['metric'].reset();
         this.createForm.controls['product_names'].reset();
@@ -131,9 +132,14 @@ export class CreateAggregationComponent implements OnInit, OnDestroy {
         this.selectedSwidList = [];
         this.swidList = [];
         for (let i = 0; i < this.createForm.value.product_names.length; i++) {
-          this.acqrights_products.filter(res => {
+          this.acqrights_products.filter((res) => {
             console.log('res:', res, 'swidList : ', this.swidList);
-            if (res.product_name == this.createForm.value.product_names[i] && this.swidList.indexOf(res) == -1) { this.swidList.push(res); }
+            if (
+              res.product_name == this.createForm.value.product_names[i] &&
+              this.swidList.indexOf(res) == -1
+            ) {
+              this.swidList.push(res);
+            }
           });
         }
         break;
@@ -149,17 +155,23 @@ export class CreateAggregationComponent implements OnInit, OnDestroy {
         name: this.createForm.get('name').value,
         editor: this.createForm.get('editor').value,
         metric: this.createForm.get('metric').value,
-        scope: this.createForm.get('scope').value,
-        products: this.selectedSwidList.map(swid => swid.swidtag)
-      }
-      this.productService.saveAggregation(reqbody).subscribe((resp) => {
-        console.log('aggregation save successfully');
-        this.openModal(successMsg);
-      }, error => {
-        this.errorMessage = error && error.error ? error.error.message : '';
-        this.openModal(errorMsg);
-        console.log('Error saving aggregation', error);
-      });
+        scope: this.selectedScope,
+        products: this.selectedSwidList.map((swid) => swid.swidtag),
+      };
+      this.productService.saveAggregation(reqbody).subscribe(
+        (resp) => {
+          console.log('aggregation save successfully');
+          this.openModal(successMsg);
+        },
+        (error) => {
+          this.errorMessage =
+            error && error.error
+              ? error.error.message
+              : 'Some error occured! Aggregation could not be created.';
+          this.openModal(errorMsg);
+          console.log('Error saving aggregation', error);
+        }
+      );
     } else {
       return false;
     }
@@ -189,7 +201,7 @@ export class CreateAggregationComponent implements OnInit, OnDestroy {
   openModal(templateRef) {
     let dialogRef = this.dialog.open(templateRef, {
       width: '30%',
-      disableClose: true
+      disableClose: true,
     });
   }
 
@@ -197,5 +209,4 @@ export class CreateAggregationComponent implements OnInit, OnDestroy {
     this.dialog.closeAll();
     this.loadingSubscription.unsubscribe();
   }
-
 }

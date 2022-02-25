@@ -12,9 +12,12 @@
 .mat-raised-button {
   box-sizing: initial;
 }
-.selectAll-option mat-pseudo-checkbox{
-  display: none;
+::ng-deep .mat-select-panel#role-panel {
+  min-width: calc(100% + 16px) !important;
+  margin-left: 16px;
+  margin-top: 32px;
 }
-.select-checkbox label{
-  margin-bottom: 0px;
+
+::ng-deep .mat-input-element:disabled, .mat-form-field-type-mat-native-select.mat-form-field-disabled .mat-form-field-infix::after {
+  color: black;
 }

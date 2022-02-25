@@ -1,0 +1,567 @@
+<div>
+  <mat-card-header>
+    <mat-card-title class="page-heading">{{
+      "Create Acquired Right" | translate
+    }}</mat-card-title>
+  </mat-card-header>
+  <mat-card class="card">
+    <mat-card-content fxLayout="column">
+      <form [formGroup]="skuForm">
+        <div class="col-md-6">
+          <mat-form-field appearance="outline">
+            <mat-label>{{ "SKU" | translate }}*</mat-label>
+            <input
+              id="sku"
+              matInput
+              placeholder="{{ 'SKU' | translate }}"
+              formControlName="sku"
+            />
+            <mat-hint>{{
+              "Stock keeping unit referencing the package sold by the editor"
+                | translate
+            }}</mat-hint>
+            <mat-error *ngIf="sku.invalid && sku.hasError('required')">
+              {{ "SKU is mandatory" | translate }}
+            </mat-error>
+            <mat-error *ngIf="sku.invalid && sku.hasError('pattern')">
+              {{ "SKU is required in ^[a-zA-Z0-9_.]*$ format" | translate }}
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <mat-horizontal-stepper [linear]="false" #stepper>
+          <!-- Product Block -->
+          <mat-step
+            [stepControl]="productForm"
+            label="{{ 'Product' | translate }}*"
+          >
+            <form [formGroup]="productForm">
+              <div class="horizontal">
+                <mat-form-field appearance="outline">
+                  <mat-label>{{ "Product Editor" | translate }}*</mat-label>
+                  <input
+                    id="product_editor"
+                    type="text"
+                    matInput
+                    placeholder="{{ 'Product Editor' | translate }}"
+                    formControlName="product_editor"
+                    [matAutocomplete]="autoEditor"
+                  />
+                  <mat-autocomplete
+                    autoActiveFirstOption
+                    #autoEditor="matAutocomplete"
+                    (optionSelected)="listProducts()"
+                  >
+                    <mat-option
+                      *ngFor="let option of filteredEditorsList"
+                      [value]="option"
+                    >
+                      {{ option }}
+                    </mat-option>
+                  </mat-autocomplete>
+                  <mat-hint>{{ "Editor of the product" | translate }}</mat-hint>
+                  <mat-error
+                    *ngIf="
+                      product_editor.invalid &&
+                      product_editor.hasError('required')
+                    "
+                  >
+                    {{ "Product editor is mandatory" | translate }}
+                  </mat-error>
+                  <mat-error
+                    *ngIf="
+                      product_editor.invalid &&
+                      product_editor.hasError('pattern')
+                    "
+                  >
+                    {{
+                      "Value cannot contain leading or trailing whitespace"
+                        | translate
+                    }}
+                  </mat-error>
+                  <mat-error
+                    *ngIf="
+                      product_editor.invalid &&
+                      product_editor.hasError('hasUnderscore')
+                    "
+                  >
+                    {{ "Value cannot contain an underscore" | translate }}
+                  </mat-error>
+                </mat-form-field>
+                <div class="width-clearfix"></div>
+                <mat-form-field appearance="outline">
+                  <mat-label>{{ "Product Name" | translate }}*</mat-label>
+                  <input
+                    id="product_name"
+                    type="text"
+                    matInput
+                    placeholder="{{ 'Product Name' | translate }}"
+                    formControlName="product_name"
+                    [matAutocomplete]="autoProduct"
+                  />
+                  <mat-autocomplete
+                    autoActiveFirstOption
+                    #autoProduct="matAutocomplete"
+                    (optionSelected)="listVersions()"
+                  >
+                    <mat-option
+                      *ngFor="let option of filteredProductsList"
+                      [value]="option"
+                    >
+                      {{ option }}
+                    </mat-option>
+                  </mat-autocomplete>
+                  <mat-hint>{{ "Name of the product" | translate }}</mat-hint>
+                  <mat-error
+                    *ngIf="
+                      product_name.invalid && product_name.hasError('required')
+                    "
+                  >
+                    {{ "Product name is mandatory" | translate }}
+                  </mat-error>
+                  <mat-error
+                    *ngIf="
+                      product_name.invalid && product_name.hasError('pattern')
+                    "
+                  >
+                    {{
+                      "Value cannot contain leading or trailing whitespace"
+                        | translate
+                    }}
+                  </mat-error>
+                  <mat-error
+                    *ngIf="
+                      product_name.invalid &&
+                      product_name.hasError('hasUnderscore')
+                    "
+                  >
+                    {{ "Value cannot contain an underscore" | translate }}
+                  </mat-error>
+                </mat-form-field>
+              </div>
+              <div class="horizontal">
+                <mat-form-field appearance="outline">
+                  <mat-label>{{ "Product Version" | translate }}*</mat-label>
+                  <input
+                    id="product_version"
+                    type="text"
+                    matInput
+                    placeholder="{{ 'Product Version' | translate }}"
+                    formControlName="product_version"
+                    [matAutocomplete]="autoVersion"
+                  />
+                  <mat-autocomplete
+                    autoActiveFirstOption
+                    #autoVersion="matAutocomplete"
+                  >
+                    <mat-option
+                      *ngFor="let option of filteredVersionsList"
+                      [value]="option"
+                    >
+                      {{ option }}
+                    </mat-option>
+                  </mat-autocomplete>
+                  <mat-hint>{{
+                    "Version of the product" | translate
+                  }}</mat-hint>
+                  <mat-error
+                    *ngIf="
+                      product_version.invalid &&
+                      product_version.hasError('required')
+                    "
+                  >
+                    {{ "Product version is mandatory" | translate }}
+                  </mat-error>
+                  <mat-error
+                    *ngIf="
+                      product_version.invalid &&
+                      product_version.hasError('pattern')
+                    "
+                  >
+                    {{
+                      "Value cannot contain leading or trailing whitespace"
+                        | translate
+                    }}
+                  </mat-error>
+                  <mat-error
+                    *ngIf="
+                      product_version.invalid &&
+                      product_version.hasError('hasUnderscore')
+                    "
+                  >
+                    {{ "Value cannot contain an underscore" | translate }}
+                  </mat-error>
+                </mat-form-field>
+                <div class="width-clearfix"></div>
+                <mat-form-field appearance="outline">
+                  <mat-label>{{ "Metric " | translate }}*</mat-label>
+                  <mat-select
+                    multiple
+                    id="acqMetrics"
+                    formControlName="metrics"
+                    (selectionChange)="changed($event.value)"
+                  >
+                    <mat-option
+                      *ngFor="let metric of metricsList; let i = index"
+                      [value]="metric.name"
+                      [disabled]="disabledMetricNameList.includes(metric.name)"
+                      #option
+                      (click)="
+                        metricClickHandler(option._selected, metric.type)
+                      "
+                      >{{ metric.name }}</mat-option
+                    >
+                  </mat-select>
+                  <mat-hint>{{
+                    "Metric to be used in OpTISAM for license computation"
+                      | translate
+                  }}</mat-hint>
+                  <mat-error
+                    *ngIf="metrics.invalid && metrics.hasError('required')"
+                  >
+                    {{ "Metric is mandatory" | translate }}
+                  </mat-error>
+                </mat-form-field>
+              </div>
+              <div class="flexEnd">
+                <button class="stepperBtn" mat-button matStepperNext>
+                  {{ "Next" | translate }}<mat-icon>arrow_forward </mat-icon>
+                </button>
+              </div>
+            </form>
+          </mat-step>
+          <!-- License Block -->
+          <mat-step
+            [stepControl]="licenseForm"
+            label="{{ 'Acquired licenses' | translate }}*"
+          >
+            <form [formGroup]="licenseForm">
+              <div class="horizontal">
+                <mat-form-field appearance="outline">
+                  <mat-label
+                    >{{ "Number of licenses acquired" | translate }}*</mat-label
+                  >
+                  <input
+                    id="licenses_acquired"
+                    matInput
+                    placeholder="{{
+                      'Number of licenses acquired' | translate
+                    }}"
+                    formControlName="licenses_acquired"
+                  />
+                  <mat-hint>{{
+                    "Number of licenses acquired for the product at the specified price and for the selected
+                    metric"
+                      | translate
+                  }}</mat-hint>
+                  <mat-error
+                    *ngIf="
+                      licenses_acquired.invalid &&
+                      licenses_acquired.hasError('required')
+                    "
+                  >
+                    {{ "Licenses acquired is mandatory" | translate }}
+                  </mat-error>
+                  <mat-error
+                    *ngIf="
+                      licenses_acquired.invalid &&
+                      licenses_acquired.hasError('pattern')
+                    "
+                  >
+                    {{ "Invalid number" | translate }}
+                  </mat-error>
+                </mat-form-field>
+                <div class="width-clearfix"></div>
+                <mat-form-field appearance="outline">
+                  <mat-label>{{ "Unit price" | translate }}*</mat-label>
+                  <input
+                    id="unit_price"
+                    matInput
+                    placeholder="{{ 'Unit price' | translate }}"
+                    formControlName="unit_price"
+                  />
+                  <mat-hint>{{ "Unit price of license" | translate }}</mat-hint>
+                  <mat-error
+                    *ngIf="
+                      unit_price.invalid && unit_price.hasError('required')
+                    "
+                  >
+                    {{ "Unit price is mandatory" | translate }}
+                  </mat-error>
+                  <mat-error
+                    *ngIf="unit_price.invalid && unit_price.hasError('pattern')"
+                  >
+                    {{ "Invalid unit price" | translate }}
+                  </mat-error>
+                </mat-form-field>
+              </div>
+              <div class="stepperContainer">
+                <button class="stepperBtn" mat-button matStepperPrevious>
+                  <mat-icon>arrow_back</mat-icon>{{ "Back" | translate }}
+                </button>
+                <button class="stepperBtn" mat-button matStepperNext>
+                  {{ "Next" | translate }}<mat-icon>arrow_forward </mat-icon>
+                </button>
+              </div>
+            </form>
+          </mat-step>
+          <!-- Maintenance Block -->
+          <mat-step
+            [stepControl]="maintenanceForm"
+            label="{{ 'Maintenance' | translate }}"
+          >
+            <form [formGroup]="maintenanceForm">
+              <div class="horizontal">
+                <mat-form-field appearance="outline">
+                  <mat-label>{{
+                    "Number of licenses under maintenance" | translate
+                  }}</mat-label>
+                  <input
+                    id="licenses_maintenance"
+                    matInput
+                    (input)="valueChange($event)"
+                    placeholder="{{
+                      'Number of licenses under maintenance' | translate
+                    }}"
+                    formControlName="licenses_maintenance"
+                  />
+                  <mat-hint>{{
+                    "Number of licenses under maintenance" | translate
+                  }}</mat-hint>
+                  <mat-error
+                    *ngIf="
+                      licenses_maintenance.invalid &&
+                      licenses_maintenance.hasError('required')
+                    "
+                  >
+                    {{ "Number of licenses is mandatory" | translate }}
+                  </mat-error>
+                  <mat-error
+                    *ngIf="
+                      licenses_maintenance.invalid &&
+                      licenses_maintenance.hasError('pattern')
+                    "
+                  >
+                    {{ "Invalid number" | translate }}
+                  </mat-error>
+                </mat-form-field>
+                <div class="width-clearfix"></div>
+                <mat-form-field appearance="outline">
+                  <mat-label>{{
+                    "Maintenance unit price" | translate
+                  }}</mat-label>
+                  <input
+                    id="maintenance_price"
+                    matInput
+                    placeholder="{{ 'Unit price' | translate }}"
+                    formControlName="maintenance_price"
+                  />
+                  <mat-hint>{{
+                    "Unit price of maintenance for the period, for one license"
+                      | translate
+                  }}</mat-hint>
+                  <mat-error
+                    *ngIf="
+                      maintenance_price.invalid &&
+                      maintenance_price.hasError('required')
+                    "
+                  >
+                    {{ "Maintenance unit price is mandatory" | translate }}
+                  </mat-error>
+                  <mat-error
+                    *ngIf="
+                      maintenance_price.invalid &&
+                      maintenance_price.hasError('pattern')
+                    "
+                  >
+                    {{ "Invalid maintenance unit price" | translate }}
+                  </mat-error>
+                </mat-form-field>
+              </div>
+              <div class="horizontal">
+                <div class="col-md-6 flexLine">
+                  <span class="textInline p-l-0">{{
+                    "Period from" | translate
+                  }}</span>
+                  <mat-form-field appearance="outline" class="formField m-r-6">
+                    <mat-label>{{
+                      "Start of maintenance" | translate
+                    }}</mat-label>
+                    <input
+                      matInput
+                      [disabled]="allowDate"
+                      readonly="allowDate"
+                      [matDatepicker]="picker1"
+                      (click)="picker1.open()"
+                      id="startMaintenanceDate"
+                      placeholder="{{ 'Start of maintenance' | translate }}"
+                      formControlName="startMaintenanceDate"
+                      (dateChange)="orgStartValueChange()"
+                    />
+                    <mat-datepicker-toggle
+                      matSuffix
+                      [for]="picker1"
+                    ></mat-datepicker-toggle>
+                    <mat-datepicker #picker1></mat-datepicker>
+                    <mat-error
+                      *ngIf="
+                        startMaintenanceDate.invalid &&
+                        (startMaintenanceDate.dirty ||
+                          startMaintenanceDate.touched) &&
+                        startMaintenanceDate.errors.required
+                      "
+                    >
+                      {{ "Invalid Start Date" | translate }}</mat-error
+                    >
+                  </mat-form-field>
+                </div>
+                <div class="col-md-6 flexLine">
+                  <span class="textInline">{{ "to" | translate }}</span>
+                  <mat-form-field appearance="outline" class="formField m-l-6">
+                    <mat-label>{{
+                      "End of maintenance" | translate
+                    }}</mat-label>
+                    <input
+                      matInput
+                      [matDatepicker]="picker2"
+                      [disabled]="allowEndDate"
+                      (click)="picker2.open()"
+                      id="endMaintenanceDate"
+                      placeholder="{{ 'End of maintenance' | translate }}"
+                      formControlName="endMaintenanceDate"
+                      [matDatepickerFilter]="boundDateStart"
+                      [readonly]="
+                        this.startMaintenanceDate.invalid ||
+                        !this.startMaintenanceDate.value
+                      "
+                      [disabled]="
+                        this.startMaintenanceDate.invalid ||
+                        !this.startMaintenanceDate.value
+                      "
+                    />
+                    <mat-datepicker-toggle
+                      matSuffix
+                      [for]="picker2"
+                    ></mat-datepicker-toggle>
+                    <mat-datepicker #picker2></mat-datepicker>
+                    <mat-error
+                      *ngIf="
+                        endMaintenanceDate.invalid &&
+                        (endMaintenanceDate.dirty ||
+                          endMaintenanceDate.touched) &&
+                        endMaintenanceDate.errors.required
+                      "
+                    >
+                      {{ "Invalid End Date" | translate }}
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+              </div>
+              <div id="maintenanceAlert" *ngIf="incompleteMaintenanceForm">
+                {{ "Please fill both the date fields to proceed" | translate }}
+              </div>
+              <div class="stepperContainer">
+                <button class="stepperBtn" mat-button matStepperPrevious>
+                  <mat-icon>arrow_back</mat-icon>{{ "Back" | translate }}
+                </button>
+                <button class="stepperBtn" mat-button matStepperNext>
+                  {{ "Next" | translate }}<mat-icon>arrow_forward </mat-icon>
+                </button>
+              </div>
+            </form>
+          </mat-step>
+          <!-- Comment Block -->
+          <mat-step
+            [stepControl]="commentForm"
+            label="{{ 'Comment' | translate }}"
+          >
+            <form [formGroup]="commentForm">
+              <textarea
+                class="comment"
+                rows="4"
+                cols="115"
+                maxlength="100"
+                id="comment"
+                placeholder="{{ 'Comment' | translate }}"
+                formControlName="comment"
+              ></textarea>
+              <div class="flexStart">
+                <button class="stepperBtn" mat-button matStepperPrevious>
+                  <mat-icon>arrow_back</mat-icon>{{ "Back" | translate }}
+                </button>
+              </div>
+            </form>
+          </mat-step>
+          <!-- change default 'error' icon -->
+          <ng-template matStepperIcon="error">
+            <mat-icon>error</mat-icon>
+          </ng-template>
+        </mat-horizontal-stepper>
+      </form>
+    </mat-card-content>
+  </mat-card>
+  <mat-card-actions align="center">
+    <button
+      id="cancelBtn"
+      mat-raised-button
+      class="btn-four"
+      [disabled]="_createLoading"
+      [mat-dialog-close]="1"
+    >
+      {{ "Cancel" | translate }}
+    </button>
+    <button
+      id="resetBtn"
+      mat-raised-button
+      class="btn-three"
+      [disabled]="isPristine || _createLoading"
+      (click)="resetForm(stepper)"
+    >
+      {{ "Reset" | translate }}
+    </button>
+    <button
+      id="createBtn"
+      mat-raised-button
+      class="btn-two"
+      [disabled]="isPristine || incompleteFormForCreate || _createLoading"
+      (click)="createAcquiredRight(successDialog, errorDialog)"
+    >
+      <span
+        class="spinner-border spinner-border-sm"
+        role="status"
+        aria-hidden="true"
+        *ngIf="_createLoading"
+      ></span>
+      {{ "Create" | translate }}
+    </button>
+  </mat-card-actions>
+  <ng-template #successDialog>
+    <mat-dialog-content>
+      <p>{{ "CREATE_ACQRIGHT_SUCCESS" | translate }}</p>
+    </mat-dialog-content>
+    <mat-dialog-actions align="center">
+      <button
+        mat-button
+        [mat-dialog-close]="true"
+        class="btn-two"
+        cdkFocusInitial
+      >
+        {{ "OK" | translate }}
+      </button>
+    </mat-dialog-actions>
+  </ng-template>
+  <ng-template #errorDialog>
+    <mat-dialog-content>
+      <p>{{ "Error" | translate }}: {{ errorMsg }}.</p>
+    </mat-dialog-content>
+    <mat-dialog-actions align="center">
+      <button
+        mat-button
+        [mat-dialog-close]="true"
+        class="btn-two"
+        cdkFocusInitial
+      >
+        {{ "OK" | translate }}
+      </button>
+    </mat-dialog-actions>
+  </ng-template>
+</div>

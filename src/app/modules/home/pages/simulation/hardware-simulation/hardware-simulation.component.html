@@ -11,16 +11,6 @@
               </div>
             </mat-grid-tile>
           </mat-grid-list>
-            <mat-form-field appearance="outline">
-              <mat-label>{{'AGGREGATIONS.TEXTS.SCOPE' | translate}}</mat-label>
-              <mat-select id="metricScope" [(ngModel)]="selectedScope" [disabled]="scopesList && scopesList.length === 0"
-                (selectionChange)="selectionChanged($event, 'scope')" #scopeInput>
-                <mat-option>-- {{'AGGREGATIONS.TEXTS.SELECT_SCOPE' | translate}} --</mat-option>
-                <mat-option id="scope_option_{{idx}}" *ngFor="let scope of scopesList;let idx = index;" [value]="scope">{{scope}}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-
           <div class="row-flex">
             <mat-form-field appearance="outline" class="equipmentType">
                 <mat-label>{{'Equipment Type'|translate}}</mat-label>

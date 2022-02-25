@@ -1,9 +1,3 @@
-// Copyright (C) 2019 Orange
-// 
-// This software is distributed under the terms and conditions of the 'Apache License 2.0'
-// license which can be found in the file 'License.txt' in this package distribution 
-// or at 'http://www.apache.org/licenses/LICENSE-2.0'. 
-
 export class Products {
   swidTag: string;
   name: string;
@@ -13,6 +7,7 @@ export class Products {
   numOfOptions: string;
   numOfApplications: string;
   numofEquipments: string;
+
 }
 class ProdApplications {
   swidTag: string;
@@ -60,15 +55,30 @@ export interface AggregationDetailsAquiredRights {
   acq_rights: AquiredRightsInformation[];
 }
 
+export interface MetricComputationDetails
+{
+  computed_details: ComputedDetails[];
+}
+export interface ComputedDetails {
+  metric_name: string;
+  numCptLicences: number;
+  computedDetails: string;
+  numAcqLicences: number;
+  deltaNumber: number;
+  deltaCost: number;
+}
+
 export interface AquiredRightsInformation {
   SKU: string;
   swidTag: string;
   metric: string;
   numCptLicences: number;
   numAcqLicences: number;
+  computedDetails: string;
   totalCost: number;
   deltaNumber: number;
   deltaCost: number;
+  metricNotDefined: boolean;
 }
 
 export interface ProductAggregationApplications {

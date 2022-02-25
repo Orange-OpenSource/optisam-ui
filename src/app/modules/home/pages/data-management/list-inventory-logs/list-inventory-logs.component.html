@@ -1,0 +1,57 @@
+<mat-card>
+  <div class="container-fluid page-content-header">
+    <div class="row">
+      <div class="page-heading">
+        {{ "Deletion Logs" | translate }}
+      </div>
+    </div>
+  </div>
+  <mat-card-content>
+    <div class="mat-elevation-z8">
+      <mat-table
+        [dataSource]="dataSource"
+        matSort
+        (matSortChange)="sortData($event)"
+      >
+        <ng-container
+          *ngFor="let x of displayedColumns; let colIndex = index"
+          matColumnDef="{{ x }}"
+        >
+          <mat-header-cell *matHeaderCellDef mat-sort-header="{{ x }}">
+            {{ formatAsColumnName(x) | translate }}</mat-header-cell
+          >
+          <mat-cell *matCellDef="let file">
+            {{ file[x] }}
+          </mat-cell>
+        </ng-container>
+        <mat-header-row
+          *matHeaderRowDef="displayedColumns; sticky: true"
+        ></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+      </mat-table>
+      <app-loading-spinner *ngIf="_loading"></app-loading-spinner>
+      <div
+        id="noData"
+        *ngIf="
+          !_loading &&
+          (!dataSource || (dataSource && dataSource.data.length === 0))
+        "
+      >
+        {{ "No logs available" | translate }}
+      </div>
+      <mat-paginator
+        [length]="length"
+        [pageSize]="pageSize"
+        [pageSizeOptions]="[50, 100, 200]"
+        (page)="getPaginatorData($event)"
+        showFirstLastButtons
+      >
+      </mat-paginator>
+    </div>
+  </mat-card-content>
+  <mat-dialog-actions>
+    <button class="btn-two" mat-raised-button mat-dialog-close>
+      {{ "Close" | translate }}
+    </button>
+  </mat-dialog-actions>
+</mat-card>
