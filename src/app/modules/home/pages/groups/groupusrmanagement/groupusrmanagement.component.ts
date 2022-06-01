@@ -79,12 +79,18 @@ export class GroupusrmanagementComponent implements OnInit {
     this._loading = true;
     this.getAllUsersInfo().subscribe(res=>{
       this.usersList = res[0].users||[];
+      this.usersList = this.usersList.sort((a, b) => {
+        if (a.first_name.toLowerCase() > b.first_name.toLowerCase()) return 1;
+        if (a.first_name.toLowerCase() < b.first_name.toLowerCase()) return -1;
+        return 0;
+      });
       this.groupUsersList = res[1].users||[];
       this.dataSource = new MatTableDataSource(this.groupUsersList);
       this.dataSource.sort = this.sort;
       this.filteredUsersList = this.usersList.filter(res=>{ 
         if(!this.groupUsersList.map(user=>user.user_id).includes(res.user_id)) {return res}
       });
+
       this._loading = false;
     }, err=>{
       this._loading = false;

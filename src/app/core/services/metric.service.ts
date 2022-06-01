@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, throwError } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 import {
   MetricDetailsParams,
   MetricUpdateError,
@@ -13,7 +13,8 @@ import {
   SagProcessorStandardParams,
   AttributeSumStandardParams,
   AttributeCounterStandardParams,
-  IntanceNumberStandardParams,
+  InstanceNumberStandardParams,
+  StaticStandardParams,
 } from '@core/modals';
 
 @Injectable({
@@ -29,6 +30,7 @@ export class MetricService {
     AttributeSumStandard: `${this.apiMetricUrl}/metric/attr_sum`,
     AttributeCounterStandard: `${this.apiMetricUrl}/metric/acs`,
     IntanceNumberStandard: `${this.apiMetricUrl}/metric/inm`,
+    StaticStandard: `${this.apiMetricUrl}/metric/ss`,
   };
   defaultHeaders: HttpHeaders = new HttpHeaders({
     'Content-Type': 'application/json',
@@ -80,70 +82,97 @@ export class MetricService {
   updateOracleNupStandard(
     params: OracleNupStandardParams
   ): Observable<MetricUpdateError | MetricUpdateSuccess> {
-    return this.httpClient.patch<MetricUpdateError | MetricUpdateSuccess>(
-      this.common.oracleNupStandard,
-      params,
-      { headers: this.defaultHeaders }
-    );
+    return this.httpClient
+      .patch<MetricUpdateError | MetricUpdateSuccess>(
+        this.common.oracleNupStandard,
+        params,
+        { headers: this.defaultHeaders }
+      )
+      .pipe(catchError((e) => throwError(e.error)));
   }
 
   updateOracleProcessorStandard(
     params: OracleProcessorStandardParams
   ): Observable<MetricUpdateError | MetricUpdateSuccess> {
-    return this.httpClient.patch<MetricUpdateError | MetricUpdateSuccess>(
-      this.common.oracleProcessorStandard,
-      params,
-      { headers: this.defaultHeaders }
-    );
+    return this.httpClient
+      .patch<MetricUpdateError | MetricUpdateSuccess>(
+        this.common.oracleProcessorStandard,
+        params,
+        { headers: this.defaultHeaders }
+      )
+      .pipe(catchError((e) => throwError(e.error as MetricUpdateError)));
   }
 
   updateIbmPvuStandard(
     params: IbmPvuStandardParams
   ): Observable<MetricUpdateError | MetricUpdateSuccess> {
-    return this.httpClient.patch<MetricUpdateError | MetricUpdateSuccess>(
-      this.common.IbmPvuStandard,
-      params,
-      { headers: this.defaultHeaders }
-    );
+    return this.httpClient
+      .patch<MetricUpdateError | MetricUpdateSuccess>(
+        this.common.IbmPvuStandard,
+        params,
+        { headers: this.defaultHeaders }
+      )
+      .pipe(catchError((e) => throwError(e.error)));
   }
 
   updateSagProcessorStandard(
     params: SagProcessorStandardParams
   ): Observable<MetricUpdateError | MetricUpdateSuccess> {
-    return this.httpClient.patch<MetricUpdateError | MetricUpdateSuccess>(
-      this.common.SagProcessorStandard,
-      params,
-      { headers: this.defaultHeaders }
-    );
+    return this.httpClient
+      .patch<MetricUpdateError | MetricUpdateSuccess>(
+        this.common.SagProcessorStandard,
+        params,
+        { headers: this.defaultHeaders }
+      )
+      .pipe(catchError((e) => throwError(e.error)));
   }
 
   updateAttributeSumStandard(
     params: AttributeSumStandardParams
   ): Observable<MetricUpdateError | MetricUpdateSuccess> {
-    return this.httpClient.patch<MetricUpdateError | MetricUpdateSuccess>(
-      this.common.AttributeSumStandard,
-      params,
-      { headers: this.defaultHeaders }
-    );
+    return this.httpClient
+      .patch<MetricUpdateError | MetricUpdateSuccess>(
+        this.common.AttributeSumStandard,
+        params,
+        { headers: this.defaultHeaders }
+      )
+      .pipe(catchError((e) => throwError(e.error)));
   }
 
   updateAttributeCounterStandard(
     params: AttributeCounterStandardParams
   ): Observable<MetricUpdateError | MetricUpdateSuccess> {
-    return this.httpClient.patch<MetricUpdateError | MetricUpdateSuccess>(
-      this.common.AttributeCounterStandard,
-      params,
-      { headers: this.defaultHeaders }
-    );
+    return this.httpClient
+      .patch<MetricUpdateError | MetricUpdateSuccess>(
+        this.common.AttributeCounterStandard,
+        params,
+        { headers: this.defaultHeaders }
+      )
+      .pipe(catchError((e) => throwError(e.error)));
   }
 
-  updateInstanceNumberStandard(
-    params: IntanceNumberStandardParams
+  updateStaticStandard(
+    params: StaticStandardParams
   ): Observable<MetricUpdateError | MetricUpdateSuccess> {
-    return this.httpClient.patch<MetricUpdateError | MetricUpdateSuccess>(
-      this.common.IntanceNumberStandard,
-      params,
-      { headers: this.defaultHeaders }
-    );
+    return this.httpClient
+      .patch<MetricUpdateError | MetricUpdateSuccess>(
+        this.common.StaticStandard,
+        params,
+        { headers: this.defaultHeaders }
+      )
+      .pipe(catchError((e) => throwError(e.error)));
+  }
+
+
+  updateInstanceNumberStandard(
+    params: InstanceNumberStandardParams
+  ): Observable<MetricUpdateError | MetricUpdateSuccess> {
+    return this.httpClient
+      .patch<MetricUpdateError | MetricUpdateSuccess>(
+        this.common.IntanceNumberStandard,
+        params,
+        { headers: this.defaultHeaders }
+      )
+      .pipe(catchError((e) => throwError(e.error)));
   }
 }

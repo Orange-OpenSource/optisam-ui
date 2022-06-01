@@ -5,7 +5,7 @@
     </div>
     <div fxFlex="50" fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="end">
       <button
-        *ngIf="role === 'ADMIN' || (role === 'SUPER_ADMIN' && allowedScope)"
+        *ngIf="allowedRoles.includes(role) && allowedScope"
         id="addEqpBtn"
         mat-raised-button
         (click)="addNew()"
@@ -14,7 +14,7 @@
         <mat-icon color="panel">add</mat-icon>
         {{ "Add Equipment Type" | translate }}
       </button>
-      <button
+      <button *ngIf="role === 'SUPER_ADMIN'"
         id="core-factor-btn"
         mat-raised-button
         [routerLink]="['/optisam/cfm/list-core-factor']"
@@ -71,24 +71,65 @@
       </ng-container>
       <!-- actions -->
       <ng-container matColumnDef="actions">
-        <div *ngIf="(role === 'ADMIN')">
-          <mat-header-cell *matHeaderCellDef>{{'Actions' | translate}}</mat-header-cell>
-          <mat-cell *matCellDef="let equipment; let i=index;">
-            <button *ngIf="allowedScope" id="editBtn{{i}}" mat-icon-button matTooltip="{{'Edit Equipment Type'|translate}}" color="accent" (click)="startEdit(equipment)">
+        <div *ngIf="role === 'ADMIN'">
+          <mat-header-cell *matHeaderCellDef>{{
+            "Actions" | translate
+          }}</mat-header-cell>
+          <mat-cell *matCellDef="let equipment; let i = index">
+            <button
+              *ngIf="allowedScope"
+              id="editBtn{{ i }}"
+              mat-icon-button
+              matTooltip="{{ 'Edit Equipment Type' | translate }}"
+              color="accent"
+              (click)="startEdit(equipment)"
+            >
               <mat-icon>mode_edit</mat-icon>
             </button>
-            <button id="editBtn{{i}}" *ngIf="canDelete(equipment.ID)" mat-icon-button matTooltip="{{'Delete Equipment Type'|translate}}" color="accent" (click)="deleteEquipmentTypeConfirmation(equipment, deleteConfirmationDialog)">
+            <button
+              id="editBtn{{ i }}"
+              *ngIf="canDelete(equipment.ID)"
+              mat-icon-button
+              matTooltip="{{ 'Delete Equipment Type' | translate }}"
+              color="accent"
+              (click)="
+                deleteEquipmentTypeConfirmation(
+                  equipment,
+                  deleteConfirmationDialog
+                )
+              "
+            >
               <mat-icon>delete</mat-icon>
             </button>
           </mat-cell>
         </div>
-        <div *ngIf="(role === 'SUPER_ADMIN')">
-          <mat-header-cell *matHeaderCellDef>{{'Actions' | translate}}</mat-header-cell>
-          <mat-cell *matCellDef="let equipment; let i=index;">
-            <button  id="editBtn{{i}}" mat-icon-button matTooltip="{{'Edit Equipment Type'|translate}}" color="accent" (click)="startEdit(equipment)">
+        <div *ngIf="role === 'SUPER_ADMIN'">
+          <mat-header-cell *matHeaderCellDef>{{
+            "Actions" | translate
+          }}</mat-header-cell>
+          <mat-cell *matCellDef="let equipment; let i = index">
+            <button
+              id="editBtn{{ i }}"
+              mat-icon-button
+              matTooltip="{{ 'Edit Equipment Type' | translate }}"
+              color="accent"
+              (click)="startEdit(equipment)"
+            >
               <mat-icon>mode_edit</mat-icon>
             </button>
-            <button id="editBtn{{i}}" *ngIf="canDelete(equipment.ID)" mat-icon-button matTooltip="{{'Delete Equipment Type'|translate}}" color="accent" (click)="deleteEquipmentTypeConfirmation(equipment, deleteConfirmationDialog)">
+            <button
+              id="editBtn{{ i }}"
+              *ngIf="canDelete(equipment.ID)"
+              mat-icon-button
+              matTooltip="{{ 'Delete Equipment Type' | translate }}"
+              color="accent"
+              (click)="
+                deleteEquipmentTypeConfirmation(
+                  equipment,
+                  deleteConfirmationDialog
+                )
+              "
+            >
               <mat-icon>delete</mat-icon>
             </button>
           </mat-cell>

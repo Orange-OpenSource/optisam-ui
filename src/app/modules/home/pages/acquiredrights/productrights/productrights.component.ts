@@ -1,3 +1,4 @@
+import { AcquiredRightsResponse } from './../../../../../core/modals/acquired.rights.modal';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { MoreDetailsComponent } from '../../../dialogs/product-details/more-details.component';
@@ -8,6 +9,9 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
 import { ProductService } from 'src/app/core/services/product.service';
 import { CreateAcquiredRightComponent } from '../create-acquired-right/create-acquired-right.component';
+import { CommonService } from '@core/services/common.service';
+import { LOCAL_KEYS } from '@core/util/constants/constants';
+import { AcquiredRightsIndividualParams } from '@core/modals/acquired.rights.modal';
 
 @Component({
   selector: 'app-productrights',
@@ -32,6 +36,8 @@ export class ProductrightsComponent implements OnInit {
   saveSelectedEditor: string;
   saveSelectedPName: string;
   saveSelectedMetric: string;
+  saveSelectedsoftwareProvider: string;
+  saveSelectedorderingDate: string;
   current_page_num: any;
   filteringOrder: any;
   swidtagPlaceholder: any;
@@ -39,14 +45,19 @@ export class ProductrightsComponent implements OnInit {
   editorNamePlaceholder: any;
   productNamePlaceholder: String;
   metricPlaceholder: any;
+  softwareProviderPlaceholder: any;
+  orderingDatePlaceholder: any;
   _loading: Boolean;
 
   displayedColumns: string[] = [
     'SKU',
+    'corporate_sourcing_contract',
+    'ordering_date',
     'swid_tag',
     'product_name',
     'version',
     'editor',
+    'software_provider',
     'metric',
     'acquired_licenses_number',
     'licenses_under_maintenance_number',
@@ -58,6 +69,9 @@ export class ProductrightsComponent implements OnInit {
     'total_purchase_cost',
     'total_maintenance_cost',
     'total_cost',
+    'last_purchased_order',
+    'support_number',
+    'maintenance_provider',
     'comment',
   ];
 
@@ -70,6 +84,8 @@ export class ProductrightsComponent implements OnInit {
       { key: 'editorName', label: 'Editor Name' },
       { key: 'productName', label: 'Product Name' },
       { key: 'metric', label: 'Metric' },
+      { key: 'softwareProvider', label: 'Software Provider' },
+      { key: 'orderingDate', label: 'Ordering Date', type: 'date' },
     ],
   };
   searchFields: any = {};
@@ -78,7 +94,8 @@ export class ProductrightsComponent implements OnInit {
   constructor(
     private productService: ProductService,
     public dialog: MatDialog,
-    private router: Router
+    private router: Router,
+    private cs: CommonService
   ) {}
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: false }) sort: MatSort;
@@ -87,6 +104,42 @@ export class ProductrightsComponent implements OnInit {
     this.current_page_num = 1;
     this.RenderDataTable();
   }
+
+  get filters(): AcquiredRightsIndividualParams {
+    return {
+      scopes: this.cs.getLocalData(LOCAL_KEYS.SCOPE),
+      page_num: this.current_page_num,
+      page_size: this.pageSize,
+      sort_by: this.sort_by,
+      sort_order: this.sort_order,
+      ...(this.searchFields.swidTag?.trim() && {
+        'search_params.swidTag.filteringkey': this.searchFields.swidTag?.trim(),
+      }),
+      ...(this.searchFields.sku?.trim() && {
+        'search_params.SKU.filteringkey': this.searchFields.sku?.trim(),
+      }),
+      ...(this.searchFields.editorName?.trim() && {
+        'search_params.editor.filteringkey':
+          this.searchFields.editorName?.trim(),
+      }),
+      ...(this.searchFields.productName?.trim() && {
+        'search_params.productName.filteringkey':
+          this.searchFields.productName?.trim(),
+      }),
+      ...(this.searchFields.metric?.trim() && {
+        'search_params.metric.filteringkey': this.searchFields.metric?.trim(),
+      }),
+      ...(this.searchFields.softwareProvider?.trim() && {
+        'search_params.softwareProvider.filteringkey':
+          this.searchFields.softwareProvider?.trim(),
+      }),
+      ...(this.searchFields.orderingDate && {
+        'search_params.orderingDate.filteringkey':
+          this.searchFields.orderingDate,
+      }),
+    };
+  }
+
   RenderDataTable() {
     this._loading = true;
     this.productService
@@ -117,18 +170,9 @@ export class ProductrightsComponent implements OnInit {
     if (this.sort_order === '' || this.sort_order === null) {
       this.sort_order = 'asc';
     }
+
     this.productService
-      .filteredDataAcqRights(
-        page_num + 1,
-        this.pageSize,
-        this.sort_by,
-        this.sort_order,
-        this.searchFields.swidTag?.trim(),
-        this.searchFields.sku?.trim(),
-        this.searchFields.editorName?.trim(),
-        this.searchFields.productName?.trim(),
-        this.searchFields.metric?.trim()
-      )
+      .filteredDataAcqRights(this.filters)
       .subscribe((res: any) => {
         this.MyDataSource = new MatTableDataSource(res.acquired_rights);
         this.MyDataSource.sort = this.sort;
@@ -139,28 +183,18 @@ export class ProductrightsComponent implements OnInit {
     this._loading = true;
     localStorage.setItem('acquired_direction', sort.direction);
     localStorage.setItem('acquired_active', sort.active);
-    this.productService
-      .filteredDataAcqRights(
-        this.current_page_num,
-        this.pageSize,
-        sort.active,
-        sort.direction,
-        this.searchFields.swidTag?.trim(),
-        this.searchFields.sku?.trim(),
-        this.searchFields.editorName?.trim(),
-        this.searchFields.productName?.trim(),
-        this.searchFields.metric?.trim()
-      )
-      .subscribe(
-        (res: any) => {
-          this.MyDataSource = new MatTableDataSource(res.acquired_rights);
-          this.MyDataSource.sort = this.sort;
-          this._loading = false;
-        },
-        (error) => {
-          console.log('There was an error while retrieving Posts !!!' + error);
-        }
-      );
+    this.sort_by = sort.active;
+    this.sort_order = sort.direction;
+    this.productService.filteredDataAcqRights(this.filters).subscribe(
+      (res: any) => {
+        this.MyDataSource = new MatTableDataSource(res.acquired_rights);
+        this.MyDataSource.sort = this.sort;
+        this._loading = false;
+      },
+      (error) => {
+        console.log('There was an error while retrieving Posts !!!' + error);
+      }
+    );
   }
 
   setSelectedSearch(param: string, value: number) {
@@ -179,6 +213,12 @@ export class ProductrightsComponent implements OnInit {
     if (value === 5) {
       this.saveSelectedMetric = param;
     }
+    if (value === 6) {
+      this.saveSelectedsoftwareProvider = param;
+    }
+    if (value === 7) {
+      this.saveSelectedorderingDate = param;
+    }
   }
   setSelected(param: string, value: number) {
     if (value === 1) {
@@ -196,6 +236,12 @@ export class ProductrightsComponent implements OnInit {
     if (value === 5) {
       this.saveSelectedMetric = param;
     }
+    if (value === 6) {
+      this.saveSelectedsoftwareProvider = param;
+    }
+    if (value === 7) {
+      this.saveSelectedorderingDate = param;
+    }
   }
   applyFilter() {
     this._loading = true;
@@ -208,24 +254,15 @@ export class ProductrightsComponent implements OnInit {
     if (this.sort_order === '' || this.sort_order === null) {
       this.sort_order = 'asc';
     }
+
     this.productService
-      .filteredDataAcqRights(
-        this.current_page_num,
-        this.pageSize,
-        this.sort_by,
-        this.sort_order,
-        this.searchFields.swidTag?.trim(),
-        this.searchFields.sku?.trim(),
-        this.searchFields.editorName?.trim(),
-        this.searchFields.productName?.trim(),
-        this.searchFields.metric?.trim()
-      )
-      .subscribe((res: any) => {
+      .filteredDataAcqRights(this.filters)
+      .subscribe((res: AcquiredRightsResponse) => {
         this.MyDataSource = new MatTableDataSource(res.acquired_rights);
         this.MyDataSource.sort = this.sort;
         this.length = res.totalRecords;
         this._loading = false;
-      });
+      }, console.log);
   }
 
   clearFilter() {
@@ -234,12 +271,41 @@ export class ProductrightsComponent implements OnInit {
     this.saveSelectedEditor = undefined;
     this.saveSelectedPName = undefined;
     this.saveSelectedMetric = undefined;
+    this.saveSelectedsoftwareProvider = undefined;
+    this.saveSelectedorderingDate = undefined;
     this.skuPlaceholder = null;
     this.swidtagPlaceholder = null;
     this.editorNamePlaceholder = null;
     this.productNamePlaceholder = null;
     this.metricPlaceholder = null;
+    this.softwareProviderPlaceholder = null;
+    this.orderingDatePlaceholder = null;
+
     this.applyFilter();
+  }
+
+  downloadFile(sku, fileName) {
+    // const filePath = file.error_file_api.slice(8);
+    this.productService.getDownloadFile(sku).subscribe(
+      (res) => {
+        console.log(res.file_data);
+
+        const url = `data:application/pdf;base64,${res.file_data}`;
+
+        const downloadEl = document.createElement('a');
+
+        downloadEl.href = url;
+        downloadEl.download = fileName;
+        downloadEl.click();
+      }
+      // (error) => {
+      //   this.errorMsg =
+      //     error.error.message ||
+      //     'Some error occured! Could not download records for selected global file';
+      //   this.openModal(errorMsg);
+      //   console.log('Some error occured! Could not download file.', error);
+      // }
+    );
   }
 
   advSearchTrigger(event) {

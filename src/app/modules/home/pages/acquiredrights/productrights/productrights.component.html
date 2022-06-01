@@ -1,17 +1,14 @@
+
 <mat-card>
   <div class="container-fluid page-content-header">
-    <div class="row">
-      <div class="col-md-9 page-heading">
-        {{ "List of Individual Rights" | translate }}
-      </div>
-      <div id="search-container" class="col-md-3">
-        <app-advance-search
-          [advanceSearchModel]="advanceSearchModel"
-          (advFilterEvent)="advSearchTrigger($event)"
-        ></app-advance-search>
-      </div>
+    <div class="page-heading">
+      {{ "List of Individual Rights" | translate }}
     </div>
   </div>
+  <app-advance-search
+    [advanceSearchModel]="advanceSearchModel"
+    (advFilterEvent)="advSearchTrigger($event)"
+  ></app-advance-search>
   <mat-card-content>
     <div class="mat-elevation-z8">
       <mat-table
@@ -30,7 +27,7 @@
 
         <ng-container matColumnDef="product_name">
           <mat-header-cell *matHeaderCellDef mat-sort-header="PRODUCT_NAME"
-            >{{ "Product name" | translate }} 
+            >{{ "Product name" | translate }}
           </mat-header-cell>
           <mat-cell
             *matCellDef="let acquired_rights"
@@ -72,9 +69,23 @@
           <mat-header-cell *matHeaderCellDef mat-sort-header="SKU">{{
             "SKU" | translate
           }}</mat-header-cell>
-          <mat-cell *matCellDef="let acquired_rights">
+          <!-- <mat-cell *matCellDef="let acquired_rights">
             {{ acquired_rights.SKU || 0 }}
-          </mat-cell>
+          </mat-cell> -->
+          <mat-cell *matCellDef="let acquired_rights">
+            <div *ngIf="acquired_rights.file_name"  matTooltip="{{ 'Click here to download the file' }}">
+             <a  class="ellipsis mat-button-link" (click)="
+             downloadFile(
+                   acquired_rights.SKU,acquired_rights.file_name
+                 )
+               ">
+               {{ acquired_rights.SKU }}
+             </a>
+           </div>
+           <div *ngIf="!acquired_rights.file_name">
+           {{ acquired_rights.SKU }}
+         </div>
+           </mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="metric">
@@ -196,6 +207,60 @@
             {{
               acquired_rights.total_maintenance_cost || 0 | formatCost
             }}</mat-cell
+          >
+        </ng-container>
+
+        <ng-container matColumnDef="ordering_date">
+          <mat-header-cell *matHeaderCellDef>
+            {{ "Ordering date" | translate }}</mat-header-cell
+          >
+          <mat-cell *matCellDef="let acquired_rights">
+            {{ acquired_rights.ordering_date | formatShortdate }}</mat-cell
+          >
+        </ng-container>
+
+        <ng-container matColumnDef="corporate_sourcing_contract">
+          <mat-header-cell *matHeaderCellDef>
+            {{ "CSC" | translate }}</mat-header-cell
+          >
+          <mat-cell *matCellDef="let acquired_rights">
+            {{ acquired_rights.corporate_sourcing_contract || "-" }}</mat-cell
+          >
+        </ng-container>
+
+        <ng-container matColumnDef="software_provider">
+          <mat-header-cell *matHeaderCellDef>
+            {{ "Software provider" | translate }}</mat-header-cell
+          >
+          <mat-cell *matCellDef="let acquired_rights">
+            {{ acquired_rights.software_provider || "-" }}</mat-cell
+          >
+        </ng-container>
+
+        <ng-container matColumnDef="last_purchased_order">
+          <mat-header-cell *matHeaderCellDef>
+            {{ "Last purchased order" | translate }}</mat-header-cell
+          >
+          <mat-cell *matCellDef="let acquired_rights">
+            {{ acquired_rights.last_purchased_order || "-" }}</mat-cell
+          >
+        </ng-container>
+
+        <ng-container matColumnDef="support_number">
+          <mat-header-cell *matHeaderCellDef>
+            {{ "Support number" | translate }}</mat-header-cell
+          >
+          <mat-cell *matCellDef="let acquired_rights">
+            {{ acquired_rights.support_number || "-" }}</mat-cell
+          >
+        </ng-container>
+
+        <ng-container matColumnDef="maintenance_provider">
+          <mat-header-cell *matHeaderCellDef>
+            {{ "Maintenance provider" | translate }}</mat-header-cell
+          >
+          <mat-cell *matCellDef="let acquired_rights">
+            {{ acquired_rights.maintenance_provider || "-" }}</mat-cell
           >
         </ng-container>
 

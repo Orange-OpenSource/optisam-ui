@@ -5,10 +5,13 @@ import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { AccountService } from '../../services/account.service';
 import jwt_decode from 'jwt-decode';
+import { AboutData } from '@core/modals';
+import { CommonService } from '@core/services';
+import { LOCAL_KEYS } from '@core/util/constants/constants';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent implements OnInit {
   isPasswordShow: any = false;
@@ -23,22 +26,28 @@ export class LoginComponent implements OnInit {
   firstLogInFlag: any = 'false';
   version: any;
   decodedScopes: any;
-  cookieInfoAcknowledged:boolean;
+  cookieInfoAcknowledged: boolean;
 
-  constructor(private authservice: AuthService, private accountservice: AccountService,
-    private router: Router, private translate: TranslateService) {
+  constructor(
+    private authservice: AuthService,
+    private accountservice: AccountService,
+    private router: Router,
+    private translate: TranslateService,
+    private cs: CommonService
+  ) {
     localStorage.clear();
     this.getMetaInfo();
     translate.addLangs(['en', 'fr']);
-    this.userLang = localStorage.getItem('language') ? localStorage.getItem('language') : 'en';
+    this.userLang = localStorage.getItem('language')
+      ? localStorage.getItem('language')
+      : 'en';
     this.currLang = this.userLang;
     this.translate.setDefaultLang(this.userLang);
-
   }
   ngOnInit() {
     this.loginForm = new FormGroup({
-      'email': new FormControl(null, [Validators.required]),
-      'password': new FormControl(null, [Validators.required]),
+      email: new FormControl(null, [Validators.required]),
+      password: new FormControl(null, [Validators.required]),
     });
   }
 
@@ -47,28 +56,38 @@ export class LoginComponent implements OnInit {
     this.getAbout();
   }
   getVersion() {
-    this.accountservice.getVersion().subscribe(res => {
-      this.version = res;
-      localStorage.setItem('version', this.version);
-    }, err => {
-      this.version = err.error.text;
-      localStorage.setItem('version', this.version);
-    });
+    this.accountservice.getVersion().subscribe(
+      (res) => {
+        this.version = res;
+        this.cs.setLocalData(LOCAL_KEYS.VERSION, this.version);
+      },
+      (err) => {
+        this.version = err.error.text;
+        this.cs.setLocalData(LOCAL_KEYS.VERSION, this.version);
+      }
+    );
   }
   getAbout() {
     //TODO
     localStorage.setItem('copyright', 'Copyright © Orange 2021');
-    this.accountservice.getAbout().subscribe(res => {
-      localStorage.setItem('copyright', res.copyright);
-      localStorage.setItem('releaseNotes', res.release_notes);
-      localStorage.setItem('futures2021', res.future_2021);
-      localStorage.setItem('futures2022', res.future_2022);
-    }, err => {
-      localStorage.setItem('copyright', err.error.text);
-      localStorage.setItem('releaseNotes', err.error.text);
-      localStorage.setItem('futures2021', err.error.text);
-      localStorage.setItem('futures2022', err.error.text);
-    });
+    this.accountservice.getAbout().subscribe(
+      (res: AboutData) => {
+        this.cs.setLocalData(LOCAL_KEYS.COPYRIGHT, res?.copyright || '');
+        this.cs.setLocalData(
+          LOCAL_KEYS.RELEASE_NOTES,
+          JSON.stringify(res?.release_notes || [])
+        );
+        this.cs.setLocalData(
+          LOCAL_KEYS.FUTURE,
+          JSON.stringify(res?.future || [])
+        );
+      },
+      (err) => {
+        this.cs.setLocalData(LOCAL_KEYS.COPYRIGHT, err.error.text);
+        this.cs.setLocalData(LOCAL_KEYS.RELEASE_NOTES, err.error.text);
+        this.cs.setLocalData(LOCAL_KEYS.FUTURE, err.error.text);
+      }
+    );
   }
 
   toggleShowPassword() {
@@ -85,14 +104,17 @@ export class LoginComponent implements OnInit {
     const email = val.email.trim();
     if (val.email && val.password) {
       this.loading = true;
-      this.authservice.login(email, val.password).subscribe(res => {
-        token = res.access_token;
-        const decodedToken = jwt_decode(token);
-        this.decodedScopes = decodedToken['Socpes'].sort();
-        if (this.decodedScopes && this.decodedScopes.length > 0) {
-          localStorage.setItem('scope', this.decodedScopes[0]);
-        }
-      },
+      this.authservice.login(email, val.password).subscribe(
+        (res) => {
+          token = res.access_token;
+          const decodedToken = jwt_decode(token);
+          if (decodedToken['Socpes'] != null) {
+            this.decodedScopes = decodedToken['Socpes'].sort();
+          }
+          if (this.decodedScopes && this.decodedScopes.length > 0) {
+            localStorage.setItem('scope', this.decodedScopes[0]);
+          }
+        },
         (err: any) => {
           this.displayErrorMessage(err);
           this.loading = false;
@@ -101,48 +123,50 @@ export class LoginComponent implements OnInit {
           if (token) {
             localStorage.setItem('access_token', token);
             localStorage.setItem('email', email);
-            this.accountservice.getUserInfo(email)
-              .subscribe((res: any) => {
+            this.accountservice.getUserInfo(email).subscribe(
+              (res: any) => {
                 this.currLang = res.locale;
                 this.lang = res.locale;
                 this.firstLogInFlag = res.first_login;
                 localStorage.setItem('first_name', res.first_name);
                 localStorage.setItem('last_name', res.last_name);
-                localStorage.setItem('profile_pic', (res.profile_pic) ? (res.profile_pic) : '');
+                localStorage.setItem(
+                  'profile_pic',
+                  res.profile_pic ? res.profile_pic : ''
+                );
                 localStorage.setItem('role', res.role);
                 localStorage.setItem('firstLogin', this.firstLogInFlag);
                 this.updateUserLanguage(this.currLang);
                 if (this.firstLogInFlag) {
                   this.router.navigate(['/optisam/changePassword']);
-                }
-                else if (!this.decodedScopes || this.decodedScopes.length === 0) {
+                } else if (
+                  !this.decodedScopes ||
+                  this.decodedScopes.length === 0
+                ) {
                   this.router.navigate(['/optisam/sm']);
-                }
-                else {
+                } else {
                   this.router.navigate(['/optisam/dashboard']);
                 }
                 this.loading = false;
               },
-                error => {
-                  console.log('There was an error while retrieving Posts !!!' + error);
-                  this.loading = false;
-                });
+              (error) => {
+                console.log(
+                  'There was an error while retrieving Posts !!!' + error
+                );
+                this.loading = false;
+              }
+            );
           }
-        });
+        }
+      );
     }
   }
   private displayErrorMessage(err: any): void {
-    if (
-      err.error_code === 1
-    ) {
+    if (err.error_code === 1) {
       this.errorMsg = 'LOGIN.MESSAGES.LOGIN-ERROR-CREDENTIALS';
-    } else if (
-      err.error_code === 2
-    ) {
+    } else if (err.error_code === 2) {
       this.errorMsg = 'LOGIN.MESSAGES.LOGIN-ERROR-BlOCKED';
-    } else if (
-      err.error_code === 3
-    ) {
+    } else if (err.error_code === 3) {
       this.errorMsg = 'LOGIN.MESSAGES.LOGIN-ERROR-ADMIN';
     } else {
       this.errorMsg = 'LOGIN.MESSAGES.LOGIN-ERROR-NETWORK';

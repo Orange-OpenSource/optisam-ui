@@ -1,7 +1,7 @@
 <mat-card class="example-card" style="z-index: 0">
   <div class="container-fluid page-content-header">
-    <div class="row">
-      <div class="col-md-10 page-heading">
+    <div fxLayout="row" fxLayoutAlign="space-between">
+      <div class="page-heading">
         {{ "Aggregation Management" | translate }}
       </div>
       <div class="col-md-2" class="add-btn">
@@ -10,10 +10,13 @@
           mat-raised-button
           class="btn-two"
           (click)="addNew()"
-          *ngIf="role === 'ADMIN' || role === 'SUPER_ADMIN'"
+          *ngIf="adminRoles.includes(role)"
+          fxLayout="row"
+          fxLayoutAlign="center center"
+          fxLayoutGap="0"
         >
           <mat-icon>add</mat-icon>
-          {{ "AGGREGATIONS.ACTIONS.ADD_AGGREGATION" | translate }}
+          <span>{{ "Create New" | translate }}</span>
         </a>
       </div>
     </div>
@@ -25,13 +28,14 @@
         [dataSource]="aggregationData"
         matSort
         (matSortChange)="sortData($event)"
+       
       >
         <ng-container matColumnDef="name">
           <mat-header-cell *matHeaderCellDef>
             {{ "AGGREGATIONS.TEXTS.AGG_NAME" | translate }}
           </mat-header-cell>
           <mat-cell *matCellDef="let aggregation">
-            {{ aggregation.name }}
+            {{ aggregation.aggregation_name }}
           </mat-cell>
         </ng-container>
 
@@ -40,7 +44,7 @@
             >{{ "AGGREGATIONS.TEXTS.PRODUCT" | translate }}
           </mat-header-cell>
           <mat-cell *matCellDef="let aggregation"
-            >{{ aggregation.product_names.join(", ") }}
+            >{{ aggregation.product_names?.join(", ") }}
           </mat-cell>
         </ng-container>
 
@@ -49,7 +53,7 @@
             >{{ "AGGREGATIONS.TEXTS.EDITOR" | translate }}
           </mat-header-cell>
           <mat-cell *matCellDef="let aggregation">
-            {{ aggregation.editor }}
+            {{ aggregation.product_editor }}
           </mat-cell>
         </ng-container>
 
@@ -67,8 +71,8 @@
             "AGGREGATIONS.TEXTS.NUMBER_OF_SWIDTAGS" | translate
           }}</mat-header-cell>
           <mat-cell *matCellDef="let aggregation">
-            <span matTooltip="{{ aggregation.products.join(', ') }}">
-              {{ aggregation.products.length }}
+            <span matTooltip="{{ aggregation.swidtags?.join(',\n ') }}">
+              {{ aggregation.swidtags?.length }}
             </span>
           </mat-cell>
         </ng-container>
@@ -128,17 +132,24 @@
         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
         <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
       </mat-table>
+      
       <div
-        class="no-data"
-        *ngIf="!_loading && aggregationData && aggregationData.length == 0"
-      >
-        {{ "AGGREGATIONS.TEXTS.NO_AGGREGATION" | translate }}
-      </div>
+      class="no-data"
+      *ngIf="!_loading && aggregationData && aggregationData.data.length == 0"
+     >
+      {{ "No data available" | translate }}
+     </div>
+
       <app-loading-spinner *ngIf="_loading"></app-loading-spinner>
       <!-- <mat-paginator #paginator [pageSize]="7" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons> -->
-      <!-- <mat-paginator [length]="totalRecords" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions"
-          (page)="getPaginatorData($event)" showFirstLastButtons>
-        </mat-paginator> -->
+      <mat-paginator
+        [length]="length"
+        [pageSize]="pageSize"
+        [pageSizeOptions]="[50, 100, 200]"
+        (page)="pageEvent = getPaginatorData($event)"
+        showFirstLastButtons
+      >
+      </mat-paginator>
     </div>
   </mat-card-content>
 </mat-card>

@@ -1,89 +1,193 @@
 <h1 mat-dialog-title>Edit Aggregation</h1>
-<mat-dialog-content >
+<mat-dialog-content>
   <div>
-      <form [formGroup]="updateForm">
-        <div class="horizontal">
-          <mat-form-field appearance="outline">
-            <mat-label>{{'AGGREGATIONS.TEXTS.EDITOR' | translate}}</mat-label>
-            <input matInput formControlName="editor">
-          </mat-form-field>
-          <div class="width-clearfix"></div>
-          <mat-form-field appearance="outline">
-            <mat-label>{{'AGGREGATIONS.TEXTS.METRICS' | translate}}</mat-label>
-            <input matInput formControlName="metric">
-          </mat-form-field>
-        </div>
-      
-        <div class="horizontal">
-          <mat-form-field appearance="outline">
-              <mat-label>{{'AGGREGATIONS.TEXTS.NAME' | translate}}</mat-label>
-              <input matInput placeholder="{{'AGGREGATIONS.TEXTS.NAME' | translate}}" formControlName="name">
-              <mat-error *ngIf="updateForm.controls.name.hasError('validAggName')">
-                No special characters or spaces are allowed
-              </mat-error>
-            </mat-form-field>
-            <div class="width-clearfix"></div>
-            <mat-form-field appearance="outline">
-              <mat-label>{{'AGGREGATIONS.TEXTS.PRODUCT' | translate}}</mat-label>
-              <mat-select id="products" formControlName="product_names"
-                [disabled]="prodLoading || productList.length === 0"
-                (selectionChange)="getProductsList()" multiple>
-                <mat-option *ngFor="let product of productList;" [value]="product.product_name">{{product.product_name}}</mat-option>
-              </mat-select>
-            </mat-form-field>
-        </div>
+    <form [formGroup]="updateForm">
+      <div fxLayout="row">
+        <mat-form-field appearance="outline">
+          <mat-label>{{
+            "AGGREGATIONS.TEXTS.AGGREGATION_NAME" | translate
+          }}</mat-label>
+          <input
+            matInput
+            placeholder="{{
+              'AGGREGATIONS.TEXTS.AGGREGATION_NAME' | translate
+            }}"
+            formControlName="name"
+          />
+          <mat-error *ngIf="updateForm.controls.name.hasError('validAggName')">
+            No special characters or spaces are allowed
+          </mat-error>
+        </mat-form-field>
+      </div>
 
-        <div class="swidtabs" *ngIf="updateForm.value.product_names">
-            <div class="left">
-              <h5 class="transtitle">{{'AGGREGATIONS.TEXTS.SWIDTAGS_ALL' | translate}}</h5>
-              <div class="body">
-                <div class="list-item" *ngFor="let swid of swidList;let idx = index;">
-                  <span>{{swid.swidtag}}</span>
-                  <mat-icon class="add" (click)="addSwidTag(swid, idx)">add_circle</mat-icon>
-                </div>
+      <div fxLayout="row wrap" fxLayout="space-between" fxLayoutGap="10px">
+        <mat-form-field appearance="outline">
+          <mat-label>{{ "AGGREGATIONS.TEXTS.EDITOR" | translate }}</mat-label>
+          <mat-select
+            id="aggrEditor"
+            formControlName="editor"
+            [disabled]="HTTPActivity || editorList.length === 0"
+            (selectionChange)="editorChange($event)"
+            #editorInput
+          >
+            <mat-option
+              >--
+              {{ "AGGREGATIONS.TEXTS.SELECT_EDITOR" | translate }}
+              --</mat-option
+            >
+            <mat-option
+              id="editor_option_{{ idx }}"
+              *ngFor="let editor of editorList; let idx = index"
+              [value]="editor"
+              >{{ editor }}</mat-option
+            >
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>{{ "AGGREGATIONS.TEXTS.PRODUCT" | translate }}</mat-label>
+          <mat-select
+            id="products"
+            formControlName="product_names"
+            [disabled]="prodLoading || productList.length === 0"
+            (selectionChange)="getSwidtags()"
+            multiple
+          >
+            <mat-option
+              *ngFor="let product of productList"
+              [value]="product.product_name"
+              >{{ product.product_name }}</mat-option
+            >
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="swidtabs" *ngIf="updateForm.value.product_names">
+        <div class="left">
+          <h5 class="transtitle">
+            {{ "AGGREGATIONS.TEXTS.SWIDTAGS_ALL" | translate }}
+          </h5>
+          <div class="body">
+            <div
+              class="list-item"
+              fxLayout="row"
+              fxLayoutAlign="start"
+              *ngIf="swidList.length"
+            >
+              <span>{{
+                "AGGREGATIONS.TEXTS.SELECT_ALL_SWIDTAGS" | translate
+              }}</span>
+              <div class="action-checkbox">
+                <mat-checkbox
+                  disableRipple
+                  (change)="selectAllSwid($event.checked)"
+                ></mat-checkbox>
               </div>
             </div>
-            <div class="trans-icon">
-              <mat-icon>sync_alt</mat-icon>
-            </div>
-            <div class="right">
-              <h5 class="transtitle">{{'AGGREGATIONS.TEXTS.SWIDTAGS_SELECTED' | translate}}</h5>
-              <div class="body">
-    
-                <div class="list-item" *ngFor="let swid of selectedSwidList;let idx = index;">
-                  <span>{{swid}}</span>
-                  <mat-icon class="cancel" (click)="removeSwidTag(swid, idx)">remove_circle</mat-icon>
-                </div>
-    
-              </div>
+
+            <div
+              class="list-item"
+              *ngFor="let swid of swidList; let idx = index"
+            >
+              <span class="text-3-dot" matTooltip="{{ swid.swidtag }}">{{
+                swid.swidtag
+              }}</span>
+              <mat-icon class="add" (click)="addSwidTag(swid, idx)"
+                >add_circle</mat-icon
+              >
             </div>
           </div>
-      </form>
-      <app-loading-spinner *ngIf="prodLoading"></app-loading-spinner>
+        </div>
+        <div class="trans-icon">
+          <mat-icon>sync_alt</mat-icon>
+        </div>
+        <div class="right">
+          <h5 class="transtitle">
+            {{ "AGGREGATIONS.TEXTS.SWIDTAGS_SELECTED" | translate }}
+          </h5>
+          <div class="body">
+            <div
+              class="list-item"
+              *ngFor="let swid of selectedSwidList; let idx = index"
+            >
+              <span class="text-3-dot" matTooltip="{{ swid.swidtag }}">{{
+                swid.swidtag
+              }}</span>
+              <mat-icon class="cancel" (click)="removeSwidTag(swid, idx)"
+                >remove_circle</mat-icon
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+    <app-loading-spinner *ngIf="prodLoading"></app-loading-spinner>
   </div>
 </mat-dialog-content>
 
 <mat-dialog-actions align="center">
-  <button mat-raised-button class="btn-four" mat-dialog-close [disabled]="_loading">{{'Cancel' | translate}}</button>
-  <button mat-raised-button class="btn-three" [disabled]="_loading || (noChangesMadeFlag && this.updateForm.pristine)" (click)="setFormData()">{{'Reset' | translate}}</button>
-  <button mat-raised-button class="confirm-btn btn-two" (click)="confirm(succesAggrUpdateDialog,errorAggrUpdateDialog)" [disabled]="_loading || updateForm.invalid|| (noChangesMadeFlag && updateForm.pristine) || selectedSwidList.length === 0">
-    <span *ngIf="_loading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-    {{'Update' | translate}}
+  <button
+    mat-raised-button
+    class="btn-four"
+    mat-dialog-close
+    [disabled]="_loading"
+  >
+    {{ "Cancel" | translate }}
+  </button>
+  <button
+    mat-raised-button
+    class="btn-three"
+    [disabled]="_loading || (noChangesMadeFlag && this.updateForm.pristine)"
+    (click)="resetAggregation()"
+  >
+    {{ "Reset" | translate }}
+  </button>
+  <button
+    mat-raised-button
+    class="confirm-btn btn-two"
+    (click)="confirm(succesAggrUpdateDialog, errorAggrUpdateDialog)"
+    [disabled]="
+      _loading ||
+      updateForm.invalid ||
+      (noChangesMadeFlag && updateForm.pristine) ||
+      selectedSwidList.length === 0
+    "
+  >
+    <span
+      *ngIf="_loading"
+      class="spinner-border spinner-border-sm"
+      role="status"
+      aria-hidden="true"
+    ></span>
+    {{ "Update" | translate }}
   </button>
 </mat-dialog-actions>
 <ng-template #succesAggrUpdateDialog>
-  <mat-dialog-content>
-      <p>{{'UPDATE_AGGR_SUCCESS'|translate}}</p>
+  <mat-dialog-content align="center">
+    <p>{{ "UPDATE_AGGR_SUCCESS" | translate }}</p>
   </mat-dialog-content>
   <mat-dialog-actions align="center">
-      <button [mat-dialog-close]="true" class="btn-two" mat-button cdkFocusInitial>{{'OK'|translate}}</button>
-    </mat-dialog-actions>
+    <button
+      [mat-dialog-close]="true"
+      class="btn-two"
+      mat-button
+      cdkFocusInitial
+    >
+      {{ "OK" | translate }}
+    </button>
+  </mat-dialog-actions>
 </ng-template>
 <ng-template #errorAggrUpdateDialog>
   <mat-dialog-content>
-    <p>{{'Error'|translate}}: {{errorMessage}}</p>
+    <p>{{ "Error" | translate }}: {{ errorMessage }}</p>
   </mat-dialog-content>
   <mat-dialog-actions align="center">
-      <button [mat-dialog-close]="true" class="btn-two" mat-button cdkFocusInitial>{{'OK'|translate}}</button>
-    </mat-dialog-actions>
+    <button
+      [mat-dialog-close]="true"
+      class="btn-two"
+      mat-button
+      cdkFocusInitial
+    >
+      {{ "OK" | translate }}
+    </button>
+  </mat-dialog-actions>
 </ng-template>

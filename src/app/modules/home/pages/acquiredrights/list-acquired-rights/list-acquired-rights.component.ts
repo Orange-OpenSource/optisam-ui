@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { AcquiredRightsResponse } from './../../../../../core/modals/acquired.rights.modal';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
@@ -12,13 +13,27 @@ import { EditAcquiredRightComponent } from '../edit-acquired-right/edit-acquired
 import { AcquiredRightsAggregation } from '../acquired-rights.modal';
 import { CreateAcquiredRightAggregationComponent } from '../create-acquired-right-aggregation/create-acquired-right-aggregation.component';
 import { EditAcquiredRightAggregationComponent } from '../edit-acquired-right-aggregation/edit-acquired-right-aggregation.component';
-
+import {
+  AcquiredRightAggregationQuery,
+  AcquiredRightsAggregationParams,
+  AggregationGetResponse,
+  GetAggregationParams,
+  TableSortOrder,
+} from '@core/modals';
+import { CommonService } from '@core/services/common.service';
+import {
+  LOCAL_KEYS,
+  PAGINATION_DEFAULTS,
+} from '@core/util/constants/constants';
+import { AcquiredRightsIndividualParams } from '@core/modals/acquired.rights.modal';
+// import { MatTabChangeEvent } from '@angular/material/tabs';
 export interface NotLicensedProduct {
   swid_tag: string;
   product_name: string;
   version: string;
   editor: string;
 }
+
 @Component({
   selector: 'app-list-acquired-rights',
   templateUrl: './list-acquired-rights.component.html',
@@ -45,14 +60,45 @@ export class ListAcquiredRightsComponent implements OnInit, AfterViewInit {
   tabList: string[] = [
     'Licensed Products',
     'Not Licensed Products',
-    'Aggregations',
+    'Licensed Aggregations',
   ];
+
   currentTab: string = this.tabList[0];
+
+  advanceSearchModel: any = {
+    title: 'Search by Product Name',
+    primary: 'productName',
+    other: [
+      { key: 'swidTag', label: 'SWIDtag' },
+      { key: 'sku', label: 'SKU' },
+      { key: 'editorName', label: 'Editor Name' },
+      { key: 'productName', label: 'Product Name' },
+      { key: 'metric', label: 'Metric' },
+      // { key: 'softwareProvider', label: 'Software Provider' },
+      // { key: 'orderingDate', label: 'Ordering Date', type: 'date' },
+    ],
+  };
+
+  aggregationAdvanceSearchModel: any = {
+    title: 'Search by Aggregation Name',
+    primary: 'aggregationName',
+    other: [
+      { key: 'sku', label: 'SKU' },
+      { key: 'editorName', label: 'Editor Name' },
+      { key: 'aggregationName', label: 'Aggregation Name' },
+      { key: 'metric', label: 'Metric' },
+      // { key: 'softwareProvider', label: 'Software Provider' },
+      // { key: 'orderingDate', label: 'Ordering Date', type: 'date' },
+    ],
+  };
+
+  searchFields: any = {};
 
   constructor(
     private productService: ProductService,
     public dialog: MatDialog,
-    private router: Router
+    private router: Router,
+    private cs: CommonService
   ) {}
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: false }) sort: MatSort;
@@ -103,13 +149,18 @@ export class ListAcquiredRightsComponent implements OnInit, AfterViewInit {
     );
   }
   refreshTable() {
-    this.currentPageNum = 1;
-    this.pageSize = 50;
-    this.sortBy = 'SWID_TAG';
-    this.sortOrder = 'asc';
-    this.length = null;
+    this.resetPaginationProperties();
     this.getTableData();
   }
+
+  resetPaginationProperties(): void {
+    this.currentPageNum = 1;
+    this.pageSize = 50;
+    this.sortBy = 'SKU';
+    this.sortOrder = TableSortOrder.ASC;
+    this.length = null;
+  }
+
   getTableData() {
     switch (this.currentTab) {
       case this.tabList[0]:
@@ -164,6 +215,8 @@ export class ListAcquiredRightsComponent implements OnInit, AfterViewInit {
   }
 
   sortData(sort) {
+    localStorage.setItem('acquired_direction', sort.direction);
+    localStorage.setItem('acquired_active', sort.active);
     this.sortOrder = sort.direction;
     this.sortBy = sort.active;
     this.getTableData();
@@ -274,30 +327,10 @@ export class ListAcquiredRightsComponent implements OnInit, AfterViewInit {
     this.openModal(deleteConfirmation, '40%');
   }
 
-  // deleteAggregation(aggregate: any) {
-  //   const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-  //     width: '500px',
-  //     autoFocus: false,
-  //     disableClose: true,
-  //     data: {
-  //       title : 'Delete Aggregation',
-  //       content : 'Are you sure you want to delete this aggregation ',
-  //       type: 'deleteProductAggregate',
-  //       id: aggregate.ID
-  //     }
-  //   });
-
-  //   dialogRef.afterClosed().subscribe(result => {
-  //     if (result) {
-  //       // this.getAggregations();
-  //     }
-  //   });
-  // }
-
   deleteProductAggregation(successAggMsg, errorAggMsg) {
     this._deleteInProgress = true;
     this.productService
-      .deleteAggregation(this.selectedAggregation.ID)
+      .deleteLicensedAggregation(this.selectedAggregation.sku)
       .subscribe(
         (resp) => {
           this.dialog.closeAll();
@@ -323,11 +356,20 @@ export class ListAcquiredRightsComponent implements OnInit, AfterViewInit {
     });
   }
 
-  getAggregation(): void {
+  getAggregation(data?: AcquiredRightsAggregationParams): void {
     this._loading = true;
-    this.productService.getAggregations().subscribe(
-      (res: AcquiredRightsAggregation) => {
-        this.aggregationDataSource = new MatTableDataSource(res.aggregations);
+
+    const paramObj: AcquiredRightsAggregationParams = data || {
+      scope: this.cs.getLocalData(LOCAL_KEYS.SCOPE),
+      page_num: this.currentPageNum,
+      page_size: this.pageSize,
+      sort_by: this.sortBy,
+      sort_order: this.sortOrder,
+    };
+    this.productService.getAcqRightsAggregations(paramObj).subscribe(
+      ({ aggregations, totalRecords }: AggregationGetResponse) => {
+        this.aggregationDataSource = new MatTableDataSource(aggregations);
+        this.length = totalRecords;
         this._loading = false;
       },
       (error) => {
@@ -338,6 +380,166 @@ export class ListAcquiredRightsComponent implements OnInit, AfterViewInit {
   }
   createNewAggregation(): void {
     alert('create new aggregation');
+  }
+
+  downloadFile(sku, fileName) {
+    // const filePath = file.error_file_api.slice(8);
+    this.productService.getDownloadFile(sku).subscribe(
+      (res) => {
+        console.log(res.file_data);
+
+        const url = `data:application/pdf;base64,${res.file_data}`;
+
+        const downloadEl = document.createElement('a');
+
+        downloadEl.href = url;
+        downloadEl.download = fileName;
+        downloadEl.click();
+      }
+      // (error) => {
+      //   this.errorMsg =
+      //     error.error.message ||
+      //     'Some error occured! Could not download records for selected global file';
+      //   this.openModal(errorMsg);
+      //   console.log('Some error occured! Could not download file.', error);
+      // }
+    );
+  }
+
+  downloadAggregationFile(sku, fileName) {
+    // const filePath = file.error_file_api.slice(8);
+    this.productService.getAggregationDownloadFile(sku).subscribe(
+      (res) => {
+        console.log(res.file_data);
+
+        const url = `data:application/pdf;base64,${res.file_data}`;
+
+        const downloadEl = document.createElement('a');
+
+        downloadEl.href = url;
+        downloadEl.download = fileName;
+        downloadEl.click();
+      }
+      // (error) => {
+      //   this.errorMsg =
+      //     error.error.message ||
+      //     'Some error occured! Could not download records for selected global file';
+      //   this.openModal(errorMsg);
+      //   console.log('Some error occured! Could not download file.', error);
+      // }
+    );
+  }
+
+  checkForTabChange(change: boolean): void {
+    change && this.resetPaginationProperties();
+  }
+
+  advSearchTrigger(event) {
+    this.searchFields = event;
+    this.applyFilter();
+  }
+
+  aggregationAdvSearchTrigger(event) {
+    this.searchFields = event;
+    this.applyAggFilter();
+  }
+
+  applyAggFilter(): void {
+    this._loading = true;
+    this.sortOrder = this.sortOrder || PAGINATION_DEFAULTS.sortOrder;
+    this.sortBy = this.sortBy || 'SKU';
+    // const params: AcquiredRightAggregationQuery = this.filters;
+    this.getAggregation(this.aggFilters);
+  }
+
+  applyFilter(): void {
+    this._loading = true;
+    this.myLicensedDataSource = null;
+    this.sortOrder = localStorage.getItem('acquired_direction');
+    this.sortBy = localStorage.getItem('acquired_active');
+    if (!this.sortBy) {
+      this.sortBy = 'SWID_TAG';
+    }
+    if (!this.sortOrder) {
+      this.sortOrder = 'asc';
+    }
+
+    this.productService
+      .filteredDataAcqRights(this.filters)
+      .subscribe((res: AcquiredRightsResponse) => {
+        this.myLicensedDataSource = new MatTableDataSource(res.acquired_rights);
+        this.myLicensedDataSource.sort = this.sort;
+        this.length = res.totalRecords;
+        this._loading = false;
+      }, console.log);
+  }
+
+  get filters(): AcquiredRightsIndividualParams {
+    return {
+      scopes: this.cs.getLocalData(LOCAL_KEYS.SCOPE),
+      page_num: this.currentPageNum,
+      page_size: this.pageSize,
+      sort_by: this.sortBy,
+      sort_order: this.sortOrder,
+
+      ...(this.searchFields.swidTag?.trim() && {
+        'search_params.swidTag.filteringkey': this.searchFields.swidTag?.trim(),
+      }),
+      ...(this.searchFields.sku?.trim() && {
+        'search_params.SKU.filteringkey': this.searchFields.sku?.trim(),
+      }),
+      ...(this.searchFields.editorName?.trim() && {
+        'search_params.editor.filteringkey':
+          this.searchFields.editorName?.trim(),
+      }),
+      ...(this.searchFields.productName?.trim() && {
+        'search_params.productName.filteringkey':
+          this.searchFields.productName?.trim(),
+      }),
+      ...(this.searchFields.metric?.trim() && {
+        'search_params.metric.filteringkey': this.searchFields.metric?.trim(),
+      }),
+      ...(this.searchFields.softwareProvider?.trim() && {
+        'search_params.softwareProvider.filteringkey':
+          this.searchFields.softwareProvider?.trim(),
+      }),
+      ...(this.searchFields.orderingDate && {
+        'search_params.orderingDate.filteringkey':
+          this.searchFields.orderingDate,
+      }),
+    };
+  }
+
+  get aggFilters(): AcquiredRightsAggregationParams {
+    return {
+      scope: this.cs.getLocalData(LOCAL_KEYS.SCOPE),
+      page_num: this.currentPageNum,
+      page_size: this.pageSize,
+      sort_by: this.sortBy,
+      sort_order: this.sortOrder,
+      ...(this.searchFields.aggregationName?.trim() && {
+        'search_params.name.filteringkey':
+          this.searchFields.aggregationName?.trim(),
+      }),
+      ...(this.searchFields.sku?.trim() && {
+        'search_params.SKU.filteringkey': this.searchFields.sku?.trim(),
+      }),
+      ...(this.searchFields.editorName?.trim() && {
+        'search_params.editor.filteringkey':
+          this.searchFields.editorName?.trim(),
+      }),
+      ...(this.searchFields.metric?.trim() && {
+        'search_params.metric.filteringkey': this.searchFields.metric?.trim(),
+      }),
+      ...(this.searchFields.softwareProvider?.trim() && {
+        'search_params.softwareProvider.filteringkey':
+          this.searchFields.softwareProvider?.trim(),
+      }),
+      ...(this.searchFields.orderingDate && {
+        'search_params.orderingDate.filteringkey':
+          this.searchFields.orderingDate,
+      }),
+    };
   }
 
   ngOnDestroy() {

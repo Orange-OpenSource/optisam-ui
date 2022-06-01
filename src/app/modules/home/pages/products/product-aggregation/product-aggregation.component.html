@@ -4,15 +4,13 @@
       <div class="col-md-9 page-heading">
         {{ "List of Aggregations" | translate }}
       </div>
-      <div class="col-md-3 search-div">
-        <app-advance-search
-          [advanceSearchModel]="advanceSearchModel"
-          [existingFilterFields]="searchFields"
-          (advFilterEvent)="advSearchTrigger($event)"
-        >
-        </app-advance-search>
-      </div>
     </div>
+    <app-advance-search
+      [advanceSearchModel]="advanceSearchModel"
+      [existingFilterFields]="searchFields"
+      (advFilterEvent)="advSearchTrigger($event)"
+    >
+    </app-advance-search>
   </div>
   <mat-card-content>
     <div class="mat-elevation-z8">
@@ -43,7 +41,7 @@
 
               <div *ngSwitchCase="'aggregation_name'">
                 <mat-icon
-                  *ngIf="expandedRow !== product"
+                  *ngIf="expandedRow !== product && product.individual_product_exists"
                   class="expand-icon"
                   (click)="expandAggregation(product)"
                   >add_box</mat-icon
@@ -80,7 +78,7 @@
                   matTooltip="{{
                     'Click here to see related Applications' | translate
                   }}"
-                  (click)="aggrAplDetails(product.SwidTag)"
+                  (click)="aggrAplDetails(product.swidtags)"
                 >
                   {{ product.num_applications }}
                 </a>
@@ -150,11 +148,11 @@
                         {{ element.name }}
                       </a> -->
 
-                      <!-- <div *ngSwitchCase="'numOfApplications'">
-                        <span *ngIf="!element.numOfApplications">{{
-                          element.numOfApplications || 0
-                        }}</span>
-                        <a
+                      <div *ngSwitchCase="'num_applications'">
+                        <!-- <span *ngIf="!element.num_applications">{{
+                          element.num_applications || 0
+                        }}</span> -->
+                        <!-- <a
                           *ngIf="element.numOfApplications"
                           class="align-left mat-button-link"
                           mat-icon-button
@@ -164,14 +162,15 @@
                           (click)="productApl(element.swidTag, element.name)"
                         >
                           {{ element.numOfApplications }}
-                        </a>
-                      </div> -->
+                        </a> -->
+                        {{ element.num_applications }}
+                      </div>
 
-                      <!-- <div *ngSwitchCase="'numofEquipments'">
-                        <span *ngIf="!element.numofEquipments">{{
-                          element.numofEquipments || 0
-                        }}</span>
-                        <a
+                      <div *ngSwitchCase="'num_equipments'">
+                        <!-- <span *ngIf="!element.num_equipments">{{
+                          element.num_equipments || 0
+                        }}</span> -->
+                        <!-- <a
                           *ngIf="element.numofEquipments"
                           class="align-left mat-button-link"
                           mat-icon-button
@@ -181,8 +180,10 @@
                           (click)="productEqui(element.swidTag, element.name)"
                         >
                           {{ element.numofEquipments }}
-                        </a>
-                      </div> -->
+                        </a> -->
+
+                        {{ element.num_equipments }}
+                      </div>
 
                       <span *ngSwitchDefault>{{ element[column] || "-" }}</span>
                     </div>

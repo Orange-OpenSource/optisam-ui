@@ -16,6 +16,7 @@
         <span id="buttonHeader" *ngIf="activeTab == 'Globaldata'">{{
           "Select the file to upload." | translate
         }}</span>
+        
         <span id="buttonHeader" *ngIf="activeTab != 'Globaldata'">{{
           "Select the files to upload. Files must be in csv
           format only."
@@ -36,7 +37,7 @@
             id="file"
             type="file"
             name="files"
-            accept=".xlsx, .xls"
+            accept=".xlsx, .xls, .csv"
             (click)="resetUpload($event)"
             (change)="onFileSelect($event)"
             *ngIf="activeTab == 'Globaldata'"
@@ -108,7 +109,7 @@
             <a
               id="downloadLinkText"
               class="mat-button-link"
-              href="https://orange-opensource.github.io/optisam-backend/excel/genericTempWithoutData.xlsx"
+              href="https://optisam.pages.gitlab.tech.orange/optisam-it/optisam-ui/excel/genericTempWithoutData.xlsx"
             >
               {{ "Global Template" | translate }}
             </a>

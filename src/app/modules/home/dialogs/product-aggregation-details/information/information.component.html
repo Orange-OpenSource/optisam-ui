@@ -1,7 +1,7 @@
 <div *ngIf="productDetails">
   <p>
-    <strong>SWIDTags :</strong> 
-    <span class="margin-left">{{(productDetails.products) ? productDetails.products.join(', ') : '-'}}</span> <br>
+    <!-- <strong>SWIDTags :</strong> 
+    <span class="margin-left">{{(productDetails.products) ? productDetails.products.join(', ') : '-'}}</span> <br> -->
 
     <strong>{{'Editor' | translate}} :</strong> 
     <span class="margin-left">{{productDetails.editor}}</span> <br>
@@ -20,5 +20,11 @@
 
     <strong>{{'Applications containing the product' | translate}} :</strong>
     <span class="margin-left">{{productDetails.num_applications || 0}}</span>
+    <br>
+
+    <strong>{{'Defined Metrics' | translate}} :</strong>
+    <span class="margin-left">{{productDetails.defined_metrics?.length > 0
+      ? productDetails.defined_metrics.join(", ")
+      : "-"}}</span>
   </p>
 </div>

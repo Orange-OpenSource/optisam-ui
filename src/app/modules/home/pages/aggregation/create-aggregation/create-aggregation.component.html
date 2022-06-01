@@ -1,51 +1,103 @@
 <mat-card>
-  <mat-card-header>
-    <mat-card-title>{{'AGGREGATIONS.TEXTS.CREATE_SWIDTAG_AGGREGATION' | translate}}</mat-card-title>
-  </mat-card-header>
-  <form [formGroup]="createForm" (submit)="createAggregation(successDialog, errorDialog)">
+  <mat-card-title>{{
+    "AGGREGATIONS.TEXTS.CREATE_AGGREGATION" | translate
+  }}</mat-card-title>
+  <form
+    [formGroup]="createForm"
+    (submit)="createAggregation(successDialog, errorDialog)"
+  >
     <mat-card-content fxLayout="column">
-      <div class="horizontal">
+      <div fxLayout="row">
         <mat-form-field appearance="outline">
-          <mat-label>{{'AGGREGATIONS.TEXTS.NAME' | translate}}</mat-label>
-          <input id="aggrName" matInput placeholder="{{'AGGREGATIONS.TEXTS.NAME' | translate}}" formControlName="name">
+          <mat-label>{{
+            "AGGREGATIONS.TEXTS.AGGREGATION_NAME" | translate
+          }}</mat-label>
+          <input
+            id="aggrName"
+            matInput
+            placeholder="{{
+              'AGGREGATIONS.TEXTS.AGGREGATION_NAME' | translate
+            }}"
+            formControlName="name"
+          />
           <mat-error *ngIf="createForm.controls.name.hasError('validAggName')">
-              No special characters or spaces are allowed
-            </mat-error>
-        </mat-form-field>
-        <div class="width-clearfix"></div>
-        <mat-form-field appearance="outline">
-          <mat-label>{{'AGGREGATIONS.TEXTS.EDITOR' | translate}}</mat-label>
-          <mat-select id="aggrEditor" formControlName="editor" [disabled]="HTTPActivity || editorList.length === 0" (selectionChange)="selectionChanged($event, 'editor')" #editorInput>
-            <mat-option>-- {{'AGGREGATIONS.TEXTS.SELECT_EDITOR' | translate}} --</mat-option>
-            <mat-option id="editor_option_{{idx}}" *ngFor="let editor of editorList;let idx = index;" [value]="editor">{{editor}}</mat-option>
-          </mat-select>
+            No special characters or spaces are allowed
+          </mat-error>
         </mat-form-field>
       </div>
 
-      <div class="horizontal">
+      <div fxLayout="row" fxLayoutAlign="space-between" fxLayoutGap="10px">
         <mat-form-field appearance="outline">
-          <mat-label>{{'AGGREGATIONS.TEXTS.METRICS' | translate}}</mat-label>
-          <mat-select id="aggrMetrics" formControlName="metric" [disabled]="!createForm.value.editor|| HTTPActivity || metricesList.length === 0" (selectionChange)="selectionChanged($event, 'metric')" #metricInput>
-            <mat-option>-- {{'AGGREGATIONS.TEXTS.SELECT_METRIC' | translate}} --</mat-option>
-            <mat-option *ngFor="let metric of metricesList;" [value]="metric">{{metric}}</mat-option>
+          <mat-label>{{ "AGGREGATIONS.TEXTS.EDITOR" | translate }}</mat-label>
+          <mat-select
+            id="aggrEditor"
+            formControlName="editor"
+            [disabled]="HTTPActivity || editorList.length === 0"
+            (selectionChange)="selectionChanged($event, 'editor')"
+            #editorInput
+          >
+            <mat-option
+              >--
+              {{ "AGGREGATIONS.TEXTS.SELECT_EDITOR" | translate }}
+              --</mat-option
+            >
+            <mat-option
+              id="editor_option_{{ idx }}"
+              *ngFor="let editor of editorList; let idx = index"
+              [value]="editor"
+              >{{ editor }}</mat-option
+            >
           </mat-select>
         </mat-form-field>
-        <div class="width-clearfix"></div>
         <mat-form-field appearance="outline">
-          <mat-label>{{'AGGREGATIONS.TEXTS.PRODUCT' | translate}}</mat-label>
-          <mat-select id="aggrProduct" formControlName="product_names" [disabled]="!metricInput.value || HTTPActivity || productList.length === 0" (selectionChange)="selectionChanged($event, 'product')" #productInput multiple>
-            <mat-option *ngFor="let product of productList;" [value]="product.product_name">{{product.product_name}}</mat-option>
+          <mat-label>{{ "AGGREGATIONS.TEXTS.PRODUCT" | translate }}</mat-label>
+          <mat-select
+            id="aggrProduct"
+            formControlName="product_names"
+            [disabled]="HTTPActivity || productList.length === 0"
+            (selectionChange)="selectionChanged($event, 'product')"
+            #productInput
+            multiple
+          >
+            <mat-option
+              *ngFor="let product of productList"
+              [value]="product.product_name"
+              >{{ product.product_name }}</mat-option
+            >
           </mat-select>
         </mat-form-field>
       </div>
 
       <div class="swidtabs" *ngIf="createForm.value.product_names">
         <div class="left">
-          <h5 class="transtitle">{{'AGGREGATIONS.TEXTS.SWIDTAGS_ALL' | translate}}</h5>
+          <h5 class="transtitle">
+            {{ "AGGREGATIONS.TEXTS.SWIDTAGS_ALL" | translate }}
+          </h5>
           <div class="body">
-            <div class="list-item" *ngFor="let swid of swidList;let idx = index;">
-              <span>{{swid.swidtag}}</span>
-              <mat-icon class="add" (click)="addSwidTag(swid, idx)">add_circle</mat-icon>
+            <div
+              class="list-item"
+              fxLayout="row"
+              fxLayoutAlign="start"
+              *ngIf="swidList.length"
+            >
+              <span>{{
+                "AGGREGATIONS.TEXTS.SELECT_ALL_SWIDTAGS" | translate
+              }}</span>
+              <div class="action-checkbox">
+                <mat-checkbox
+                  disableRipple
+                  (change)="selectAllSwid($event.checked)"
+                ></mat-checkbox>
+              </div>
+            </div>
+            <div
+              class="list-item"
+              *ngFor="let swid of swidList; let idx = index"
+            >
+              <span class="text-3-dot" matTooltip="{{swid.swidtag}}">{{ swid.swidtag }}</span>
+              <mat-icon class="add" (click)="addSwidTag(swid, idx)"
+                >add_circle</mat-icon
+              >
             </div>
           </div>
         </div>
@@ -53,48 +105,101 @@
           <mat-icon>sync_alt</mat-icon>
         </div>
         <div class="right">
-          <h5 class="transtitle">{{'AGGREGATIONS.TEXTS.SWIDTAGS_SELECTED' | translate}}</h5>
+          <h5 class="transtitle">
+            {{ "AGGREGATIONS.TEXTS.SWIDTAGS_SELECTED" | translate }}
+          </h5>
           <div class="body">
-
-            <div class="list-item" *ngFor="let swid of selectedSwidList;let idx = index;">
-              <span>{{swid.swidtag}}</span>
-              <mat-icon class="cancel" (click)="removeSwidTag(swid, idx)">remove_circle</mat-icon>
+            <div
+              class="list-item"
+              *ngFor="let swid of selectedSwidList; let idx = index"
+            >
+              <span class="text-3-dot" matTooltip="{{swid.swidtag}}">{{ swid.swidtag }}</span>
+              <mat-icon class="cancel" (click)="removeSwidTag(swid, idx)"
+                >remove_circle</mat-icon
+              >
             </div>
-
           </div>
         </div>
       </div>
 
-      <app-loading-spinner *ngIf="HTTPActivity && selectedSwidList.length === 0"></app-loading-spinner>
+      <app-loading-spinner
+        *ngIf="HTTPActivity && selectedSwidList.length === 0"
+      ></app-loading-spinner>
     </mat-card-content>
     <mat-card-actions>
-      <button id="aggrCancel" class="save-btn btn-four" mat-raised-button [disabled]="HTTPActivity && createForm.valid && selectedSwidList.length !== 0" [mat-dialog-close]="true">
-        {{'Cancel' | translate}}
+      <button
+        id="aggrCancel"
+        class="save-btn btn-four"
+        mat-raised-button
+        [disabled]="
+          HTTPActivity && createForm.valid && selectedSwidList.length !== 0
+        "
+        [mat-dialog-close]="true"
+      >
+        {{ "Cancel" | translate }}
       </button>
-      <button id="aggrReset" class="save-btn btn-three" mat-raised-button type="reset" [disabled]="createForm.pristine" (click)="resetForm()">
-        {{'AGGREGATIONS.ACTIONS.RESET' | translate}}
+      <button
+        id="aggrReset"
+        class="save-btn btn-three"
+        mat-raised-button
+        type="reset"
+        [disabled]="createForm.pristine"
+        (click)="resetForm()"
+      >
+        {{ "AGGREGATIONS.ACTIONS.RESET" | translate }}
       </button>
-      <button id="aggrSave" class="save-btn btn-two" mat-raised-button type="submit" [disabled]="!createForm.valid || createForm.pristine || selectedSwidList.length === 0">
-          <span class="spinner-border spinner-border-sm" *ngIf="HTTPActivity && createForm.valid && selectedSwidList.length !== 0"></span>
-          {{'AGGREGATIONS.ACTIONS.SAVE' | translate}}
+      <button
+        id="aggrSave"
+        class="save-btn btn-two"
+        mat-raised-button
+        type="submit"
+        [disabled]="
+          !createForm.valid ||
+          createForm.pristine ||
+          selectedSwidList.length === 0
+        "
+      >
+        <span
+          class="spinner-border spinner-border-sm"
+          *ngIf="
+            HTTPActivity && createForm.valid && selectedSwidList.length !== 0
+          "
+        ></span>
+        {{ "AGGREGATIONS.ACTIONS.SAVE" | translate }}
       </button>
     </mat-card-actions>
   </form>
 </mat-card>
 
 <ng-template #successDialog>
-  <mat-dialog-content>
-    <p>{{'CREATE_AGGR_SUCCESS'|translate}}</p>
+  <mat-dialog-content align="center">
+    <p>{{ "CREATE_AGGR_SUCCESS" | translate }}</p>
   </mat-dialog-content>
   <mat-dialog-actions align="center">
-    <button mat-button [mat-dialog-close]="true" class="btn-two" (click)="backToList()" cdkFocusInitial>{{'OK'|translate}}</button>
+    <button
+      mat-button
+      [mat-dialog-close]="true"
+      class="btn-two"
+      (click)="backToList()"
+      cdkFocusInitial
+    >
+      {{ "OK" | translate }}
+    </button>
   </mat-dialog-actions>
 </ng-template>
 <ng-template #errorDialog>
-  <mat-dialog-content>
-    <p>{{'Error'|translate}}: {{errorMessage}}</p>
+  <mat-dialog-content align="center">
+    <p>{{ "Error" | translate }}: {{ errorMessage }}</p>
   </mat-dialog-content>
   <mat-dialog-actions align="center">
-    <button mat-button [mat-dialog-close]="true" class="btn-two" (click)="backToList()" cdkFocusInitial>{{'OK'|translate}}</button>
+    <button
+      mat-button
+      [mat-dialog-close]="true"
+      class="btn-two"
+      (click)="backToList()"
+      cdkFocusInitial
+    >
+      {{ "OK" | translate }}
+    </button>
   </mat-dialog-actions>
 </ng-template>

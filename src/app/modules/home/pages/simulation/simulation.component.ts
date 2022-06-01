@@ -4,23 +4,20 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-simulation',
   templateUrl: './simulation.component.html',
-  styleUrls: ['./simulation.component.scss']
+  styleUrls: ['./simulation.component.scss'],
 })
 export class SimulationComponent implements OnInit, AfterContentChecked {
   tabMenus = [
-    { title: 'Metrics', link: '/optisam/simulation/metrics'},
-    { title: 'Hardware', link: '/optisam/simulation/hardware'}
+    { title: 'Cost', link: '/optisam/simulation/metrics' },
+    // { title: 'Hardware', link: '/optisam/simulation/hardware' },
   ];
   activeLink = this.tabMenus[0].link;
-  constructor(
-    private router: Router
-  ) {
+  constructor(private router: Router) {
     this.activeLink = this.router.url;
-   }
-
-  ngOnInit() {
   }
-  
+
+  ngOnInit() {}
+
   ngAfterContentChecked() {
     this.activeLink = this.router.url;
   }

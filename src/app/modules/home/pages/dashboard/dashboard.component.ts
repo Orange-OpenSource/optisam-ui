@@ -10,7 +10,7 @@ import { EquipmentsService } from 'src/app/core/services/equipments.service';
 import { ProductService } from 'src/app/core/services/product.service';
 import { SharedService } from 'src/app/shared/shared.service';
 import { MatDialog } from '@angular/material/dialog';
-
+import { FloorPipe } from '../acquiredrights/pipes/floor.pipe';
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -31,6 +31,8 @@ export class DashboardComponent implements OnInit {
   noOfProducts: any;
   noOfManagedEditors: any;
   valuationOfOwnedLicense: any;
+  total_counterfeiting_amount: any;
+  total_underusage_amount: any;
   valuationOfOwnedLicenseMaintenance: any;
   swLicCompData: any;
   emptyLicCompFlag: Boolean;
@@ -205,10 +207,14 @@ export class DashboardComponent implements OnInit {
   }
 
   getProductsInfo() {
+    console.log('working');
+
     this.noOfProducts = null;
     this.noOfManagedEditors = null;
     this.valuationOfOwnedLicense = null;
     this.valuationOfOwnedLicenseMaintenance = null;
+    this.total_counterfeiting_amount = null;
+    this.total_underusage_amount = null;
     this.getProductsDbError = false;
     this.getProductsNetworkError = false;
     this.productService.getProductsOverview(this.currentScope).subscribe(
@@ -218,6 +224,8 @@ export class DashboardComponent implements OnInit {
         this.valuationOfOwnedLicense = res.total_license_cost || 0;
         this.valuationOfOwnedLicenseMaintenance =
           res.total_maintenance_cost || 0;
+        this.total_underusage_amount = res.total_underusage_amount || 0;
+        this.total_counterfeiting_amount = res.total_counterfeiting_amount || 0;
       },
       (err) => {
         if (err.status == 500) {
@@ -386,6 +394,18 @@ export class DashboardComponent implements OnInit {
           plugins: {
             labels: false,
           },
+          scales: {
+            yAxes: [
+              {
+                display: true,
+                ticks: {
+                  suggestedMin: 0, // minimum will be 0, unless there is a lower value.
+                  // OR //
+                  beginAtZero: true, // minimum value will be 0.
+                },
+              },
+            ],
+          },
         },
       });
     }
@@ -528,10 +548,14 @@ export class DashboardComponent implements OnInit {
   getQualityProducts() {
     this.productsNotDeployedInfo = null;
     this.productsNotAcquiredInfo = null;
+    this.productsNotAcquired = 0;
+    this.productsNotDeployed = 0;
     this.productService.getProductsQualityProducts(this.currentScope).subscribe(
       (res) => {
-        this.productsNotDeployedInfo = res.products_not_deployed;
-        this.productsNotAcquiredInfo = res.products_not_acquired;
+        this.productsNotDeployedInfo = res?.products_not_deployed;
+        this.productsNotAcquiredInfo = res?.products_not_acquired;
+        this.productsNotAcquired = this.productsNotAcquiredInfo?.length || 0;
+        this.productsNotDeployed = this.productsNotDeployedInfo?.length || 0;
       },
       (err) => {
         console.log('Some error occured! Could not get quality products.');
@@ -828,10 +852,11 @@ export class DashboardComponent implements OnInit {
   }
 
   getEditors() {
-    const query = '?scopes=' + this.currentScope;
+    const query = '?scope=' + this.currentScope;
     this.productService.getEditorList(query).subscribe(
       (response: any) => {
-        this.editorsList = response.editors || [];
+        this.editorsList = response.editor || [];
+        this.editorsList.sort();
         this.selectedEditor = this.editorsList[0];
         this.editorSelected();
       },
@@ -871,7 +896,9 @@ export class DashboardComponent implements OnInit {
         (res) => {
           if (res.products_costs) {
             const dataListFV = {
-              products: res.products_costs.map((p) => p.swid_tag),
+              products: res.products_costs.map((p) =>
+                p.swid_tag.replaceAll(',', '\n')
+              ),
               data: [
                 {
                   label: 'Acquired Rights',
@@ -910,7 +937,10 @@ export class DashboardComponent implements OnInit {
 
           if (res.products_licenses) {
             const dataListNL = {
-              products: res.products_licenses.map((p) => p.swid_tag),
+              products: res.products_licenses.map((p) =>
+                p.swid_tag.replaceAll(',', '\n')
+              ),
+
               data: [
                 {
                   label: 'Acquired Rights',
@@ -988,6 +1018,16 @@ export class DashboardComponent implements OnInit {
                 },
               },
             ],
+            yAxes: [
+              {
+                display: true,
+                ticks: {
+                  suggestedMin: 0, // minimum will be 0, unless there is a lower value.
+                  // OR //
+                  beginAtZero: true, // minimum value will be 0.
+                },
+              },
+            ],
           },
           responsive: false,
           display: true,
@@ -1045,6 +1085,16 @@ export class DashboardComponent implements OnInit {
                 },
               },
             ],
+            yAxes: [
+              {
+                display: true,
+                ticks: {
+                  suggestedMin: 0, // minimum will be 0, unless there is a lower value.
+                  // OR //
+                  beginAtZero: true, // minimum value will be 0.
+                },
+              },
+            ],
           },
           responsive: false,
           display: true,
@@ -1082,7 +1132,9 @@ export class DashboardComponent implements OnInit {
         (res) => {
           if (res.products_costs) {
             const dataListFV = {
-              products: res.products_costs.map((p) => p.swid_tag),
+              products: res.products_costs.map((p) =>
+                p.swid_tag.replaceAll(',', '\n')
+              ),
               data: [
                 {
                   label: 'Acquired Rights',
@@ -1123,7 +1175,9 @@ export class DashboardComponent implements OnInit {
           }
           if (res.products_licenses) {
             const dataListNL = {
-              products: res.products_licenses.map((p) => p.swid_tag),
+              products: res.products_licenses.map((p) =>
+                p.swid_tag.replaceAll(',', '\n')
+              ),
               data: [
                 {
                   label: 'Acquired Rights',
@@ -1204,6 +1258,16 @@ export class DashboardComponent implements OnInit {
                 },
               },
             ],
+            yAxes: [
+              {
+                display: true,
+                ticks: {
+                  suggestedMin: 0, // minimum will be 0, unless there is a lower value.
+                  // OR //
+                  beginAtZero: true, // minimum value will be 0.
+                },
+              },
+            ],
           },
           responsive: false,
           display: true,
@@ -1259,7 +1323,18 @@ export class DashboardComponent implements OnInit {
                 },
               },
             ],
+            yAxes: [
+              {
+                display: true,
+                ticks: {
+                  suggestedMin: 0, // minimum will be 0, unless there is a lower value.
+                  // OR //
+                  beginAtZero: true, // minimum value will be 0.
+                },
+              },
+            ],
           },
+
           responsive: false,
           display: true,
           plugins: {

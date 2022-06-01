@@ -8,6 +8,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
 import { allowedScopes } from 'src/app/core/util/common.functions';
 import { CommonService } from '@core/services/common.service';
+import { LOCAL_KEYS } from '@core/util/constants/constants';
 
 @Component({
   selector: 'app-equipmenttypemanagement',
@@ -15,7 +16,7 @@ import { CommonService } from '@core/services/common.service';
   styleUrls: ['./equipmenttypemanagement.component.scss'],
 })
 export class EquipmenttypemanagementComponent implements OnInit {
-  role: String;
+  role: string;
   displayedColumns = [
     'type',
     'metadata_source',
@@ -34,6 +35,7 @@ export class EquipmenttypemanagementComponent implements OnInit {
   parentTypeIDs: any[] = [];
   _deleteLoading: Boolean;
   errorMessage: string;
+  allowedRoles: string[] = ['ADMIN', 'SUPER_ADMIN'];
 
   constructor(
     public httpClient: HttpClient,
@@ -43,7 +45,7 @@ export class EquipmenttypemanagementComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.role = localStorage.getItem('role');
+    this.role = this.common.getLocalData(LOCAL_KEYS.ROLE);
     this.loadData();
   }
 

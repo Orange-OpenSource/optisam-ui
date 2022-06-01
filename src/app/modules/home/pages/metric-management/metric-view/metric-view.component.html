@@ -20,7 +20,14 @@
   </div>
 
   <div class="mat-elevation-z8">
-    <mat-table #table [dataSource]="MyDataSource" matSort>
+    <mat-table
+      #table
+      [dataSource]="MyDataSource"
+      matSort
+      matSortActive="name"
+      orderBy="name"
+      matSortDirection="asc"
+    >
       <!-- Metric Type Column -->
       <ng-container matColumnDef="type">
         <mat-header-cell *matHeaderCellDef>{{

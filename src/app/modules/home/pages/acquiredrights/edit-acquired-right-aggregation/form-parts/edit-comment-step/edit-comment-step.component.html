@@ -1,0 +1,78 @@
+<form [formGroup]="commentForm">
+  <mat-card-action fxFlex fxLayout="column" fxLayoutAlign="space-between start" class="body">
+    <div class="content-section" fxLayout="row" fxLayoutGap="70px">
+      <mat-hint>{{ "Select the pdf file to upload" | translate }}</mat-hint>
+      <button (click)="onBrowseClickHandler()" id="browse-btn" mat-raised-button class="btn-two">
+        {{ "Browse" | translate }}
+      </button>
+      <input #fileInput (change)="onFileChangeHandler()" type="file" accept=".pdf"
+        style="display: none" id="file-input" />
+
+      <div   *ngIf="checkFile" class="show-file-name">
+        <div class="border-icon">
+          <div  fxLayoutGap="10px" class="name-icon" fxFlex fxLayout="row" fxLayoutAlign="start start">
+            <mat-icon>insert_drive_file</mat-icon>
+
+            <!-- <span fxFlex *ngIf="!selectedFile">{{ fileName }}</span>
+            <span fxFlex *ngIf="selectedFile">{{selectedFile.name}}</span> -->
+            
+            <div >
+              <span class="file-heading" fxFlex >{{ data.file_name }}</span>
+              <a
+              id="downloadLinkText"
+              class="mat-button-link"
+              (click)="downloadAggregationFile(data.sku,data.file_name)"  
+              >
+            <img id="downloadIcon" src="assets/images/DownloadIcon.svg" />
+            </a>
+            <div>
+              <mat-icon class="action-icon dlt" matTooltip="Delete Selected file" (click)="deleteSelectedFile()"
+                >delete</mat-icon>
+              </div>
+              </div>
+            </div>
+        </div>
+      </div>
+
+      <div  *ngIf="updateFile"  class="show-file-name">
+        <div class="border-icon">
+          <div  fxLayoutGap="10px" class="name-icon" fxFlex fxLayout="row" fxLayoutAlign="start start">
+            <mat-icon>insert_drive_file</mat-icon>
+            <!-- <span fxFlex *ngIf="!selectedFile">{{ fileName }}</span>
+            <span fxFlex *ngIf="selectedFile">{{selectedFile.name}}</span> -->
+            <div >
+              <span class="file-heading" fxFlex >{{ fileName }}</span>
+              <div>
+                <mat-icon class="action-icon dlt" matTooltip="Delete Selected file" (click)="deleteUpdatedFile()"
+                  >delete</mat-icon>
+                </div>
+              </div>
+            </div>
+           </div>
+             </div>
+
+        <div class="show-errors" *ngIf="errorMsg" fxLayout="row" fxLayout="space-between start">
+        <div fxLayoutGap="10px" class="name-icon" fxFlex fxLayout="row" fxLayoutAlign="start start">
+          <mat-icon>error</mat-icon>
+          <span fxFlex>{{ errorMsg }}</span>
+        </div>
+      </div>
+    </div>
+
+  <textarea
+    class="comment"
+    rows="4"
+    cols="111"
+    maxlength="100"
+    id="comment"
+    placeholder="{{ 'Comment' | translate }}"
+    formControlName="comment"
+  ></textarea>
+
+<div class="flexStart">
+  <button class="stepperBtn" mat-button matStepperPrevious>
+    <mat-icon>arrow_back</mat-icon>{{ "Back" | translate }}
+  </button>
+</div>
+</mat-card-action>
+</form>

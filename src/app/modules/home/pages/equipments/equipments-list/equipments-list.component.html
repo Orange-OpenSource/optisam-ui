@@ -4,14 +4,11 @@
       <div class="col-md-9 page-heading" style="display: table-cell">
         {{ "List of Inventoried Equipments" | translate }}
       </div>
-
-      <div class="col-md-3 search-div">
-        <app-advance-search
-          [advanceSearchModel]="advanceSearchModel"
-          (advFilterEvent)="advSearchTrigger($event)"
-        ></app-advance-search>
-      </div>
     </div>
+    <app-advance-search
+      [advanceSearchModel]="advanceSearchModel"
+      (advFilterEvent)="advSearchTrigger($event)"
+    ></app-advance-search>
   </div>
   <mat-card-content>
     <div class="equip-container mat-elevation-z8">

@@ -1,0 +1,1 @@
+export interface SimulationTotal{afterTotal: number; beforeTotal: number}

@@ -59,6 +59,20 @@ export interface MetricComputationDetails
 {
   computed_details: ComputedDetails[];
 }
+
+export interface AggregationComputationDetails
+{
+  computed_details: ComputedAggDetails[];
+}
+
+export interface ComputedAggDetails {
+  metric_name: string;
+  numCptLicences: number;
+  computedDetails: string;
+  numAcqLicences: number;
+  deltaNumber: number;
+  deltaCost: number;
+}
 export interface ComputedDetails {
   metric_name: string;
   numCptLicences: number;

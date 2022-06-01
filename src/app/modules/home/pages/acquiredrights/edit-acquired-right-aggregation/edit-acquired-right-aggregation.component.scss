@@ -1,161 +1,183 @@
+::ng-deep {
+  mat-dialog-container {
+    position: relative;
+  }
+}
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 9999;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  background-color: hsla(210deg, 17%, 98%, 0.8);
+}
+
 .width-clearfix {
-    clear: both;
+  clear: both;
+  width: 20px;
+}
+.horizontal {
+  display: flex;
+}
+
+.mat-hint {
+  margin-top: 5px;
+  font-size: 12px;
+  font-style: italic;
+}
+
+::ng-deep .mat-option {
+  line-height: 36px;
+  height: 36px;
+  font-size: 12px;
+}
+::ng-deep .mat-input-element:disabled {
+  color: black;
+}
+::ng-deep .mat-select-panel#acqMetrics-panel {
+  min-width: calc(100% + 16px) !important;
+  margin-left: 32px;
+  margin-top: 32px;
+  color: #008afc;
+}
+::ng-deep .mat-primary .mat-pseudo-checkbox-checked,
+::ng-deep .mat-primary .mat-pseudo-checkbox-indeterminate {
+  background: #008afc;
+}
+::ng-deep .mat-datepicker-content .mat-calendar {
+  width: unset !important;
+  height: unset !important;
+}
+
+::ng-deep .mat-calendar-header {
+  padding: 8px 8px 0 8px;
+}
+
+.mat-card-actions {
+  padding-top: 16px !important;
+  margin-bottom: 0px;
+  padding-bottom: 0px !important;
+}
+.col-md-6 {
+  padding-right: 0px !important;
+  padding-left: 0px !important;
+}
+
+::ng-deep .mat-step-header .mat-step-icon-selected,
+::ng-deep .mat-step-header .mat-step-icon-state-done,
+::ng-deep .mat-step-header .mat-step-icon-state-edit {
+  background-color: #008afc !important;
+  color: #fff;
+}
+
+::ng-deep .mat-calendar-body-selected {
+  background-color: #008afc;
+  color: #fff;
+}
+
+#maintenanceAlert {
+  color: #f44336;
+}
+.textInline {
+  padding: 16px;
+  min-width: fit-content;
+}
+.flexLine {
+  display: flex;
+  //   flex-direction: column;
+}
+
+.p-l-0 {
+  padding-left: unset;
+}
+.m-l-6 {
+  margin-left: 6px;
+}
+.m-r-6 {
+  margin-right: 6px;
+}
+
+.comment {
+  border-color: #00000020;
+  padding: 8px;
+}
+#createBtn {
+  margin: unset;
+}
+::ng-deep .mat-step-icon-state-error .mat-icon {
+  font-size: 28px !important;
+  height: 28px !important;
+  width: 28px !important;
+}
+
+.swidtabs {
+  display: flex;
+  align-items: center;
+}
+.left,
+.right {
+  width: 46%;
+  border: 1px solid;
+  border-radius: 5px 5px 0px 0px;
+}
+.transtitle {
+  // color: #fff;
+  padding: 7px;
+  margin-bottom: 0;
+}
+.left .transtitle {
+  background-color: #ccc;
+}
+.left {
+  border-color: #ccc;
+}
+.right .transtitle {
+  background-color: #ccc;
+}
+.right {
+  border-color: #ccc;
+}
+.right .body,
+.left .body {
+  height: 200px;
+  overflow-y: auto;
+}
+.trans-icon {
+  width: 8%;
+  text-align: center;
+}
+.list-item {
+  display: flex;
+  align-items: center;
+  padding: 5px;
+  border-bottom: 1px solid #ccc;
+  span {
+    width: 90%;
+    word-break: break-all;
+  }
+  .add {
+    color: green;
+    cursor: pointer;
+  }
+  .cancel {
+    color: red;
+    cursor: pointer;
+  }
+}
+
+.save-btn {
+  min-width: 100px;
+  .spinner-border {
+    height: 20px;
     width: 20px;
   }
-  .horizontal {
-    display: flex;
-  }
-  
-  .mat-hint {
-    margin-top: 5px;
-    font-size: 12px;
-    font-style: italic;
-  }
-  
-  ::ng-deep .mat-option {
-    line-height: 36px;
-    height: 36px;
-    font-size: 12px;
-  }
-  ::ng-deep .mat-input-element:disabled {
-    color: black;
-  }
-  ::ng-deep .mat-select-panel#acqMetrics-panel {
-    min-width: calc(100% + 16px) !important;
-    margin-left: 32px;
-    margin-top: 32px;
-    color: #008afc;
-  }
-  ::ng-deep .mat-primary .mat-pseudo-checkbox-checked,
-  ::ng-deep .mat-primary .mat-pseudo-checkbox-indeterminate {
-    background: #008afc;
-  }
-  ::ng-deep .mat-datepicker-content .mat-calendar {
-    width: unset !important;
-    height: unset !important;
-  }
-  
-  ::ng-deep .mat-calendar-header {
-    padding: 8px 8px 0 8px;
-  }
-  
-  .mat-card-actions {
-    padding-top: 16px !important;
-    margin-bottom: 0px;
-    padding-bottom: 0px !important;
-  }
-  .col-md-6 {
-    padding-right: 0px !important;
-    padding-left: 0px !important;
-  }
-  
-  ::ng-deep .mat-step-header .mat-step-icon-selected,
-  ::ng-deep .mat-step-header .mat-step-icon-state-done,
-  ::ng-deep .mat-step-header .mat-step-icon-state-edit {
-    background-color: #008afc !important;
-    color: #fff;
-  }
-  
-  ::ng-deep .mat-calendar-body-selected {
-    background-color: #008afc;
-    color: #fff;
-  }
-  
-  #maintenanceAlert {
-    color: #f44336;
-  }
-  .textInline {
-    padding: 16px;
-    min-width: fit-content;
-  }
-  .flexLine {
-    display: flex;
-    //   flex-direction: column;
-  }
-  
-  .p-l-0 {
-    padding-left: unset;
-  }
-  .m-l-6 {
-    margin-left: 6px;
-  }
-  .m-r-6 {
-    margin-right: 6px;
-  }
-  
-  .comment {
-    border-color: #00000020;
-    padding: 8px;
-  }
-  #createBtn {
-    margin: unset;
-  }
-  ::ng-deep .mat-step-icon-state-error .mat-icon {
-    font-size: 28px !important;
-    height: 28px !important;
-    width: 28px !important;
-  }
-  
-  .swidtabs {
-    display: flex;
-    align-items: center;
-  }
-  .left,
-  .right {
-    width: 46%;
-    border: 1px solid;
-    border-radius: 5px 5px 0px 0px;
-  }
-  .transtitle {
-    // color: #fff;
-    padding: 7px;
-    margin-bottom: 0;
-  }
-  .left .transtitle {
-    background-color: #ccc;
-  }
-  .left {
-    border-color: #ccc;
-  }
-  .right .transtitle {
-    background-color: #ccc;
-  }
-  .right {
-    border-color: #ccc;
-  }
-  .right .body,
-  .left .body {
-    height: 200px;
-    overflow-y: auto;
-  }
-  .trans-icon {
-    width: 8%;
-    text-align: center;
-  }
-  .list-item {
-    display: flex;
-    align-items: center;
-    padding: 5px;
-    border-bottom: 1px solid #ccc;
-    span {
-      width: 90%;
-      word-break: break-all;
-    }
-    .add {
-      color: green;
-      cursor: pointer;
-    }
-    .cancel {
-      color: red;
-      cursor: pointer;
-    }
-  }
-  
-  .save-btn {
-    min-width: 100px;
-    .spinner-border {
-      height: 20px;
-      width: 20px;
-    }
-  }
-  
+}
+
+.header-label {
+  padding: 2px;
+  font-weight: bold;
+}

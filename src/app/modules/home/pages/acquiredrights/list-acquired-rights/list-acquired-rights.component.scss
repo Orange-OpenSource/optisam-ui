@@ -7,6 +7,9 @@
   overflow: hidden;
   white-space: nowrap;
 }
+.mat-column-swidtags{
+  min-width: 160px;
+}
 .mat-cell {
   display: unset !important;
   padding-top: 10px;
@@ -53,13 +56,10 @@
 .mat-column-metric {
   min-width: 140px;
 }
-.mat-column-version,
-.mat-column-editor {
+.mat-column-version {
   width: 100px;
 }
-.mat-column-action {
-  max-width: 100px;
-}
+
 .action-bar {
   padding-bottom: 10px;
 }

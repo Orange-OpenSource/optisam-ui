@@ -1,5 +1,5 @@
-import { Component, OnInit, Input } from '@angular/core';
 
+import { Component, OnInit, Input } from '@angular/core';
 @Component({
   selector: 'app-aq-rights',
   templateUrl: './aq-rights.component.html',
@@ -7,9 +7,15 @@ import { Component, OnInit, Input } from '@angular/core';
 })
 export class AqRightsComponent implements OnInit {
   @Input() acquireRights: any;
-  constructor() { }
+
+  constructor() 
+
+  { 
+  }
 
   ngOnInit() {
+    
+ 
   }
 
 }

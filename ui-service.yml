@@ -28,7 +28,7 @@ objects:
       labels:
         run: optisam-ui
     spec:
-      host: optisam-ui-${ENV}.kermit-noprod-b.itn.intraorange
+      host: optisam-ui-${ENV}.apps.fr01.paas.tech.orange
       to:
         kind: Service
         name: svc-optisam-ui
@@ -50,6 +50,7 @@ objects:
         metadata:
          labels:
            app: optisam-ui
+           internal-elasticsearch: 'true'  
          name: optisam-ui
         spec:
          containers:
@@ -69,8 +70,8 @@ objects:
              failureThreshold: 5
            resources:
              requests:
-               cpu: "80m"
-               memory: "128Mi"
+               cpu: "40m"
+               memory: "64Mi"
              limits:
                cpu: "80m"
                memory: "128Mi"

@@ -541,3 +541,9 @@ margin-bottom:5px; */
 .scroll-container {
   position: relative;
 }
+
+.text-3-dot {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}

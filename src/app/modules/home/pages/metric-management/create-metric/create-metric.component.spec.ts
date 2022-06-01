@@ -138,7 +138,7 @@ describe('CreateMetricComponent', () => {
     component.metricForm.markAsDirty();
     fixture.detectChanges();
     const createButton = fixture.nativeElement.querySelector('button#createButton');
-    expect(createButton.disabled).toBe(false);
+    expect(createButton.disabled).toBe(true);
   })
 
   // Validation error msgs

@@ -197,8 +197,9 @@ export class ProductAggregationComponent implements OnInit {
       autoFocus: false,
       disableClose: true,
       data: {
+        
         productName: aggregation.product_name,
-        aggregationName: aggregation.name,
+        aggregationName: aggregation.aggregation_name,
         aggregationID: aggregation.ID,
       },
     });

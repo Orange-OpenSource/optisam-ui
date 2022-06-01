@@ -37,8 +37,169 @@
 
             <div class="tab-pane fade" id="nav-aq-rights" role="tabpanel" aria-labelledby="nav-aq-rights-tab">
               <div class="tab-content-inner">
-                <app-loading-spinner *ngIf="_loading && !acquireRight"></app-loading-spinner>
-                <app-aq-rights [acquireRights]="acquireRight" *ngIf="!_loading && acquireRight"></app-aq-rights>
+                <!-- <app-loading-spinner *ngIf="_loading && !acquireRight"></app-loading-spinner>
+                <app-aq-rights [acquireRights]="acquireRight" *ngIf="!_loading && acquireRight"></app-aq-rights> -->
+                <!-- Compliance table -->
+                <div>
+
+                  <div class="no-data" *ngIf="!hasCompliance && !aggregationName">
+                    {{ "The compliance can not be computed because no right has been defined for the aggregation. Please contact your admin to define acquired rights for the aggregation." }}
+                  </div>
+
+                  <div class="tab-content-inner" *ngIf="hasCompliance && !aggregationName" >
+                    <div class="table-responsive">
+                      <div class="mat-elevation-z8">
+                        <mat-table class="main-table" [dataSource]="acquireRight" multiTemplateDataRows>
+                          <ng-container matColumnDef="{{ column }}" *ngFor="let column of displayedColumns">
+                            <div>
+                              <mat-header-cell *matHeaderCellDef>
+                                {{ tableKeyLabelMap[column] | translate }}
+                              </mat-header-cell>
+                            </div>
+
+                            <mat-cell *matCellDef="let product">
+                              <div [ngSwitch]="column">
+                                <!-- <span *ngSwitchCase="'numCptLicences'">{{ product.numCptLicences }}</span> -->
+
+                                <div *ngSwitchCase="'metric'">
+                                  <span *ngIf="product.metric | checkAggregationMetricLength ">
+                                    <mat-icon *ngIf="
+                                      expandedRow !== product &&
+                                      !product.metricNotDefined
+                                    " class="expand-icon" (click)="expandMetrics(product)">add_box
+                                    </mat-icon>
+                                    <mat-icon *ngIf="expandedRow === product" class="expand-icon"
+                                      (click)="closeMetrics()">
+                                      indeterminate_check_box</mat-icon>
+                                  </span>
+                                  {{ product.metric }}
+                                </div>
+
+                                <div *ngSwitchCase="'computedDetails'">
+                                  <span class="error-msg" *ngIf="product.metricNotDefined">
+                                    {{ "Metric not Defined" }}</span>
+
+                                  <span class="error-msg" *ngIf="!num_equipments">&nbsp;{{
+                                    "Product is not
+                                    deployed"
+                                    | translate
+                                    }}</span>
+                                  <span *ngIf="!product.metricNotDefined && num_equipments">
+                                    {{ product.computedDetails || "-" }}
+                                  </span>
+                                  <!-- <span *ngIf="!product.metricNotDefined">
+                                    {{ product.computedDetails || "-" }}
+                                  </span> -->
+                                </div>
+
+                                <div *ngSwitchCase="'numCptLicences'">
+                                  {{ product.numCptLicences || 0 }}
+                                </div>
+
+                                <div *ngSwitchCase="'deltaNumber'">
+                                  <span class="greenText"
+                                    *ngIf="(product.deltaNumber||0)>=0">{{product.deltaNumber||0}}</span>
+                                  <span class="redText" *ngIf="(product.deltaNumber||0) < 0"
+                                    matTooltip="{{'The product is not compliant'|translate}}!"
+                                    matTooltipClass="errorTooltip">{{product.deltaNumber}}</span>
+                                </div>
+
+                                <div *ngSwitchCase="'deltaCost'">
+                                  <span class="greenText"
+                                    *ngIf="(product.deltaCost||0)>=0">{{(product.deltaCost||0)|formatCost}}</span>
+                                  <span class="redText" *ngIf="(product.deltaCost||0) < 0"
+                                    matTooltip="{{'The product is not compliant'|translate}}!"
+                                    matTooltipClass="errorTooltip">{{product.deltaCost|formatCost}}</span>
+                                </div>
+
+                                <span *ngSwitchDefault>{{
+                                  product[column] || "-"
+                                  }}</span>
+                              </div>
+                            </mat-cell>
+                          </ng-container>
+
+                          <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+                          <ng-container matColumnDef="expandedDetail">
+                            <mat-cell class="expand-cell" *matCellDef="let product"
+                              [attr.colspan]="expandDisplayedColumns.length">
+                              <div class="aggregation-detail mat-elevation-z8" [@detailExpand]="
+                                  product == expandedRow ? 'expanded' : 'collapsed'
+                                ">
+                                <mat-table class="detail-table" [dataSource]="computationDetails">
+                                  <ng-container matColumnDef="{{ column }}"
+                                    *ngFor="let column of expandDisplayedColumns">
+                                    <ng-container *ngIf="column.includes('blankColumn')">
+                                      <mat-header-cell *matHeaderCellDef>
+                                      </mat-header-cell>
+                                      <mat-cell *matCellDef="let element"></mat-cell>
+                                    </ng-container>
+                                    <ng-container *ngIf="!column.includes('blankColumn')">
+                                      <mat-header-cell *matHeaderCellDef>
+                                        {{ tableKeyLabelMap[column] | translate }}
+                                      </mat-header-cell>
+                                      <mat-cell *matCellDef="let element">
+
+                                        <div [ngSwitch]="column">
+
+                                          <div *ngSwitchCase="'numCptLicences'">
+                                            {{ element.numCptLicences || 0 }}
+                                          </div>
+                                          <div *ngSwitchCase="'deltaNumber'">
+                                            <span class="greenText"
+                                              *ngIf="(element.deltaNumber||0)>=0">{{element.deltaNumber||0}}</span>
+                                            <span class="redText" *ngIf="(element.deltaNumber||0) < 0"
+                                              matTooltip="{{'The product is not compliant'|translate}}!"
+                                              matTooltipClass="errorTooltip">{{element.deltaNumber}}</span>
+                                          </div>
+
+                                          <div *ngSwitchCase="'deltaCost'">
+                                            <span class="greenText"
+                                              *ngIf="(element.deltaCost||0)>=0">{{(element.deltaCost||0)|formatCost}}</span>
+                                            <span class="redText" *ngIf="(element.deltaCost||0) < 0"
+                                              matTooltip="{{'The product is not compliant'|translate}}!"
+                                              matTooltipClass="errorTooltip">{{element.deltaCost|formatCost}}</span>
+                                          </div>
+
+                                          <span *ngSwitchDefault>{{ element[column] || "-" }}</span>
+                                        </div>
+                                      </mat-cell>
+                                    </ng-container>
+                                  </ng-container>
+
+                                  <mat-header-row *matHeaderRowDef="expandDisplayedColumns"></mat-header-row>
+                                  <mat-row *matRowDef="
+                                      let row;
+                                      columns: expandDisplayedColumns
+                                    "></mat-row>
+                                </mat-table>
+                                <app-loading-spinner *ngIf="_loading && !computationDetails"></app-loading-spinner>
+                              </div>
+                            </mat-cell>
+                          </ng-container>
+
+                          <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
+                          <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+                          <mat-row *matRowDef="let row; columns: ['expandedDetail']" class="agg-detail-row"
+                            [class.agg-expanded-row]="
+                              !expandedRow || expandedRow !== row
+                            "></mat-row>
+                        </mat-table>
+                        <app-loading-spinner *ngIf="_loading && !acquireRight"></app-loading-spinner>
+                        <!-- <div
+                          class="no-data"
+                          *ngIf="
+                            !_loading &&
+                            (!acquireRight ||
+                              (acquireRight && acquireRight.data.length === 0))
+                          "
+                        >
+                          {{ "No data available" | translate }}
+                        </div> -->
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
 

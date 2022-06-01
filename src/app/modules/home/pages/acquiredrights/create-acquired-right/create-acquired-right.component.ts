@@ -1,10 +1,20 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  Inject,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatStepper } from '@angular/material/stepper';
 import { map } from 'rxjs/operators';
+import { Subscription, Observable } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 import { MetricService } from 'src/app/core/services/metric.service';
 import { ProductService } from 'src/app/core/services/product.service';
+import { HttpClient } from '@angular/common/http';
+import { ISOFormat } from '@core/util/common.functions';
 
 @Component({
   selector: 'app-create-acquired-right',
@@ -12,9 +22,19 @@ import { ProductService } from 'src/app/core/services/product.service';
   styleUrls: ['./create-acquired-right.component.scss'],
 })
 export class CreateAcquiredRightComponent implements OnInit {
+  @ViewChild('fileInput') fileInput: ElementRef<HTMLInputElement>;
+  selectedFile: File;
+  showActivityLogs$: Observable<boolean>;
+  submitSub: Subscription;
+  allowedInventoryFiles: string[] = [
+    // 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    // 'application/vnd.ms-excel',
+    'application/pdf',
+  ];
   metricsList: any[] = [];
   skuForm: FormGroup;
   productForm: FormGroup;
+  contractForm: FormGroup;
   licenseForm: FormGroup;
   maintenanceForm: FormGroup;
   commentForm: FormGroup;
@@ -25,6 +45,7 @@ export class CreateAcquiredRightComponent implements OnInit {
   editorsList: string[] = [];
   productsList: any[] = [];
   displayProductsList: any[] = [];
+  selectedFiles: File[] = [];
   versionsList: string[] = [];
   filteredEditorsList: string[];
   filteredProductsList: any[];
@@ -40,10 +61,13 @@ export class CreateAcquiredRightComponent implements OnInit {
 
   disabledMetricNameList: string[] = [];
   currentMetricType: string;
+  currentSelectedFile: string;
+  checkFile: boolean;
 
   constructor(
     private metricService: MetricService,
     private productService: ProductService,
+    private translateService: TranslateService,
     private dialog: MatDialog,
     @Inject(MAT_DIALOG_DATA) public data
   ) {
@@ -53,6 +77,7 @@ export class CreateAcquiredRightComponent implements OnInit {
 
   ngOnInit(): void {
     this.initForm();
+    this.checkFile = true;
     // Filter autocomplete options for 'Editor'
     this.product_editor.valueChanges
       .pipe(map((value) => this._filter('editor', value)))
@@ -87,7 +112,7 @@ export class CreateAcquiredRightComponent implements OnInit {
   // Get editors list
   listEditors() {
     const query = '?scopes=' + this.currentScope;
-    this.productService.getEditorList(query).subscribe(
+    this.productService.getDashboardEditorList(query).subscribe(
       (res) => {
         this.editorsList = res.editors || [];
         this.filteredEditorsList = this.editorsList;
@@ -151,6 +176,13 @@ export class CreateAcquiredRightComponent implements OnInit {
         Validators.pattern(/^[a-zA-Z0-9_.]*$/),
       ]),
     });
+
+    this.contractForm = new FormGroup({
+      orderingDate: new FormControl(null),
+      corporateSource: new FormControl(''),
+      softwareProvider: new FormControl(''),
+    });
+
     this.productForm = new FormGroup({
       // Product Name, Version, Editor: Allow all characters except _ & allow just one space between words only
       product_name: new FormControl('', [
@@ -188,9 +220,13 @@ export class CreateAcquiredRightComponent implements OnInit {
         this.licensesMaintenanceValidation
       ),
       maintenance_price: new FormControl(null, this.maintenancePriceValidation),
+      lastPurchasedOrder: new FormControl(''),
+      supportNumber: new FormControl(''),
+      maintenanceProvider: new FormControl(''),
     });
     this.commentForm = new FormGroup({
       comment: new FormControl(''),
+      file_name: new FormControl(''),
     });
     if (this.data) {
       this.product_name.setValue(this.data.product_name);
@@ -206,6 +242,15 @@ export class CreateAcquiredRightComponent implements OnInit {
 
   get sku() {
     return this.skuForm.get('sku');
+  }
+  get orderingDate() {
+    return this.contractForm.get('orderingDate');
+  }
+  get corporateSource() {
+    return this.contractForm.get('corporateSource');
+  }
+  get softwareProvider() {
+    return this.contractForm.get('softwareProvider');
   }
   get product_name() {
     return this.productForm.get('product_name');
@@ -237,8 +282,24 @@ export class CreateAcquiredRightComponent implements OnInit {
   get maintenance_price() {
     return this.maintenanceForm.get('maintenance_price');
   }
+  get lastPurchasedOrder() {
+    return this.maintenanceForm.get('lastPurchasedOrder');
+  }
+  get supportNumber() {
+    return this.maintenanceForm.get('supportNumber');
+  }
+  get maintenanceProvider() {
+    return this.maintenanceForm.get('maintenanceProvider');
+  }
+  get file_name() {
+    return this.commentForm.get('file_name');
+  }
   get comment() {
     return this.commentForm.get('comment');
+  }
+
+  get file_data() {
+    return this.selectedFile;
   }
   get allowDate(): boolean {
     return (
@@ -273,6 +334,7 @@ export class CreateAcquiredRightComponent implements OnInit {
   get incompleteFormForCreate(): Boolean {
     if (
       this.skuForm.valid &&
+      this.contractForm.valid &&
       this.productForm.valid &&
       this.licenseForm.valid &&
       this.maintenanceForm.valid
@@ -311,6 +373,7 @@ export class CreateAcquiredRightComponent implements OnInit {
   get isPristine(): Boolean {
     if (
       this.skuForm.pristine &&
+      this.contractForm.pristine &&
       this.productForm.pristine &&
       this.licenseForm.pristine &&
       this.maintenanceForm.pristine &&
@@ -373,13 +436,26 @@ export class CreateAcquiredRightComponent implements OnInit {
       metric_name: this.metrics.value.join(','),
       num_licenses_acquired: Number(this.licenses_acquired.value),
       avg_unit_price: Number(this.unit_price.value),
-      start_of_maintenance: this.startMaintenanceDate.value,
-      end_of_maintenance: this.endMaintenanceDate.value,
+      start_of_maintenance: ISOFormat(this.startMaintenanceDate.value),
+      end_of_maintenance: ISOFormat(this.endMaintenanceDate.value),
       num_licences_maintainance: Number(this.licenses_maintenance.value),
       avg_maintenance_unit_price: Number(this.maintenance_price.value),
       scope: localStorage.getItem('scope'),
       comment: this.comment.value,
+      ordering_date: ISOFormat(this.orderingDate.value),
+      corporate_sourcing_contract: this.corporateSource.value,
+      software_provider: this.softwareProvider.value,
+      last_purchased_order: this.lastPurchasedOrder.value,
+      support_number: this.supportNumber.value,
+      maintenance_provider: this.maintenanceProvider.value,
+      file_name: this.file_name.value,
+      file_data: this.currentSelectedFile,
     };
+
+    // const formData = new FormData();
+    // formData.append('sku',this.sku.value);
+    // formData.append('file_data', this.selectedFile);
+
     this.productService.createAcquiredRight(body).subscribe(
       (res) => {
         this.actionSuccessful = true;
@@ -399,14 +475,35 @@ export class CreateAcquiredRightComponent implements OnInit {
     console.log(this.metrics.value);
   }
 
+  handleUpload(file) {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+      this.currentSelectedFile = reader.result.toString().split(',')[1];
+      console.log(this.currentSelectedFile);
+    };
+  }
+
+  getBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+    });
+  }
+
   // Resets form
   resetForm(stepper: MatStepper) {
     stepper.reset();
+    this.contractForm.reset();
     this.skuForm.reset();
     this.productForm.reset();
     this.licenseForm.reset();
     this.maintenanceForm.reset();
     this.commentForm.reset();
+    this.selectedFile = null;
+    this.checkFile = false;
     // resest list used for autocomplete
     this.filteredEditorsList = this.editorsList;
     this.filteredProductsList = [];
@@ -504,6 +601,58 @@ export class CreateAcquiredRightComponent implements OnInit {
         this.validateAllFormFields(control);
       }
     });
+  }
+
+  // fileInvalid(file: File): boolean {
+  //   this.fileError = '';
+  //   if (!this.allowedInventoryFiles.includes(file.type)) {
+  //     this.fileError = 'Invalid file type!';
+  //     return true;
+  //   }
+  //   return false;
+  // }
+
+  resetHandler(): void {
+    this.fileInput.nativeElement.value = '';
+    this.selectedFile = null;
+    this.errorMsg = '';
+    if (this.submitSub) this.submitSub.unsubscribe();
+  }
+
+  onBrowseClickHandler(): void {
+    this.resetHandler();
+    this.fileInput.nativeElement.click();
+  }
+
+  deleteSelectedFile() {
+    this.selectedFile = null;
+    console.log('Inside deleteSelected');
+  }
+
+  onFileChangeHandler(): void {
+    this.selectedFile = this.fileInput.nativeElement.files[0];
+
+    // if (!this.allowedInventoryFiles.includes(this.selectedFile.type)) {
+    // console.log("Hello");
+    // this.errorMsg =
+    // this.commentForm.markAsPristine();
+    //   return;
+    // }
+
+    this.commentForm.patchValue({ file_name: this.selectedFile.name });
+    this.handleUpload(this.selectedFile);
+
+    console.log(this.selectedFile);
+    if (!this.allowedInventoryFiles.includes(this.selectedFile.type)) {
+      this.resetHandler();
+      this.translateService
+        .stream('INVALID_FILE_TYPE')
+        .subscribe((trans: string) => {
+          this.errorMsg = trans;
+        });
+    }
+
+    this.commentForm.markAsDirty();
   }
 
   ngOnDestroy() {

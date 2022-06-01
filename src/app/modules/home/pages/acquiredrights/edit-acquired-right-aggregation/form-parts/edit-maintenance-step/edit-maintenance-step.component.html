@@ -1,0 +1,182 @@
+<form [formGroup]="maintenanceForm">
+  <div class="horizontal">
+    <mat-form-field appearance="outline">
+      <mat-label>{{
+        "Number of licenses under maintenance" | translate
+      }}</mat-label>
+      <input
+        id="licenses_maintenance"
+        matInput
+        (input)="valueChange($event)"
+        placeholder="{{ 'Number of licenses under maintenance' | translate }}"
+        formControlName="licenses_maintenance"
+      />
+      <mat-hint>{{
+        "Number of licenses under maintenance" | translate
+      }}</mat-hint>
+      <mat-error
+        *ngIf="
+          licenses_maintenance.invalid &&
+          licenses_maintenance.hasError('required')
+        "
+      >
+        {{ "Number of licenses is mandatory" | translate }}
+      </mat-error>
+      <mat-error
+        *ngIf="
+          licenses_maintenance.invalid &&
+          licenses_maintenance.hasError('pattern')
+        "
+      >
+        {{ "Invalid number" | translate }}
+      </mat-error>
+    </mat-form-field>
+    <div class="width-clearfix"></div>
+    <mat-form-field appearance="outline">
+      <mat-label>{{ "Maintenance unit price" | translate }}</mat-label>
+      <input
+        id="maintenance_price"
+        matInput
+        placeholder="{{ 'Unit price' | translate }}"
+        formControlName="maintenance_price"
+      />
+      <mat-hint>{{
+        "Unit price of maintenance for the period, for one license" | translate
+      }}</mat-hint>
+      <mat-error
+        *ngIf="
+          maintenance_price.invalid && maintenance_price.hasError('required')
+        "
+      >
+        {{ "Maintenance unit price is mandatory" | translate }}
+      </mat-error>
+      <mat-error
+        *ngIf="
+          maintenance_price.invalid && maintenance_price.hasError('pattern')
+        "
+      >
+        {{ "Invalid maintenance unit price" | translate }}
+      </mat-error>
+    </mat-form-field>
+  </div>
+  <div fxLayout="row wrap" fxLayoutGap="10px">
+    <div fxFlex>
+      <div fxLayout="column" fxFlex>
+        <span class="header-label">{{ "PERIOD_FROM" | translate }}</span>
+        <mat-form-field appearance="outline" class="formField" fxFlex>
+          <mat-label>{{ "Start of maintenance" | translate }}</mat-label>
+          <input
+            matInput
+            [disabled]="allowDate"
+            readonly="allowDate"
+            [matDatepicker]="picker1"
+            (click)="picker1.open()"
+            id="startMaintenanceDate"
+            placeholder="{{ 'Start of maintenance' | translate }}"
+            formControlName="startMaintenanceDate"
+            (dateChange)="orgStartValueChange()"
+          />
+          <mat-datepicker-toggle
+            matSuffix
+            [for]="picker1"
+          ></mat-datepicker-toggle>
+          <mat-datepicker #picker1></mat-datepicker>
+          <mat-error
+            *ngIf="
+              startMaintenanceDate.invalid &&
+              (startMaintenanceDate.dirty || startMaintenanceDate.touched) &&
+              startMaintenanceDate.errors.required
+            "
+          >
+            {{ "Invalid Start Date" | translate }}</mat-error
+          >
+        </mat-form-field>
+      </div>
+    </div>
+    <div fxFlex>
+      <div fxLayout="column" fxFlex>
+        <span class="header-label">{{ "PERIOD_TO" | translate }}</span>
+        <mat-form-field appearance="outline" class="formField">
+          <mat-label>{{ "End of maintenance" | translate }}</mat-label>
+          <input
+            matInput
+            [matDatepicker]="picker2"
+            [disabled]="allowEndDate"
+            (click)="picker2.open()"
+            id="endMaintenanceDate"
+            placeholder="{{ 'End of maintenance' | translate }}"
+            formControlName="endMaintenanceDate"
+            [matDatepickerFilter]="boundDateStart"
+            [readonly]="
+              this.startMaintenanceDate.invalid ||
+              !this.startMaintenanceDate.value
+            "
+            [disabled]="
+              this.startMaintenanceDate.invalid ||
+              !this.startMaintenanceDate.value
+            "
+          />
+          <mat-datepicker-toggle
+            matSuffix
+            [for]="picker2"
+          ></mat-datepicker-toggle>
+          <mat-datepicker #picker2></mat-datepicker>
+          <mat-error
+            *ngIf="
+              endMaintenanceDate.invalid &&
+              (endMaintenanceDate.dirty || endMaintenanceDate.touched) &&
+              endMaintenanceDate.errors.required
+            "
+          >
+            {{ "Invalid End Date" | translate }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+  </div>
+  <div id="maintenanceAlert" *ngIf="incompleteMaintenanceForm">
+    {{ "Please fill both the date fields to proceed" | translate }}
+  </div>
+  <div fxLayout="row wrap" fxLayoutGap="10px">
+    <mat-form-field class="" appearance="outline" fxFlex>
+      <mat-label>{{ "LAST_PURCHASED_ORDER" | translate }}</mat-label>
+      <input
+        id="maintenance_price"
+        matInput
+        placeholder="{{ 'LAST_PURCHASED_ORDER' | translate }}"
+        formControlName="lastPurchasedOrder"
+        [maxLength]="charLength"
+      />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" fxFlex>
+      <mat-label>{{ "SUPPORT_NUMBER" | translate }}</mat-label>
+      <input
+        id="maintenance_price"
+        matInput
+        placeholder="{{ 'SUPPORT_NUMBER' | translate }}"
+        formControlName="supportNumber"
+        [maxLength]="charLength"
+      />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" fxFlex>
+      <mat-label>{{ "MAINTENANCE_PROVIDER" | translate }}</mat-label>
+      <input
+        id="maintenance_price"
+        matInput
+        placeholder="{{ 'MAINTENANCE_PROVIDER' | translate }}"
+        formControlName="maintenanceProvider"
+        [maxLength]="charLength"
+      />
+    </mat-form-field>
+  </div>
+</form>
+<div class="stepperContainer">
+  <button class="stepperBtn" mat-button matStepperPrevious>
+    <mat-icon>arrow_back</mat-icon>{{ "Back" | translate }}
+  </button>
+  <button class="stepperBtn" mat-button matStepperNext>
+    {{ "Next" | translate }}<mat-icon>arrow_forward </mat-icon>
+  </button>
+</div>

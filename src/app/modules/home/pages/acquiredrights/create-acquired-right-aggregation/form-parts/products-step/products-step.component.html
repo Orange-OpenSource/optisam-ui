@@ -1,0 +1,178 @@
+<form [formGroup]="productsForm">
+  <div fxLayoutGap="10px" fxLayout="row" fxLayoutAlign="center start">
+    <mat-form-field appearance="outline" fxFlex>
+      <mat-label>{{ "Editor" | translate }}*</mat-label>
+      <mat-select
+        id="product_name"
+        formControlName="productsEditor"
+        (selectionChange)="listProducts()"
+      >
+        <mat-option *ngFor="let editor of editorsList" [value]="editor">{{
+          editor
+        }}</mat-option>
+      </mat-select>
+      <mat-hint>{{ "Editor of the product" | translate }}</mat-hint>
+      <mat-error
+        *ngIf="productsEditor.invalid && productsEditor.hasError('required')"
+      >
+        {{ "Product editor is mandatory" | translate }}
+      </mat-error>
+      <mat-error
+        *ngIf="productsEditor.invalid && productsEditor.hasError('pattern')"
+      >
+        {{ "Value cannot contain leading or trailing whitespace" | translate }}
+      </mat-error>
+      <mat-error
+        *ngIf="
+          productsEditor.invalid && productsEditor.hasError('hasUnderscore')
+        "
+      >
+        {{ "Value cannot contain an underscore" | translate }}
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" fxFlex>
+      <mat-label>{{ "Metric " | translate }}*</mat-label>
+      <mat-select
+        multiple
+        id="acqMetrics"
+        formControlName="productsMetrics"
+        (selectionChange)="changed($event.value)"
+      >
+        <mat-option
+          *ngFor="let metric of metricsList"
+          [value]="metric.name"
+          [disabled]="disabledMetricNameList.includes(metric.name)"
+          #option
+          (click)="metricClickHandler(option._selected, metric.type)"
+          >{{ metric.name }}</mat-option
+        >
+      </mat-select>
+      <mat-hint>{{
+        "Metric to be used in OpTISAM for license computation" | translate
+      }}</mat-hint>
+      <mat-error
+        *ngIf="productsMetrics.invalid && productsMetrics.hasError('required')"
+      >
+        {{ "Metric is mandatory" | translate }}
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" fxFlex *ngIf="false">
+      <mat-label>{{ "Product Name" | translate }}*</mat-label>
+      <input
+        id="products_name"
+        type="text"
+        matInput
+        placeholder="{{ 'Product Name' | translate }}"
+        formControlName="productsName"
+        [matAutocomplete]="autoProductNames"
+      />
+      <mat-autocomplete
+        autoActiveFirstOption
+        #autoProductNames="matAutocomplete"
+        (optionSelected)="listProducts()"
+      >
+        <mat-option *ngFor="let option of productNameList" [value]="option">
+          {{ option }}
+        </mat-option>
+      </mat-autocomplete>
+      <mat-hint>{{ "Name of the product" | translate }}</mat-hint>
+      <mat-error
+        *ngIf="productsName.invalid && productsName.hasError('required')"
+      >
+        {{ "Product name is mandatory" | translate }}
+      </mat-error>
+      <mat-error
+        *ngIf="productsName.invalid && productsName.hasError('pattern')"
+      >
+        {{ "Value cannot contain leading or trailing whitespace" | translate }}
+      </mat-error>
+      <mat-error
+        *ngIf="productsName.invalid && productsName.hasError('hasUnderscore')"
+      >
+        {{ "Value cannot contain an underscore" | translate }}
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" fxFlex>
+      <mat-label>{{ "AGGREGATIONS.TEXTS.PRODUCT" | translate }}</mat-label>
+      <mat-select
+        id="product_name"
+        formControlName="productsName"
+        [disabled]="productDisabled"
+        (selectionChange)="productSelectionChanged($event)"
+        #productInput
+        multiple
+      >
+        <mat-option
+          *ngFor="let product of productNameList | uniqueProduct"
+          [value]="product.product_name"
+          >{{ product.product_name }}</mat-option
+        >
+      </mat-select>
+      <mat-hint>{{ "Name of the product" | translate }}</mat-hint>
+      <mat-error
+        *ngIf="productsName.invalid && productsName.hasError('required')"
+      >
+        {{ "Product name is mandatory" | translate }}
+      </mat-error>
+    </mat-form-field>
+  </div>
+
+  <div class="swidtabs" *ngIf="productsName.value">
+    <div class="left">
+      <h5 class="transtitle">
+        {{ "AGGREGATIONS.TEXTS.SWIDTAGS_ALL" | translate }}
+      </h5>
+      <div class="body">
+        <div
+          class="list-item"
+          fxLayout="row"
+          fxLayoutAlign="space-between"
+          *ngIf="swidList.length"
+        >
+          <span>Select all SWIDtags</span>
+          <mat-checkbox
+            style="margin-right: 11px"
+            disableRipple
+            (change)="selectAllSwid($event.checked)"
+          ></mat-checkbox>
+        </div>
+        <div class="list-item" *ngFor="let swid of swidList; let idx = index">
+          <span>{{ swid.swidtag }}</span>
+          <mat-icon class="add" (click)="addSwidTag(swid, idx)"
+            >add_circle</mat-icon
+          >
+        </div>
+      </div>
+    </div>
+    <div class="trans-icon">
+      <mat-icon>sync_alt</mat-icon>
+    </div>
+    <div class="right">
+      <h5 class="transtitle">
+        {{ "AGGREGATIONS.TEXTS.SWIDTAGS_SELECTED" | translate }}
+      </h5>
+      <div class="body">
+        <div
+          class="list-item"
+          *ngFor="let swid of selectedSwidList; let idx = index"
+        >
+          <span>{{ swid.swidtag }}</span>
+          <mat-icon class="cancel" (click)="removeSwidTag(swid, idx)"
+            >remove_circle</mat-icon
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+<div class="stepperContainer">
+  <button class="stepperBtn" mat-button matStepperPrevious>
+    <mat-icon>arrow_back</mat-icon>{{ "Back" | translate }}
+  </button>
+  <button class="stepperBtn" mat-button matStepperNext>
+    {{ "Next" | translate }}<mat-icon>arrow_forward </mat-icon>
+  </button>
+</div>

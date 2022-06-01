@@ -24,7 +24,14 @@
             "tsConfig": "src/tsconfig.app.json",
             "assets": [
               "src/favicon.png",
-              { "glob": "**/*", "input": "src/assets/", "ignore": ["src/assets/config/**"], "output": "/assets/" }
+              {
+                "glob": "**/*",
+                "input": "src/assets/",
+                "ignore": [
+                  "src/assets/config/**"
+                ],
+                "output": "/assets/"
+              }
             ],
             "styles": [
               "./node_modules/bootstrap/dist/css/bootstrap.min.css",
@@ -149,5 +156,8 @@
       }
     }
   },
-  "defaultProject": "OpTISAM-licence"
+  "defaultProject": "OpTISAM-licence",
+  "cli": {
+    "analytics": false
+  }
 }

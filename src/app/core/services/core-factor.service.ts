@@ -9,7 +9,7 @@ import {
   ActivityLogResponse,
 } from '@home/pages/core-factor-management/core-factor.modal';
 import { CommonService } from '@core/services/common.service';
-import { LOCAL_KEYS, UPLOAD_TYPES } from '@core/util/constants';
+import { LOCAL_KEYS, UPLOAD_TYPES } from '@core/util/constants/constants';
 
 const ELEMENT_DATA: CoreFactorListData[] = [
   { corefactor: '1', model: 'Hydrogen', manufacturer: 'H' },

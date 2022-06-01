@@ -25,7 +25,7 @@ import {
   METRIC_TYPES,
   LOCAL_KEYS,
   METRIC_DEPENDENCY_TYPES,
-} from '@core/util/constants';
+} from '@core/util/constants/constants';
 import { CommonService } from '@core/services/common.service';
 import { Equipments } from '@core/services/equipments';
 import {
@@ -45,7 +45,9 @@ import {
   SetSelectionObject,
   AttributeCounterStandardParams,
   AttributeSumStandardParams,
-  IntanceNumberStandardParams,
+  InstanceNumberStandardParams,
+  StaticStandardParams,
+  MetricEquipmentAttributes,
 } from '@core/modals';
 import { Observable } from 'rxjs';
 import { tap, map } from 'rxjs/operators';
@@ -194,6 +196,11 @@ export class EditMetricsComponent implements OnInit {
         validation: [Validators.required],
       },
       {
+        name: 'cpu',
+        value: null,
+        validation: [Validators.required],
+      },
+      {
         name: 'corefactor',
         value: this.metricDetails?.CoreFactorAttr || '',
         validation: [Validators.required],
@@ -237,6 +244,17 @@ export class EditMetricsComponent implements OnInit {
         name: 'noOfDeployments',
         value: null,
         validation: [Validators.required],
+      },
+    ];
+    return controls;
+  }
+
+  get getReferenceValueGroup(): FormControlObject[] {
+    const controls: FormControlObject[] = [
+      {
+        name: 'referenceValue',
+        value: null,
+        validation: [Validators.pattern(/^[0-9]*$/), Validators.required],
       },
     ];
     return controls;
@@ -384,6 +402,11 @@ export class EditMetricsComponent implements OnInit {
         this.getDependency(this.dependencyTypes.INSTANCE_NUMBER);
         break;
 
+      case this.metricTypes.STATIC_STANDARD:
+        this.addControls(this.getReferenceValueGroup);
+        this.getDependency(this.dependencyTypes.STATIC_STANDARD);
+        break;
+
       default:
         break;
     }
@@ -392,8 +415,6 @@ export class EditMetricsComponent implements OnInit {
   private getDependency(dependencyType: string): void {
     switch (dependencyType) {
       case this.dependencyTypes.PROCESSOR_OR_NUP:
-        console.log('oracle procuessor or nup');
-
         this.firstEquipmentsList$ = this.equipmentTypeService
           .getTypes(this.currentScope)
           .pipe(
@@ -442,6 +463,7 @@ export class EditMetricsComponent implements OnInit {
                 referenceEquipment: this.metricDetails.BaseEqTypeID,
                 core: this.metricDetails.NumCoreAttrID,
                 corefactor: this.metricDetails.CoreFactorAttrID,
+                cpu: this.metricDetails.NumCPUAttrID,
               });
             })
           );
@@ -492,6 +514,14 @@ export class EditMetricsComponent implements OnInit {
         });
 
         break;
+
+      case this.dependencyTypes.STATIC_STANDARD:
+        this.metricEditForm.patchValue({
+          referenceValue: this.metricDetails.ReferenceValue,
+        });
+
+        break;
+
       default:
         break;
     }
@@ -539,10 +569,13 @@ export class EditMetricsComponent implements OnInit {
         );
         console.log('selectedRefEquipment', selectedRefEquipment);
 
-        this.coresList =
+        this.coresList = this.cs.customSort(
           selectedRefEquipment?.attributes.filter((a) =>
             ['FLOAT', 'INT'].includes(a.data_type)
-          ) || [];
+          ) || [],
+          'asc',
+          'name'
+        );
 
         this.checkReset(this.core, this.coresList);
 
@@ -561,22 +594,35 @@ export class EditMetricsComponent implements OnInit {
         this.checkReset(this.aggregationLevel, this.aggregationLevelsList);
         // Populate list of attribute names
         if (this.metricType === this.metricTypes.ATTRIBUTE_COUNTER_STANDARD) {
-          this.attributesList = selectedRefEquipment?.attributes || [];
+          this.attributesList = this.cs.customSort(
+            selectedRefEquipment?.attributes || [],
+            'asc',
+            'name'
+          );
         }
         if (this.metricType === this.metricTypes.ATTRIBUTE_SUM_STANDARD) {
-          this.attributesList =
+          this.attributesList = this.cs.customSort(
             selectedRefEquipment?.attributes.filter(
               (attr) => attr.data_type !== 'STRING'
-            ) || [];
+            ) || [],
+            'asc',
+            'name'
+          );
         }
         break;
       case 'core':
         this.cpusList = [];
-        this.cpusList = this.coresList.filter((attr) => attr.ID != data);
+        this.cpusList = this.cs.customSort(
+          this.coresList.filter((attr) => attr.ID != data),
+          'asc',
+          'name'
+        );
         if (this.isSagOrIbm) {
           this.corefactorsList = [];
-          this.corefactorsList = this.coresList.filter(
-            (attr) => attr.ID != data
+          this.corefactorsList = this.cs.customSort(
+            this.coresList.filter((attr) => attr.ID != data),
+            'asc',
+            'name'
           );
           this.checkReset(this.corefactor, this.corefactorsList);
         }
@@ -585,7 +631,11 @@ export class EditMetricsComponent implements OnInit {
         break;
       case 'cpu':
         this.corefactorsList = [];
-        this.corefactorsList = this.cpusList.filter((attr) => attr.ID != data);
+        this.corefactorsList = this.cs.customSort(
+          this.cpusList.filter((attr) => attr.ID != data),
+          'asc',
+          'name'
+        );
         this.checkReset(this.corefactor, this.corefactorsList);
         break;
 
@@ -641,177 +691,238 @@ export class EditMetricsComponent implements OnInit {
   }
 
   updateMetric(): void {
-    let params:
-      | OracleNupStandardParams
-      | OracleProcessorStandardParams
-      | IbmPvuStandardParams
-      | SagProcessorStandardParams
-      | AttributeSumStandardParams
-      | AttributeCounterStandardParams
-      | IntanceNumberStandardParams;
     switch (this.metricType) {
       case this.metricTypes.ORACLE_NUP_STANDARD:
-        params = {
-          ID: this.metricDetails.ID,
-          Name: this.metricName.value,
-          num_core_attr_id: this.core.value,
-          numCPU_attr_id: this.cpu.value,
-          core_factor_attr_id: this.corefactor.value,
-          start_eq_type_id: this.firstEquipment.value,
-          base_eq_type_id: this.referenceEquipment.value,
-          aggerateLevel_eq_type_id: this.aggregationLevel.value,
-          end_eq_type_id: this.lastEquipment.value,
-          number_of_users: this.noOfUsers.value,
-          scopes: [this.cs.getLocalData(LOCAL_KEYS.SCOPE)],
-        };
-        this.metricService.updateOracleNupStandard(params).subscribe(
-          (res: MetricUpdateSuccess) => {
-            this.openModal(this.successDialog);
-          },
-          (error: MetricUpdateError) => {
-            this.openModal(this.errorDialog);
-            this.errorMsg = error.message;
-          }
-        );
+        this.updateOracleNupStandard();
         break;
 
       case this.metricTypes.ORACLE_PROCESSOR_STANDARD:
-        params = {
-          ID: this.metricDetails.ID,
-          Name: this.metricName.value,
-          num_core_attr_id: this.core.value,
-          numCPU_attr_id: this.cpu.value,
-          core_factor_attr_id: this.corefactor.value,
-          start_eq_type_id: this.referenceEquipment.value,
-          base_eq_type_id: this.firstEquipment.value,
-          aggerateLevel_eq_type_id: this.aggregationLevel.value,
-          end_eq_type_id: this.lastEquipment.value,
-          scopes: [this.cs.getLocalData(LOCAL_KEYS.SCOPE)],
-        };
-        this.metricService.updateOracleProcessorStandard(params).subscribe(
-          (res: MetricUpdateSuccess) => {
-            this.openModal(this.successDialog);
-          },
-          (error: MetricUpdateError) => {
-            this.openModal(this.errorDialog);
-            this.errorMsg = error.message;
-          }
-        );
+        this.updateOracleProcessorStandard();
         break;
 
       case this.metricTypes.IBM_PVU_STANDARD:
-        params = {
-          ID: this.metricDetails.ID,
-          Name: this.metricName.value,
-          num_core_attr_id: this.core.value,
-          core_factor_attr_id: this.corefactor.value,
-          base_eq_type_id: this.referenceEquipment.value,
-          scopes: [this.cs.getLocalData(LOCAL_KEYS.SCOPE)],
-        };
-
-        this.metricService.updateIbmPvuStandard(params).subscribe(
-          (res: MetricUpdateSuccess) => {
-            this.openModal(this.successDialog);
-          },
-          (error: MetricUpdateError) => {
-            this.openModal(this.errorDialog);
-            this.errorMsg = error.message;
-          }
-        );
+        this.updateIbmPvuStandard();
         break;
+
       case this.metricTypes.SAG_PROCESSOR_STANDARD:
-        params = {
-          ID: this.metricDetails.ID,
-          Name: this.metricName.value,
-          num_core_attr_id: this.core.value,
-          core_factor_attr_id: this.corefactor.value,
-          base_eq_type_id: this.referenceEquipment.value,
-          scopes: [this.cs.getLocalData(LOCAL_KEYS.SCOPE)],
-        };
-
-        this.metricService.updateSagProcessorStandard(params).subscribe(
-          (res: MetricUpdateSuccess) => {
-            this.openModal(this.successDialog);
-          },
-          (error: MetricUpdateError) => {
-            this.openModal(this.errorDialog);
-            this.errorMsg = error.message;
-          }
-        );
+        this.updateSagProcessorStandard();
         break;
+
       case this.metricTypes.ATTRIBUTE_COUNTER_STANDARD:
-        params = {
-          ID: this.metricDetails.ID,
-          name: this.metricName.value,
-          eq_type: this.equipmentsTypesList.find(
-            (e: MetricEquipmentTypes) => e.ID === this.referenceEquipment.value
-          )?.type,
-          attribute_name: this.attributesList.find(
-            (a) => a.ID === this.attributeName.value
-          )?.name,
-          value: this.value.value,
-          scopes: [this.cs.getLocalData(LOCAL_KEYS.SCOPE)],
-        };
-
-        this.metricService.updateAttributeCounterStandard(params).subscribe(
-          (res: MetricUpdateSuccess) => {
-            this.openModal(this.successDialog);
-          },
-          (error: MetricUpdateError) => {
-            this.openModal(this.errorDialog);
-            this.errorMsg = error.message;
-          }
-        );
+        this.updateAttributeCounterStandard();
         break;
+
       case this.metricTypes.ATTRIBUTE_SUM_STANDARD:
-        params = {
-          ID: this.metricDetails.ID,
-          name: this.metricName.value,
-          eq_type: this.equipmentsTypesList.find(
-            (e: MetricEquipmentTypes) => e.ID === this.referenceEquipment.value
-          )?.type,
-          attribute_name: this.attributeName.value,
-          reference_value: this.referenceValue.value,
-          scopes: [this.cs.getLocalData(LOCAL_KEYS.SCOPE)],
-        };
-
-        this.metricService.updateAttributeSumStandard(params).subscribe(
-          (res: MetricUpdateSuccess) => {
-            this.openModal(this.successDialog);
-          },
-          (error: MetricUpdateError) => {
-            this.openModal(this.errorDialog);
-            this.errorMsg = error.message;
-          }
-        );
+        this.updateAttributeSumStandard();
         break;
+
       case this.metricTypes.INSTANCE_NUMBER_STANDARD:
-        params = {
-          ID: this.metricDetails.ID,
-          Name: this.metricDetails.Name,
-          num_of_deployments: this.noOfDeployments.value,
-          scopes: [this.cs.getLocalData(LOCAL_KEYS.SCOPE)],
-        };
-
-        this.metricService.updateInstanceNumberStandard(params).subscribe(
-          (res: MetricUpdateSuccess) => {
-            this.openModal(this.successDialog);
-          },
-          (error: MetricUpdateError) => {
-            this.openModal(this.errorDialog);
-            this.errorMsg = error.message;
-          }
-        );
+        this.updateInstanceNumberStandard();
         break;
+
+      case this.metricTypes.STATIC_STANDARD:
+        this.updateStaticStandard();
+        break;
+
       default:
         break;
     }
   }
 
+  private updateOracleProcessorStandard(): void {
+    const params: OracleProcessorStandardParams = {
+      ID: this.metricDetails.ID,
+      Name: this.metricName.value,
+      num_core_attr_id: this.core.value,
+      numCPU_attr_id: this.cpu.value,
+      core_factor_attr_id: this.corefactor.value,
+      start_eq_type_id: this.firstEquipment.value,
+      base_eq_type_id: this.referenceEquipment.value,
+      aggerateLevel_eq_type_id: this.aggregationLevel.value,
+      end_eq_type_id: this.lastEquipment.value,
+      scopes: [this.cs.getLocalData(LOCAL_KEYS.SCOPE)],
+    };
+    this.metricService.updateOracleProcessorStandard(params).subscribe(
+      (res: MetricUpdateSuccess) => {
+        this.openModal(this.successDialog);
+      },
+      (error: MetricUpdateError) => {
+        this.openModal(this.errorDialog);
+        this.errorMsg = error.message;
+      }
+    );
+  }
+
+  private updateOracleNupStandard(): void {
+    const params: OracleNupStandardParams = {
+      ID: this.metricDetails.ID,
+      Name: this.metricName.value,
+      num_core_attr_id: this.core.value,
+      numCPU_attr_id: this.cpu.value,
+      core_factor_attr_id: this.corefactor.value,
+      start_eq_type_id: this.firstEquipment.value,
+      base_eq_type_id: this.referenceEquipment.value,
+      aggerateLevel_eq_type_id: this.aggregationLevel.value,
+      end_eq_type_id: this.lastEquipment.value,
+      number_of_users: this.noOfUsers.value,
+      scopes: [this.cs.getLocalData(LOCAL_KEYS.SCOPE)],
+    };
+    this.metricService.updateOracleNupStandard(params).subscribe(
+      (res: MetricUpdateSuccess) => {
+        this.openModal(this.successDialog);
+      },
+      (error: MetricUpdateError) => {
+        this.openModal(this.errorDialog);
+        this.errorMsg = error.message;
+      }
+    );
+  }
+
+  private updateIbmPvuStandard(): void {
+    const params: IbmPvuStandardParams = {
+      ID: this.metricDetails.ID,
+      Name: this.metricName.value,
+      num_core_attr_id: this.core.value,
+      numCPU_attr_id: this.cpu.value,
+      core_factor_attr_id: this.corefactor.value,
+      base_eq_type_id: this.referenceEquipment.value,
+      scopes: [this.cs.getLocalData(LOCAL_KEYS.SCOPE)],
+    };
+
+    this.metricService.updateIbmPvuStandard(params).subscribe(
+      (res: MetricUpdateSuccess) => {
+        this.openModal(this.successDialog);
+      },
+      (error: MetricUpdateError) => {
+        this.openModal(this.errorDialog);
+        this.errorMsg = error.message;
+      }
+    );
+  }
+
+  private updateSagProcessorStandard(): void {
+    const params: SagProcessorStandardParams = {
+      ID: this.metricDetails.ID,
+      Name: this.metricName.value,
+      num_core_attr_id: this.core.value,
+      numCPU_attr_id: this.cpu.value,
+      core_factor_attr_id: this.corefactor.value,
+      base_eq_type_id: this.referenceEquipment.value,
+      scopes: [this.cs.getLocalData(LOCAL_KEYS.SCOPE)],
+    };
+
+    this.metricService.updateSagProcessorStandard(params).subscribe(
+      (res: MetricUpdateSuccess) => {
+        this.openModal(this.successDialog);
+      },
+      (error: MetricUpdateError) => {
+        this.openModal(this.errorDialog);
+        this.errorMsg = error.message;
+      }
+    );
+  }
+
+  private updateAttributeCounterStandard(): void {
+    const params: AttributeCounterStandardParams = {
+      ID: this.metricDetails.ID,
+      name: this.metricName.value,
+      eq_type: this.equipmentsTypesList.find(
+        (e: MetricEquipmentTypes) => e.ID === this.referenceEquipment.value
+      )?.type,
+      attribute_name: this.attributesList.find(
+        (a) => a.ID === this.attributeName.value
+      )?.name,
+      value: this.value.value,
+      scopes: [this.cs.getLocalData(LOCAL_KEYS.SCOPE)],
+    };
+
+    this.metricService.updateAttributeCounterStandard(params).subscribe(
+      (res: MetricUpdateSuccess) => {
+        this.openModal(this.successDialog);
+      },
+      (error: MetricUpdateError) => {
+        this.openModal(this.errorDialog);
+        this.errorMsg = error.message;
+      }
+    );
+  }
+
+  private updateAttributeSumStandard(): void {
+    const eqType: MetricEquipmentTypes = this.equipmentsTypesList.find(
+      (e: MetricEquipmentTypes) => e.ID === this.referenceEquipment.value
+    );
+    const params: AttributeSumStandardParams = {
+      ID: this.metricDetails.ID,
+      name: this.metricName.value,
+      eq_type: eqType.type,
+      attribute_name: eqType.attributes.reduce(
+        (attributeName: string, attribute: MetricEquipmentAttributes) => {
+          if (attribute.ID === this.attributeName.value) {
+            attributeName = attribute.name;
+          }
+          return attributeName;
+        },
+        ''
+      ),
+      reference_value: this.referenceValue.value,
+      scopes: [this.cs.getLocalData(LOCAL_KEYS.SCOPE)],
+    };
+
+    this.metricService.updateAttributeSumStandard(params).subscribe(
+      (res: MetricUpdateSuccess) => {
+        this.openModal(this.successDialog);
+      },
+      (error: MetricUpdateError) => {
+        this.openModal(this.errorDialog);
+        this.errorMsg = error.message;
+      }
+    );
+  }
+
+  private updateInstanceNumberStandard(): void {
+    const params: InstanceNumberStandardParams = {
+      ID: this.metricDetails.ID,
+      Name: this.metricDetails.Name,
+      num_of_deployments: this.noOfDeployments.value,
+      scopes: [this.cs.getLocalData(LOCAL_KEYS.SCOPE)],
+    };
+
+    this.metricService.updateInstanceNumberStandard(params).subscribe(
+      (res: MetricUpdateSuccess) => {
+        this.openModal(this.successDialog);
+      },
+      (error: MetricUpdateError) => {
+        this.openModal(this.errorDialog);
+        this.errorMsg = error.message;
+      }
+    );
+  }
+
+  private updateStaticStandard(): void {
+    const params: StaticStandardParams = {
+      ID: this.metricDetails.ID,
+      Name: this.metricDetails.Name,
+      reference_value: this.referenceValue.value,
+      scopes: [this.cs.getLocalData(LOCAL_KEYS.SCOPE)],
+    };
+
+    this.metricService.updateStaticStandard(params).subscribe(
+      (res: MetricUpdateSuccess) => {
+        this.openModal(this.successDialog);
+      },
+      (error: MetricUpdateError) => {
+        this.openModal(this.errorDialog);
+        this.errorMsg = error.message;
+      }
+    );
+  }
+
   resetHandler(): void {
     Object.keys(this.metricEditForm.controls).forEach((key: string) => {
       if (this.excludeFields.includes(key)) return; // preventing some of the fields to be reset
-      this.metricEditForm.get(key).setValue(null);
+      // this.metricEditForm.get(key).setValue(null);
+      this.initiateForm();
+      this.fetchMetricDetails();
     });
   }
 

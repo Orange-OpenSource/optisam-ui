@@ -7,6 +7,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { SharedService } from 'src/app/shared/shared.service';
 import { AccountService } from '../services/account.service';
 import { AboutComponent } from 'src/app/modules/home/pages/about/about/about.component';
+import { AboutFuture } from '@core/modals';
+import { CommonService } from '@core/services';
+import { LOCAL_KEYS } from '@core/util/constants/constants';
 
 @Component({
   selector: 'app-header',
@@ -27,9 +30,10 @@ export class HeaderComponent implements OnInit {
   selectedScope: any;
   newScope: any;
   scopesListOriginal: any = [];
-  releaseNotes: any;
+  releaseNotes: string[];
   // futures2021: any;
-  futures2022: any;
+  future: AboutFuture[];
+  copyRight: string;
 
   constructor(
     public router: Router,
@@ -38,20 +42,9 @@ export class HeaderComponent implements OnInit {
     private dialog: MatDialog,
     private sharedService: SharedService,
     private accountService: AccountService,
-    private groupService: GroupService
+    private groupService: GroupService,
+    private cs: CommonService
   ) {
-    this.releaseNotes =
-      localStorage.getItem('releaseNotes') === 'undefined'
-        ? []
-        : localStorage.getItem('releaseNotes');
-    // this.futures2021 =
-    //   localStorage.getItem('futures2021') === 'undefined'
-    //     ? []
-    //     : localStorage.getItem('futures2021');
-    this.futures2022 =
-      localStorage.getItem('futures2022') === 'undefined'
-        ? []
-        : localStorage.getItem('futures2022');
     translate.addLangs(['en', 'fr']);
     this.userLang = localStorage.getItem('language')
       ? localStorage.getItem('language')
@@ -65,7 +58,25 @@ export class HeaderComponent implements OnInit {
     const emailId = localStorage.getItem('email') || '';
     this.userName = emailId.substring(0, emailId.lastIndexOf('@'));
     this.role = localStorage.getItem('role');
+    this.fetchAboutData();
   }
+
+  fetchAboutData(): void {
+    try {
+      this.releaseNotes =
+        JSON.parse(this.cs.getLocalData(LOCAL_KEYS.RELEASE_NOTES)) || [];
+    } catch (e) {
+      this.releaseNotes = [];
+    }
+
+    try {
+      this.future = JSON.parse(this.cs.getLocalData(LOCAL_KEYS.FUTURE)) || [];
+    } catch (e) {
+      this.future = [];
+    }
+    this.copyRight = this.cs.getLocalData(LOCAL_KEYS.COPYRIGHT) || '';
+  }
+
   checkLanguage() {
     if (localStorage.getItem('language') === 'en') {
       this.currLang = localStorage.getItem('language');
@@ -78,6 +89,7 @@ export class HeaderComponent implements OnInit {
       }
     }
   }
+
   updateUserLanguage(language: string) {
     this.currLang = language;
     localStorage.setItem('language', language);
@@ -162,9 +174,9 @@ export class HeaderComponent implements OnInit {
       maxHeight: '85vh',
       autoFocus: false,
       data: {
-        releaseNotes: this.releaseNotes,
-        // 'futures2021': this.futures2021,
-        futures2022: this.futures2022,
+        release_notes: this.releaseNotes,
+        future: this.future,
+        copyright: this.copyRight,
       },
     });
   }

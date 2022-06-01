@@ -7,7 +7,9 @@ import { shareReplay } from 'rxjs/operators';
   providedIn: 'root',
 })
 export class ConfigurationServiceService {
-  private readonly configPath: string = 'assets/config/configuration.json';
+  private readonly configPath: string = location.hostname.includes('localhost')
+    ? 'assets/config/dev/configuration.json'
+    : 'assets/config/configuration.json';
   public $configurations: Observable<any>;
   constructor(private http: HttpClient) {}
 

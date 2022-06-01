@@ -23,6 +23,7 @@ import { PaginatorI18n } from 'src/app/shared/custom-mat-paginator-int';
 import { ProfileSettingsComponent } from './pages/settings/profile-settings/profile-settings.component';
 import { MatPaginatorIntl } from '@angular/material/paginator';
 import { AboutComponent } from './pages/about/about/about.component';
+import { CheckAggregationMetricLengthPipe } from './dialogs/product-aggregation-details/check-aggregation-metric-length.pipe';
 
 @NgModule({
   declarations: [HeaderComponent, FooterComponent,
@@ -35,7 +36,8 @@ import { AboutComponent } from './pages/about/about/about.component';
      AqRightsComponent,
      ConfirmDialogComponent,
      ProfileSettingsComponent,
-     AboutComponent],
+     AboutComponent,
+     CheckAggregationMetricLengthPipe],
   imports: [
     CommonModule,
     FormsModule,

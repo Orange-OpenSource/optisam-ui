@@ -19,6 +19,7 @@ export class ListGlobaldataComponent implements OnInit {
     'status',
     'uploaded_by',
     'uploaded_on',
+    'action',
   ];
   _loading: Boolean = false;
   current_page_num: any = 1;
@@ -97,6 +98,33 @@ export class ListGlobaldataComponent implements OnInit {
     this.current_page_num = ev.pageIndex + 1;
     this.page_size = ev.pageSize;
     this.getListData();
+  }
+  
+  downloadFile(file,errorMsg)
+  {
+    console.log(file);
+    // const filePath = file.error_file_api.slice(8);
+    this.dataService.getGlobalDataPastInjection(file.upload_id).subscribe(
+      (res) => {
+        const url = URL.createObjectURL(res);
+        const fileName =
+          file.file_name;
+        const dwldLink: any = document.createElement('a');
+        dwldLink.setAttribute('href', url);
+        dwldLink.setAttribute('download', fileName);
+        dwldLink.style.visibility = 'hidden';
+        document.body.appendChild(dwldLink);
+        dwldLink.click();
+        document.body.removeChild(dwldLink);
+      },
+      (error) => {
+        this.errorMsg =
+          error.error.message ||
+          'Some error occured! Could not download records for selected global file';
+        this.openModal(errorMsg);
+        console.log('Some error occured! Could not download file.', error);
+      }
+    );
   }
 
   downloadFailureReport(file, errorMsg) {

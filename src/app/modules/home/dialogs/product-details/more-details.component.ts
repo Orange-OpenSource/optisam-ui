@@ -132,13 +132,6 @@ export class MoreDetailsComponent implements OnInit {
     );
   }
 
-  checkAggname() {
-    
-    this.router.navigate(['/optisam/ar/prights/aggregations']);
-
-  }
-
-
   openAggregationDetailsDialog(aggregation: any): void {
     const dialogRef = this.dialog.open(ProductAggregationDetailsComponent, {
       width: '850px',

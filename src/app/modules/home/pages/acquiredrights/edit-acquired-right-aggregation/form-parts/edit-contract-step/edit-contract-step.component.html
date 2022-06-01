@@ -1,0 +1,47 @@
+<form [formGroup]="contractForm">
+  <div fxLayoutGap="10px" fxLayout="row" fxLayoutAlign="center start">
+    <mat-form-field appearance="outline">
+      <mat-label>{{
+        "AGGREGATIONS.TEXTS.ORDERING_DATE" | translate
+      }}</mat-label>
+      <input
+        matInput
+        #orderingDate
+        formControlName="orderingDate"
+        [matDatepicker]="datePicker"
+      />
+      <mat-datepicker-toggle
+        matSuffix
+        [for]="datePicker"
+      ></mat-datepicker-toggle>
+      <mat-datepicker #datePicker></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>{{ "AGGREGATIONS.TEXTS.CSC" | translate }}</mat-label>
+      <input
+        matInput
+        formControlName="csc"
+        type="text"
+        [maxlength]="charLength"
+      />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>{{
+        "AGGREGATIONS.TEXTS.SOFTWARE_PROVIDER" | translate
+      }}</mat-label>
+      <input
+        matInput
+        formControlName="softwareProvider"
+        type="text"
+        [maxlength]="charLength"
+      />
+    </mat-form-field>
+  </div>
+</form>
+<div class="flexEnd">
+  <button class="stepperBtn" mat-button matStepperNext>
+    {{ "Next" | translate }}<mat-icon>arrow_forward </mat-icon>
+  </button>
+</div>

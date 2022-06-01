@@ -19,6 +19,7 @@ import {
 } from '../core-factor.modal';
 import { CoreFactorUploadComponent } from '../core-factor-upload/core-factor-upload.component';
 import { SharedService } from '@shared/shared.service';
+import { CommonService } from '@core/services/common.service';
 
 @Component({
   selector: 'app-list-core-factor',
@@ -27,8 +28,8 @@ import { SharedService } from '@shared/shared.service';
 })
 export class ListCoreFactorComponent implements OnInit, AfterViewInit {
   displayedColumns: object = {
-    model: 'Model',
     manufacturer: 'Manufacturer',
+    model: 'Model',
     corefactor: 'Core Factor',
   };
   dataSource: any;
@@ -43,7 +44,8 @@ export class ListCoreFactorComponent implements OnInit, AfterViewInit {
   constructor(
     private coreFactorService: CoreFactorService,
     public dialog: MatDialog,
-    private sharedService: SharedService
+    private sharedService: SharedService,
+    private cs: CommonService
   ) {}
 
   ngOnInit() {
@@ -62,12 +64,18 @@ export class ListCoreFactorComponent implements OnInit, AfterViewInit {
   getCoreFactorList(): void {
     const param: CoreFactorListGetParam = {
       pageNo: 1,
-      pageSize: 50,
+      pageSize: this.pageSize,
     };
     this.coreFactorService.getCoreFactorList(param).subscribe(
       ({ references, totalRecord }: CoreFactorListResponse) => {
         this.paginationLength = totalRecord;
-        this.dataSource = new MatTableDataSource(references);
+        this.dataSource = new MatTableDataSource(
+          this.cs.customSort(references, 'asc', [
+            'manufacturer',
+            'model',
+            'corefactor',
+          ])
+        );
       },
       (error) => {
         console.log(error);

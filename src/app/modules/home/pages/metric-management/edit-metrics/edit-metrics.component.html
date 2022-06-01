@@ -310,6 +310,25 @@
           </div>
           <div class="col-md-3">
             <mat-form-field appearance="outline">
+              <mat-label>{{ "CPU" | translate }}</mat-label>
+              <mat-select
+                id="cpu"
+                formControlName="cpu"
+                [disabled]="cpusList?.length === 0"
+                (selectionChange)="selectionChanged('cpu', $event.value)"
+              >
+                <mat-option *ngFor="let cpu of cpusList" [value]="cpu.ID">
+                  {{ cpu.name }}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="cpu.invalid && cpu.hasError('required')">
+                {{ "CPU is mandatory" | translate }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="col-md-3">
+            <mat-form-field appearance="outline">
               <mat-label>{{ "Corefactor" | translate }}</mat-label>
               <mat-select
                 id="corefactor"
@@ -368,7 +387,11 @@
             </mat-form-field>
             <mat-error
               class="warningMsg"
-              *ngIf="referenceEquipment.dirty && coresList?.length === 0"
+              *ngIf="
+                referenceEquipment.dirty &&
+                coresList?.length === 0 &&
+                !isAttributeCounterOrAttributeSum
+              "
             >
               {{
                 "Selected equipment type does not have one of these: core factor, processor, or core value"
@@ -478,6 +501,42 @@
                 formControlName="noOfDeployments"
                 (keyup)="inputChangeDetection(instanceNumber.value)"
               />
+            </mat-form-field>
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- Static Standard -->
+      <ng-container *ngIf="metricType === metricTypes.STATIC_STANDARD">
+        <div class="row">
+          <div class="col-md-3">
+            <mat-form-field appearance="outline">
+              <mat-label>{{ "Reference Value" | translate }}</mat-label>
+              <input
+                id="referenceValue"
+                matInput
+                formControlName="referenceValue"
+                type="number"
+                min="0"
+                (keyup)="inputChangeDetection($event.target.value)"
+                placeholder="{{ 'Reference Value' | translate }}"
+              />
+              <mat-error
+                *ngIf="
+                  referenceValue.invalid && referenceValue.hasError('required')
+                "
+              >
+                {{ "Reference Value is mandatory" | translate }}
+              </mat-error>
+
+              <mat-error
+                class="warningMsg"
+                *ngIf="
+                  referenceValue.invalid && referenceValue.hasError('pattern')
+                "
+              >
+                {{ "Value must be a positive integer" | translate }}
+              </mat-error>
             </mat-form-field>
           </div>
         </div>

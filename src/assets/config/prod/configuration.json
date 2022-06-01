@@ -1,0 +1,15 @@
+{
+    "env": "production",
+    "license": "https://optisam-license-prod.apps.fr01.paas.tech.orange/api/v1",
+    "simulation":"https://optisam-simulation-prod.apps.fr01.paas.tech.orange/api/v1",
+    "account": "https://optisam-account-prod.apps.fr01.paas.tech.orange/api/v1",
+    "auth": "https://optisam-auth-prod.apps.fr01.paas.tech.orange/api/v1",
+    "import": "https://optisam-import-prod.apps.fr01.paas.tech.orange/api/v1",
+    "dps": "https://optisam-dps-prod.apps.fr01.paas.tech.orange/api/v1",
+    "application":"https://optisam-application-prod.apps.fr01.paas.tech.orange/api/v1",
+    "product":"https://optisam-product-prod.apps.fr01.paas.tech.orange/api/v1",
+    "metric":"https://optisam-metric-prod.apps.fr01.paas.tech.orange/api/v1",
+    "equipment":"https://optisam-equipment-prod.apps.fr01.paas.tech.orange/api/v1",
+    "report":"https://optisam-report-prod.apps.fr01.paas.tech.orange/api/v1",
+    "meta":"https://optisam-meta-prod.apps.fr01.paas.tech.orange"
+}

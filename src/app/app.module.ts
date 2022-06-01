@@ -35,13 +35,12 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatIconModule } from '@angular/material/icon';
 import { CheckMetricsLengthPipe } from '@home/pages/acquiredrights/pipes/check-metrics-length.pipe';
 
-
 @NgModule({
   declarations: [
     AppComponent,
     // LoaderComponent,
     MoreDetailsComponent,
-    CheckMetricsLengthPipe
+    CheckMetricsLengthPipe,
   ],
   imports: [
     HttpClientModule,

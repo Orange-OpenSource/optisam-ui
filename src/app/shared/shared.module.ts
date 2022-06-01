@@ -13,6 +13,7 @@ import { FormatShortdatePipe } from './format-shortdate.pipe';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { PERFECT_SCROLLBAR_CONFIG } from 'ngx-perfect-scrollbar';
+import { FloorPipe } from '@home/pages/acquiredrights/pipes/floor.pipe';
 import { PerfectScrollbarConfigInterface } from 'ngx-perfect-scrollbar';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
@@ -27,6 +28,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     AttributeDetailComponent,
     FormatCostPipe,
     FormatShortdatePipe,
+    FloorPipe,
   ],
   exports: [
     FilterItemDirective,
@@ -34,6 +36,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     AdvanceSearchComponent,
     FormatCostPipe,
     FormatShortdatePipe,
+    FloorPipe,
     FlexLayoutModule,
     PerfectScrollbarModule,
   ],

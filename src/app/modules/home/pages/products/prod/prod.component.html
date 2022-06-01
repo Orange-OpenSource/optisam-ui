@@ -4,16 +4,15 @@
       <div class="col-md-9 page-heading">
         {{ "List of Inventoried Products" | translate }}
       </div>
-      <div class="col-md-3 search-div">
-        <app-advance-search
-          [advanceSearchModel]="advanceSearchModel"
-          [existingFilterFields]="searchFields"
-          (advFilterEvent)="advSearchTrigger($event)"
-        >
-        </app-advance-search>
-      </div>
     </div>
   </div>
+  <app-advance-search
+    [advanceSearchModel]="advanceSearchModel"
+    [existingFilterFields]="searchFields"
+    (advFilterEvent)="advSearchTrigger($event)"
+  >
+  </app-advance-search>
+
   <mat-card-content>
     <div class="mat-elevation-z8">
       <mat-table

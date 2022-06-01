@@ -166,4 +166,17 @@ export class AplInstanceComponent implements OnInit {
       this.router.navigate(['/optisam/apl/instances', key, value.id]);
     }
   }
+
+  getProductData(value) {
+    localStorage.setItem('instanceID', value.id);
+    const key = localStorage.getItem('key');
+    console.log('key', key);
+    console.log('instance', value.id);
+
+    this.router.navigate([
+      '/optisam/apl/applications/instances',
+      key,
+      value.id,
+    ]);
+  }
 }

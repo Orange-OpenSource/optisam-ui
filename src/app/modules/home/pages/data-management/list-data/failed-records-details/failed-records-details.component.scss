@@ -26,6 +26,11 @@
     padding: 16px;
 }
 .mat-cell, .mat-header-cell {
-    min-width: 10vw;
+    min-width: 13vw;
     word-break: break-all;
+    
+}
+
+.mat-header-cell, .mat-header-row, .mat-header-cell-def {
+    flex-wrap: nowrap !important;
 }

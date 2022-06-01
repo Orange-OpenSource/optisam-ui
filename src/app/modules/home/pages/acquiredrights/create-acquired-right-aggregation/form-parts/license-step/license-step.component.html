@@ -1,0 +1,83 @@
+<form [formGroup]="licenseForm">
+  <div fxLayout="row" fxLayoutAlign="space-between" fxLayoutGap="10px">
+    <mat-form-field appearance="outline" fxFlex>
+      <mat-label>{{ "Number of licenses acquired" | translate }}*</mat-label>
+      <input
+        id="licenses_acquired"
+        matInput
+        placeholder="{{ 'Number of licenses acquired' | translate }}"
+        formControlName="licenses_acquired"
+      />
+      <mat-hint>{{
+        "Number of licenses acquired for the product at the specified price and for the selected
+            metric"
+          | translate
+      }}</mat-hint>
+      <mat-error
+        *ngIf="
+          licenses_acquired.invalid && licenses_acquired.hasError('required')
+        "
+      >
+        {{ "Licenses acquired is mandatory" | translate }}
+      </mat-error>
+      <mat-error
+        *ngIf="
+          licenses_acquired.invalid && licenses_acquired.hasError('pattern')
+        "
+      >
+        {{ "Invalid number" | translate }}
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" fxFlex>
+      <mat-label>{{ "Metric " | translate }}*</mat-label>
+      <mat-select
+        multiple
+        id="acqMetrics"
+        formControlName="productsMetrics"
+        [compareWith]="metricCompare"
+        (selectionChange)="metricSelectChange($event.value)"
+      >
+        <mat-option
+          *ngFor="let metric of metricsList"
+          [value]="metric"
+          [disabled]="disabledMetricNameList.includes(metric.name)"
+          >{{ metric.name }}</mat-option
+        >
+      </mat-select>
+      <mat-hint>{{
+        "Metric to be used in OpTISAM for license computation" | translate
+      }}</mat-hint>
+      <mat-error
+        *ngIf="productsMetrics.invalid && productsMetrics.hasError('required')"
+      >
+        {{ "Metric is mandatory" | translate }}
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" fxFlex>
+      <mat-label>{{ "Unit price" | translate }}*</mat-label>
+      <input
+        id="unit_price"
+        matInput
+        placeholder="{{ 'Unit price' | translate }}"
+        formControlName="unit_price"
+      />
+      <mat-hint>{{ "Unit price of license" | translate }}</mat-hint>
+      <mat-error *ngIf="unit_price.invalid && unit_price.hasError('required')">
+        {{ "Unit price is mandatory" | translate }}
+      </mat-error>
+      <mat-error *ngIf="unit_price.invalid && unit_price.hasError('pattern')">
+        {{ "Invalid unit price" | translate }}
+      </mat-error>
+    </mat-form-field>
+  </div>
+  <div class="stepperContainer">
+    <button class="stepperBtn" mat-button matStepperPrevious>
+      <mat-icon>arrow_back</mat-icon>{{ "Back" | translate }}
+    </button>
+    <button class="stepperBtn" mat-button matStepperNext>
+      {{ "Next" | translate }}<mat-icon>arrow_forward </mat-icon>
+    </button>
+  </div>
+</form>

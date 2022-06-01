@@ -152,6 +152,15 @@ export class DataManagementService {
     return this.http.get(url, { responseType: 'blob' });
   }
 
+  getGlobalDataPastInjection(upload_id): Observable<any> {
+    const url = environment.API_IMPORT_URL + '/'  + 'import/download'
+    +'?scope='  +
+    localStorage.getItem('scope')+
+    '&uploadId='+ upload_id +
+    '&downloadType=source';
+    return this.http.get(url, { responseType: 'blob' });
+  }
+
   // Dashboard- Quality
   getDevelopmentRates(scope, frequency, noOfDataPoints) {
     const url =

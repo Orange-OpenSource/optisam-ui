@@ -3,7 +3,7 @@ import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Observable, Subject } from 'rxjs';
 import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+import autoTable from 'jspdf-autotable';
 
 @Injectable({
   providedIn: 'root',
@@ -86,7 +86,7 @@ export class ReportService {
       document.body.removeChild(dwldLink);
       this._isDownloading.next(true);
     } else if (format == 'PDF') {
-      var doc = new jsPDF('landscape');
+      var doc = new jsPDF({orientation: "landscape"});
       var col = headerList;
       var rows = [];
       var contentBody = typeof data != 'object' ? JSON.parse(data) : data;
@@ -99,7 +99,7 @@ export class ReportService {
         }
         rows.push(contentLine);
       }
-      doc.autoTable({
+      autoTable(doc,{
         head: [col],
         body: rows,
         theme: 'grid',

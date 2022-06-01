@@ -67,7 +67,20 @@
           >
           <mat-cell *matCellDef="let product">
             <!-- <a mat-button color="primary">  -->
-            {{ product.num_of_products || 0 }}
+
+              <a
+              *ngIf="product.num_of_products"
+              class="mat-button-link"
+              matTooltip="{{
+                'Click here to see Product Details' | translate
+              }}"
+              (click)="getProductData(product)"
+            >
+              {{ product.num_of_products }}
+            </a>
+            <span *ngIf="!product.num_of_products"> 0 </span>
+
+            <!-- {{ product.num_of_products || 0 }} -->
             <!-- </a> -->
           </mat-cell>
         </ng-container>

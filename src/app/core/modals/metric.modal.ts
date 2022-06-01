@@ -16,6 +16,7 @@ export interface MetricTypes {
   ATTRIBUTE_COUNTER_STANDARD: string;
   ATTRIBUTE_SUM_STANDARD: string;
   INSTANCE_NUMBER_STANDARD: string;
+  STATIC_STANDARD: string;
 }
 
 export interface MetricDetailsParams {
@@ -31,6 +32,7 @@ export interface MetricDependencyTypes {
   SAG_OR_IBM: string;
   ATTRIBUTE_COUNTER_OR_ATTRIBUTE_SUM: string;
   INSTANCE_NUMBER: string;
+  STATIC_STANDARD: string;
 }
 
 export interface MetricEquipmentTypes {
@@ -105,6 +107,7 @@ export interface IbmPvuStandardParams {
   Name: string;
   num_core_attr_id: string;
   core_factor_attr_id: string;
+  numCPU_attr_id: string;
   base_eq_type_id: string;
   scopes: string[];
 }
@@ -129,10 +132,17 @@ export interface AttributeSumStandardParams {
   scopes: string[];
 }
 
-export interface IntanceNumberStandardParams {
+export interface InstanceNumberStandardParams {
   ID: string;
   Name: string;
   num_of_deployments: number;
+  scopes: string[];
+}
+
+export interface StaticStandardParams {
+  ID: string;
+  Name: string;
+  reference_value: number;
   scopes: string[];
 }
 
@@ -152,3 +162,14 @@ export interface sagOrIbmSelectionObject {
 export type SetSelectionObject =
   | OracleProcessorNupSelectionObject
   | sagOrIbmSelectionObject;
+
+export interface MetricType {
+  description: string;
+  href: string;
+  name: string;
+  type_id: string;
+}
+
+export interface MetricList {
+  metrices: Metric[];
+}

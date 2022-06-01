@@ -12,6 +12,12 @@ import { MatDialog } from '@angular/material/dialog';
 import { Editor, Metrics } from '../aggregation.model';
 import { ProductService } from 'src/app/core/services/product.service';
 import { MetricService } from 'src/app/core/services/metric.service';
+import {
+  CreateAggregationPlayload,
+  ErrorResponse,
+  ProductDetails,
+  SuccessResponse,
+} from '@core/modals';
 
 function validateAggregationName(c: FormControl) {
   const EMAIL_REGEXP = /[^a-zA-Z\d_]/g;
@@ -29,11 +35,11 @@ function validateAggregationName(c: FormControl) {
 })
 export class CreateAggregationComponent implements OnInit, OnDestroy {
   createForm: FormGroup;
-  productList: any[] = [];
+  productList: ProductDetails[] = [];
   editorList: Editor[] = [];
   metricesList: Metrics[] = [];
-  swidList: any[] = [];
-  selectedSwidList: any[] = [];
+  swidList: ProductDetails[] = [];
+  selectedSwidList: ProductDetails[] = [];
   selectedScope: any = '';
   errorMessage: string;
   loadingSubscription: Subscription;
@@ -60,18 +66,31 @@ export class CreateAggregationComponent implements OnInit, OnDestroy {
     this.createForm = this.fb.group({
       name: ['', [Validators.required, validateAggregationName]],
       editor: ['', [Validators.required]],
-      metric: ['', [Validators.required]],
       product_names: ['', [Validators.required]],
     });
     this.getEditorsList();
-    this.getMetricesList();
   }
+
+  // <getters>
+  get finalProducts(): string[] {
+    return this.selectedSwidList.reduce(
+      (products: string[], product: ProductDetails) => {
+        if (!products.includes(product.product_name)) {
+          products.push(product.product_name);
+        }
+        return products;
+      },
+      []
+    );
+  }
+  // </getters>
 
   // Get All Editors
   getEditorsList() {
     this.productService.getEditorListAggr(this.selectedScope).subscribe(
       (response: any) => {
         this.editorList = response.editor || [];
+        this.editorList.sort();
       },
       (error) => {
         console.log('Error fetching editors');
@@ -97,13 +116,20 @@ export class CreateAggregationComponent implements OnInit, OnDestroy {
     const query: any = {
       scope: this.selectedScope,
       editor: this.createForm.value.editor,
-      metric: this.createForm.value.metric,
+      ID: 0,
     };
     this.productService.getProductListAggr(query).subscribe(
       (response: any) => {
-        this.acqrights_products = response.acqrights_products;
-        this.productList = response.acqrights_products.filter((v, i, s) => {
+        this.acqrights_products = response.aggrights_products;
+        this.productList = this.acqrights_products.filter((v, i, s) => {
           return s.findIndex((pr) => pr.product_name === v.product_name) === i;
+        });
+        this.productList = this.productList.sort((a, b) => {
+          if (a.product_name.toLowerCase() > b.product_name.toLowerCase())
+            return 1;
+          if (a.product_name.toLowerCase() < b.product_name.toLowerCase())
+            return -1;
+          return 0;
         });
       },
       (error) => {
@@ -116,11 +142,11 @@ export class CreateAggregationComponent implements OnInit, OnDestroy {
   selectionChanged(ev: any, type: string) {
     switch (type) {
       case 'editor':
-        this.createForm.controls['metric'].reset();
         this.createForm.controls['product_names'].reset();
         this.productList = [];
         this.swidList = [];
         this.selectedSwidList = [];
+        this.getProductsList();
         break;
 
       case 'metric':
@@ -129,51 +155,48 @@ export class CreateAggregationComponent implements OnInit, OnDestroy {
         break;
 
       case 'product':
-        this.selectedSwidList = [];
-        this.swidList = [];
-        for (let i = 0; i < this.createForm.value.product_names.length; i++) {
-          this.acqrights_products.filter((res) => {
-            console.log('res:', res, 'swidList : ', this.swidList);
-            if (
-              res.product_name == this.createForm.value.product_names[i] &&
-              this.swidList.indexOf(res) == -1
-            ) {
-              this.swidList.push(res);
-            }
-          });
-        }
+        this.selectedSwidList = this.selectedSwidList || [];
+        const selectedSwidtags = this.selectedSwidList.map((s) => s.swidtag);
+        this.swidList =
+          this.acqrights_products.filter(
+            (ap) =>
+              this.createForm.value.product_names.includes(ap.product_name) &&
+              !selectedSwidtags.includes(ap.swidtag)
+          ) || [];
+        this.selectedSwidList = this.selectedSwidList.filter((s) =>
+          (this.createForm.value.product_names || []).includes(s.product_name)
+        );
         break;
     }
   }
 
-  createAggregation(successMsg, errorMsg) {
+  createAggregation(successMsg, errorMsg): void {
     this.createForm.markAsPristine();
     this.errorMessage = '';
+
     if (this.createForm.valid && this.selectedSwidList.length > 0) {
-      const reqbody = {
+      const reqbody: CreateAggregationPlayload = {
         ID: 0,
-        name: this.createForm.get('name').value,
-        editor: this.createForm.get('editor').value,
-        metric: this.createForm.get('metric').value,
+        aggregation_name: this.createForm.get('name').value,
+        product_editor: this.createForm.get('editor').value,
         scope: this.selectedScope,
-        products: this.selectedSwidList.map((swid) => swid.swidtag),
+        product_names: this.finalProducts,
+        swidtags: this.selectedSwidList.map((swid) => swid.swidtag),
       };
+
       this.productService.saveAggregation(reqbody).subscribe(
-        (resp) => {
-          console.log('aggregation save successfully');
-          this.openModal(successMsg);
+        (res: SuccessResponse) => {
+          if (res.success) this.openModal(successMsg, '25%');
         },
-        (error) => {
+        (error: ErrorResponse) => {
           this.errorMessage =
-            error && error.error
-              ? error.error.message
-              : 'Some error occured! Aggregation could not be created.';
+            error?.message ||
+            'Some error occured! Aggregation could not be created.';
           this.openModal(errorMsg);
-          console.log('Error saving aggregation', error);
         }
       );
     } else {
-      return false;
+      return;
     }
   }
 
@@ -198,11 +221,18 @@ export class CreateAggregationComponent implements OnInit, OnDestroy {
     this.router.navigate(['/optisam/ag/list-aggregation']);
   }
 
-  openModal(templateRef) {
+  openModal(templateRef, width: string = '30%') {
     let dialogRef = this.dialog.open(templateRef, {
-      width: '30%',
+      width: width,
       disableClose: true,
     });
+  }
+
+  selectAllSwid(checked: boolean): void {
+    if (checked) {
+      this.selectedSwidList = [...this.selectedSwidList, ...this.swidList];
+      this.swidList = [];
+    }
   }
 
   ngOnDestroy() {

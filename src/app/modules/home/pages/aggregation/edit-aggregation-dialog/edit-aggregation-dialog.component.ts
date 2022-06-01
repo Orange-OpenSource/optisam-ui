@@ -10,7 +10,18 @@ import {
   MatDialogRef,
   MAT_DIALOG_DATA,
 } from '@angular/material/dialog';
+import {
+  AggregationProductListResponse,
+  AggregationProductRes,
+  ErrorResponse,
+  ProductDetails,
+} from '@core/modals';
+import { CommonService } from '@core/services/common.service';
+import { LOCAL_KEYS } from '@core/util/constants/constants';
+import { SharedService } from '@shared/shared.service';
+import { Subscription } from 'rxjs';
 import { ProductService } from 'src/app/core/services/product.service';
+import { Editor } from '../aggregation.model';
 
 function validateAggregationName(c: FormControl) {
   const AGG_EXP = /[^a-zA-Z\d_]/g;
@@ -41,101 +52,165 @@ export class EditAggregationDialogComponent implements OnInit {
   msgtxt: string;
   noChangesMadeFlag: Boolean = true;
   acqrights_products: any[] = [];
+  editorList: string[] = [];
+  currentScope: string;
+  productListResponse: AggregationProductRes;
+  initProductListResponse: AggregationProductRes;
+  loadingSubscription: Subscription;
+  HTTPActivity: Boolean;
 
   constructor(
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<EditAggregationDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private productService: ProductService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private cs: CommonService,
+    private sharedService: SharedService
   ) {
     this._loading = false;
     this.prodLoading = false;
   }
 
   ngOnInit() {
+    this.loadingSubscription = this.sharedService
+      .httpLoading()
+      .subscribe((data) => {
+        this.HTTPActivity = data;
+      });
+
     this.setFormData();
+    // Fetch all products
+    this.getInitialProductsList();
+    this.updateForm.markAsPristine();
+    this.noChangesMadeFlag = true;
+    this.currentScope = this.cs.getLocalData(LOCAL_KEYS.SCOPE);
+    this.getEditorsList();
+  }
+
+  get productNames(): FormControl {
+    return this.updateForm.get('product_names') as FormControl;
+  }
+
+  get finalProducts(): string[] {
+    return this.selectedSwidList.reduce(
+      (products: string[], product: ProductDetails) => {
+        if (!products.includes(product.product_name)) {
+          products.push(product.product_name);
+        }
+        return products;
+      },
+      []
+    );
+  }
+
+  getEditorsList() {
+    this.productService.getEditorListAggr(this.currentScope).subscribe(
+      (response: { editor: string[] }) => {
+        this.editorList = response.editor || [];
+        this.editorList.sort();
+      },
+      (error: ErrorResponse) => {
+        console.log('Error fetching editors');
+      }
+    );
   }
 
   setFormData() {
     this.updateForm = this.fb.group({
-      name: [this.data.name, [Validators.required, validateAggregationName]],
-      editor: [
-        { value: this.data.editor, disabled: true },
-        [Validators.required],
+      name: [
+        this.data.aggregation_name,
+        [Validators.required, validateAggregationName],
       ],
-      metric: [
-        { value: this.data.metric, disabled: true },
-        [Validators.required],
-      ],
+      editor: [this.data.product_editor, [Validators.required]],
       product_names: [this.data.product_names, [Validators.required]],
     });
     if (this.data.products) {
-      this.selectedSwidList = this.data.products.slice();
+      this.selectedSwidList = this.data.swidtags;
     }
-    // Fetch all products
-    this.getInitialProductsList();
-
-    this.updateForm.markAsPristine();
-    this.noChangesMadeFlag = true;
   }
 
-  getProductsList(initReq?: boolean) {
-    const arr = this.acqrights_products || [];
-    this.swidList = arr.filter(
-      (v) =>
-        this.data.product_names.indexOf(v.product_name) !== -1 &&
-        this.selectedSwidList.findIndex((i) => i === v.swidtag) === -1
+  getSwidtags(initReq?: boolean) {
+    console.log('worknig');
+    initReq = initReq || false;
+    // debugger;
+    const productNames = this.productNames.value;
+    const allSwidTags = [
+      ...this.productListResponse.aggrights_products,
+      ...this.productListResponse.selected_products,
+    ];
+    this.swidList = this.cs.customSort(
+      allSwidTags.filter(
+        (p) =>
+          productNames.includes(p.product_name) &&
+          !this.selectedSwidList.map((s) => s.swidtag).includes(p.swidtag)
+      ),
+      'asc',
+      'swidtag'
     );
-    // If the request is initial i.e when dialog opens
-    if (!initReq) {
-      this.selectedSwidList = [];
-      for (let j = 0; j < this.data.product_names.length; j++) {
-        if (
-          this.updateForm.value.product_names.includes(
-            this.data.product_names[j]
-          )
-        ) {
-          this.selectedSwidList.push(this.data.products[j]);
-        }
-      }
-      for (let i = 0; i < this.updateForm.value.product_names.length; i++) {
-        this.acqrights_products.filter((res) => {
-          if (
-            res.product_name == this.updateForm.value.product_names[i] &&
-            this.swidList.indexOf(res) == -1
-          ) {
-            this.swidList.push(res);
-          }
-        });
-      }
-    }
+
+    this.selectedSwidList = this.cs.customSort(
+      this.selectedSwidList.filter((s) =>
+        productNames.includes(s.product_name)
+      ),
+      'asc',
+      'swidtag'
+    );
   }
+
+  getProductsList() {
+    this.errorMessage = '';
+    const query: any = {
+      scope: this.currentScope,
+      editor: this.updateForm.value.editor,
+      ID: this.data.ID,
+    };
+    this.productService.getProductListAggr(query).subscribe(
+      (response: any) => {
+        this.productListResponse = response;
+        this.productList = [];
+        const sameEditor: boolean = response.selected_products.some(
+          (p: ProductDetails) => p.editor === this.updateForm.value.editor
+        );
+
+        this.acqrights_products = response.aggrights_products;
+        const products: ProductDetails[] = [
+          ...this.acqrights_products,
+          ...(sameEditor ? response.selected_products : []),
+        ];
+
+        this.productList = products.reduce(
+          (products: ProductDetails[], product: ProductDetails) => {
+            if (!products.some((p) => p.product_name === product.product_name))
+              products.push(product);
+
+            return products;
+          },
+          []
+        );
+
+        console.log('this.productList', this.productList);
+      },
+      (error) => {
+        this.errorMessage = error && error.error ? error.error.message : '';
+        console.log('Error fetching metric');
+      }
+    );
+  }
+
   // Get All Products/Swidtags based on Editor and Metrics
   getInitialProductsList() {
     this.prodLoading = true;
     this.swidList = [];
     const query: any = {
       scope: this.data.scope,
-      editor: this.data.editor,
-      metric: this.data.metric,
+      editor: this.data.product_editor,
+      ID: this.data.ID, //this.data.metric,
     };
     this.productService.getProductListAggr(query).subscribe(
-      (response: any) => {
-        this.acqrights_products = response.acqrights_products || [];
-        this.productList = this.acqrights_products.filter((v, i, s) => {
-          return s.findIndex((pr) => pr.product_name === v.product_name) === i;
-        });
-        this.data.product_names.forEach((ele) => {
-          if (
-            this.productList.findIndex((p) => p.product_name === ele) === -1
-          ) {
-            this.productList.push({ product_name: ele });
-          }
-        });
-        // Fetch all swidtags with products
-        this.getProductsList(true);
-        this.prodLoading = false;
+      (response: AggregationProductRes) => {
+        this.initProductListResponse = response;
+        this.setSwidtags(response);
       },
       (error) => {
         this.prodLoading = false;
@@ -144,9 +219,9 @@ export class EditAggregationDialogComponent implements OnInit {
     );
   }
 
-  openModal(templateRef) {
+  openModal(templateRef, width: string = '30%') {
     let dialogRef = this.dialog.open(templateRef, {
-      width: '30%',
+      width: width,
       disableClose: true,
     });
   }
@@ -157,17 +232,17 @@ export class EditAggregationDialogComponent implements OnInit {
       this._loading = true;
       const body = {
         ID: this.aggID,
-        name: this.updateForm.value.name,
+        aggregation_name: this.updateForm.value.name,
+        product_editor: this.updateForm.value.editor,
+        product_names: this.finalProducts,
+        swidtags: this.selectedSwidList.map((swid) => swid.swidtag),
         scope: this.data.scope,
-        editor: this.data.editor,
-        metric: this.data.metric,
-        products: this.selectedSwidList,
       };
 
       this.productService.updateAggregation(this.aggID, body).subscribe(
         (resp) => {
           this._loading = false;
-          this.openModal(successMsg);
+          this.openModal(successMsg, '20%');
         },
         (error) => {
           this._loading = false;
@@ -195,21 +270,93 @@ export class EditAggregationDialogComponent implements OnInit {
   addSwidTag(swid: any, index: number) {
     this.noChangesMadeFlag = false;
     this.swidList.splice(index, 1);
-    this.selectedSwidList.push(swid.swidtag);
-    this.removeItem.splice(
-      this.removeItem.findIndex((v) => v.swidtag === swid.swidtag),
-      1
+    this.selectedSwidList.push(swid);
+    this.swidList = this.cs.customSort(this.swidList, 'asc', 'swidtag');
+    this.selectedSwidList = this.cs.customSort(
+      this.selectedSwidList,
+      'asc',
+      'swidtag'
     );
   }
 
   removeSwidTag(swid: any, index: number) {
     this.noChangesMadeFlag = false;
     this.selectedSwidList.splice(index, 1);
-    this.swidList.push({ swidtag: swid });
-    if (this.data.products.findIndex((v) => v === swid) !== -1) {
-      this.removeItem.push(swid);
-    }
+    this.swidList.push(swid);
+    this.swidList = this.cs.customSort(this.swidList, 'asc', 'swidtag');
+    this.selectedSwidList = this.cs.customSort(
+      this.selectedSwidList,
+      'asc',
+      'swidtag'
+    );
   }
+
+  editorChange(event: any): void {
+    this.updateForm.controls['product_names'].reset();
+    this.productList = [];
+    this.swidList = [];
+    this.selectedSwidList = [];
+    this.getProductsList();
+  }
+
+  selectAllSwid(checked: boolean): void {
+    if (!checked) return;
+    this.selectedSwidList = [...this.selectedSwidList, ...this.swidList];
+    this.swidList = [];
+  }
+
+  setSwidtags(response: AggregationProductRes): void {
+    this.productListResponse = response;
+    this.acqrights_products = response.aggrights_products || [];
+
+    this.productList = this.cs.customSort(
+      [...this.acqrights_products, ...response.selected_products].reduce(
+        (products: ProductDetails[], product: ProductDetails) => {
+          if (
+            !products.some(
+              (p: ProductDetails) => p.product_name === product.product_name
+            )
+          ) {
+            products.push(product);
+          }
+          return products;
+        },
+        []
+      ),
+      'asc',
+      'product_name'
+    );
+
+    const collator = new Intl.Collator(undefined, {
+      numeric: true,
+      sensitivity: 'base',
+    });
+
+    //alphanumerically sorting
+    this.productList = this.productList.sort((a, b) => {
+      return collator.compare(a.product_name, b.product_name);
+    });
+
+    // sort selected swid tags
+    this.selectedSwidList = this.cs.customSort(
+      response.selected_products,
+      'asc',
+      'swidtag'
+    );
+
+    // Fetch all swidtags with products
+    this.swidList = (this.acqrights_products || []).filter((v) =>
+      this.data.product_names.includes(v.product_name)
+    );
+    this.swidList = this.cs.customSort(this.swidList, 'asc', 'swidtag');
+    this.prodLoading = false;
+  }
+
+  resetAggregation(): void {
+    this.setFormData();
+    this.setSwidtags(this.initProductListResponse);
+  }
+
   ngOnDestroy() {
     this.dialog.closeAll();
   }

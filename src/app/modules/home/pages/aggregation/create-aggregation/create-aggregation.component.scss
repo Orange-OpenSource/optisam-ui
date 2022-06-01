@@ -1,79 +1,92 @@
-.mat-card{
-    width: 100%;
+.mat-card {
+  width: 100%;
 }
-    .mat-card-actions{
-        text-align: center;
-    }
-.swidtabs{
-    display: flex;
-    align-items: center;
+.mat-card-actions {
+  text-align: center;
 }
-.left, .right {
-    width: 46%;
-    border: 1px solid;
-    border-radius: 5px 5px 0px 0px;
+.swidtabs {
+  display: flex;
+  align-items: center;
+  .left .body .action-checkbox {
+    padding-left: 3px;
+  }
 }
-.transtitle{
-    // color: #fff;
-    padding: 7px;
-    margin-bottom: 0;
+.left,
+.right {
+  width: 46%;
+  border: 1px solid;
+  border-radius: 5px 5px 0px 0px;
 }
-.left .transtitle{
-    background-color: #ccc
+.transtitle {
+  // color: #fff;
+  padding: 7px 15px;
+  margin-bottom: 0;
 }
-.left{ border-color: #ccc}
-.right .transtitle{
-    background-color: #ccc
+.left .transtitle {
+  background-color: #ccc;
 }
-.right{ border-color: #ccc}
-.right .body, .left .body{
-    height: 200px;
-    overflow-y: auto;
+.left {
+  border-color: #ccc;
 }
-.trans-icon{
-    width: 8%;
-    text-align: center;
+.right .transtitle {
+  background-color: #ccc;
 }
-.list-item{
-    display: flex;
-    align-items: center;
-    padding: 5px;
-    border-bottom: 1px solid #ccc;
+.right {
+  border-color: #ccc;
 }
-    span{
-        width: 90%;
-        word-break: break-all;
-    }
-    .add{
-        color: green;
-        cursor: pointer;
-    }
-    .cancel{
-        color: red;
-        cursor: pointer;
-    }
-.save-btn{
-    min-width: 100px;
+.right .body,
+.left .body {
+  height: 200px;
+  overflow-y: auto;
 }
-    .spinner-border{
-        height: 20px;
-        width: 20px;
-    }
-.width-clearfix{
-    clear: both;
-    width: 20px;
+.trans-icon {
+  width: 8%;
+  text-align: center;
 }
-.horizontal{display: flex;}
+.list-item {
+  display: flex;
+  align-items: center;
+  padding: 5px;
+  border-bottom: 1px solid #ccc;
+}
+span {
+  width: 90%;
+  word-break: break-all;
+}
+.add {
+  color: green;
+  cursor: pointer;
+}
+.cancel {
+  color: red;
+  cursor: pointer;
+}
+.save-btn {
+  min-width: 100px;
+}
+.spinner-border {
+  height: 20px;
+  width: 20px;
+}
+.width-clearfix {
+  clear: both;
+  width: 20px;
+}
+.horizontal {
+  display: flex;
+}
 .single-field {
-    width: 49%;
-    margin: 0 0px;
+  width: 49%;
+  margin: 0 0px;
 }
+
 ::ng-deep .mat-select-panel#aggrProduct-panel {
-    min-width: calc(100% + 16px) !important;
-    margin-left: 32px;
-    margin-top: 32px;
-    color: #008AFC;
+  min-width: calc(100% + 16px) !important;
+  margin-left: 32px;
+  margin-top: 32px;
+  color: #008afc;
 }
-::ng-deep .mat-primary .mat-pseudo-checkbox-checked, ::ng-deep .mat-primary .mat-pseudo-checkbox-indeterminate {
-    background: #008AFC;
+::ng-deep .mat-primary .mat-pseudo-checkbox-checked,
+::ng-deep .mat-primary .mat-pseudo-checkbox-indeterminate {
+  background: #008afc;
 }

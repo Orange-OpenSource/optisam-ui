@@ -80,6 +80,24 @@
           <mat-cell *matCellDef="let file"> {{ file.uploaded_on }} </mat-cell>
         </ng-container>
 
+        <ng-container matColumnDef="action">
+          <mat-header-cell *matHeaderCellDef mat-sort-header="action">{{
+            "Action" | translate
+          }}</mat-header-cell>
+          <mat-cell *matCellDef="let file">      
+            <span *ngIf="file.status === 'COMPLETED' || 'PARTIAL' || 'FAILED' ">  
+          <a
+            id="downloadLinkText"
+            class="mat-button-link"
+            (click)="downloadFile(file, errorDialog)"
+           
+          >
+          <img id="downloadIcon" src="assets/images/DownloadIcon.svg" />
+          </a>
+        </span>  
+         </mat-cell>
+        </ng-container>
+
         <mat-header-row
           *matHeaderRowDef="displayedColumns; sticky: true"
         ></mat-header-row>

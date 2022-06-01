@@ -1,0 +1,50 @@
+<form [formGroup]="aggregationForm">
+  <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="10px">
+    <mat-form-field fxFlex appearance="outline">
+      <mat-label>{{ "SKU" | translate }}*</mat-label>
+      <input
+        id="sku"
+        matInput
+        placeholder="{{ 'SKU' | translate }}"
+        formControlName="sku"
+      />
+      <mat-hint>{{
+        "Stock keeping unit referencing the package sold by the editor"
+          | translate
+      }}</mat-hint>
+      <mat-error *ngIf="sku.invalid && sku.hasError('required')">
+        {{ "SKU is mandatory" | translate }}
+      </mat-error>
+      <mat-error *ngIf="sku.invalid && sku.hasError('pattern')">
+        {{ "SKU is required in ^[a-zA-Z0-9_.]*$ format" | translate }}
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field fxFlex appearance="outline">
+      <mat-label>{{ "Aggregation Name" | translate }}</mat-label>
+      <mat-select
+        disableRipple
+        [ngClass]="{ disabled: !this.aggregationList.length }"
+        formControlName="aggregationName"
+        placeholder="{{ 'Aggregation Name' | translate }}"
+      >
+        <mat-option *ngFor="let agg of aggregationList" [value]="agg.ID">{{
+          agg.aggregation_name
+        }}</mat-option>
+      </mat-select>
+      <mat-hint>{{ "Name of the Aggregation" | translate }}</mat-hint>
+      <mat-error
+        *ngIf="aggregationName.invalid && aggregationName.hasError('required')"
+      >
+        {{ "Aggregation name is mandatory" | translate }}
+      </mat-error>
+      <mat-error
+        *ngIf="aggregationName.invalid && aggregationName.hasError('pattern')"
+      >
+        {{
+          "Aggregation name is required in ^[a-zA-Z0-9_.]*$ format" | translate
+        }}
+      </mat-error>
+    </mat-form-field>
+  </div>
+</form>

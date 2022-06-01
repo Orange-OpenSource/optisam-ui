@@ -104,17 +104,19 @@ export class EquipmentsListComponent implements OnInit {
     this.advanceSearchModel.primary = '';
     this.advanceSearchModel.title = '';
     this.advanceSearchModel.other = [];
+
     for (const attr of list.attributes) {
-      if (attr.primary_key) {
+      if (attr.primary_key && !attr.parent_identifier) {
         this.name = attr.name;
       }
-      if (attr.searchable) {
+      if (attr.searchable && !attr.parent_identifier) {
         if (attr.primary_key) {
           this.advanceSearchModel.title = 'Search by ' + attr.name;
           this.advanceSearchModel.primary = attr.name;
         }
         this.advanceSearchModel.other.push({
           key: attr.name,
+
           label: attr.name,
         });
       }

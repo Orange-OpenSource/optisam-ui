@@ -190,7 +190,11 @@
             </mat-form-field>
             <mat-error
               class="warningMsg"
-              *ngIf="referenceEquipment.dirty && coresList?.length === 0"
+              *ngIf="
+                referenceEquipment.dirty &&
+                coresList?.length === 0 &&
+                selectedMetricTypeId != 'Attr_Counter'
+              "
             >
               {{
                 "Selected equipment type does not have one of these: core factor, processor, or core value"
@@ -230,7 +234,9 @@
             class="col-md-3 equipments"
             *ngIf="
               selectedMetricTypeId === 'Oracle_Processor' ||
-              selectedMetricTypeId === 'Oracle_NUP'
+              selectedMetricTypeId === 'Oracle_NUP' ||
+              selectedMetricTypeId === 'SAG_Processor' ||
+              selectedMetricTypeId === 'IBM_PVU'
             "
           >
             <mat-form-field appearance="outline">
@@ -448,7 +454,7 @@
                 matInput
                 formControlName="referenceValue"
                 type="number"
-                min="1"
+                min="0"
                 placeholder="{{ 'Reference Value' | translate }}"
               />
               <mat-error
@@ -468,6 +474,37 @@
               {{ zeroValueMsg | translate }}
             </mat-error>
           </div>
+
+          <div
+            class="col-md-3 equipments"
+            *ngIf="selectedMetricTypeId === 'Static_Standard'"
+          >
+            <mat-form-field appearance="outline">
+              <mat-label>{{ "Reference Value" | translate }}</mat-label>
+              <input
+                id="referenceValue"
+                matInput
+                formControlName="referenceValue"
+                type="number"
+                placeholder="{{ 'Reference Value' | translate }}"
+              />
+              <mat-error
+                *ngIf="
+                  referenceValue.invalid && referenceValue.hasError('required')
+                "
+              >
+                {{ "Reference Value is mandatory" | translate }}
+              </mat-error>
+            </mat-form-field>
+            <mat-error
+              *ngIf="
+                referenceValue.invalid && referenceValue.hasError('pattern')
+              "
+            >
+              {{ "Value must be a positive integer" | translate }}
+            </mat-error>
+          </div>
+
           <!-- No of deployments -->
           <div
             class="col-md-3 equipments"

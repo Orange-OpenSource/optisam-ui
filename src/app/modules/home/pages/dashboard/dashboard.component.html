@@ -30,7 +30,7 @@
       <mat-grid-list [cols]="2" rowHeight="3:2" [gutterSize]="'16px'">
         <mat-grid-tile class="parentTile">
           <div class="internalMatGrid">
-            <mat-grid-list [cols]="2" rowHeight="9:4" [gutterSize]="'10px'">
+            <mat-grid-list [cols]="2" rowHeight="9:3" [gutterSize]="'10px'">
               <mat-grid-tile class="contentTile">
                 <div class="tileHeader">
                   {{ "Compliance" | translate
@@ -265,7 +265,7 @@
                       valuationOfOwnedLicense || valuationOfOwnedLicense == 0
                     "
                   >
-                    {{ valuationOfOwnedLicense | formatCost }}
+                    {{ valuationOfOwnedLicense | floor }}
                   </div>
                   <div
                     class="tileImage"
@@ -305,13 +305,91 @@
                       valuationOfOwnedLicenseMaintenance == 0
                     "
                   >
-                    {{ valuationOfOwnedLicenseMaintenance | formatCost }}
+                    {{ valuationOfOwnedLicenseMaintenance | floor }}
                   </div>
                   <div
                     class="tileImage"
                     *ngIf="
                       !valuationOfOwnedLicenseMaintenance &&
                       valuationOfOwnedLicenseMaintenance != 0
+                    "
+                  >
+                    <div class="errorIcon" *ngIf="getProductsDbError">
+                      <mat-icon>error</mat-icon>
+                    </div>
+                    <div *ngIf="getProductsDbError" class="errorMsg">
+                      {{ "Server Error" | translate }}
+                    </div>
+                    <div *ngIf="getProductsNetworkError" class="errorMsg">
+                      {{ "No Data Found" | translate }}
+                    </div>
+                  </div>
+                </div>
+              </mat-grid-tile>
+              <mat-grid-tile class="contentTile">
+                <div class="tileHeader">
+                  {{ "Underusage Amount " | translate
+                  }}<mat-icon
+                    class="mat-icon-info"
+                    matTooltipClass="alertTooltip"
+                    matTooltip="{{ 'Total underusage amount.' | translate }}"
+                    >info</mat-icon
+                  >
+                </div>
+                <div class="tileBody">
+                  <div
+                    class="tileText"
+                    *ngIf="
+                      total_underusage_amount || total_underusage_amount == 0
+                    "
+                  >
+                    {{ total_underusage_amount | floor }}
+                  </div>
+                  <div
+                    class="tileImage"
+                    *ngIf="
+                      !total_underusage_amount && total_underusage_amount != 0
+                    "
+                  >
+                    <div class="errorIcon" *ngIf="getProductsDbError">
+                      <mat-icon>error</mat-icon>
+                    </div>
+                    <div *ngIf="getProductsDbError" class="errorMsg">
+                      {{ "Server Error" | translate }}
+                    </div>
+                    <div *ngIf="getProductsNetworkError" class="errorMsg">
+                      {{ "No Data Found" | translate }}
+                    </div>
+                  </div>
+                </div>
+              </mat-grid-tile>
+              <mat-grid-tile class="contentTile">
+                <div class="tileHeader">
+                  {{ "Counterfeiting Amount" | translate
+                  }}<mat-icon
+                    class="mat-icon-info"
+                    matTooltipClass="alertTooltip"
+                    matTooltip="{{
+                      'Total counterfeiting amount.' | translate
+                    }}"
+                    >info</mat-icon
+                  >
+                </div>
+                <div class="tileBody">
+                  <div
+                    class="tileText"
+                    *ngIf="
+                      total_counterfeiting_amount ||
+                      total_counterfeiting_amount == 0
+                    "
+                  >
+                    {{ total_counterfeiting_amount | floor }}
+                  </div>
+                  <div
+                    class="tileImage"
+                    *ngIf="
+                      !total_counterfeiting_amount &&
+                      total_counterfeiting_amount != 0
                     "
                   >
                     <div class="errorIcon" *ngIf="getProductsDbError">

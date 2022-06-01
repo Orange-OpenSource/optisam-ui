@@ -95,6 +95,12 @@
       </div>
       <div class="col-md-3">
         <mat-form-field appearance="outline">
+          <mat-label>CPU</mat-label>
+          <input matInput id="CPU" [value]="metricDetails.NumCPUAttr" readonly>
+        </mat-form-field>
+      </div>
+      <div class="col-md-3">
+        <mat-form-field appearance="outline">
           <mat-label>Corefactor</mat-label>
           <input matInput id="corefactor" [value]="metricDetails.CoreFactorAttr" readonly>
         </mat-form-field>
@@ -135,6 +141,15 @@
           <input matInput id="noofDeployments" [value]="metricDetails.Coefficient" readonly>
         </mat-form-field>
       </div>
+    </div>
+    <!-- Static Standard -->
+    <div class="row" *ngIf="metricDetails && metricType == 'static.standard'">
+      <div class="col-md-3">
+      <mat-form-field appearance="outline">
+        <mat-label>{{'Reference Value'|translate}}</mat-label>
+        <input matInput id="attributeValue" [value]="metricDetails.ReferenceValue" readonly>
+      </mat-form-field>
+    </div>
     </div>
     <app-loading-spinner *ngIf="_loading"></app-loading-spinner>
   </mat-card-content>

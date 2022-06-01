@@ -1,7 +1,8 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
 import { MetricDetailsComponent } from '../metric-details/metric-details.component';
 import { MetricService } from 'src/app/core/services/metric.service';
 import { MatTableDataSource } from '@angular/material/table';
+import { MatSort } from '@angular/material/sort';
 import { MatDialog } from '@angular/material/dialog';
 import { CreateMetricComponent } from '../create-metric/create-metric.component';
 import { Metric } from '@core/modals';
@@ -26,6 +27,7 @@ export class MetricViewComponent implements OnInit, AfterViewInit {
   _deleteLoading: Boolean;
 
   constructor(public metricService: MetricService, public dialog: MatDialog) {}
+  @ViewChild(MatSort, { static: false }) sort: MatSort;
 
   ngOnInit() {
     this.role = localStorage.getItem('role');
@@ -64,6 +66,7 @@ export class MetricViewComponent implements OnInit, AfterViewInit {
     this.metricService.getMetricList().subscribe(
       (res: any) => {
         this.MyDataSource = new MatTableDataSource(res.metrices);
+        this.MyDataSource.sort = this.sort;
         if (this.MyDataSource.data.length == 0) {
           this.noDataAvailableFlag = true;
         } else {
@@ -116,12 +119,15 @@ export class MetricViewComponent implements OnInit, AfterViewInit {
   }
 
   editMetrics(metric: Metric): void {
-    this.dialog.open(EditMetricsComponent, {
+    let editDialog = this.dialog.open(EditMetricsComponent, {
       width: '800px',
       disableClose: true,
       autoFocus: false,
       maxHeight: '90vh',
       data: { metric },
+    });
+    editDialog.afterClosed().subscribe(() => {
+      this.loadData();
     });
   }
 

@@ -77,6 +77,38 @@ export class ApplicationService {
       filteringCondition;
     return this.http.get<Applications[]>(url);
   }
+
+  getproductCountDetails(
+    key,
+    pageSize,
+    length,
+    sort_by,
+    sort_order,
+    inst_id
+  ): Observable<Applications[]> {
+    let filteringCondition = '';
+    if (key !== '' && key !== undefined) {
+      filteringCondition =
+        filteringCondition +
+        '&search_params.application_id.filter_type=1&search_params.application_id.filteringkey=' +
+        key + '&search_params.instance_id.filter_type=1&search_params.instance_id.filteringkey=' + inst_id;
+    }
+    const url =
+      this.apiUrlProduct +
+      '/products?page_num=' +
+      length +
+      '&page_size=' +
+      pageSize +
+      '&sort_by=' +
+      sort_by +
+      '&sort_order=' +
+      sort_order +
+      '&scopes=' +
+      localStorage.getItem('scope') +
+      filteringCondition;
+    return this.http.get<Applications[]>(url);
+  }
+
   filteredData(
     length,
     pageSize,

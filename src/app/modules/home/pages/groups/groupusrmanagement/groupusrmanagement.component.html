@@ -59,7 +59,7 @@
 </ng-template>
 <ng-template #errorAddUserDialog>
   <mat-dialog-content>
-    <p>{{'ADD_USER_ERROR'|translate}}</p>
+    <p>{{errorMessage|translate}}</p>
   </mat-dialog-content>
   <mat-dialog-actions align="center">
     <button class="btn-two" (click)="closeDialog()" mat-button cdkFocusInitial>{{'OK'|translate}}</button>

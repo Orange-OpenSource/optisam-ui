@@ -1,0 +1,81 @@
+site_name: OpTISAM IT Documentation
+site_url: https://optisam-ui-prod.kermit-noprod-b.itn.intraorange/optisam
+repo_url: https://gitlab.tech.orange/optisam/optisam-it/optisam-guide
+nav:
+  - Introduction : 
+    - What is OpTISAM : pages/presentation/whatIs.md
+    - How is OpTISAM computing compliance : pages/presentation/computCompliance.md
+  - Features :
+    - Park inventory :
+      - Global presentation : pages/exploring/parkInventory/presentation.md
+      - Equipments : pages/exploring/parkInventory/equipments.md
+      - Products : pages/exploring/parkInventory/products.md
+      - Applications : pages/exploring/parkInventory/applications.md
+    - Check global informations : pages/exploring/checkGlobalInfo.md
+    - Check products informations: pages/exploring/checkProdInfo.md
+    - Check aggregations informations: pages/exploring/checkAggrInfo.md
+    - Check global compliance : pages/exploring/checkGlobalCompliance.md
+    - Check compliance for one product : pages/exploring/checkComplianceOne.md 
+    - Check compliance for an aggregation of product: pages/exploring/checkAggregationCompliance.md
+    - Check products deployment : pages/exploring/checkProdDeployment.md  
+    - Licensing :
+      - Acquired rights : pages/exploring/licensing/acquiredRights.md
+      - Aggregations : pages/exploring/licensing/aggregations.md
+    - Simulation :
+      - Metrics : pages/exploring/simulation/metrics.md
+      - Hardware : pages/exploring/simulation/hardware.md
+    - Reports : 
+      - Compliance : pages/exploring/reports/compliance.md
+      - Inventory : pages/exploring/reports/inventory.md
+  - Configure OpTISAM :
+    - Configuration order : pages/configure/configurationOrder.md
+    - 1. Create equipment types (only specific scopes) : pages/configure/createEquipmentTypes.md
+    - 2. Create metrics : pages/configure/createMetrics.md
+    - 3. Import your inventory data : pages/configure/importInventoryData.md
+  - Administration :
+    - Scope management : pages/managing/scopeManagement.md
+    - Groups management : pages/managing/groupsManagement.md
+    - Users management : pages/managing/usersManagement.md
+    - Equipments management : pages/managing/equipmentsManagement.md
+    - Metrics management : pages/managing/metricsManagement.md
+    - Acquired rights management : pages/managing/acquiredRights.md
+    - Acquired rights aggregation mangament : pages//managing/acquiredRightsAggregation.md
+    - Data management :
+      - Upload all of your data in one global file : pages/managing/genericTemplate.md
+      - Delete the inventory data : pages/managing/dataManagement.md
+      - Importation errors management : pages/managing/errorData.md
+    - Aggregations management : pages/managing/aggregationsManagement.md
+    - Simulation management : pages/managing/simulationsManagement.md
+    - Obsolescence management : pages/managing/obsolescenceManagement.md
+  - Glossary : pages/glossary.md
+  - SAM :
+    - Oracle : 
+      - Oracle NUP : pages/sam/OracleNUP.md
+      - Oracle Processor : pages/sam/oracleProc.md
+    - IBM : pages/sam/IBM.md
+    - RedHat : pages/sam/Redhat.md
+    - Software AG : pages/sam/SAG.md
+    - Windows : pages/sam/Windows.md
+    - Other : 
+      - Attribute Counter Standard : pages/sam/attributeCounterStandard.md
+      - Attribute Sum Standard : pages/sam/attributeSumStandard.md
+  - Contact : pages/contact.md
+
+theme:
+  name: material
+  features:
+    - header.autohide
+    - navigation.tabs
+    - navigation.instant
+  logo : img/favicon.ico
+  favicon: img/favicon.ico
+    
+markdown_extensions:
+  - attr_list
+
+extra_javascript:
+  - https://cdnjs.cloudflare.com/ajax/libs/tablesort/5.2.1/tablesort.min.js
+  - js/tables.js
+
+extra_css: 
+  - css/enlargeImage.css

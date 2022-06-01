@@ -51,3 +51,8 @@ docker push  eu.gcr.io/${PROJECT_ID}/optisam/optisam_ui:v1.0.0
 
 ## Tag the image id created
 ------------------------
+
+## Dependency Pkg Version
+`minimist` - `1.2.6`
+`url-parse` - `1.5.8`
+

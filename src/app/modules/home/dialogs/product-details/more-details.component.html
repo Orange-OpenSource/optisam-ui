@@ -115,7 +115,7 @@
               <div *ngIf="agg_name" class="alert alert-primary" role="alert">
               
                 <span> Check compliance for aggregation
-                  <a (click)="checkAggname()" mat-dialog-close>
+                  <a [routerLink]="['/optisam/ar/prights/aggregations']" [state]="{ aggregationName:agg_name}"  mat-dialog-close>
                     {{agg_name}}
                   </a>
                 </span>
@@ -156,7 +156,12 @@
                             <div *ngSwitchCase="'computedDetails'">
                               <span class="error-msg" *ngIf="product.metricNotDefined">
                                 {{ "Metric not Defined" }}</span>
-                              <span *ngIf="!product.metricNotDefined">
+                                <span class="error-msg" *ngIf="!productInfo.num_equipments">&nbsp;{{
+                                  "Product is not
+                                  deployed"
+                                  | translate
+                                  }}</span>
+                              <span *ngIf="!product.metricNotDefined && productInfo.num_equipments">
                                 {{ product.computedDetails || "-" }}
                               </span>
                             </div>

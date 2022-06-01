@@ -19,24 +19,23 @@
         {{ highlight }}
       </li>
     </ul>
-    <p *ngIf="releaseNotes.length === 0">NA</p>
+    <p *ngIf="releaseNotes?.length === 0">NA</p>
   </div>
   <div id="futures-section">
     <p class="header1">{{ "Futures" | translate }}</p>
-    <!-- <p class="header2">{{ "By the end of 2021" | translate }}</p> -->
-    <!-- <ul>
-        <li *ngFor="let future of futures2021">
-            {{future}}
+
+    <ng-container *ngFor="let f of future">
+      <p class="header2">
+        {{ "version" | translate }}
+        {{ f.version }}: {{ f.date_month }} {{ f.date_year }}
+      </p>
+      <ul>
+        <li *ngFor="let bullet of f.bullets">
+          {{ bullet }}
         </li>
-    </ul> -->
-    <!-- <p *ngIf="futures2021.length === 0">NA</p> -->
-    <p class="header2">{{ "By the end of 2022" | translate }}</p>
-    <ul>
-      <li *ngFor="let future of futures2022">
-        {{ future }}
-      </li>
-    </ul>
-    <p *ngIf="futures2022.length === 0">NA</p>
+      </ul>
+      <p *ngIf="f?.bullets?.length === 0">NA</p>
+    </ng-container>
   </div>
   <div id="btn-container">
     <button id="closeBtn" class="btn-two" mat-raised-button mat-dialog-close>

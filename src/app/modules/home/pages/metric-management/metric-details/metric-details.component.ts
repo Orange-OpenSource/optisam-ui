@@ -4,7 +4,7 @@ import { Subscription } from 'rxjs';
 import { SharedService } from 'src/app/shared/shared.service';
 import { MetricService } from 'src/app/core/services/metric.service';
 import { CommonService } from '@core/services/common.service';
-import { LOCAL_KEYS } from '@core/util/constants';
+import { LOCAL_KEYS } from '@core/util/constants/constants';
 import { MetricDetailsParams } from '@core/modals';
 
 @Component({

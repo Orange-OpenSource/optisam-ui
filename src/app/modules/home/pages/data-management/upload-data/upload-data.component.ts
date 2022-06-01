@@ -16,7 +16,7 @@ import {
   FILE_ANALYSIS_STATUS,
   UPLOAD_TYPES,
   REPORT_FILE_NAME,
-} from '@core/util/constants';
+} from '@core/util/constants/constants';
 
 function fileErrorCheck(control: AbstractControl): ValidationErrors | null {
   return this.fileValidationError
@@ -45,7 +45,7 @@ export class UploadDataComponent implements OnInit {
   allowedInventoryFiles: string[] = [
     'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     'application/vnd.ms-excel',
-    'application/csv',
+    'text/csv',
   ];
   fileError: string = '';
   fileValidationError: boolean = false;
@@ -207,6 +207,7 @@ export class UploadDataComponent implements OnInit {
     this.uploadForm.reset();
     this.selectedFiles = [];
     this.clearFileInput(document.getElementById('file'));
+    this.cancelInjectionData();
   }
 
   //Analysing inventroy data file upload
@@ -307,6 +308,7 @@ export class UploadDataComponent implements OnInit {
   }
   resetUpload(e: Event): void {
     (e.target as HTMLInputElement).value = null;
+    this.resetForm();
   }
 
   backToList() {
@@ -338,10 +340,15 @@ export class UploadDataComponent implements OnInit {
   }
 
   cancelInjectionData(): void {
-    this.uploadDataManagementFilesNew$.unsubscribe();
+    if (this.uploadDataManagementFilesNew$)
+      this.uploadDataManagementFilesNew$.unsubscribe();
+    this.showAnalysisBar = false;
+    this.analysisDescription = '';
+    this.analysisFileUrl = '';
   }
 
   ngOnDestroy() {
     this.dialog.closeAll();
+    this.cancelInjectionData();
   }
 }

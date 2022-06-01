@@ -1,40 +1,163 @@
-<mat-form-field class="search-form-field" floatLabel="never">
-  <input id="adv-search-input" matInput [(ngModel)]="filterFields[model.primary]" placeholder="{{model.title |translate}}"
-    autocomplete="off" (keyup)="onFocusOut()" (keydown.enter)="pressEnter()" >
-
-  <button id="search" mat-button matSuffix mat-icon-button aria-label="Search" (click)="applyFilter()" [disabled]="!filterFields[model.primary]">
-    <mat-icon>search</mat-icon>
-  </button>
-  <button id="clear" mat-button matSuffix mat-icon-button aria-label="Clear" (click)="clearFilter()"
-    *ngIf="filterFields[model.primary]">
-    <mat-icon>clear</mat-icon>
-  </button>
-
-  <button id="toggleKeyDown" *ngIf="!toggleAdvanceSearch" mat-button mat-icon-button matSuffix class="btn-toggle"
-    (click)="openAdvanceSearch()">
-    <mat-icon>keyboard_arrow_down</mat-icon>
-  </button>
-  <button id="toggleKeyUp" *ngIf="toggleAdvanceSearch" mat-button mat-icon-button matSuffix class="btn-toggle"
-    (click)="openAdvanceSearch()">
-    <mat-icon>keyboard_arrow_up</mat-icon>
-  </button>
-
-  <!-- <button id="toggleKey" *ngIf="!hideToggleFlag" mat-button mat-icon-button matSuffix class="btn-toggle" (click)="openAdvanceSearch()">
-    <mat-icon>keyboard_arrow_down</mat-icon>
-  </button> -->
-</mat-form-field>
-
-<div *ngIf="!hideToggleFlag" #advanceSearch class="advance-search mat-elevation-z8" [ngClass]="{'hidden': !toggleAdvanceSearch}" tabindex="-1" (focusout)="focusout($event)">
-  <div class="menu-title advanceChild">
-    {{'Advance Search' | translate}}
+<div
+  fxLayout="row"
+  fxLayoutAlign="end start"
+  fxLayoutGap="6px"
+  class="main-search"
+>
+  <div class="search-labels" fxLayout="row wrap" fxLayoutAlign="end start">
+    <div
+      *ngFor="let label of labels"
+      class="label"
+      matTooltipPosition="above"
+      matTooltipClass="search-label-tooltip"
+      #labelHTML
+      matTooltip="{{
+        label.type === 'text'
+          ? filterFields[label.key]
+          : (filterFields[label.key] | date: 'M/d/y')
+      }}"
+    >
+      <span class="text">{{ label.label }}</span>
+      <mat-icon (click)="removeLabel(label)">cancel</mat-icon>
+    </div>
   </div>
-  <div  mat-filter-item class="advanceChild" *ngFor="let itm of model.other;let idx = index;">
-    <mat-form-field  >
-      <input matInput id="{{itm.label}}" placeholder="{{itm.label | translate}}" class="advanceChild" [(ngModel)]="filterFields[itm.key]" (keyup)="onFocusOut()" (keydown.enter)="pressEnter(filterFields[itm.key],true)">
-    </mat-form-field>
-  </div>
-  <div class="buttons-section advanceChild">
-    <button id="adv-clear-button" mat-raised-button class="advanceChild btn-four" (click)="clearFilter()" [disabled]="!enableReset">{{'Clear'|translate}}</button>
-    <button id="adv-apply-button" mat-raised-button class="advanceChild btn-two" (click)="applyFilter();toggleAdvanceSearch = false;" [disabled]="!enableSearch">{{'Search'|translate}}</button>
+  <div class="search-box" fxLayout="row" fxLayoutAlign="end">
+    <div>
+      <mat-form-field class="search-form-field" floatLabel="never">
+        <input
+          id="adv-search-input"
+          matInput
+          [(ngModel)]="filterFields[model.primary]"
+          placeholder="{{ model.title | translate }}"
+          autocomplete="off"
+          (keyup)="onFocusOut()"
+          (keydown.enter)="pressEnter()"
+          (input)="checkEmpty($event.target.value)"
+        />
+
+        <button
+          id="search"
+          mat-button
+          matSuffix
+          mat-icon-button
+          aria-label="Search"
+          (click)="applyFilter()"
+          [disabled]="!filterFields[model.primary]"
+        >
+          <mat-icon>search</mat-icon>
+        </button>
+        <button
+          id="clear"
+          mat-button
+          matSuffix
+          mat-icon-button
+          aria-label="Clear"
+          (click)="clearPrimaryFilter()"
+          *ngIf="filterFields[model.primary]"
+        >
+          <mat-icon>clear</mat-icon>
+        </button>
+
+        <button
+          id="toggleKeyDown"
+          *ngIf="!toggleAdvanceSearch"
+          mat-button
+          mat-icon-button
+          matSuffix
+          class="btn-toggle"
+          (click)="openAdvanceSearch()"
+        >
+          <mat-icon>keyboard_arrow_down</mat-icon>
+        </button>
+        <button
+          id="toggleKeyUp"
+          *ngIf="toggleAdvanceSearch"
+          mat-button
+          mat-icon-button
+          matSuffix
+          class="btn-toggle"
+          (click)="openAdvanceSearch()"
+        >
+          <mat-icon>keyboard_arrow_up</mat-icon>
+        </button>
+
+        <!-- <button id="toggleKey" *ngIf="!hideToggleFlag" mat-button mat-icon-button matSuffix class="btn-toggle" (click)="openAdvanceSearch()">
+          <mat-icon>keyboard_arrow_down</mat-icon>
+        </button> -->
+      </mat-form-field>
+
+      <div
+        *ngIf="!hideToggleFlag"
+        #advanceSearch
+        class="advance-search mat-elevation-z8"
+        [ngClass]="{ hidden: !toggleAdvanceSearch }"
+        tabindex="-1"
+        (focusout)="focusout($event)"
+      >
+        <div class="menu-title advanceChild">
+          {{ "Advance Search" | translate }}
+        </div>
+        <div
+          mat-filter-item
+          class="advanceChild"
+          *ngFor="let itm of model.other; let idx = index"
+        >
+          <ng-container *ngIf="itm.type === 'text'">
+            <mat-form-field>
+              <input
+                matInput
+                id="{{ itm.label }}"
+                placeholder="{{ itm.label | translate }}"
+                class="advanceChild"
+                [(ngModel)]="filterFields[itm.key]"
+                (keyup)="onFocusOut()"
+                (keydown.enter)="pressEnter(filterFields[itm.key], true)"
+              />
+            </mat-form-field>
+          </ng-container>
+          <ng-container *ngIf="itm.type === 'date'">
+            <mat-form-field appearance="fill">
+              <mat-label>{{ itm.label | translate }}</mat-label>
+              <input
+                matInput
+                class="advanceChild"
+                [matDatepicker]="picker"
+                [(ngModel)]="filterFields[itm.key]"
+                (keydown)="$event.preventDefault()"
+                (paste)="$event.preventDefault()"
+              />
+              <mat-datepicker-toggle
+                matSuffix
+                [for]="picker"
+              ></mat-datepicker-toggle>
+              <mat-datepicker
+                #picker
+                [panelClass]="[customDateClass]"
+              ></mat-datepicker>
+            </mat-form-field>
+          </ng-container>
+        </div>
+        <div class="buttons-section advanceChild">
+          <button
+            id="adv-clear-button"
+            mat-raised-button
+            class="advanceChild btn-four"
+            (click)="clearFilter()"
+            [disabled]="isResetDisable"
+          >
+            {{ "Clear" | translate }}
+          </button>
+          <button
+            id="adv-apply-button"
+            mat-raised-button
+            class="advanceChild btn-two"
+            (click)="applyFilter(); toggleAdvanceSearch = false"
+            [disabled]="isResetDisable"
+          >
+            {{ "Search" | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

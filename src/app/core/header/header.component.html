@@ -60,10 +60,20 @@
 
     <span class="example-spacer"></span>
     <div fxShow="true" fxHide.lt-md="true">
-      <a id="nav-management-menu" mat-button [matMenuTriggerFor]="menu2">
+      <a
+        id="nav-management-menu"
+        mat-button
+        [matMenuTriggerFor]="menu2"
+        *ngIf="role === 'ADMIN' || role === 'SUPER_ADMIN'"
+      >
         <img style="height: 24px" src="\assets\images\Admin-2.svg" />
         {{ "ADMINISTRATION" | translate }}
       </a>
+
+      <!-- <a id="nav-management-menu" mat-button *ngIf="role === 'SUPER_ADMIN'">
+        <img style="height: 24px" src="\assets\images\Admin-2.svg" />
+        {{ "ADMINISTRATION" | translate }}
+      </a> -->
 
       <mat-menu #menu2>
         <button
@@ -75,15 +85,21 @@
           [routerLinkActive]="['routeactive']"
         >
           <img
-            style="height: 20px; margin-right: 16px"
+            style="height: 20px; width: 20px; margin-right: 16px"
             src="\assets\images\acquired-rights-admin.svg"
           />
           {{ "Acquired Rights Management" | translate }}
         </button>
-        <!-- <button id="nav-products-management" mat-menu-item matTooltip="{{'Aggregation Management' | translate}}" [routerLink]="['/optisam/ag/list-aggregation']" [routerLinkActive]="['routeactive']">
-              <mat-icon class="mat-icon-admin">devices_other</mat-icon>
-              {{'Aggregation Management' | translate}}
-            </button> -->
+        <button
+          id="nav-products-management"
+          mat-menu-item
+          matTooltip="{{ 'Aggregation Management' | translate }}"
+          [routerLink]="['/optisam/ag/list-aggregation']"
+          [routerLinkActive]="['routeactive']"
+        >
+          <mat-icon class="mat-icon-admin">devices_other</mat-icon>
+          {{ "Aggregation Management" | translate }}
+        </button>
         <button
           id="nav-data-management"
           mat-menu-item
@@ -103,7 +119,7 @@
           [routerLinkActive]="['routeactive']"
         >
           <img
-            style="height: 20px; margin-right: 16px"
+            style="height: 20px; width: 20px; margin-right: 16px"
             src="\assets\images\Equipment-managementSmall.png"
           />
           {{ "Equipment Management" | translate }}
@@ -126,7 +142,7 @@
           [routerLinkActive]="['routeactive']"
         >
           <img
-            style="height: 20px; margin-right: 16px"
+            style="height: 20px; width: 20px; margin-right: 16px"
             src="\assets\images\Metrics-ManagementSmall.png"
           />
           {{ "Metrics Management" | translate }}
@@ -151,12 +167,12 @@
           [routerLinkActive]="['routeactive']"
         >
           <img
-            style="height: 20px; margin-right: 16px"
+            style="height: 20px; width: 20px; margin-right: 16px"
             src="\assets\images\scope-management.svg"
           />
           {{ "Scope Management" | translate }}
         </button>
-        <button
+        <!-- <button
           id="nav-configuration-management"
           mat-menu-item
           matTooltip="{{ 'Simulation Management' | translate }}"
@@ -166,7 +182,7 @@
         >
           <mat-icon class="mat-icon-admin">settings</mat-icon>
           {{ "Simulation Management" | translate }}
-        </button>
+        </button> -->
         <button
           id="nav-user-management"
           mat-menu-item
@@ -232,7 +248,7 @@
         <a
           id="nav-user-guide"
           mat-menu-item
-          href="https://orange-opensource.github.io/optisam-backend/"
+          href="https://optisam.pages.gitlab.tech.orange/optisam-it/optisam-ui/"
           target="_blank"
         >
           <mat-icon class="mat-icon-menu">help_outline</mat-icon
