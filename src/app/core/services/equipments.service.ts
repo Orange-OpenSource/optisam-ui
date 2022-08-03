@@ -1,9 +1,11 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { CommonService } from '@core/services/common.service';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { map, catchError } from 'rxjs/operators';
 import { Equipments } from './equipments';
+import { LOCAL_KEYS } from '@core/util/constants/constants';
 
 @Injectable({
   providedIn: 'root',
@@ -18,7 +20,7 @@ export class EquipmentsService {
   });
 
   public errorMsg: string;
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private cs: CommonService) {}
 
   getTypes(scope?: string): Observable<Equipments[]> {
     let url;
@@ -49,9 +51,13 @@ export class EquipmentsService {
   }
 
   getEquipmentTypesAttributes(configID: any, attrID: any) {
+    let params = new HttpParams().set(
+      'scope',
+      this.cs.getLocalData(LOCAL_KEYS.SCOPE)
+    );
     const url =
       this.apiConfigUrl + '/simulation/config/' + configID + '/' + attrID;
-    return this.http.get<any>(url);
+    return this.http.get<any>(url, { params });
   }
 
   equipmentHardwareSimulation(body: any) {

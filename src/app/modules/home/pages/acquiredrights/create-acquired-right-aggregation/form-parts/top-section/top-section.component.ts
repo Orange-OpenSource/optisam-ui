@@ -54,7 +54,8 @@ export class TopSectionComponent implements OnInit, DoCheck {
         Validators.pattern(/^[a-zA-Z0-9_.]*$/),
       ]),
       aggregationName: this.fb.control(null, Validators.required),
-      // aggregationID: this.fb.control(null, Validators.required),
+      repartition: this.fb.control(false),
+        // aggregationID: this.fb.control(null, Validators.required),
     });
   }
 
@@ -64,6 +65,10 @@ export class TopSectionComponent implements OnInit, DoCheck {
 
   get sku() {
     return this.aggregationForm.get('sku');
+  }
+
+  get repartition() {
+    return this.aggregationForm.get('repartition');
   }
 
   // get aggregationID()

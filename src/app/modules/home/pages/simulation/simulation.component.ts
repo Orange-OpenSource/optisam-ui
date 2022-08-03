@@ -9,7 +9,8 @@ import { Router } from '@angular/router';
 export class SimulationComponent implements OnInit, AfterContentChecked {
   tabMenus = [
     { title: 'Cost', link: '/optisam/simulation/metrics' },
-    // { title: 'Hardware', link: '/optisam/simulation/hardware' },
+    { title: 'Metric', link: '/optisam/simulation/metric' },
+    { title: 'Hardware', link: '/optisam/simulation/hardware' },
   ];
   activeLink = this.tabMenus[0].link;
   constructor(private router: Router) {

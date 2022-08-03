@@ -12,18 +12,18 @@ You can access to "Acquired rights aggregations management" by clicking here :
 
 ![select APM](../../img/ARMana/access.jpg){: .zoom}
 
-Then this page will be shown:
-![select APM](../../img/ARMana/pres.jpg){: .zoom}
+Then this page will be shown:   
+
+![select APM](../../img/ARMana/pres1.jpg){: .zoom}
 
 You have to click on "Licensed Aggregations" to access to acquired rights aggregations management.
 
 ![select APM](../../img/ARMana/access2.jpg){: .zoom}
-
 ## Presentation
 
 The presentation table is : 
 
-![select APM](../../img/ARMana/pres2.jpg){: .zoom}
+![select APM](../../img/ARMana/pres2.png){: .zoom}
 
 You can see :  
 - SKU: The indentifier of the aggregation
@@ -51,8 +51,7 @@ When many switags of the aggregation reference the same product, this product is
 
 You have to click on "Create new" : 
 
-![select APM](../../img/ArMana/addAggr1.jpg){: .zoom}
-
+![select APM](../../img/ARMana/addAggr1.jpg){: .zoom}
 This window will be shown : 
 
 ![select APM](../../img/ARMana/addAggr2.jpg){: .zoom}
@@ -138,13 +137,13 @@ When you are done, click on "Create" to create the new acquired rights aggregati
 
 See the exemple below: 
 
-![select APM](../../img/ArMana/manySKU.jpg){: .zoom}
+![select APM](../../img/ARMana/manySKU.jpg){: .zoom}
 
 ## Edit an existing aggregation
 
 You have to click here to edit an existing aggregation : 
 
-![select APM](../../img/ArMana/editAggr1.jpg){: .zoom}
+![select APM](../../img/ARMana/editAggr1.jpg){: .zoom}
 
 This window will be shown : 
 

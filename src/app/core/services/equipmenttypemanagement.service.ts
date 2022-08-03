@@ -67,7 +67,10 @@ export class EquipmentTypeManagementService {
     const url = this.apiEquipUrl + '/equipment/types/' + id;
     return this.httpClient.patch<any>(url, attributeData);
   }
-
+  updateMetricAllocated(body): Observable<any> {
+    const url = this.apiEquipUrl + '/equipment/allocatedmetric';
+    return this.httpClient.put<any>(url, body);
+  }
   getEquipmentsdata(key, name, pageSize, length) {
     const url =
       this.apiEquipUrl +

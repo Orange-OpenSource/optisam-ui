@@ -16,23 +16,21 @@ describe('DashboardComponent', () => {
   let component: DashboardComponent;
   let fixture: ComponentFixture<DashboardComponent>;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [DashboardComponent],
-        imports: [
-          CustomMaterialModule,
-          SharedModule,
-          HttpClientModule,
-          RouterTestingModule,
-          FormsModule,
-          BrowserAnimationsModule,
-          TranslateModule.forRoot(),
-        ],
-        providers: [ProductService, SharedService, EquipmentsService],
-      }).compileComponents();
-    })
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [DashboardComponent],
+      imports: [
+        CustomMaterialModule,
+        SharedModule,
+        HttpClientModule,
+        RouterTestingModule,
+        FormsModule,
+        BrowserAnimationsModule,
+        TranslateModule.forRoot(),
+      ],
+      providers: [ProductService, SharedService, EquipmentsService],
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(DashboardComponent);
@@ -58,7 +56,7 @@ describe('DashboardComponent', () => {
     expect(tileHeaders[3].innerText).toBe('Productsinfo');
     expect(tileHeaders[4].innerText).toBe('Owned Licensesinfo');
     expect(tileHeaders[5].innerText).toBe('Maintenance Licensesinfo');
-    expect(tileHeaders[6].innerText).toBe('Underusage Amount info');
+    expect(tileHeaders[6].innerText).toBe('Underusage Amountinfo');
     expect(tileHeaders[7].innerText).toBe('Counterfeiting Amountinfo');
     expect(tileHeaders[8].innerText).toBe('Software Licence Compositioninfo');
     expect(tileHeaders[9].innerText).toBe('Equipment Detailsinfo');

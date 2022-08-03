@@ -15,6 +15,7 @@ import {
   AttributeCounterStandardParams,
   InstanceNumberStandardParams,
   StaticStandardParams,
+  EquipmentAttributeParams,
 } from '@core/modals';
 
 @Injectable({
@@ -31,6 +32,7 @@ export class MetricService {
     AttributeCounterStandard: `${this.apiMetricUrl}/metric/acs`,
     IntanceNumberStandard: `${this.apiMetricUrl}/metric/inm`,
     StaticStandard: `${this.apiMetricUrl}/metric/ss`,
+    EquipmentStandard: `${this.apiMetricUrl}/metric/equip_attr`,
   };
   defaultHeaders: HttpHeaders = new HttpHeaders({
     'Content-Type': 'application/json',
@@ -163,6 +165,17 @@ export class MetricService {
       .pipe(catchError((e) => throwError(e.error)));
   }
 
+  equipmentAttributeStandard(
+    params: EquipmentAttributeParams
+  ): Observable<MetricUpdateError | MetricUpdateSuccess> {
+    return this.httpClient
+      .patch<MetricUpdateError | MetricUpdateSuccess>(
+        this.common.EquipmentStandard,
+        params,
+        { headers: this.defaultHeaders }
+      )
+      .pipe(catchError((e) => throwError(e.error)));
+  }
 
   updateInstanceNumberStandard(
     params: InstanceNumberStandardParams

@@ -361,6 +361,47 @@
                           </mat-cell>
                         </ng-container>
 
+                        <ng-container matColumnDef="equipmentUsers">
+                          <mat-header-cell *matHeaderCellDef
+                            >{{ "Equipment Users" | translate }}
+                          </mat-header-cell>
+                          <mat-cell *matCellDef="let product">
+                            {{ product.equipmentUsers }}
+                          </mat-cell>
+                        </ng-container>
+
+                        <ng-container matColumnDef="allocatedMetric">
+                          <mat-header-cell *matHeaderCellDef
+                            >{{ "Allocated Metric" | translate }}
+                          </mat-header-cell>
+                          <mat-cell *matCellDef="let product">
+                            {{ product.allocatedMetric }}
+                          </mat-cell>
+                        </ng-container>
+
+                        <!-- <ng-container matColumnDef="action">
+                          <mat-header-cell *matHeaderCellDef
+                            >{{ "Action" | translate }}
+                          </mat-header-cell>
+                          <mat-cell *matCellDef="let product">
+                            {{ product.action }}
+                          </mat-cell>
+                        </ng-container> -->
+
+                        <ng-container matColumnDef="action">
+                          <mat-header-cell *matHeaderCellDef>{{
+                            "Action" | translate
+                          }}</mat-header-cell>
+                          <mat-cell *matCellDef="let product; let i = index">
+                            <mat-icon
+                              class="action-icon"
+                              matTooltip="Edit action"
+                              (click)="openEditDialog(product)"
+                              >edit</mat-icon
+                            >
+                          </mat-cell>
+                        </ng-container>
+
                         <mat-header-row
                           *matHeaderRowDef="productColumn; sticky: true"
                         ></mat-header-row>

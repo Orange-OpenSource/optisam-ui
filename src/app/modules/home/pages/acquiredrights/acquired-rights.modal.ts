@@ -59,6 +59,7 @@ export interface AcquiredRightAggregationBody
   ID?: number;
   aggregation_name?: string;
   sku?: string;
+  repartition?:boolean;
   aggregationID?: string;
   num_licences_maintainance?: number;
   num_licences_maintenance?: number;

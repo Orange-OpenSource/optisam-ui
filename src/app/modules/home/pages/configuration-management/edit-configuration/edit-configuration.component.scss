@@ -24,8 +24,8 @@
 .row-flex{
     display: flex;
 }       
-    div.configName, div.equipmentType{
-        margin-left: 15px;;
+     div.equipmentType{
+        margin-left: 15px;
     }
 
 .mat-table {
@@ -100,4 +100,8 @@
 }
 #cancelButton {
     margin-left: 11%;
+}
+
+.mat-header-row{
+    position: initial;
 }

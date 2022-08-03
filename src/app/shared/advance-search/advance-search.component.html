@@ -17,7 +17,7 @@
           : (filterFields[label.key] | date: 'M/d/y')
       }}"
     >
-      <span class="text">{{ label.label }}</span>
+      <span class="text">{{ label.label | translate }}</span>
       <mat-icon (click)="removeLabel(label)">cancel</mat-icon>
     </div>
   </div>

@@ -88,6 +88,7 @@ export class EditAcquiredRightComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.skuForm = new FormGroup({
       sku: new FormControl({ value: '', disabled: true }),
+      repartition: new FormControl(false),
     });
 
     this.contractForm = new FormGroup({
@@ -268,6 +269,7 @@ export class EditAcquiredRightComponent implements OnInit, AfterViewInit {
   setFormData() {
     if (this.data) {
       this.sku.setValue(this.data.SKU);
+      this.repartition.setValue(this.data.repartition);
       this.product_name.setValue(this.data.product_name);
       this.product_version.setValue(this.data.version);
       this.product_editor.setValue(this.data.editor);
@@ -322,6 +324,9 @@ export class EditAcquiredRightComponent implements OnInit, AfterViewInit {
 
   get sku() {
     return this.skuForm.get('sku');
+  }
+  get repartition() {
+    return this.skuForm.get('repartition');
   }
   get orderingDate() {
     return this.contractForm.get('orderingDate');
@@ -519,6 +524,7 @@ export class EditAcquiredRightComponent implements OnInit, AfterViewInit {
     this._updateLoading = true;
     const body = {
       sku: this.sku.value,
+      repartition: this.repartition.value,
       product_name: this.product_name.value,
       version: this.product_version.value,
       product_editor: this.product_editor.value,

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, Inject } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import {
   MatDialogRef,
   MAT_DIALOG_DATA,
@@ -8,6 +8,7 @@ import { EquipmentTypeManagementService } from 'src/app/core/services/equipmentt
 import { FormArray, FormGroup, FormControl, Validators } from '@angular/forms';
 import { ModifyJSONFormat } from './model';
 import { RequiredJSONFormat } from '../model';
+import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 
 @Component({
   selector: 'app-edit',
@@ -28,7 +29,9 @@ export class EditComponent implements OnInit {
   parentId: String;
   scope: any = '';
   parent: any;
-  attribute: any;
+  attribute: any[] = [];
+  updattrs: any[] = [];
+
   displayedColumns = [
     'name',
     'data_type',
@@ -39,7 +42,7 @@ export class EditComponent implements OnInit {
   errorMessage: string;
   reqInProgress: Boolean;
   attributeControls: FormControl[];
-  private mappingKey: string = 'parentid';
+  private mappingKey: string[] = ['parentid', 'parent_id'];
 
   constructor(
     private equipmentTypeService: EquipmentTypeManagementService,
@@ -55,7 +58,8 @@ export class EditComponent implements OnInit {
     this.metadata_source = this.data['metadata_source'];
     this.scope = this.data['scope'];
     this.parent_type = this.data['parent_type'];
-    this.attribute = this.data.attributes;
+    this.attribute = JSON.parse(JSON.stringify(this.data?.attributes || []));
+
     this.getTypes();
     this.getMappedSource();
     this.initForm();
@@ -71,6 +75,7 @@ export class EditComponent implements OnInit {
   get root() {
     return this.attributeForm.get('root');
   }
+
   get attribute_form() {
     return this.attributeForm.get('attribute') as FormArray;
   }
@@ -78,6 +83,18 @@ export class EditComponent implements OnInit {
     return (<FormArray>this.attributeForm.get('attribute'))
       .controls as FormControl[];
   }
+
+  get parent_identifier(): FormControl {
+    return this.attributeForm.get('parent_identifier') as FormControl;
+  }
+
+  get checkParent(): boolean {
+    return (
+      this.root?.value != null ||
+      (this.root?.value != '' && this.parent_identifier?.value)
+    );
+  }
+
   // Get data
   getTypes() {
     this.equipmentTypeService.getTypes(this.scope).subscribe(
@@ -86,7 +103,7 @@ export class EditComponent implements OnInit {
         this.types = equipTypes.filter((eq) => eq.type !== this.type);
         this.parent = equipTypes.filter(
           (eq) => eq.type === this.parent_type
-        )[0].ID;
+        )[0]?.ID;
         this.root.setValue(this.parent);
       },
       (error) => {
@@ -109,27 +126,25 @@ export class EditComponent implements OnInit {
     );
   }
 
-  get missingParentAttribute(): Boolean {
-    if (this.root.value) {
-      // below if condition is checking if any of the attribute's parent_identifier(FormControl) has value = true.
-      if (
-        this.attribute_form.controls.some(
-          (control: FormGroup) => !!control.get('parent_identifier').value
-        )
-      )
-        return false;
-      // for (let i = 0; i < this.attribute_form.value.length; i++) {
-      //   if (this.attribute_form.controls[i].get('parent_identifier').value) {
-      //     return false;
-      //   }
-      // }
-      this.selectedAttributes = this.attribute.map((atr) => atr.mapped_to);
+  get missingParentAttribute(): boolean {
+    console.log('test');
+    console.log('this.root', this.root);
+    if (!this.root.value) return false;
+    console.log('test1');
+    // below if condition is checking if any of the attribute's parent_identifier(FormControl) has value = true.
+    const hasParentIdentifier: boolean = this.attribute_form.controls.some(
+      (control: FormGroup) => !!control.get('parent_identifier').value
+    );
+    if (hasParentIdentifier) return false;
 
-      if (this.selectedAttributes.includes(this.mappingKey)) return false;
-      return true;
-    } else {
+    this.selectedAttributes = this.attribute.map((atr) => atr.mapped_to);
+    if (
+      this.mappingKey.some((mappingKey: string) =>
+        this.selectedAttributes.includes(mappingKey)
+      )
+    )
       return false;
-    }
+    return true;
   }
 
   onAddAttribute() {
@@ -164,6 +179,52 @@ export class EditComponent implements OnInit {
     return listOfItems && selectedItem && listOfItems === selectedItem;
   }
 
+  displayableChange({ checked }: MatSlideToggleChange, result) {
+    this.attributeForm.markAsDirty();
+    result.displayed = checked;
+    const idx = this.updattrs.some((attr) => attr.ID === result.ID);
+    if (idx) {
+      this.updattrs = this.updattrs.map((x) => {
+        if (x.ID === result.ID) {
+          x.displayed = checked;
+        }
+        return x;
+      });
+    } else {
+      this.updattrs.push({
+        ID: result.ID,
+        name: result.name,
+        displayed: checked,
+        searchable: result.searchable,
+      });
+    }
+  }
+
+  searchableChange({ checked }: MatSlideToggleChange, result) {
+    this.attributeForm.markAsDirty();
+
+    result.searchable = checked;
+    result.displayed = checked ? true : result.displayed;
+
+    const idx = this.updattrs.some((attr) => attr.ID === result.ID);
+
+    if (idx) {
+      this.updattrs = this.updattrs.map((x) => {
+        if (x.ID === result.ID) {
+          x.searchable = checked;
+        }
+        return x;
+      });
+    } else {
+      this.updattrs.push({
+        ID: result.ID,
+        name: result.name,
+        displayed: result.displayed,
+        searchable: checked,
+      });
+    }
+  }
+
   modifyAttribute(successMsg, errorMsg, parentErrorMsg, equipmentDataErrorMsg) {
     this.reqInProgress = true;
     this.attributeForm.markAsPristine();
@@ -171,7 +232,9 @@ export class EditComponent implements OnInit {
     const attributeData = new ModifyJSONFormat();
     attributeData.attributes = attribute_data.attribute;
     attributeData.parent_id = this.root.value;
+    attributeData.updattr = this.updattrs;
     attributeData.scopes = [localStorage.getItem('scope')];
+
     if (attribute_data) {
       this.equipmentTypeService
         .updateAttribute(this.id, attributeData)
@@ -205,6 +268,7 @@ export class EditComponent implements OnInit {
   onFormReset() {
     this.attributeForm.reset();
     this.root.setValue(this.parent);
+    this.attribute = JSON.parse(JSON.stringify(this.data?.attributes || []));
     this.attribute_form.clear();
   }
 

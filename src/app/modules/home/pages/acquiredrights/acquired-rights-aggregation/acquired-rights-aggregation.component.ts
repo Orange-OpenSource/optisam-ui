@@ -386,7 +386,7 @@ export class AcquiredRightsAggregationComponent
 
   openAggregationDetailsDialog(aggregation: any): void {
     const dialogRef = this.dialog.open(ProductAggregationDetailsComponent, {
-      width: '850px',
+      width: '1300px',
       autoFocus: false,
       disableClose: true,
       data: {

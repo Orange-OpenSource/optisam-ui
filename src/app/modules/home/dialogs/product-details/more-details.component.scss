@@ -27,6 +27,7 @@ tr.queue-element-row:not(.queue-expanded-row):active {
 .queue-element-row {
     border-bottom-width: 0;
 }
+
 table {
     width: 100%;
 }
@@ -112,6 +113,12 @@ mat-menu-item {
   word-wrap: break-word;    
   word-break: break-word;
 }
+
+.mat-column-computedDetails
+{
+    min-width: 9rem;
+
+}
 .align-left{text-align: left;}
 .action-icon{
   cursor: pointer;
@@ -125,4 +132,12 @@ mat-menu-item {
 #AggrName {
   color: #008AFC; 
   cursor: pointer;
+}
+
+.alert_green{
+    color: green;
+}
+
+.alert_red{
+    color: red;
 }

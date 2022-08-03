@@ -65,13 +65,24 @@
         <mat-header-cell *matHeaderCellDef>{{
           "Searchable" | translate
         }}</mat-header-cell>
-        <mat-cell *matCellDef="let row">{{ row.searchable || null }}</mat-cell>
+        <mat-cell *matCellDef="let row">
+          <mat-slide-toggle
+            (change)="searchableChange($event, row)"
+            [checked]="row.searchable"
+          ></mat-slide-toggle>
+        </mat-cell>
       </ng-container>
       <ng-container matColumnDef="displayed">
         <mat-header-cell *matHeaderCellDef>{{
           "Displayable" | translate
         }}</mat-header-cell>
-        <mat-cell *matCellDef="let row">{{ row.displayed }}</mat-cell>
+        <mat-cell *matCellDef="let row">
+          <mat-slide-toggle
+            (change)="displayableChange($event, row)"
+            [checked]="row.displayed"
+            [disabled]="row.searchable"
+          ></mat-slide-toggle>
+        </mat-cell>
       </ng-container>
 
       <mat-header-row
@@ -210,11 +221,7 @@
             id="modifyButton"
             mat-raised-button
             type="submit"
-            [disabled]="
-              !attributeForm.valid ||
-              attributeForm.pristine ||
-              missingParentAttribute
-            "
+            [disabled]="!attributeForm.valid || attributeForm.pristine"
             (click)="
               modifyAttribute(
                 succesUpdateDialog,
@@ -233,6 +240,11 @@
             ></span>
             {{ "Modify" | translate }}
           </button>
+
+          <!-- {{ !attributeForm.valid | json }}
+          {{ attributeForm.pristine | json }}
+          {{ missingParentAttribute | json }}
+          {{ !checkParent | json }} -->
         </div>
       </div>
       <!-- End Call to action button -->

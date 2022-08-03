@@ -22,6 +22,29 @@
 .mat-icon {
     color: #008AFC !important;
 }
+
+// .mat-slide-toggle{
+//   color: #008AFC !important;
+// }
+
+// .mat-slide-toggle.mat-checked .mat-slide-toggle-thumb {
+//   background-color:  #008AFC !important;
+// }
+
+::ng-deep .mat-slide-toggle.mat-checked .mat-slide-toggle-thumb{
+  background-color: #008AFC  !important;
+
+}
+
+::ng-deep  .mat-slide-toggle.mat-checked .mat-slide-toggle-bar {
+  background-color: #e9ecef  !important;
+
+}
+
+// .mat-slide-toggle.mat-checked:not(.mat-disabled) .mat-slide-toggle-thumb {
+//   background-color: #49c5b6 !important;
+// }
+
 // .mat-cell { margin: 0 0 30px 0; }
 .mat-header-cell { color: inherit !important; font-size: inherit !important; font-weight: 700 !important;}
 .mat-form-field-infix { border-top: none !important; }

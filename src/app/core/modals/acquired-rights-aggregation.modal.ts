@@ -50,9 +50,10 @@ export interface AggregationProductObject {
 }
 
 export interface AcquiredRightAggregationBody
-  extends Omit<Aggregation, 'aggregation_name' | 'sku'> {
+  extends Omit<Aggregation, 'aggregation_name' | 'sku' | 'repartition'> {
   aggregation_name?: string;
   sku?: string;
+  repartition?: boolean;
 }
 
 export type AggregationData = AcquiredRightAggregationBody | {};

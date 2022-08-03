@@ -16,14 +16,20 @@ Click on "Create Report" :
 
 ![select APM](../../../img/exploring/reports/complianceFirst.jpg){: .zoom}
 
-Select :  
-- Report Type : Select "Compliance"  
-- Editor : The editor on which you want to create the report  
-- Product : The product(s) on which you want to create the report  
+This page will be shown:   
 
-![select APM](../../../img/exploring/reports/complianceSecond.jpg){: .zoom}
 
-Click on "Create" to create your report.
+![select APM](../../../img/exploring/reports/createReport2.png){: .zoom}
+
+You will have to chose the report type. It can be about compliance or product equipments.
+
+To create a report about compliance, you will have to follow the steps below:
+
+![select APM](../../../img/exploring/reports/compliance1.png){: .zoom}
+
+1- Chose "compliance" as report type       
+2- Chose the editor on which you want to create the report  
+3- Click on "Create" to create your report. 
 
 ## Results of the report
 
@@ -40,13 +46,15 @@ In the CSV report you will find a table with all the attributes to know if your 
 
 The attributes are :  
 - SKU : Identifier of the rights you have acquired  
+- Aggregation Name : The name of the aggrefation if applicable
 - SWIDTag : Identifier of the product  
 - Editor : Editor of the product  
 - Metric : Identifier of the metric used for this product  
 - ComputedLicenses : Number of licenses needed for your deployment  
+- Computation Details : Details of the computation if many metrics are used
 - AcquiredLicenses : Number of licenses acquired  
-- Delta (number) : Difference between "Acquired" and "Computed" licenses (positive = underusage, negative = counterfeiting)  
-- Delta (euros) : Difference between "Acquired" and "Computed" licenses in euros (positive = underusage, negative = counterfeiting)  
+- Delta (licenses) : Difference between "Acquired" and "Computed" licenses (positive = underusage, negative = counterfeiting)  
+- Delta (cost) : Difference between "Acquired" and "Computed" licenses in euros (positive = underusage, negative = counterfeiting)  
 - TotalCost : Total cost of your "Acquired licenses"  
 - AvgUnitPrice : The unit price of a license  
 

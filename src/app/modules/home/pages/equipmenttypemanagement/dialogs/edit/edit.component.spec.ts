@@ -24,25 +24,23 @@ describe('EditComponent', () => {
     },
   ];
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [EditComponent],
-        imports: [
-          ReactiveFormsModule,
-          CustomMaterialModule,
-          HttpClientTestingModule,
-          BrowserAnimationsModule,
-          TranslateModule.forRoot(),
-        ],
-        providers: [
-          EquipmentTypeManagementService,
-          { provide: MatDialogRef, useValue: {} },
-          { provide: MAT_DIALOG_DATA, useValue: {} },
-        ],
-      }).compileComponents();
-    })
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [EditComponent],
+      imports: [
+        ReactiveFormsModule,
+        CustomMaterialModule,
+        HttpClientTestingModule,
+        BrowserAnimationsModule,
+        TranslateModule.forRoot(),
+      ],
+      providers: [
+        EquipmentTypeManagementService,
+        { provide: MatDialogRef, useValue: {} },
+        { provide: MAT_DIALOG_DATA, useValue: {} },
+      ],
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(EditComponent);

@@ -1,17 +1,35 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import {
+  AfterViewChecked,
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  OnInit,
+} from '@angular/core';
+import {
+  FormControl,
+  FormGroup,
+  ValidatorFn,
+  Validators,
+} from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { ɵangular_packages_router_router_h } from '@angular/router';
 import { MetricType } from '@core/modals';
 import { CommonService } from '@core/services/common.service';
+import { Observable } from 'rxjs';
+import { filter, pluck } from 'rxjs/operators';
 import { EquipmentTypeManagementService } from 'src/app/core/services/equipmenttypemanagement.service';
 import { MetricService } from 'src/app/core/services/metric.service';
+
+const TRANSFORM_METRIC_TYPES = ['oracle.processor.standard'];
 
 @Component({
   selector: 'app-create-metric',
   templateUrl: './create-metric.component.html',
   styleUrls: ['./create-metric.component.scss'],
 })
-export class CreateMetricComponent implements OnInit, AfterViewInit {
+export class CreateMetricComponent
+  implements OnInit, AfterViewInit, AfterViewChecked
+{
   metricForm: FormGroup;
   selectedScope: string;
   _loading: Boolean;
@@ -30,20 +48,36 @@ export class CreateMetricComponent implements OnInit, AfterViewInit {
   attributesList: any[] = [];
   selectedAttributeDatatype: string = '';
   zeroValueMsg: string;
+  transformProcessor: boolean = false;
+  processorMetricList$: Observable<any>;
 
   constructor(
     private equipmentTypeService: EquipmentTypeManagementService,
     private metricService: MetricService,
     public dialog: MatDialog,
-    private cs: CommonService
+    private cs: CommonService,
+    private cd: ChangeDetectorRef
   ) {
     this.selectedScope = localStorage.getItem('scope');
     this.getMetricList();
     this.getMetricTypes();
   }
+  ngAfterViewChecked(): void {
+    this.updateTransformProcessorValidator();
+  }
 
   ngOnInit(): void {
     this.setFormData();
+    this.processorMetricList$ = this.metricService.getMetricList().pipe(
+      filter((list) => {
+        list.metrices = list?.metrices.filter((metric) => {
+          return TRANSFORM_METRIC_TYPES.includes(metric.type);
+        });
+        return list;
+      }),
+
+      pluck('metrices')
+    );
   }
 
   ngAfterViewInit() {
@@ -57,8 +91,20 @@ export class CreateMetricComponent implements OnInit, AfterViewInit {
         }
       } else if (this.selectedMetricTypeId === 'Attr_Sum') {
         this.validateNonZero(res.configuration?.referenceValue);
+      } else if (this.selectedMetricTypeId === 'Equip_Attr') {
+        this.validateNonZero(res.configuration?.value);
       }
     });
+  }
+
+  updateTransformProcessorValidator(): void {
+    if (!this.transformProcessorMetric) return;
+    if (this.transformProcessor)
+      this.transformProcessorMetric.setValidators(Validators.required);
+    else this.transformProcessorMetric.clearValidators();
+
+    this.transformProcessorMetric.updateValueAndValidity();
+    this.cd.detectChanges();
   }
 
   setFormData() {
@@ -116,6 +162,9 @@ export class CreateMetricComponent implements OnInit, AfterViewInit {
   get attributeName() {
     return this.configuration.get('attributeName');
   }
+  get environmentValue() {
+    return this.configuration.get('environmentValue');
+  }
   get value() {
     return this.configuration.get('value');
   }
@@ -124,6 +173,10 @@ export class CreateMetricComponent implements OnInit, AfterViewInit {
   }
   get referenceValue() {
     return this.configuration.get('referenceValue');
+  }
+
+  get transformProcessorMetric(): FormControl {
+    return this.configuration.get('transformProcessorMetric') as FormControl;
   }
 
   getEqpNameByID(equipID) {
@@ -197,9 +250,16 @@ export class CreateMetricComponent implements OnInit, AfterViewInit {
                 e.attributes.map((attr) => attr.data_type).includes('INT')
             )
             .reverse();
+        } else if (this.selectedMetricTypeId === 'Equip_Attr') {
+          this.equipmentsTypesList = res.equipment_types.filter(
+            (e) =>
+              e.attributes.some((attr) => attr.data_type === 'INT') &&
+              this.isValidEquipment(e, res.equipment_types)
+          );
         } else {
           this.equipmentsTypesList = (res.equipment_types || []).reverse();
         }
+
         this.firstEquipmentsList = this.equipmentsTypesList;
       },
       (error) => {
@@ -209,6 +269,22 @@ export class CreateMetricComponent implements OnInit, AfterViewInit {
         );
       }
     );
+  }
+
+  private isValidEquipment(e, equipments): boolean {
+    // debugger;
+
+    const isValid = e.attributes.some((attr) => attr.name === 'environment');
+
+    if (isValid) return true;
+
+    if (!e.parent_type) return false;
+
+    const parent = equipments.find((eqp) => eqp.type === e.parent_type);
+
+    if (!parent) return false;
+
+    return this.isValidEquipment(parent, equipments);
   }
 
   metricSelected(name) {
@@ -254,6 +330,10 @@ export class CreateMetricComponent implements OnInit, AfterViewInit {
             Validators.required,
             Validators.pattern(/^(?=.*[1-9])\d*$/),
           ]), //INT
+          transformProcessorMetric: new FormControl(
+            '',
+            this.transformProcessor ? [Validators.required] : []
+          ),
         });
         break;
       case 'Attr_Counter':
@@ -264,6 +344,22 @@ export class CreateMetricComponent implements OnInit, AfterViewInit {
             Validators.required,
           ]),
         });
+        break;
+
+      case 'Equip_Attr':
+        configControls = new FormGroup({
+          referenceEquipment: new FormControl('', [Validators.required]),
+          attributeName: new FormControl('', [Validators.required]),
+          environmentValue: new FormControl('', [
+            Validators.required,
+            Validators.pattern(/^[a-zA-Z0-9,]*$/),
+          ]),
+          value: new FormControl(null, [
+            Validators.required,
+            Validators.pattern(/^[0-9]*$/),
+          ]),
+        });
+
         break;
       case 'Instance_Number':
         configControls = new FormGroup({
@@ -286,6 +382,7 @@ export class CreateMetricComponent implements OnInit, AfterViewInit {
       case 'User_Sum':
         configControls = new FormGroup({});
         break;
+
       case 'Attr_Sum':
         configControls = new FormGroup({
           referenceEquipment: new FormControl('', [Validators.required]),
@@ -349,12 +446,17 @@ export class CreateMetricComponent implements OnInit, AfterViewInit {
             selectedRefEquipment.parent_id
           )
         );
+        this.attributeName.reset();
         // Populate list of attribute names
         if (this.selectedMetricTypeId === 'Attr_Counter') {
           this.attributesList = selectedRefEquipment.attributes;
         } else if (this.selectedMetricTypeId === 'Attr_Sum') {
           this.attributesList = selectedRefEquipment.attributes.filter(
             (attr) => attr.data_type !== 'STRING'
+          );
+        } else if (this.selectedMetricTypeId === 'Equip_Attr') {
+          this.attributesList = selectedRefEquipment.attributes.filter(
+            (attr) => attr.data_type === 'INT'
           );
         }
         this.attributesList = this.cs.customSort(
@@ -418,6 +520,10 @@ export class CreateMetricComponent implements OnInit, AfterViewInit {
           )[0].data_type;
         } else if (this.selectedMetricTypeId === 'Attr_Sum') {
           this.referenceValue.enable();
+        } else if (this.selectedMetricTypeId === 'Equip_Attr') {
+          this.zeroValueMsg = null;
+          this.value.reset();
+          this.value.enable();
         }
         break;
     }
@@ -480,6 +586,10 @@ export class CreateMetricComponent implements OnInit, AfterViewInit {
           aggerateLevel_eq_type_id: this.aggregationLevel.value,
           end_eq_type_id: this.lastEquipment.value,
           number_of_users: Number(this.noOfUsers.value),
+          transform: this.transformProcessor,
+          transform_metric_name: this.transformProcessor
+            ? this.transformProcessorMetric.value
+            : '',
           scopes: [this.selectedScope],
         };
         break;
@@ -490,6 +600,17 @@ export class CreateMetricComponent implements OnInit, AfterViewInit {
           eq_type: this.getEqpNameByID(this.referenceEquipment.value),
           attribute_name: this.attributeName.value,
           value: this.value.value,
+          scopes: [this.selectedScope],
+        };
+        break;
+      case 'Equip_Attr':
+        body = {
+          ID: '',
+          name: this.name.value.trim(),
+          eq_type: this.getEqpNameByID(this.referenceEquipment.value),
+          attribute_name: this.attributeName.value,
+          environment: this.environmentValue.value,
+          value: Number(this.value.value),
           scopes: [this.selectedScope],
         };
         break;
@@ -517,6 +638,7 @@ export class CreateMetricComponent implements OnInit, AfterViewInit {
           scopes: [this.selectedScope],
         };
         break;
+
       case 'Attr_Sum':
         body = {
           ID: '',
@@ -528,6 +650,7 @@ export class CreateMetricComponent implements OnInit, AfterViewInit {
         };
         break;
     }
+
     this.metricService.createMetric(body, url).subscribe(
       (res) => {
         this._loading = false;

@@ -3,7 +3,7 @@
     <ng-container *ngFor="let column of displayedColumns">
       <ng-container matColumnDef="{{ column }}">
         <mat-header-cell *matHeaderCellDef>{{
-          columns[column]
+          columns[column] | translate
         }}</mat-header-cell>
         <mat-cell *matCellDef="let element">{{ element[column] }}</mat-cell>
       </ng-container>

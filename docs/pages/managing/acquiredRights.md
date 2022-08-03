@@ -51,7 +51,7 @@ Click on "Create New" button :
 
 This window will be shown : 
 
-![select APM](../../img/ARMana/create0.jpg){: .zoom}
+![select APM](../../img/ARMana/create0.png){: .zoom}
 
 You will have to fill in the fields (if needed, not mandatory):
 1. SKU : The id of the acquired right (mandatory)    

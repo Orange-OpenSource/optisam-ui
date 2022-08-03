@@ -16,6 +16,8 @@ import { MoreDetailsComponent } from '../../../dialogs/product-details/more-deta
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
+import { EditMetricAllocatedComponent } from '../edit-metricAllocated/edit-metric-allocated/edit-metric-allocated.component';
+
 /*  import { DialogData } from './details'; */
 
 @Component({
@@ -114,7 +116,7 @@ export class AttributeDetailComponent implements OnInit {
     this.type = this.data['types'];
     this.equipName = this.data['equipName'];
     this.equipNameCapitalized = this.equipName.toUpperCase();
-    console.log('data : ', this.type);
+
     for (let i = 0; i <= this.type.length - 1; i++) {
       if (this.type[i].ID === this.equimId) {
         this.parentId = this.type[i].ID;
@@ -343,7 +345,15 @@ export class AttributeDetailComponent implements OnInit {
       .getProductDetail(this.equimId, this.typeName, length, pageSize, sortBy)
       .subscribe(
         (res: any) => {
-          this.productColumn = ['swidTag', 'name', 'editor', 'numofEquipments']; //'version'];
+          this.productColumn = [
+            'swidTag',
+            'name',
+            'editor',
+            'numofEquipments',
+            'equipmentUsers',
+            'allocatedMetric',
+            'action',
+          ]; //'version'];
           this.productdataSource = new MatTableDataSource(res.products);
           this.productdataSource.sort = this.sort;
           this.productLength = res.totalRecords;
@@ -576,6 +586,23 @@ export class AttributeDetailComponent implements OnInit {
       data: {
         datakey: value,
         dataName: name,
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {});
+  }
+
+  openEditDialog(product): void {
+    const dialogRef = this.dialog.open(EditMetricAllocatedComponent, {
+      width: '500px',
+      disableClose: true,
+      data: {
+        datakey: product,
+        equimId: this.data['equiId'],
+        typeName: this.data['typeName'],
+        type: this.data['types'],
+        typeId: this.data['typeId'],
+        // dataName: name,
       },
     });
 

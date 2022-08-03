@@ -8,6 +8,7 @@ import { EquipmentsComponent } from './equipments.component';
 import { EquipmentsRoutingModule } from './equipments-routing.module';
 import { EquipmentsListComponent } from './equipments-list/equipments-list.component';
 import { AttributeDetailComponent } from './attribute-detail/attribute-detail.component';
+import { EditMetricAllocatedComponent } from './edit-metricAllocated/edit-metric-allocated/edit-metric-allocated.component';
 
 @NgModule({
   imports: [
@@ -22,6 +23,6 @@ import { AttributeDetailComponent } from './attribute-detail/attribute-detail.co
   entryComponents: [
     AttributeDetailComponent
   ],
-  declarations:  [ EquipmentsComponent, EquipmentsListComponent],
+  declarations:  [ EquipmentsComponent, EquipmentsListComponent, EditMetricAllocatedComponent],
 })
 export class EquipmentsModule { }

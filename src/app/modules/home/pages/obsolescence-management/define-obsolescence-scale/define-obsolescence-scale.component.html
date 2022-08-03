@@ -1,154 +1,356 @@
 <mat-card>
-    <mat-card-title>
-        <div class="page-heading">
-            {{'Obsolescence Management'|translate}}
-        </div>
-    </mat-card-title>
-    <mat-card-content>
-        <div class="section">
-            <div class="section-heading">
-                {{'Domain Criticity' | translate}}
+  <mat-card-title>
+    <div class="page-heading">
+      {{ "Obsolescence Management" | translate }}
+    </div>
+  </mat-card-title>
+  <mat-card-content>
+    <div class="section">
+      <div class="section-heading">
+        {{ "Domain Criticity" | translate }}
+      </div>
+      <div class="mat-elevation-z8">
+        <span
+          id="domainSuccess"
+          class="successMsg"
+          *ngIf="domainCriticitySaved"
+          >{{
+            "Your changes for Domain Criticity are successfully saved!"
+          }}</span
+        >
+        <mat-error *ngIf="emptyDomain && !emptyCriticity">{{
+          "Please select at least one domain." | translate
+        }}</mat-error>
+        <mat-error *ngIf="!emptyDomain && emptyCriticity">{{
+          "Please select an option for criticity." | translate
+        }}</mat-error>
+        <mat-error *ngIf="emptyDomain && emptyCriticity">{{
+          "Please select values for domain and criticity." | translate
+        }}</mat-error>
+        <mat-error *ngIf="domainCriticitySavedError">{{
+          "Your changes for Domain Criticity could not be saved. Please try again later."
+            | translate
+        }}</mat-error>
+        <div
+          id="cardContainer"
+          class="section-body"
+          *ngIf="!(_domainLoading && criticityMeta.length == 0)"
+        >
+          <div class="mat-elevation-z8">
+            <div class="left-section">
+              <div class="card">
+                <div class="card-header">{{ "All Domains" | translate }}</div>
+                <div class="card-body">
+                  <span class="domain-list-section">
+                    <ul>
+                      <li *ngFor="let domain of domainsList">
+                        <mat-checkbox [(ngModel)]="domain.isChecked">
+                          {{ domain.name }}
+                        </mat-checkbox>
+                      </li>
+                    </ul>
+                  </span>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-header">{{ "Criticity" | translate }}</div>
+                <div class="card-body">
+                  <span class="criticity-list-section">
+                    <mat-radio-group
+                      class="criticity-radio-group"
+                      [(ngModel)]="selectedCriticity"
+                    >
+                      <mat-radio-button
+                        class="criticity-radio-button"
+                        *ngFor="let criticity of criticityMeta"
+                        [value]="criticity"
+                        >{{
+                          criticity.domain_critic_name | translate
+                        }}</mat-radio-button
+                      >
+                    </mat-radio-group>
+                  </span>
+                </div>
+              </div>
             </div>
-            <div class="mat-elevation-z8">
-                <span id="domainSuccess" class="successMsg" *ngIf="domainCriticitySaved">{{'Your changes for Domain Criticity are successfully saved!'}}</span>
-                <mat-error *ngIf="emptyDomain && !emptyCriticity">{{'Please select at least one domain.'|translate}}</mat-error>
-                <mat-error *ngIf="!emptyDomain && emptyCriticity">{{'Please select an option for criticity.'|translate}}</mat-error>
-                <mat-error *ngIf="emptyDomain && emptyCriticity">{{'Please select values for domain and criticity.'|translate}}</mat-error>
-                <mat-error *ngIf="domainCriticitySavedError">{{'Your changes for Domain Criticity could not be saved. Please try again later.'|translate}}</mat-error>
-                <div id="cardContainer" class="section-body" *ngIf="!(_domainLoading && criticityMeta.length == 0)">
-                    <div class="mat-elevation-z8">
-                    <div class="left-section">
-                        <div class="card">
-                        <div class="card-header">{{'All Domains' | translate}}</div>
-                        <div class="card-body">
-                          <span class="domain-list-section">
-                              <ul>
-                                <li *ngFor="let domain of domainsList">
-                                  <mat-checkbox [(ngModel)]="domain.isChecked">
-                                    {{domain.name}}
-                                  </mat-checkbox>
-                                </li>
-                              </ul>
-                            </span>                    
-                        </div>
+          </div>
+          <mat-icon
+            class="add-icon"
+            matTooltip="{{ 'Add Domain' | translate }}"
+            (click)="addDomain()"
+            >add_circle</mat-icon
+          >
+          <div class="mat-elevation-z8">
+            <div class="right-section">
+              <div *ngFor="let criticity of criticityMeta" class="card">
+                <div class="card-header">
+                  {{ criticity.domain_critic_name | translate }}
+                </div>
+                <div class="right-card-body">
+                  <span *ngFor="let criticityDomain of criticityDomains">
+                    <span
+                      *ngIf="
+                        criticityDomain.domain_critic_id ==
+                        criticity.domain_critic_id
+                      "
+                    >
+                      <div
+                        class="list-item"
+                        *ngFor="
+                          let domain of criticityDomain.domains;
+                          let idx = index
+                        "
+                      >
+                        <span>{{ domain }}</span>
+                        <mat-icon
+                          class="remove-icon"
+                          (click)="
+                            removeDomain(
+                              domain,
+                              criticityDomain.domain_critic_id
+                            )
+                          "
+                          >remove_circle</mat-icon
+                        >
                       </div>
-                      <div class="card">
-                        <div class="card-header">{{'Criticity' | translate}}</div>
-                        <div class="card-body">
-                          <span class="criticity-list-section">
-                            <mat-radio-group class="criticity-radio-group" [(ngModel)]="selectedCriticity">
-                                <mat-radio-button class="criticity-radio-button" *ngFor="let criticity of criticityMeta" [value]="criticity">{{criticity.domain_critic_name}}</mat-radio-button>
-                            </mat-radio-group>
-                            </span>                    
-                        </div>
-                      </div>
-                     </div>
-                    </div>
-                    <mat-icon class="add-icon" matTooltip="{{'Add Domain'|translate}}" (click)="addDomain()">add_circle</mat-icon>
-                    <div class="mat-elevation-z8">
-                    <div class="right-section">
-                          <div *ngFor="let criticity of criticityMeta" class="card">
-                          <div class="card-header">{{criticity.domain_critic_name | translate}}</div>
-                          <div class="right-card-body">
-                            <span *ngFor="let criticityDomain of criticityDomains">
-                                <span *ngIf="criticityDomain.domain_critic_id == criticity.domain_critic_id">
-                                    <div class="list-item" *ngFor="let domain of criticityDomain.domains;let idx = index;">
-                                        <span>{{domain}}</span>
-                                        <mat-icon class="remove-icon" (click)="removeDomain(domain, criticityDomain.domain_critic_id)">remove_circle</mat-icon>
-                                    </div> 
-                                </span>
-                            </span>
-                          </div>
-                        </div>  
-                    </div>
-                </div>   
-                </div>
-                <app-loading-spinner style="padding: 8px;" *ngIf="_domainLoading && criticityMeta.length == 0"></app-loading-spinner>          
-                <div class="action-items">
-                    <button mat-raised-button class="btn btn-three" [disabled]="criticityDomains.length == 0 || noChangeDomainCriticity" (click)="resetDomainCriticity()">{{'Reset' | translate}}</button>
-                    <button mat-raised-button class="btn btn-two" [disabled]="criticityDomains.length == 0 ||noChangeDomainCriticity" (click)="saveDomainCriticity()">{{'Save' | translate}}</button>
-                </div>
-            </div>
-        </div>
-        <div class="section">
-            <div class="section-heading">
-                {{'Maintenance Time Criticity' | translate}}
-            </div>
-            <div class="mat-elevation-z8">
-                <span id="timeSuccess" class="successMsg" *ngIf="maintenanceTimeCriticitySaved">{{'Your changes for Maintenance Time Criticity are successfully saved!'}}</span>
-                <mat-error *ngIf="maintenanceTimeCriticitySavedError">{{'Your changes for Maintenance Time Criticity could not be saved. Please try again later.'|translate}}</mat-error>
-                <div class="userMsg">{{"Given M maintenance's end date for a software product, please provide values for start month for the following levels of time criticity:"|translate}}</div>
-                <div id="timeCriticityContainer" class="section-body">
-                    <mat-grid-list [cols]="3" rowHeight="7:2">
-                        <mat-grid-tile  class="maintenanceTile"
-                            *ngFor="let tile of maintenanceTiles"
-                            [colspan]="tile.cols"
-                            [rowspan]="tile.rows"
-                            [style.background]="tile.color">
-                            <div *ngIf="tile.text != 'inputStartMonth' && tile.text != 'inputEndMonth'">    
-                                <span class="tileText">
-                                    {{tile.text}}
-                                </span> 
-                                <p class="smallText" *ngIf="tile.id === 1"> M &gt; {{'Start Month' | translate}} </p>
-                                <p class="smallText" *ngIf="tile.id !== 1 && tile.id !== maintenanceLevels.length">{{'Start Month' | translate}} &lt; M &gt; {{'End Month' | translate}}</p>
-                                <p class="smallText" *ngIf="tile.id === maintenanceLevels.length"> M &lt; {{'End Month' | translate}}</p>
-                            </div>
-                            
-                            <span *ngIf="tile.text == 'inputStartMonth'">
-                                <mat-form-field>
-                                    <input matInput *ngIf="tile.id !== maintenanceLevels.length" type="number" #startMonth [(ngModel)]="startMonthArray[tile.id - 1]" (focusout)="setEndDate(tile.id)" (keypress)="validatePattern(startMonth, $event)" min="1" max="72" placeholder="{{'Start Month'|translate}}">
-                                    <input matInput *ngIf="tile.id === maintenanceLevels.length" disabled type="number" #startMonth [(ngModel)]="startMonthArray[tile.id - 1]" placeholder="{{'Start Month'|translate}}">
-                                </mat-form-field>
-                            </span>
-                            <span *ngIf="tile.text == 'inputEndMonth'">
-                                <mat-form-field>
-                                    <input matInput disabled [(ngModel)]="endMonthArray[tile.id - 1]" placeholder="{{'End Month'|translate}}">
-                                </mat-form-field>
-                            </span>
-                        </mat-grid-tile>
-                    </mat-grid-list>
-                </div>    
-                <app-loading-spinner *ngIf="_maintenanceLoading && maintenanceTiles.length == 0"></app-loading-spinner>      
-                <div class="action-items">
-                    <button mat-raised-button class="btn btn-three" [disabled]="maintenanceLevels.length == 0 || noChangeTimeCriticity" (click)="resetMaintenanceCriticity()">{{'Reset' | translate}}</button>
-                    <button mat-raised-button class="btn btn-two" [disabled]="startMonthArray.length == 0 || startMonthArray.includes(undefined) || noChangeTimeCriticity" (click)="saveMaintenanceTimeCriticity()">{{'Save' | translate}}</button>
-                </div>
-            </div>
-        </div>
-        <div class="section">
-            <div class="section-heading">
-                {{'Risk Matrix' | translate}}
-            </div>
-            <div class="mat-elevation-z8">
-                <div class="section-body">
-                    <span id="riskMatrixSuccess" class="successMsg" *ngIf="riskMatrixSaved">
-                        {{'Your changes for Risk Matrix are successfully saved!'}}
                     </span>
-                    <mat-error *ngIf="riskMatrixSavedError">{{'Your changes for Risk Matrix could not be saved. Please try again later.'|translate}}</mat-error>
-                    <mat-grid-list [cols]="((criticityMeta.length + 1)*3)" rowHeight="2:1">
-                        <mat-grid-tile class="riskMatrix" *ngFor="let tile of riskMatrixTiles" [colspan]="tile.cols"
-                            [rowspan]="tile.rows" [style.background]="tile.color">
-                            <span class="tileText" [ngClass]="(tile.text == 'Maintenance')?'rotate':''"
-                                *ngIf="tile.text != 'Select'">{{tile.text}}</span>
-                            <span *ngIf="tile.text == 'Select'">
-                                <mat-form-field floatLabel='never'>
-                                    <mat-select [(value)]="riskMatrixValues[tile.level][tile.criticity].risk" [placeholder]="riskMatrixValues[tile.level][tile.criticity].risk?riskMatrixValues[tile.level][tile.criticity].risk.risk_name:''"
-                                        (selectionChange)="selectionChanged()">
-                                        <mat-option>-- {{'Select'|translate}} --</mat-option>
-                                        <mat-option *ngFor="let risk of riskLevels;let idx = index;" [value]="risk">{{risk.risk_name}}
-                                        </mat-option>
-                                    </mat-select>
-                                </mat-form-field>
-                            </span>
-                        </mat-grid-tile>
-                    </mat-grid-list>
-                    <app-loading-spinner *ngIf="_riskLoading && riskMatrixTiles.length == 0"></app-loading-spinner>
+                  </span>
                 </div>
-                <div class="action-items">
-                    <button mat-raised-button class="btn btn-three" [disabled]="criticityMeta.length == 0 || maintenanceLevels.length == 0 || noChangeRiskMatrix" (click)="resetRiskMatrix()">{{'Reset' | translate}}</button>
-                    <button mat-raised-button class="btn btn-two" [disabled]="noChangeRiskMatrix || incompleteMatrix" (click)="saveRiskMatrix()">{{'Save' | translate}}</button>
-                </div>
+              </div>
             </div>
+          </div>
         </div>
-    </mat-card-content>
+        <app-loading-spinner
+          style="padding: 8px"
+          *ngIf="_domainLoading && criticityMeta.length == 0"
+        ></app-loading-spinner>
+        <div class="action-items">
+          <button
+            mat-raised-button
+            class="btn btn-three"
+            [disabled]="criticityDomains.length == 0 || noChangeDomainCriticity"
+            (click)="resetDomainCriticity()"
+          >
+            {{ "Reset" | translate }}
+          </button>
+          <button
+            mat-raised-button
+            class="btn btn-two"
+            [disabled]="criticityDomains.length == 0 || noChangeDomainCriticity"
+            (click)="saveDomainCriticity()"
+          >
+            {{ "Save" | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="section">
+      <div class="section-heading">
+        {{ "Maintenance Time Criticity" | translate }}
+      </div>
+      <div class="mat-elevation-z8">
+        <span
+          id="timeSuccess"
+          class="successMsg"
+          *ngIf="maintenanceTimeCriticitySaved"
+          >{{
+            "Your changes for Maintenance Time Criticity are successfully saved!"
+          }}</span
+        >
+        <mat-error *ngIf="maintenanceTimeCriticitySavedError">{{
+          "Your changes for Maintenance Time Criticity could not be saved. Please try again later."
+            | translate
+        }}</mat-error>
+        <div class="userMsg">
+          {{
+            "Given M maintenance's end date for a software product, please provide values for start month for the following levels of time criticity:"
+              | translate
+          }}
+        </div>
+        <div id="timeCriticityContainer" class="section-body">
+          <mat-grid-list [cols]="3" rowHeight="7:2">
+            <mat-grid-tile
+              class="maintenanceTile"
+              *ngFor="let tile of maintenanceTiles"
+              [colspan]="tile.cols"
+              [rowspan]="tile.rows"
+              [style.background]="tile.color"
+            >
+              <div
+                *ngIf="
+                  tile.text != 'inputStartMonth' && tile.text != 'inputEndMonth'
+                "
+              >
+                <span class="tileText"> {{ tile.text }} </span>
+                <p class="smallText" *ngIf="tile.id === 1">
+                  M &gt; {{ "Start Month" | translate }}
+                </p>
+                <p
+                  class="smallText"
+                  *ngIf="tile.id !== 1 && tile.id !== maintenanceLevels.length"
+                >
+                  {{ "Start Month" | translate }} &lt; M &gt;
+                  {{ "End Month" | translate }}
+                </p>
+                <p
+                  class="smallText"
+                  *ngIf="tile.id === maintenanceLevels.length"
+                >
+                  M &lt; {{ "End Month" | translate }}
+                </p>
+              </div>
+
+              <span *ngIf="tile.text == 'inputStartMonth'">
+                <mat-form-field>
+                  <input
+                    matInput
+                    *ngIf="tile.id !== maintenanceLevels.length"
+                    type="number"
+                    #startMonth
+                    [(ngModel)]="startMonthArray[tile.id - 1]"
+                    (focusout)="setEndDate(tile.id)"
+                    (keypress)="validatePattern(startMonth, $event)"
+                    min="1"
+                    max="72"
+                    placeholder="{{ 'Start Month' | translate }}"
+                  />
+                  <input
+                    matInput
+                    *ngIf="tile.id === maintenanceLevels.length"
+                    disabled
+                    type="number"
+                    #startMonth
+                    [(ngModel)]="startMonthArray[tile.id - 1]"
+                    placeholder="{{ 'Start Month' | translate }}"
+                  />
+                </mat-form-field>
+              </span>
+              <span *ngIf="tile.text == 'inputEndMonth'">
+                <mat-form-field>
+                  <input
+                    matInput
+                    disabled
+                    [(ngModel)]="endMonthArray[tile.id - 1]"
+                    placeholder="{{ 'End Month' | translate }}"
+                  />
+                </mat-form-field>
+              </span>
+            </mat-grid-tile>
+          </mat-grid-list>
+        </div>
+        <app-loading-spinner
+          *ngIf="_maintenanceLoading && maintenanceTiles.length == 0"
+        ></app-loading-spinner>
+        <div class="action-items">
+          <button
+            mat-raised-button
+            class="btn btn-three"
+            [disabled]="maintenanceLevels.length == 0 || noChangeTimeCriticity"
+            (click)="resetMaintenanceCriticity()"
+          >
+            {{ "Reset" | translate }}
+          </button>
+          <button
+            mat-raised-button
+            class="btn btn-two"
+            [disabled]="
+              startMonthArray.length == 0 ||
+              startMonthArray.includes(undefined) ||
+              noChangeTimeCriticity
+            "
+            (click)="saveMaintenanceTimeCriticity()"
+          >
+            {{ "Save" | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="section">
+      <div class="section-heading">
+        {{ "Risk Matrix" | translate }}
+      </div>
+      <div class="mat-elevation-z8">
+        <div class="section-body">
+          <span
+            id="riskMatrixSuccess"
+            class="successMsg"
+            *ngIf="riskMatrixSaved"
+          >
+            {{ "Your changes for Risk Matrix are successfully saved!" }}
+          </span>
+          <mat-error *ngIf="riskMatrixSavedError">{{
+            "Your changes for Risk Matrix could not be saved. Please try again later."
+              | translate
+          }}</mat-error>
+          <mat-grid-list
+            [cols]="(criticityMeta.length + 1) * 3"
+            rowHeight="2:1"
+          >
+            <mat-grid-tile
+              class="riskMatrix"
+              *ngFor="let tile of riskMatrixTiles"
+              [colspan]="tile.cols"
+              [rowspan]="tile.rows"
+              [style.background]="tile.color"
+            >
+              <span
+                class="tileText"
+                [ngClass]="tile.text == 'Maintenance' ? 'rotate' : ''"
+                *ngIf="tile.text != 'Select'"
+                >{{ tile.text | translate }}</span
+              >
+              <span *ngIf="tile.text == 'Select'">
+                <mat-form-field floatLabel="never">
+                  <mat-select
+                    [(value)]="
+                      riskMatrixValues[tile.level][tile.criticity].risk
+                    "
+                    [placeholder]="
+                      riskMatrixValues[tile.level][tile.criticity].risk
+                        ? riskMatrixValues[tile.level][tile.criticity].risk
+                            .risk_name
+                        : ''
+                    "
+                    (selectionChange)="selectionChanged()"
+                  >
+                    <mat-option>-- {{ "Select" | translate }} --</mat-option>
+                    <mat-option
+                      *ngFor="let risk of riskLevels; let idx = index"
+                      [value]="risk"
+                      >{{ risk.risk_name | translate }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </span>
+            </mat-grid-tile>
+          </mat-grid-list>
+          <app-loading-spinner
+            *ngIf="_riskLoading && riskMatrixTiles.length == 0"
+          ></app-loading-spinner>
+        </div>
+        <div class="action-items">
+          <button
+            mat-raised-button
+            class="btn btn-three"
+            [disabled]="
+              criticityMeta.length == 0 ||
+              maintenanceLevels.length == 0 ||
+              noChangeRiskMatrix
+            "
+            (click)="resetRiskMatrix()"
+          >
+            {{ "Reset" | translate }}
+          </button>
+          <button
+            mat-raised-button
+            class="btn btn-two"
+            [disabled]="noChangeRiskMatrix || incompleteMatrix"
+            (click)="saveRiskMatrix()"
+          >
+            {{ "Save" | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </mat-card-content>
 </mat-card>

@@ -10,6 +10,8 @@ import {
   ProductAggregationApplications,
   MetricSimulationResponse,
   MetricSimulationRequest,
+  CostSimulationResponse,
+  CostSimulationRequest,
   AggregationProductsInformation,
   MetricComputationDetails,
   AggregationComputationDetails,
@@ -458,6 +460,13 @@ export class ProductService {
     return this.http.post<MetricSimulationResponse>(url, body);
   }
 
+  costSimulation(
+    body: CostSimulationRequest
+  ): Observable<CostSimulationResponse> {
+    const url = this.apiSimulationUrl + '/simulation/cost';
+    return this.http.post<CostSimulationResponse>(url, body);
+  }
+
   getEditorList(query: any) {
     const url = this.apiUrl + '/product/aggregations/editors' + query;
     return this.http.get<any>(url);
@@ -580,7 +589,6 @@ export class ProductService {
   ): Observable<ErrorResponse | AggregationGetResponse> {
     let params = new HttpParams();
     for (const key in paramsObj) params = params.set(key, paramsObj[key]);
-
     return this.http
       .get<ErrorResponse | AggregationGetResponse>(this.URLs.aggregation, {
         params,
@@ -592,6 +600,11 @@ export class ProductService {
         ***********/
         catchError((e) => (e?.error ? throwError(e.error) : throwError(e)))
       );
+  }
+
+  getSimulationAggregations(query): Observable<Products[]> {
+    const url = this.apiUrl + '/product/aggregations' + query;
+    return this.http.get<Products[]>(url);
   }
 
   getAcqRightsAggregations(

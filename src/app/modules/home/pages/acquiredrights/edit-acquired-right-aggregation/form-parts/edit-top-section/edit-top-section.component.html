@@ -1,6 +1,6 @@
 <form [formGroup]="aggregationForm">
-  <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="10px">
-    <mat-form-field fxFlex appearance="outline">
+  <div fxLayout="row" fxLayoutGap="10px">
+    <mat-form-field fxFlex appearance="outline" fxLayoutAlign="start left" fxFlex="35">
       <mat-label>{{ "SKU" | translate }}*</mat-label>
       <input
         id="sku"
@@ -20,7 +20,7 @@
       </mat-error>
     </mat-form-field>
 
-    <mat-form-field fxFlex appearance="outline">
+    <mat-form-field fxFlex appearance="outline" fxFlex="40">
       <mat-label>{{ "Aggregation Name" | translate }}</mat-label>
       <mat-select
         disableRipple
@@ -45,5 +45,8 @@
         }}
       </mat-error>
     </mat-form-field>
+    <mat-checkbox fxFlex="30" fxFlex appearance="outline" id="repartition" formControlName="repartition" matTooltip="{{ 'Allow OpTISAM to compute the allocation of licenses for the product in order to have the least expensive total cost' | translate }}">
+      {{'COST OPTIMIZATION' | translate}}
+    </mat-checkbox>
   </div>
 </form>

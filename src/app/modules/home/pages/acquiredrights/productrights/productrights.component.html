@@ -212,7 +212,7 @@
 
         <ng-container matColumnDef="ordering_date">
           <mat-header-cell *matHeaderCellDef>
-            {{ "Ordering date" | translate }}</mat-header-cell
+            {{ "Ordering Date" | translate }}</mat-header-cell
           >
           <mat-cell *matCellDef="let acquired_rights">
             {{ acquired_rights.ordering_date | formatShortdate }}</mat-cell
@@ -221,8 +221,7 @@
 
         <ng-container matColumnDef="corporate_sourcing_contract">
           <mat-header-cell *matHeaderCellDef>
-            {{ "CSC" | translate }}</mat-header-cell
-          >
+            {{ "CSC" | translate }}</mat-header-cell>
           <mat-cell *matCellDef="let acquired_rights">
             {{ acquired_rights.corporate_sourcing_contract || "-" }}</mat-cell
           >
@@ -230,11 +229,9 @@
 
         <ng-container matColumnDef="software_provider">
           <mat-header-cell *matHeaderCellDef>
-            {{ "Software provider" | translate }}</mat-header-cell
-          >
+            {{ "Software provider" | translate }}</mat-header-cell>
           <mat-cell *matCellDef="let acquired_rights">
-            {{ acquired_rights.software_provider || "-" }}</mat-cell
-          >
+            {{ acquired_rights.software_provider || "-" }}</mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="last_purchased_order">

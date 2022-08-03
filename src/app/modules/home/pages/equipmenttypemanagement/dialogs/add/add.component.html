@@ -1,7 +1,7 @@
 <!-- <div class="error-div" *ngIf="errorMsg"><span>Error: {{errorMsg}}</span></div> -->
 <mat-card>
   <mat-card-title color="primary" class="page-heading">
-    {{'Create New Equipment'|translate}}
+    {{ "Create New Equipment" | translate }}
   </mat-card-title>
   <mat-card-content>
     <form [formGroup]="createForm">
@@ -9,39 +9,84 @@
         <!-- Type Name -->
         <div class="col-md-4 field-left">
           <mat-form-field class="demo-full-width" appearance="outline">
-            <mat-label>{{'Type Name' | translate}}</mat-label>
-            <input matInput placeholder="{{'Type Name'|translate}}" id="type" formControlName="type">
-            <mat-error *ngIf="type.invalid && (type.dirty || type.touched) && type.errors.required">
-              {{'Type Name is mandatory' | translate}}
+            <mat-label>{{ "Type Name" | translate }}</mat-label>
+            <input
+              matInput
+              placeholder="{{ 'Type Name' | translate }}"
+              id="type"
+              formControlName="type"
+            />
+            <mat-error
+              *ngIf="
+                type.invalid &&
+                (type.dirty || type.touched) &&
+                type.errors.required
+              "
+            >
+              {{ "Type Name is mandatory" | translate }}
             </mat-error>
-            <mat-error *ngIf="type.invalid && (type.dirty || type.touched) && type.errors.pattern">
-              {{'Type Name is required in ^[-_,A-Za-z0-9]+$ format' | translate}}
+            <mat-error
+              *ngIf="
+                type.invalid &&
+                (type.dirty || type.touched) &&
+                type.errors.pattern
+              "
+            >
+              {{
+                "Type Name is required in ^[-_,A-Za-z0-9]+$ format" | translate
+              }}
             </mat-error>
           </mat-form-field>
           <mat-error id="duplicateNameMsg" *ngIf="duplicateName">
-            {{'Type Name already exists' | translate}}
+            {{ "Type Name already exists" | translate }}
           </mat-error>
         </div>
         <!-- Source -->
         <div class="col-md-4 field-center">
           <mat-form-field appearance="outline">
-            <mat-label>{{'Source' | translate}}</mat-label>
-            <mat-select id="source" placeholder="{{'Source?'|translate}}" #name [formControlName]="'from'"  [disabled]="metaData.length === 0">
-              <mat-option *ngFor="let type of metaData" (onSelectionChange)="filterAttributes($event)" [value]="type.ID">
-                {{type.name }}</mat-option>
+            <mat-label>{{ "Source" | translate }}</mat-label>
+            <mat-select
+              id="source"
+              placeholder="{{ 'Source?' | translate }}"
+              #name
+              [formControlName]="'from'"
+              [disabled]="metaData.length === 0"
+            >
+              <mat-option
+                *ngFor="let type of metaData"
+                (onSelectionChange)="filterAttributes($event)"
+                [value]="type.ID"
+              >
+                {{ type.name }}</mat-option
+              >
             </mat-select>
-            <mat-error *ngIf="from.invalid && (from.dirty || from.touched) && from.errors.required">
-              {{'Source is mandatory' | translate}}
+            <mat-error
+              *ngIf="
+                from.invalid &&
+                (from.dirty || from.touched) &&
+                from.errors.required
+              "
+            >
+              {{ "Source is mandatory" | translate }}
             </mat-error>
           </mat-form-field>
         </div>
         <!-- Parent -->
         <div class="col-md-4 field-right">
           <mat-form-field appearance="outline">
-            <mat-label>{{'Parent' | translate}}</mat-label>
-            <mat-select id="root" placeholder="{{'Parent'|translate}}" [disabled]="types.length === 0" [formControlName]="'root'">
-              <mat-option>-- {{'Select' | translate}} --</mat-option>
-              <mat-option *ngFor="let type of types" (click)="onSelect(type.ID)" [value]="type.ID">{{type.type }}
+            <mat-label>{{ "Parent" | translate }}</mat-label>
+            <mat-select
+              id="root"
+              placeholder="{{ 'Parent' | translate }}"
+              [disabled]="types.length === 0"
+              formControlName="root"
+            >
+              <mat-option>-- {{ "Select" | translate }} --</mat-option>
+              <mat-option
+                *ngFor="let type of types"
+                (click)="onSelect(type.ID)"
+                [value]="type.ID"
+                >{{ type.type }}
               </mat-option>
             </mat-select>
           </mat-form-field>
@@ -49,48 +94,114 @@
       </div>
 
       <!-- Second line fields -->
-      <div formArrayName='attribute' class="attribute-group">
-        <div class="row" *ngFor="let attrControl of getControls(); let i= index" [formGroupName]="i">
+      <div formArrayName="attribute" class="attribute-group">
+        <div
+          class="row"
+          *ngFor="let attrControl of getControls(); let i = index"
+          [formGroupName]="i"
+        >
           <!-- Attribute Name -->
           <div class="form-group attributes col-md-3">
             <!-- <label class="attribute-label">{{'Attribute Name'|translate}}</label> -->
             <mat-form-field class="demo-full-width" appearance="outline">
-              <input matInput placeholder="{{'Attribute Name'|translate}}" id="name{{i}}" formControlName="name">
-              <mat-error *ngIf="name.invalid && (name.dirty || name.touched) && name.errors.required">
-                {{'Attribute Name is mandatory ' | translate}}
+              <input
+                matInput
+                placeholder="{{ 'Attribute Name' | translate }}"
+                id="name{{ i }}"
+                formControlName="name"
+              />
+              <mat-error
+                *ngIf="
+                  name.invalid &&
+                  (name.dirty || name.touched) &&
+                  name.errors.required
+                "
+              >
+                {{ "Attribute Name is mandatory " | translate }}
               </mat-error>
-              <mat-error *ngIf="name.invalid && (name.dirty || name.touched) && name.errors.pattern">
-                {{'Attribute Name is required in ^[-_,A-Za-z0-9]+$ format ' | translate}}
+              <mat-error
+                *ngIf="
+                  name.invalid &&
+                  (name.dirty || name.touched) &&
+                  name.errors.pattern
+                "
+              >
+                {{
+                  "Attribute Name is required in ^[-_,A-Za-z0-9]+$ format "
+                    | translate
+                }}
               </mat-error>
             </mat-form-field>
             <mat-error *ngIf="name.invalid && !name.pristine">
-              {{'Type Name is required in ^[-_,A-Za-z0-9]+$ format ' | translate}}
+              {{
+                "Type Name is required in ^[-_,A-Za-z0-9]+$ format " | translate
+              }}
             </mat-error>
           </div>
 
           <!-- Start checkbox -->
           <div class="checkbox-section col-md-4">
             <div class="checkbox-labels">
-              <div class="chkLabel" [ngClass]="(selectedParent)?'col-md-3':'col-md-4'">{{'PK'|translate}}</div>
-              <div class="chkLabel" [ngClass]="(selectedParent)?'col-md-3':'col-md-4'">{{'Displayable' | translate}}</div>
-              <div class="chkLabel" [ngClass]="(selectedParent)?'col-md-3':'col-md-4'">{{'Search'|translate}}</div>
-              <div class="chkLabel" *ngIf="selectedParent" class="col-md-3">{{'ParentId'|translate}}</div>
+              <div
+                class="chkLabel"
+                [ngClass]="selectedParent ? 'col-md-3' : 'col-md-4'"
+              >
+                {{ "PK" | translate }}
+              </div>
+              <div
+                class="chkLabel"
+                [ngClass]="selectedParent ? 'col-md-3' : 'col-md-4'"
+              >
+                {{ "Displayable" | translate }}
+              </div>
+              <div
+                class="chkLabel"
+                [ngClass]="selectedParent ? 'col-md-3' : 'col-md-4'"
+              >
+                {{ "Search" | translate }}
+              </div>
+              <div class="chkLabel" *ngIf="selectedParent" class="col-md-3">
+                {{ "ParentId" | translate }}
+              </div>
             </div>
             <div class="checkboxes">
-              <div class="form-group chkbox" [ngClass]="(selectedParent)?'col-md-3':'col-md-4'">
-                <mat-checkbox id="PK_checkbox_{{i}}" formControlName="primary_key" [disabled]="primaryKeys[i]"
-                  (change)="onChange($event,i); false">
+              <div
+                class="form-group chkbox"
+                [ngClass]="selectedParent ? 'col-md-3' : 'col-md-4'"
+              >
+                <mat-checkbox
+                  id="PK_checkbox_{{ i }}"
+                  formControlName="primary_key"
+                  [disabled]="primaryKeys[i]"
+                  (change)="onChange($event, i); (false)"
+                >
                 </mat-checkbox>
               </div>
-              <div class="form-group chkbox" [ngClass]="(selectedParent)?'col-md-3':'col-md-4'">
-                <mat-checkbox id="Displayable_checkbox_{{i}}" formControlName="displayed"></mat-checkbox>
+              <div
+                class="form-group chkbox"
+                [ngClass]="selectedParent ? 'col-md-3' : 'col-md-4'"
+              >
+                <mat-checkbox
+                  id="Displayable_checkbox_{{ i }}"
+                  formControlName="displayed"
+                ></mat-checkbox>
               </div>
-              <div class="form-group chkbox" [ngClass]="(selectedParent)?'col-md-3':'col-md-4'">
-                <mat-checkbox id="Search_checkbox_{{i}}" formControlName="searchable"></mat-checkbox>
+              <div
+                class="form-group chkbox"
+                [ngClass]="selectedParent ? 'col-md-3' : 'col-md-4'"
+              >
+                <mat-checkbox
+                  id="Search_checkbox_{{ i }}"
+                  formControlName="searchable"
+                ></mat-checkbox>
               </div>
               <div *ngIf="selectedParent" class="form-group col-md-3 chkbox">
-                <mat-checkbox id="ParentID_checkbox_{{i}}" [disabled]="parentIStatus[i]" formControlName="parent_identifier"
-                  (change)="onChangeParentI($event,i); false"></mat-checkbox>
+                <mat-checkbox
+                  id="ParentID_checkbox_{{ i }}"
+                  [disabled]="parentIStatus[i]"
+                  formControlName="parent_identifier"
+                  (change)="onChangeParentI($event, i); (false)"
+                ></mat-checkbox>
               </div>
             </div>
           </div>
@@ -99,14 +210,25 @@
           <!-- Data Type -->
           <div class="form-group attributes col-md-2">
             <!-- <label class="attribute-label">{{'Data Type'| translate}}</label> -->
-            <mat-form-field appearance="outline">
-              <mat-select *ngIf="primaryKeyValue[i]" [disabled]="primaryKeyValue[i]" #xyz
-                placeholder="{{'Data Type'|translate}}" [(value)]="selected[i]"   id="data">
+            <mat-form-field appearance="outline">
+              <mat-select
+                *ngIf="primaryKeyValue[i]"
+                [disabled]="primaryKeyValue[i]"
+                #xyz
+                placeholder="{{ 'Data Type' | translate }}"
+                [(value)]="selected[i]"
+                id="data"
+              >
                 <mat-option value="STRING">STRING</mat-option>
               </mat-select>
-              <mat-select *ngIf="!primaryKeyValue[i]" #xyz placeholder="{{'Data Type'|translate}}" id="data"
-                formControlName="data_type">
-                <mat-option>-- {{'Select' | translate}} --</mat-option>
+              <mat-select
+                *ngIf="!primaryKeyValue[i]"
+                #xyz
+                placeholder="{{ 'Data Type' | translate }}"
+                id="data"
+                formControlName="data_type"
+              >
+                <mat-option>-- {{ "Select" | translate }} --</mat-option>
                 <mat-option value="INT">INT</mat-option>
                 <mat-option value="FLOAT">FLOAT</mat-option>
                 <mat-option value="STRING">STRING</mat-option>
@@ -118,35 +240,86 @@
           <div class="form-group attributes col-md-2">
             <!-- <label class="attribute-label">{{'Mapped To'|translate}}</label> -->
             <mat-form-field appearance="outline">
-              <mat-select placeholder="{{'Mapped to'|translate}}" formControlName="mapped_to">
-                <mat-option *ngFor="let type of selectedAttributes[i]" [value]="type" (onSelectionChange)="reduceMapped_toList(type, selectedAttributes, i)">{{ type }}</mat-option>
+              <mat-select
+                placeholder="{{ 'Mapped to' | translate }}"
+                formControlName="mapped_to"
+              >
+                <mat-option
+                  *ngFor="let type of selectedAttributes[i]"
+                  [value]="type"
+                  (onSelectionChange)="
+                    reduceMapped_toList(type, selectedAttributes, i)
+                  "
+                  >{{ type }}</mat-option
+                >
               </mat-select>
             </mat-form-field>
           </div>
 
           <div class="cancelBtn col-md-1">
-            <button mat-icon-button (click)="onDeleteAttribute(i)"><mat-icon>cancel</mat-icon></button>
+            <button mat-icon-button (click)="onDeleteAttribute(i)">
+              <mat-icon>cancel</mat-icon>
+            </button>
           </div>
-
         </div>
-
       </div>
       <!-- End Second line fields -->
 
       <!-- Call to action button -->
       <div class="row cta-button-bx">
         <div class="col-md-6 left-btn">
-          <button id="closeButton" mat-raised-button class="btn-four" [mat-dialog-close]="1">{{'Cancel'|translate}}</button>
-          <button id="resetButton" mat-raised-button class="btn-three" [disabled]="createForm.pristine" (click)="onFormReset()">{{'Reset'|translate}}</button>
+          <button
+            id="closeButton"
+            mat-raised-button
+            class="btn-four"
+            [mat-dialog-close]="1"
+          >
+            {{ "Cancel" | translate }}
+          </button>
+          <button
+            id="resetButton"
+            mat-raised-button
+            class="btn-three"
+            [disabled]="createForm.pristine"
+            (click)="onFormReset()"
+          >
+            {{ "Reset" | translate }}
+          </button>
         </div>
 
         <div class="col-md-6 right-btn">
-          <button id="addAttrButton" mat-raised-button class="btn-two" (click)="onAddAttribute()">{{'Add Attribute'|translate}}</button>
-          <button id="createButton" type="submit" [disabled]="!createForm.valid || createForm.pristine || (selectedParent && !prntChckStats) || !checkStatus || duplicateName" mat-raised-button class="primary-btn" (click)="onSubmit(succesCreateDialog,errorCreateDialog)">
-            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" *ngIf="reqInProgress"></span>
-            {{'Create'|translate}}</button>
+          <button
+            id="addAttrButton"
+            mat-raised-button
+            class="btn-two"
+            (click)="onAddAttribute()"
+          >
+            {{ "Add Attribute" | translate }}
+          </button>
+          <button
+            id="createButton"
+            type="submit"
+            [disabled]="
+              !createForm.valid ||
+              createForm.pristine ||
+              (selectedParent && !prntChckStats) ||
+              !checkStatus ||
+              duplicateName ||
+              !hasAllDataTypes
+            "
+            mat-raised-button
+            class="primary-btn"
+            (click)="onSubmit(succesCreateDialog, errorCreateDialog)"
+          >
+            <span
+              class="spinner-border spinner-border-sm"
+              role="status"
+              aria-hidden="true"
+              *ngIf="reqInProgress"
+            ></span>
+            {{ "Create" | translate }}
+          </button>
         </div>
-
       </div>
       <!-- End Call to action button -->
     </form>
@@ -156,18 +329,32 @@
 <!-- Create success message -->
 <ng-template #succesCreateDialog>
   <mat-dialog-content>
-    <p>{{'SUCCESS_EQUIP_CREATE_MSG'|translate}}</p>
+    <p>{{ "SUCCESS_EQUIP_CREATE_MSG" | translate }}</p>
   </mat-dialog-content>
   <mat-dialog-actions align="center">
-     <button [mat-dialog-close]="true"class="btn-two"  mat-button cdkFocusInitial>{{'OK'|translate}}</button>
+    <button
+      [mat-dialog-close]="true"
+      class="btn-two"
+      mat-button
+      cdkFocusInitial
+    >
+      {{ "OK" | translate }}
+    </button>
   </mat-dialog-actions>
 </ng-template>
 <!-- Create error message -->
 <ng-template #errorCreateDialog>
   <mat-dialog-content>
-     <p>{{'Error'|translate}}: {{errorMsg}}</p>
+    <p>{{ "Error" | translate }}: {{ errorMsg }}</p>
   </mat-dialog-content>
   <mat-dialog-actions align="center">
-    <button [mat-dialog-close]="true" class="btn-two" mat-button cdkFocusInitial>{{'OK'|translate}}</button>
+    <button
+      [mat-dialog-close]="true"
+      class="btn-two"
+      mat-button
+      cdkFocusInitial
+    >
+      {{ "OK" | translate }}
+    </button>
   </mat-dialog-actions>
 </ng-template>

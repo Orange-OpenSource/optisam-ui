@@ -14,7 +14,8 @@ export function _dateUTC(date: Date) {
   );
 }
 
-export function ISOFormat(date: Date): string {
+export function ISOFormat(date: Date | string): string {
   if (!date) return '';
+  date = typeof date === 'string' ? new Date(date) : date;
   return format(date, "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 }

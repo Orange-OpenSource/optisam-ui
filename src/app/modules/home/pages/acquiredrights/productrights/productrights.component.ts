@@ -315,7 +315,7 @@ export class ProductrightsComponent implements OnInit {
 
   openDialog(value, name): void {
     const dialogRef = this.dialog.open(MoreDetailsComponent, {
-      width: '850px',
+      width: '1300px',
       disableClose: true,
       data: {
         datakey: value,
