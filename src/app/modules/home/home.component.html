@@ -1,73 +1,156 @@
-<mat-progress-bar mode="indeterminate" *ngIf="navigationLoading"></mat-progress-bar>
+<mat-progress-bar
+  mode="indeterminate"
+  *ngIf="navigationLoading"
+></mat-progress-bar>
 <!-- <app-loader></app-loader> -->
-<app-header (toggleSidebar)="setToggleFlag();"></app-header> 
+<app-header (toggleSidebar)="setToggleFlag()"></app-header>
 <div class="main-container">
-        <mat-sidenav-container [hasBackdrop]="false" class="sidenav-container">
-          <mat-sidenav #snav [ngStyle]="{ 'width.em': sidebarWidth }"  opened="true" disableClose>
-            <mat-nav-list>
-                <div id="nav-user">
-                    <div id="user-icon" *ngIf="profilePicData == null">
-                    </div>
-                    <div id="user-pic" *ngIf="profilePicData != null">
-                        <img id="uploaded-img" [src]="profilePicData" style='height: 100%; width: 100%; object-fit: cover'>
-                    </div>
-                    <div *ngIf="sidebarWidth > 6">
-                        <span>{{firstName}}</span>
-                    </div>
-                </div>
-                <mat-list-item id="nav-dashboard" [ngClass]="sidebarOpenFlag? '' :'wide-space'" routerLink="/optisam/dashboard" routerLinkActive="active">
-                    <img matTooltip="{{'Dashboard'|translate}}" [ngClass]="sidebarOpenFlag? 'img-min' :'img-max'" src="\assets\images\dashboard.svg"/>
-                    <div *ngIf="sidebarWidth > 6" class="sidenav-item">
-                        &nbsp;&nbsp;&nbsp;<span>{{'DASHBOARD' |translate}}</span>
-                    </div>
-                </mat-list-item>
-                <mat-list-item id="nav-products" [ngClass]="sidebarOpenFlag? '' :'wide-space'" mat-list-item routerLink="/optisam/pr/products" routerLinkActive="active">
-                    <img matTooltip="{{'Products'|translate}}" [ngClass]="sidebarOpenFlag? 'img-min' :'img-max'" src="\assets\images\products.svg"/>
-                    <div *ngIf="sidebarWidth > 6" class="sidenav-item">
-                        &nbsp;&nbsp;&nbsp;<span>{{'PRODUCTS' |translate}}</span>
-                    </div>
-                </mat-list-item>
-                <mat-list-item id="nav-applications" [ngClass]="sidebarOpenFlag? '' :'wide-space'" mat-list-item routerLink="/optisam/apl/applications" routerLinkActive="active">
-                    <img matTooltip="{{'Applications'|translate}}" [ngClass]="sidebarOpenFlag? 'img-min' :'img-max'" src="\assets\images\applications.svg"/>
-                    <div *ngIf="sidebarWidth > 6" class="sidenav-item">
-                        &nbsp;&nbsp;&nbsp;<span>{{'APPLICATIONS' |translate}}</span>
-                    </div>
-                </mat-list-item>
-                <mat-list-item id="nav-equipments" [ngClass]="sidebarOpenFlag? '' :'wide-space'" mat-list-item routerLink="/optisam/eq/equipmentsList" routerLinkActive="active">
-                    <img matTooltip="{{'Equipments'|translate}}" [ngClass]="sidebarOpenFlag? 'img-min' :'img-max'" src="\assets\images\equipments.svg"/>
-                    <div *ngIf="sidebarWidth > 6" class="sidenav-item">
-                        &nbsp;&nbsp;&nbsp;<span>{{'EQUIPMENTS' |translate}}</span>
-                    </div>
-                </mat-list-item>
-                <mat-list-item id="nav-acquired-rights" [ngClass]="sidebarOpenFlag? '' :'wide-space'" mat-list-item routerLink="/optisam/ar/prights" routerLinkActive="active">
-                    <img matTooltip="{{'Acquired rights'|translate}}" [ngClass]="sidebarOpenFlag? 'img-min' :'img-max'" src="\assets\images\acquired-rights.svg"/>
-                    <div *ngIf="sidebarWidth > 6" class="sidenav-item">
-                        &nbsp;&nbsp;&nbsp;<span>{{'ACQUIRED RIGHTS' |translate}}</span>
-                    </div>
-                </mat-list-item>
-                <mat-list-item id="nav-simulation" [ngClass]="sidebarOpenFlag? '' :'wide-space'" mat-list-item routerLink="/optisam/simulation/metrics" routerLinkActive="active">
-                    <img matTooltip="{{'Simulation'|translate}}" [ngClass]="sidebarOpenFlag? 'img-min' :'img-max'" src="\assets\images\simulation.svg"/>
-                    <div *ngIf="sidebarWidth > 6" class="sidenav-item">
-                        &nbsp;&nbsp;&nbsp;<span>{{'SIMULATION' |translate}}</span>
-                    </div>
-                    <span routerLink="/optisam/simulation/hardware"></span>
-                </mat-list-item>
-                <mat-list-item id="nav-reports" [ngClass]="sidebarOpenFlag? '' :'wide-space'" mat-list-item routerLink="/optisam/reports" routerLinkActive="active">
-                    <img matTooltip="{{'Reports'|translate}}" [ngClass]="sidebarOpenFlag? 'img-min' :'img-max'" src="\assets\images\report.svg"/>
-                    <div *ngIf="sidebarWidth > 6" class="sidenav-item">
-                        &nbsp;&nbsp;&nbsp;<span>{{'REPORTS' |translate}}</span>
-                    </div>
-                </mat-list-item>
-            </mat-nav-list>
-          </mat-sidenav>
-      
-          <mat-sidenav-content [ngClass]="sidebarOpenFlag? 'content-min' : 'content-max'">
-            <div id="body">
-                <router-outlet></router-outlet>
-            </div>
-            <div id="footer">
-                <app-footer></app-footer>
-            </div>
-          </mat-sidenav-content>
-        </mat-sidenav-container>
+  <mat-sidenav-container [hasBackdrop]="false" class="sidenav-container">
+    <mat-sidenav
+      #snav
+      [ngStyle]="{ 'width.em': sidebarWidth }"
+      opened="true"
+      disableClose
+    >
+      <mat-nav-list>
+        <div id="nav-user">
+          <div id="user-icon" *ngIf="profilePicData == null"></div>
+          <div id="user-pic" *ngIf="profilePicData != null">
+            <img
+              id="uploaded-img"
+              [src]="profilePicData"
+              style="height: 100%; width: 100%; object-fit: cover"
+            />
+          </div>
+          <div *ngIf="sidebarWidth > 6">
+            <span>{{ firstName }}</span>
+          </div>
+        </div>
+        <mat-list-item
+          id="nav-dashboard"
+          [ngClass]="sidebarOpenFlag ? '' : 'wide-space'"
+          routerLink="/optisam/dashboard"
+          routerLinkActive="active"
+        >
+          <img
+            matTooltip="{{ 'Dashboard' | translate }}"
+            [ngClass]="sidebarOpenFlag ? 'img-min' : 'img-max'"
+            src="\assets\images\dashboard.svg"
+          />
+          <div *ngIf="sidebarWidth > 6" class="sidenav-item">
+            &nbsp;&nbsp;&nbsp;<span>{{ "DASHBOARD" | translate }}</span>
+          </div>
+        </mat-list-item>
+        <mat-list-item
+          id="nav-products"
+          [ngClass]="sidebarOpenFlag ? '' : 'wide-space'"
+          mat-list-item
+          routerLink="/optisam/pr/products"
+          routerLinkActive="active"
+        >
+          <img
+            matTooltip="{{ 'Products' | translate }}"
+            [ngClass]="sidebarOpenFlag ? 'img-min' : 'img-max'"
+            src="\assets\images\products.svg"
+          />
+          <div *ngIf="sidebarWidth > 6" class="sidenav-item">
+            &nbsp;&nbsp;&nbsp;<span>{{ "PRODUCTS" | translate }}</span>
+          </div>
+        </mat-list-item>
+        <mat-list-item
+          id="nav-applications"
+          [ngClass]="sidebarOpenFlag ? '' : 'wide-space'"
+          mat-list-item
+          routerLink="/optisam/apl/applications"
+          routerLinkActive="active"
+        >
+          <img
+            matTooltip="{{ 'Applications' | translate }}"
+            [ngClass]="sidebarOpenFlag ? 'img-min' : 'img-max'"
+            src="\assets\images\applications.svg"
+          />
+          <div *ngIf="sidebarWidth > 6" class="sidenav-item">
+            &nbsp;&nbsp;&nbsp;<span>{{ "APPLICATIONS" | translate }}</span>
+          </div>
+        </mat-list-item>
+        <mat-list-item
+          id="nav-equipments"
+          [ngClass]="sidebarOpenFlag ? '' : 'wide-space'"
+          mat-list-item
+          routerLink="/optisam/eq/equipmentsList"
+          routerLinkActive="active"
+        >
+          <img
+            matTooltip="{{ 'Equipments' | translate }}"
+            [ngClass]="sidebarOpenFlag ? 'img-min' : 'img-max'"
+            src="\assets\images\equipments.svg"
+          />
+          <div *ngIf="sidebarWidth > 6" class="sidenav-item">
+            &nbsp;&nbsp;&nbsp;<span>{{ "EQUIPMENTS" | translate }}</span>
+          </div>
+        </mat-list-item>
+        <mat-list-item
+          id="nav-acquired-rights"
+          [ngClass]="sidebarOpenFlag ? '' : 'wide-space'"
+          mat-list-item
+          routerLink="/optisam/ar/prights"
+          routerLinkActive="active"
+        >
+          <img
+            matTooltip="{{ 'Acquired rights' | translate }}"
+            [ngClass]="sidebarOpenFlag ? 'img-min' : 'img-max'"
+            src="\assets\images\acquired-rights.svg"
+          />
+          <div *ngIf="sidebarWidth > 6" class="sidenav-item">
+            &nbsp;&nbsp;&nbsp;<span>{{ "ACQUIRED RIGHTS" | translate }}</span>
+          </div>
+        </mat-list-item>
+        <mat-list-item
+          id="nav-simulation"
+          [ngClass]="sidebarOpenFlag ? '' : 'wide-space'"
+          mat-list-item
+          routerLink="/optisam/simulation/metrics"
+          routerLinkActive="active"
+        >
+          <img
+            matTooltip="{{ 'Simulation' | translate }}"
+            [ngClass]="sidebarOpenFlag ? 'img-min' : 'img-max'"
+            src="\assets\images\simulation.svg"
+          />
+          <div *ngIf="sidebarWidth > 6" class="sidenav-item">
+            &nbsp;&nbsp;&nbsp;<span>{{ "SIMULATION" | translate }}</span>
+          </div>
+          <span routerLink="/optisam/simulation/hardware"></span>
+          <!-- <span routerLink="/optisam/simulation/metric"></span> -->
+        </mat-list-item>
+        <mat-list-item
+          id="nav-reports"
+          [ngClass]="sidebarOpenFlag ? '' : 'wide-space'"
+          mat-list-item
+          routerLink="/optisam/reports"
+          routerLinkActive="active"
+        >
+          <img
+            matTooltip="{{ 'Reports' | translate }}"
+            [ngClass]="sidebarOpenFlag ? 'img-min' : 'img-max'"
+            src="\assets\images\report.svg"
+          />
+          <div *ngIf="sidebarWidth > 6" class="sidenav-item">
+            &nbsp;&nbsp;&nbsp;<span>{{ "REPORTS" | translate }}</span>
+          </div>
+        </mat-list-item>
+      </mat-nav-list>
+    </mat-sidenav>
+
+    <mat-sidenav-content
+      [ngClass]="sidebarOpenFlag ? 'content-min' : 'content-max'"
+    >
+      <div id="body">
+        <router-outlet></router-outlet>
+      </div>
+      <div id="footer">
+        <app-footer></app-footer>
+      </div>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
 </div>

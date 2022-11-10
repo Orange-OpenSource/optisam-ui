@@ -20,7 +20,8 @@ You can access to "Acquired rights management" by clicking here :
 
 The presentation table will be shown: 
 
-![select APM](../../img/ARMana/pres.jpg){: .zoom}  
+![select APM](../../img/ARMana/pres.jpg){: .zoom}
+  
 The list of acquireds rights is ordered alphabetically.
 
 There are different attributes :  
@@ -51,15 +52,18 @@ Click on "Create New" button :
 
 This window will be shown : 
 
-![select APM](../../img/ARMana/create0.jpg){: .zoom}
+![select APM](../../img/ARMana/create0.png){: .zoom}
 
-You will have to fill in the fields (if needed, not mandatory):
+You will have to fill in the fields (if needed, not mandatory):  
 1. SKU : The id of the acquired right (mandatory)    
-2. Ordering date : The date of the ordering 
-3. Corporate sourcing contract : The name of the corporate sourcing the contract
-4. Software provider : The name of the software provider
+2. Ordering date : The date of the ordering  
+3. Corporate sourcing contract : The name of the corporate sourcing the contract  
+4. Software provider : The name of the software provider  
+5. Cost Optimization : Allow optisam to find the best repartition of licences amongs SKUs (for same product or aggregation) to optimize the delta (less counterfeiting and minimum delta).   
+<span style="color:red">To activate the cost optimization, check the box "Cost Optimization" </span>
 
-Then you can click on "Next" (5) or navigate with <span style="color:dodgerblue">the 5 categories in the navigation bar</span>  
+ 
+Then you can click on "Next" (6) or navigate with <span style="color:dodgerblue">the 5 categories in the navigation bar</span>  
 
 The next screen is: 
 

@@ -12,6 +12,15 @@ mat-menu-item {
     font-size: 15px !important;
     }
 }
+
+.action-icon{
+  cursor: pointer;
+  height: 20px;
+  width: 20px;
+  font-size: 20px;
+  color: #008AFC !important;
+}
+
 .mat-form-field {
   width: 100%;
 }

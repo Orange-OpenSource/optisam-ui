@@ -37,4 +37,43 @@ You can find the same attributes but the counts and the cost will represent the 
 For further details, you can check [here](../../../managing/genericTemplate) the documentation about "Data management".  
 For further details, you can check [here](../../../managing/aggregationsManagement) the documentation about "Aggregations management".
 
+### ***Allocate a metric to an equipment***
+
+It's possible to allocate a metric to a product and an equipment. 
+
+Notice that the metric is applied to all parent equipments till the upper equipment in the hierarchy given as last equipment of the metric and if the equipment is part of a vcenter, all equipments under the same vcenter will have the metric for the same product, and when the metric is modified, it impacts all the equipments under the vcenter. 
+
+Only metrics with types oracle.nup.standard and oracle.processor.standard can be allocated. 
+
+To allocate a metric to a product and an equipment, go first to equipment.
+
+![select APM](../../../img/metricsMana/allocate.jpg){: .zoom}
+
+This page will be shown:
+
+![select APM](../../../img/metricsMana/allocate2.jpg){: .zoom}
+
+You will have now to chose on which equipment you desire to allocate the metric by its ID and click on it.
+
+![select APM](../../../img/metricsMana/allocate3.jpg){: .zoom}
+
+Then go to product:
+
+![select APM](../../../img/metricsMana/allocate4.jpg){: .zoom}
+
+Once on product page, you will have to chose the product on which do the allocation by clicking on the pencil icone. 
+
+![select APM](../../../img/metricsMana/allocate5.jpg){: .zoom}
+
+This page will be shown:
+
+![select APM](../../../img/metricsMana/allocate6.jpg){: .zoom}
+
+You will have to fill the two fields.
+
+1. Equipment user: The number of user of the equipment
+2. Allocated metric: The name of metric (oracle.nup.standard or oracle.processor.standard)
+
+Once the two fields fill, click on update. Now a metric is allocated to a specific product and equipment. 
+
 <script src="../../../../js/zoomImage.js"></script>

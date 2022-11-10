@@ -11,6 +11,9 @@ import { DeleteComponent } from './dialogs/delete/delete.component';
 import { EditComponent } from './dialogs/edit/edit.component';
 import { ListComponent } from './dialogs/list/list.component';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { DeleteAttributeConfirmationComponent } from './dialogs/edit/dialogs/delete-attribute-confirmation/delete-attribute-confirmation.component';
+import { ErrorMessageComponent } from './dialogs/edit/dialogs/error-message/error-message.component';
+import { SuccessMessageComponent } from './dialogs/edit/dialogs/success-message/success-message.component';
 @NgModule({
   imports: [
     CommonModule,
@@ -30,6 +33,6 @@ import { SharedModule } from 'src/app/shared/shared.module';
   providers: [
     EquipmentTypeManagementService
   ],
-  declarations: [EquipmenttypemanagementComponent, AddComponent, DeleteComponent, EditComponent, ListComponent],
+  declarations: [EquipmenttypemanagementComponent, AddComponent, DeleteComponent, EditComponent, ListComponent, DeleteAttributeConfirmationComponent, ErrorMessageComponent, SuccessMessageComponent],
 })
 export class EquipmenttypemanagementModule { }

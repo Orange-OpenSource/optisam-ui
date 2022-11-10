@@ -7,7 +7,6 @@ export class Products {
   numOfOptions: string;
   numOfApplications: string;
   numofEquipments: string;
-
 }
 class ProdApplications {
   swidTag: string;
@@ -36,7 +35,6 @@ export interface AggregationDetailsInformation {
   editions: string[];
 }
 
-
 export interface AggregationDetailsOptions {
   numOfOptions: number;
   optioninfo: OptionInformation[];
@@ -55,13 +53,11 @@ export interface AggregationDetailsAquiredRights {
   acq_rights: AquiredRightsInformation[];
 }
 
-export interface MetricComputationDetails
-{
+export interface MetricComputationDetails {
   computed_details: ComputedDetails[];
 }
 
-export interface AggregationComputationDetails
-{
+export interface AggregationComputationDetails {
   computed_details: ComputedAggDetails[];
 }
 
@@ -114,7 +110,18 @@ export interface MetricSimulationRequest {
   unit_cost: number;
 }
 
+export interface CostSimulationRequest {
+  swid_tag: string;
+  metric_name: string;
+  unit_cost: number;
+}
 export interface MetricSimulationResponse {
+  numCptLicences: number;
+  total_cost: number;
+  metric_name?: string;
+}
+
+export interface CostSimulationResponse {
   numCptLicences: number;
   total_cost: number;
   metric_name?: string;

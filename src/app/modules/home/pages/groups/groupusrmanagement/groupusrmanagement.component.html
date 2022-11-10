@@ -1,83 +1,146 @@
 <mat-card>
-    <mat-card-title>
-      {{group.fully_qualified_name}}: {{'Manage Users'|translate}}
-    </mat-card-title>
+  <mat-card-title>
+    {{ group.fully_qualified_name }}: {{ "Manage Users" | translate }}
+  </mat-card-title>
   <mat-card-content>
     <div class="row">
       <mat-form-field>
-        <input id="searchUser" matInput (keyup)="applyFilter($event.target.value)" placeholder="{{'Search'|translate}}">
-      </mat-form-field> &nbsp;
+        <input
+          id="searchUser"
+          matInput
+          (keyup)="applyFilter($event.target.value)"
+          placeholder="{{ 'Search' | translate }}"
+        />
+      </mat-form-field>
+      &nbsp;
       <mat-form-field>
-        <mat-label>{{'Select User'|translate}}</mat-label>
+        <mat-label>{{ "Select User" | translate }}</mat-label>
         <mat-select id="selectUser" [formControl]="users" multiple>
-          <mat-option *ngFor="let user of filteredUsersList" [value]="user" matTooltip="{{user.user_id}}">
-            {{user.first_name}} {{user.last_name}}</mat-option>
+          <mat-option
+            *ngFor="let user of filteredUsersList"
+            [value]="user"
+            matTooltip="{{ user.user_id }}"
+          >
+            {{ user.first_name }} {{ user.last_name }}</mat-option
+          >
         </mat-select>
       </mat-form-field>
-      <button id="addUserBtn" [disabled]="!users.value || users.value.length === 0 || disableAddBtn" mat-raised-button class="primary-btn"
-        (click)="addUser(succesAddUserDialog,errorAddUserDialog)">{{'Add User'|translate}}</button>
-      <button id="deleteUserBtn" [disabled]="usersToDelete.length === 0 || disableDeleteBtn" mat-raised-button class="primary-btn"
-        (click)="deleteUser(succesDeleteUserDialog,errorDeleteUserDialog)">{{'Delete User'|translate}}</button>
+      <button
+        id="addUserBtn"
+        [disabled]="!users.value || users.value.length === 0 || disableAddBtn"
+        mat-raised-button
+        class="primary-btn"
+        (click)="addUser(succesAddUserDialog, errorAddUserDialog)"
+      >
+        {{ "Add User" | translate }}
+      </button>
+      <button
+        id="deleteUserBtn"
+        [disabled]="usersToDelete.length === 0 || disableDeleteBtn"
+        mat-raised-button
+        class="primary-btn"
+        (click)="deleteUser(succesDeleteUserDialog, errorDeleteUserDialog)"
+      >
+        {{ "Delete User" | translate }}
+      </button>
     </div>
 
     <mat-table [dataSource]="dataSource" class="mat-elevation-z8" matSort>
-      <ng-container *ngFor="let x of displayedColumns" matColumnDef="{{x}}">
+      <ng-container *ngFor="let x of displayedColumns" matColumnDef="{{ x }}">
         <ng-container *ngIf="x !== 'action'">
-          <mat-header-cell *matHeaderCellDef mat-sort-header> {{formatAsColumnName(x)|translate}}</mat-header-cell>
-          <mat-cell *matCellDef="let user">{{user[x]}}</mat-cell>
+          <mat-header-cell *matHeaderCellDef mat-sort-header>
+            {{ formatAsColumnName(x) | translate }}</mat-header-cell
+          >
+          <mat-cell *matCellDef="let user">{{ user[x] }}</mat-cell>
         </ng-container>
         <ng-container *ngIf="x === 'action'">
-          <mat-header-cell *matHeaderCellDef> {{formatAsColumnName(x)|translate}}</mat-header-cell>
-          <mat-cell *matCellDef="let user; let i = index;">  
-            <mat-checkbox #deleteCheckbox (change)="selectForDelete($event,user.user_id)"></mat-checkbox>
+          <mat-header-cell *matHeaderCellDef>
+            {{ formatAsColumnName(x) | translate }}</mat-header-cell
+          >
+          <mat-cell *matCellDef="let user; let i = index">
+            <mat-checkbox
+              #deleteCheckbox
+              (change)="selectForDelete($event, user.user_id)"
+            ></mat-checkbox>
           </mat-cell>
         </ng-container>
-    </ng-container>
-      <mat-header-row *matHeaderRowDef="displayedColumns;sticky:true"></mat-header-row>
-      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+      </ng-container>
+      <mat-header-row
+        *matHeaderRowDef="displayedColumns; sticky: true"
+      ></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
     </mat-table>
     <app-loading-spinner *ngIf="_loading"></app-loading-spinner>
-    <div class="no-data mat-elevation-z8" *ngIf="!_loading && (!dataSource || dataSource.data.length === 0)">{{"NO_USERS_ADDED" | translate}}</div>
+    <div
+      class="no-data mat-elevation-z8"
+      *ngIf="!_loading && (!dataSource || dataSource.data.length === 0)"
+    >
+      {{ "NO_USERS_ADDED" | translate }}
+    </div>
   </mat-card-content>
   <mat-card-actions align="center">
-    <button id="cancelBtn" mat-raised-button class="btn-three m-b-5"
-      [mat-dialog-close]="true" >{{'Cancel'|translate}}</button>
-    <button id="resetBtn" mat-raised-button class="btn-two m-b-5"
-      [disabled]="((!users.value || users.value.length === 0) && usersToDelete.length === 0)|| disableDeleteBtn || disableAddBtn" (click)="resetUsers()">
-      {{'Reset'|translate}}
+    <button
+      id="cancelBtn"
+      mat-raised-button
+      class="btn-three m-b-5"
+      [mat-dialog-close]="true"
+    >
+      {{ "Cancel" | translate }}
+    </button>
+    <button
+      id="resetBtn"
+      mat-raised-button
+      class="btn-two m-b-5"
+      [disabled]="
+        ((!users.value || users.value.length === 0) &&
+          usersToDelete.length === 0) ||
+        disableDeleteBtn ||
+        disableAddBtn
+      "
+      (click)="resetUsers()"
+    >
+      {{ "Reset" | translate }}
     </button>
   </mat-card-actions>
 </mat-card>
 
 <ng-template #succesAddUserDialog>
   <mat-dialog-content>
-    <p>{{'ADD_USER_SUCCESS'|translate}}</p>
+    <p>{{ "ADD_USER_SUCCESS" | translate }}</p>
   </mat-dialog-content>
   <mat-dialog-actions align="center">
-    <button class="btn-two" (click)="closeDialog()" mat-button cdkFocusInitial>{{'OK'|translate}}</button>
+    <button class="btn-two" (click)="closeDialog()" mat-button cdkFocusInitial>
+      {{ "OK" | translate }}
+    </button>
   </mat-dialog-actions>
 </ng-template>
 <ng-template #errorAddUserDialog>
   <mat-dialog-content>
-    <p>{{errorMessage|translate}}</p>
+    <p>{{ errorMessage | translate }}</p>
   </mat-dialog-content>
   <mat-dialog-actions align="center">
-    <button class="btn-two" (click)="closeDialog()" mat-button cdkFocusInitial>{{'OK'|translate}}</button>
+    <button class="btn-two" (click)="closeDialog()" mat-button cdkFocusInitial>
+      {{ "OK" | translate }}
+    </button>
   </mat-dialog-actions>
 </ng-template>
 <ng-template #succesDeleteUserDialog>
   <mat-dialog-content>
-    <p>{{'DELETE_USER_SUCCESS'|translate}}</p>
+    <p>{{ "DELETE_USER_SUCCESS" | translate }}</p>
   </mat-dialog-content>
   <mat-dialog-actions align="center">
-    <button class="btn-two" (click)="closeDialog()" mat-button cdkFocusInitial>{{'OK'|translate}}</button>
+    <button class="btn-two" (click)="closeDialog()" mat-button cdkFocusInitial>
+      {{ "OK" | translate }}
+    </button>
   </mat-dialog-actions>
 </ng-template>
 <ng-template #errorDeleteUserDialog>
   <mat-dialog-content>
-    <p>{{'DELETE_USER_ERROR'|translate}}</p>
+    <p>{{ "DELETE_USER_ERROR" | translate }}</p>
   </mat-dialog-content>
   <mat-dialog-actions align="center">
-    <button class="btn-two" (click)="closeDialog()" mat-button cdkFocusInitial>{{'OK'|translate}}</button>
+    <button class="btn-two" (click)="closeDialog()" mat-button cdkFocusInitial>
+      {{ "OK" | translate }}
+    </button>
   </mat-dialog-actions>
 </ng-template>

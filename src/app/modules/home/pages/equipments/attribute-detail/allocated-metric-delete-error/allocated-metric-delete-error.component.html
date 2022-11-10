@@ -1,0 +1,13 @@
+<h1 mat-dialog-title>{{ "Error" | translate }}</h1>
+
+<mat-dialog-content
+  >{{ "ERROR." + data.error.message | translate }}
+</mat-dialog-content>
+<mat-dialog-actions fxLayout="row" fxLayoutAlign="center" fxLayoutGap="10px">
+  <!-- <button class="btn-one mat-raised-button" (click)="confirmed()">
+    {{ "Delete" | translate }}
+  </button> -->
+  <button cdkFocusInitial class="btn-two mat-raised-button" mat-dialog-close>
+    {{ "Close" | translate }}
+  </button>
+</mat-dialog-actions>

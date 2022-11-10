@@ -10,6 +10,7 @@ import { AboutComponent } from 'src/app/modules/home/pages/about/about/about.com
 import { AboutFuture } from '@core/modals';
 import { CommonService } from '@core/services';
 import { LOCAL_KEYS } from '@core/util/constants/constants';
+import { allowedScopes } from '@core/util/common.functions';
 
 @Component({
   selector: 'app-header',
@@ -59,6 +60,16 @@ export class HeaderComponent implements OnInit {
     this.userName = emailId.substring(0, emailId.lastIndexOf('@'));
     this.role = localStorage.getItem('role');
     this.fetchAboutData();
+  }
+
+  get inventoryManagementLink(): string {
+    return this.allowedScope
+      ? '/optisam/dm/metadata'
+      : '/optisam/dm/globaldata';
+  }
+
+  get allowedScope(): boolean {
+    return allowedScopes();
   }
 
   fetchAboutData(): void {

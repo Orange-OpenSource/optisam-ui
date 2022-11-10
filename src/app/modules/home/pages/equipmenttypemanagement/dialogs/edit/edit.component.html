@@ -43,10 +43,39 @@
         <mat-header-cell *matHeaderCellDef>{{
           "Name" | translate
         }}</mat-header-cell>
-        <mat-cell *matCellDef="let row"
-          ><span [ngClass]="row.primary_key ? 'highlight' : ''">{{
-            row.name
-          }}</span>
+        <mat-cell *matCellDef="let row">
+          <ng-container *ngIf="true">
+            <div fxLayout="column">
+              <mat-form-field
+                [ngClass]="{
+                  'input-error':
+                    blankAttr.includes(row.ID) || overLimitAttr.includes(row.ID)
+                }"
+              >
+                <input
+                  matInput
+                  [value]="row.schema_name"
+                  (input)="attrNameChange($event, row)"
+                  (paste)="attrNameChange($event, row)"
+                  maxLength="{{ schemaNameLimit }}"
+                />
+              </mat-form-field>
+              <mat-error *ngIf="blankAttr.includes(row.ID)">
+                {{ "EQUIPMENT.ERROR.NAME_BLANK" | translate }}</mat-error
+              >
+              <mat-error *ngIf="overLimitAttr.includes(row.ID)">
+                {{
+                  "EQUIPMENT.ERROR.NAME_OVER_LIMIT"
+                    | translate: { limit: schemaNameLimit }
+                }}</mat-error
+              >
+            </div>
+          </ng-container>
+          <ng-container *ngIf="false">
+            <span [ngClass]="{ highlight: row.primary_key }">{{
+              row.name
+            }}</span>
+          </ng-container>
         </mat-cell>
       </ng-container>
       <ng-container matColumnDef="data_type">
@@ -65,13 +94,38 @@
         <mat-header-cell *matHeaderCellDef>{{
           "Searchable" | translate
         }}</mat-header-cell>
-        <mat-cell *matCellDef="let row">{{ row.searchable || null }}</mat-cell>
+        <mat-cell *matCellDef="let row">
+          <mat-slide-toggle
+            (change)="searchableChange($event, row)"
+            [checked]="row.searchable"
+            [disabled]="row.primary_key"
+          ></mat-slide-toggle>
+        </mat-cell>
       </ng-container>
       <ng-container matColumnDef="displayed">
         <mat-header-cell *matHeaderCellDef>{{
           "Displayable" | translate
         }}</mat-header-cell>
-        <mat-cell *matCellDef="let row">{{ row.displayed }}</mat-cell>
+        <mat-cell *matCellDef="let row">
+          <mat-slide-toggle
+            (change)="displayableChange($event, row)"
+            [checked]="row.displayed"
+            #displayable
+            [disabled]="row.searchable || row.primary_key"
+          ></mat-slide-toggle>
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="action">
+        <mat-header-cell *matHeaderCellDef>{{
+          "Action" | translate
+        }}</mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          <span
+            [ngClass]="{ disabled: row.primary_key }"
+            (click)="confirmAttributeDelete(row)"
+            ><mat-icon>delete</mat-icon></span
+          >
+        </mat-cell>
       </ng-container>
 
       <mat-header-row
@@ -210,11 +264,7 @@
             id="modifyButton"
             mat-raised-button
             type="submit"
-            [disabled]="
-              !attributeForm.valid ||
-              attributeForm.pristine ||
-              missingParentAttribute
-            "
+            [disabled]="!isModifiable"
             (click)="
               modifyAttribute(
                 succesUpdateDialog,
@@ -233,6 +283,11 @@
             ></span>
             {{ "Modify" | translate }}
           </button>
+
+          <!-- {{ !attributeForm.valid | json }}
+          {{ attributeForm.pristine | json }}
+          {{ missingParentAttribute | json }}
+          {{ !checkParent | json }} -->
         </div>
       </div>
       <!-- End Call to action button -->

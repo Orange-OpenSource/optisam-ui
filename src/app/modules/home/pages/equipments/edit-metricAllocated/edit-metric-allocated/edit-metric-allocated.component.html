@@ -1,0 +1,80 @@
+<div fxLayout="row" fxLayoutAlign="center center" class="login-main">
+  <mat-card class="card">
+    <mat-card-header>
+      <mat-card-title>{{ "Update" | translate }}</mat-card-title>
+    </mat-card-header>
+    <mat-card-content fxLayout="column">
+      <form [formGroup]="groupForm">
+        <mat-form-field appearance="outline">
+          <mat-label>{{ "ALLOCATED_USER" | translate }}</mat-label>
+          <input
+            id="equipUser"
+            matInput
+            placeholder="{{ 'ALLOCATED_USER' | translate }}"
+            formControlName="allocatedUser"
+            (keydown)="restrictNonDigitAndNegative($event)"
+            (paste)="restrictPaste($event)"
+          />
+          <mat-error *ngIf="allocatedUser.hasError('pattern')">{{
+            "Only positive integer values are allowed" | translate
+          }}</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>{{ "ALLOCATED_METRIC" | translate }}</mat-label>
+          <input
+            id="allocatMetric"
+            matInput
+            placeholder="{{ 'ALLOCATED_METRIC' | translate }}"
+            formControlName="allocatedMetric"
+            list="allocatedMetric"
+            autocomplete="off"
+          />
+          <datalist id="allocatedMetric">
+            <option *ngFor="let metric of metricList" [value]="metric">
+              {{ metric }}
+            </option>
+          </datalist>
+          <mat-error *ngIf="allocatedMetric.hasError('required')">{{
+            "ALLOCATED_METRIC_REQUIRED" | translate
+          }}</mat-error>
+        </mat-form-field>
+      </form>
+    </mat-card-content>
+    <mat-card-actions align="center">
+      <button
+        id="cancelBtn"
+        mat-raised-button
+        class="btn-four"
+        [disabled]="_loading"
+        [mat-dialog-close]="true"
+      >
+        {{ "Cancel" | translate }}
+      </button>
+      <button
+        id="resetBtn"
+        mat-raised-button
+        class="btn-three"
+        [disabled]="groupForm.pristine"
+        (click)="resetGroup()"
+      >
+        {{ "Reset" | translate }}
+      </button>
+      <button
+        id="createBtn"
+        mat-raised-button
+        class="btn-two"
+        [disabled]="!hasOneValue"
+        (click)="warningAllocationChange()"
+      >
+        <span
+          class="spinner-border spinner-border-sm"
+          role="status"
+          aria-hidden="true"
+          *ngIf="_loading"
+        ></span>
+        {{ "Update" | translate }}
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</div>

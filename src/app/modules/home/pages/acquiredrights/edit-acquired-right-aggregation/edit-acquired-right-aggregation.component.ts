@@ -124,6 +124,10 @@ export class EditAcquiredRightAggregationComponent
     return this.aggregationForm?.get('aggregationName') as FormControl;
   }
 
+  get repartition() {
+    return this.aggregationForm.get('repartition');
+  }
+
   get licenses_acquired() {
     return this.licenseForm?.get('licenses_acquired');
   }
@@ -241,6 +245,7 @@ export class EditAcquiredRightAggregationComponent
     const body: AcquiredRightAggregationBody = {
       sku: this.data.sku,
       aggregationID: this.aggregationName.value,
+      repartition: this.repartition.value,
       metric_name: this.productsMetrics.value.map((p) => p.name).join(','),
       num_licenses_acquired: Number(this.licenses_acquired.value),
       avg_unit_price: Number(this.unit_price.value),

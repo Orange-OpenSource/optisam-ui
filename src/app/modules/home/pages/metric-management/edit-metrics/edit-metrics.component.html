@@ -166,7 +166,7 @@
           </div>
           <div class="col-md-3">
             <mat-form-field appearance="outline">
-              <mat-label>{{ "Aggregation Level" | translate }}</mat-label>
+              <mat-label>{{ "Aggregation level" | translate }}</mat-label>
               <mat-select
                 id="aggregationLevel"
                 formControlName="aggregationLevel"
@@ -221,7 +221,7 @@
           </div>
           <div class="col-md-3">
             <mat-form-field appearance="outline" *ngIf="isOracleNUP">
-              <mat-label>{{ "No. of users" | translate }}</mat-label>
+              <mat-label>{{ "No. of Users" | translate }}</mat-label>
               <input
                 id="noOfUsers"
                 matInput
@@ -243,6 +243,49 @@
               </mat-error>
             </mat-form-field>
           </div>
+        </div>
+        <div class="row">
+          <ng-container *ngIf="isOracleNUP">
+            <div class="col-md-3" fxLayout="row" fxLayoutAlign="start center">
+              <mat-checkbox
+                (change)="transformChange($event)"
+                [checked]="transformProcessor"
+                color="primary"
+                >{{ "Transform to processor" | translate }}</mat-checkbox
+              >
+            </div>
+            <div class="col-md-3">
+              <mat-form-field appearance="outline">
+                <mat-label>{{
+                  "Oracle processor standard metric" | translate
+                }}</mat-label>
+                <mat-select
+                  id="processor-metric-list"
+                  [disabled]="!transformProcessor"
+                  formControlName="transformProcessorMetric"
+                  value=""
+                >
+                  <mat-option value=""
+                    >--{{ "Select" | translate }}--</mat-option
+                  >
+                  <mat-option
+                    *ngFor="let processorMetric of processorMetricList$ | async"
+                    [value]="processorMetric.name"
+                  >
+                    {{ processorMetric.name }}
+                  </mat-option>
+                </mat-select>
+                <mat-error
+                  *ngIf="
+                    transformProcessorMetric.invalid &&
+                    transformProcessorMetric.hasError('required')
+                  "
+                >
+                  {{ "Processor metric is mandatory" | translate }}
+                </mat-error>
+              </mat-form-field>
+            </div>
+          </ng-container>
         </div>
       </ng-container>
 
@@ -350,11 +393,11 @@
         </div>
       </ng-container>
 
-      <!-- Attribute Counter OR Attribute Sum-->
+      <!-- Attribute Counter OR Attribute Sum or Equipment Attribute-->
       <ng-container
         *ngIf="
-          isAttributeCounterOrAttributeSum && firstEquipmentsList$
-            | async as firstEquipmentsList
+          isAttributeCounterOrAttributeSumOrEquipemntAttribute &&
+            firstEquipmentsList$ | async as firstEquipmentsList
         "
       >
         <div class="row">
@@ -370,7 +413,7 @@
                 "
               >
                 <mat-option
-                  *ngFor="let refEquiment of firstEquipmentsList"
+                  *ngFor="let refEquiment of equipmentsTypesList"
                   [value]="refEquiment.ID"
                 >
                   {{ refEquiment.type }}
@@ -390,7 +433,7 @@
               *ngIf="
                 referenceEquipment.dirty &&
                 coresList?.length === 0 &&
-                !isAttributeCounterOrAttributeSum
+                !isAttributeCounterOrAttributeSumOrEquipemntAttribute
               "
             >
               {{
@@ -398,7 +441,55 @@
                   | translate
               }}
             </mat-error>
+            <!-- <mat-error
+              class="warningMsg"
+              *ngIf="
+                referenceEquipment.dirty &&
+                coresList?.length === 0 &&
+                !isAttributeCounterOrAttributeSumOrEquipemntAttribute
+              "
+            >
+              {{
+                "Selected equipment type does not have any attribute with data type INT."
+                  | translate
+              }}
+            </mat-error> -->
           </div>
+
+          <!-- Environment -->
+          <div
+            class="col-md-3 equipments"
+            *ngIf="metricType === metricTypes.EQUIPMENT_ATTRIBUTE_STANDARD"
+          >
+            <mat-form-field appearance="outline">
+              <mat-label>{{ "Environment" | translate }}</mat-label>
+              <input
+                id="environmentValue"
+                matInput
+                formControlName="environmentValue"
+                (keyup)="inputChangeDetection($event.target.value)"
+                placeholder="{{ 'Environment' | translate }}"
+              />
+
+              <mat-error
+                *ngIf="
+                  environmentValue.invalid &&
+                  environmentValue.hasError('required')
+                "
+              >
+                {{ "Environment value is mandatory" | translate }}
+              </mat-error>
+              <mat-error
+                *ngIf="
+                  environmentValue.invalid &&
+                  environmentValue.hasError('pattern')
+                "
+              >
+                {{ "Value is required in ^[a-zA-Z0-9,]*$ format" | translate }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+
           <div class="col-md-3">
             <mat-form-field appearance="outline">
               <mat-label>{{ "Attribute Name" | translate }}</mat-label>
@@ -453,6 +544,32 @@
               {{ zeroValueMsg | translate }}
             </mat-error>
           </div>
+          <div
+            class="col-md-3"
+            *ngIf="metricType === metricTypes.EQUIPMENT_ATTRIBUTE_STANDARD"
+          >
+            <mat-form-field appearance="outline">
+              <mat-label>{{ "Value" | translate }}</mat-label>
+              <input
+                id="value"
+                matInput
+                formControlName="value"
+                type="number"
+                min="1"
+                (keydown)="validatePattern($event)"
+                (keyup)="inputChangeDetection($event.target.value)"
+                placeholder="{{ 'Value' | translate }}"
+              />
+              <mat-error *ngIf="value.invalid && value.hasError('required')">
+                {{ "Value is mandatory" | translate }}
+              </mat-error>
+
+              <mat-error *ngIf="value.invalid && value.hasError('pattern')">
+                {{ "Value should be greater than 0." | translate }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+
           <div
             class="col-md-3"
             *ngIf="metricType === metricTypes.ATTRIBUTE_SUM_STANDARD"
@@ -530,7 +647,6 @@
               </mat-error>
 
               <mat-error
-                class="warningMsg"
                 *ngIf="
                   referenceValue.invalid && referenceValue.hasError('pattern')
                 "

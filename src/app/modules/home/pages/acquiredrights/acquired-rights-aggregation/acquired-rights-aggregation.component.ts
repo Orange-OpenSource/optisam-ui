@@ -73,7 +73,7 @@ export class AcquiredRightsAggregationComponent
     'software_provider',
     'metric_name',
     'num_licenses_acquired',
-    'num_licences_maintainance',
+    'num_licences_maintenance',
     'start_of_maintenance',
     'end_of_maintenance',
     'licence_under_maintenance',
@@ -127,7 +127,7 @@ export class AcquiredRightsAggregationComponent
     'end_of_maintenance',
     'avg_unit_price',
     'licence_under_maintenance',
-    'num_licences_maintainance',
+    'num_licences_maintenance',
     'avg_maintenance_unit_price',
     'total_purchase_cost',
     'total_maintenance_cost',
@@ -157,7 +157,7 @@ export class AcquiredRightsAggregationComponent
     product_editor: 'Editor',
     metric_name: 'Metric(s)',
     num_licenses_acquired: 'Acquired licenses',
-    num_licences_maintainance: 'Licenses under maintenance number',
+    num_licences_maintenance: 'Licenses under maintenance number',
     start_of_maintenance: 'Start of Maintenance',
     end_of_maintenance: 'End of Maintenance',
     licence_under_maintenance: 'License under maintenance',
@@ -324,7 +324,7 @@ export class AcquiredRightsAggregationComponent
       case 'total_maintenance_cost':
         sortBy = 'TOTAL_MAINTENANCE_COST';
         break;
-      case 'num_licences_maintainance':
+      case 'num_licences_maintenance':
         sortBy = 'MAINTENANCE_LICENCES';
         break;
 
@@ -386,7 +386,7 @@ export class AcquiredRightsAggregationComponent
 
   openAggregationDetailsDialog(aggregation: any): void {
     const dialogRef = this.dialog.open(ProductAggregationDetailsComponent, {
-      width: '850px',
+      width: '1300px',
       autoFocus: false,
       disableClose: true,
       data: {

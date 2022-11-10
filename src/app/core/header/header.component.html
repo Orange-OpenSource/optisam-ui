@@ -100,17 +100,7 @@
           <mat-icon class="mat-icon-admin">devices_other</mat-icon>
           {{ "Aggregation Management" | translate }}
         </button>
-        <button
-          id="nav-data-management"
-          mat-menu-item
-          matTooltip="{{ 'Data Management' | translate }}"
-          *ngIf="role === 'ADMIN' || role === 'SUPER_ADMIN'"
-          [routerLink]="['/optisam/dm/data']"
-          [routerLinkActive]="['routeactive']"
-        >
-          <mat-icon class="mat-icon-admin">cloud_upload</mat-icon>
-          {{ "Data Management" | translate }}
-        </button>
+
         <button
           id="nav-equipment-management"
           mat-menu-item
@@ -133,6 +123,17 @@
         >
           <mat-icon class="mat-icon-admin">group_add</mat-icon>
           {{ "Group Management" | translate }}
+        </button>
+        <button
+          id="nav-data-management"
+          mat-menu-item
+          matTooltip="{{ 'Inventory Management' | translate }}"
+          *ngIf="role === 'ADMIN' || role === 'SUPER_ADMIN'"
+          [routerLink]="[inventoryManagementLink]"
+          [routerLinkActive]="['routeactive']"
+        >
+          <mat-icon class="mat-icon-admin">cloud_upload</mat-icon>
+          {{ "Inventory Management" | translate }}
         </button>
         <button
           id="nav-metrics-management"
@@ -172,7 +173,7 @@
           />
           {{ "Scope Management" | translate }}
         </button>
-        <!-- <button
+        <button
           id="nav-configuration-management"
           mat-menu-item
           matTooltip="{{ 'Simulation Management' | translate }}"
@@ -182,7 +183,7 @@
         >
           <mat-icon class="mat-icon-admin">settings</mat-icon>
           {{ "Simulation Management" | translate }}
-        </button> -->
+        </button>
         <button
           id="nav-user-management"
           mat-menu-item

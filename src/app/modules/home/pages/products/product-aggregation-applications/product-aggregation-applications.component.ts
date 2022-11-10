@@ -38,19 +38,19 @@ export class ProductAggregationApplicationsComponent implements OnInit {
   displayedColumns: string[] = [
     'name',
     'owner',
-    'num_of_instances',
+    // 'num_of_instances',
     'num_of_equipments',
   ];
   sortColumn: string[] = [
     'name',
     'owner',
-    'num_of_instances',
+    // 'num_of_instances',
     'num_of_equipments',
   ];
   tableKeyLabelMap: any = {
     name: 'Application Name',
     owner: 'Application Owner',
-    num_of_instances: 'Instance Count',
+    // num_of_instances: 'Instance Count',
     num_of_equipments: 'Equipment Count',
   };
   _loading: Boolean;

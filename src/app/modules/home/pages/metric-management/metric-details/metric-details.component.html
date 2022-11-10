@@ -1,159 +1,333 @@
 <!-- <div class="closeDialog"><button [mat-dialog-close]="true" mat-icon-button><mat-icon>close</mat-icon></button></div> -->
 <mat-card>
   <mat-card-title class="page-heading">
-    {{'Metric Details'|translate}}
+    {{ "Metric Details" | translate }}
   </mat-card-title>
   <mat-card-content>
     <div class="row">
       <div class="col-md-3">
         <mat-form-field appearance="outline">
-          <mat-label>{{'Metric Name' | translate}}</mat-label>
-          <input matInput id="metricName" [value]="metricName" readonly>
+          <mat-label>{{ "Metric Name" | translate }}</mat-label>
+          <input matInput id="metricName" [value]="metricName" readonly />
         </mat-form-field>
       </div>
-      
+
       <div class="col-md-3">
         <mat-form-field appearance="outline">
-          <mat-label>{{'Metric Type' | translate}}</mat-label>
-          <input matInput id="metricType" [value]="metricType" readonly>
+          <mat-label>{{ "Metric Type" | translate }}</mat-label>
+          <input matInput id="metricType" [value]="metricType" readonly />
         </mat-form-field>
       </div>
 
       <div class="col-md-6">
         <mat-form-field>
-          <mat-label>{{'Metric Description' | translate}}</mat-label>
-          <textarea id="metricDescription" matInput [value]="metricDescription" readonly></textarea>
+          <mat-label>{{ "Metric Description" | translate }}</mat-label>
+          <textarea
+            id="metricDescription"
+            matInput
+            [value]="metricDescription"
+            readonly
+          ></textarea>
         </mat-form-field>
       </div>
     </div>
     <!-- Oracle Processor or Oracle NUP-->
-    <div class="row" *ngIf="metricDetails && (metricType=='oracle.processor.standard' || metricType == 'oracle.nup.standard')">
+    <div
+      class="row"
+      *ngIf="
+        metricDetails &&
+        (metricType == 'oracle.processor.standard' ||
+          metricType == 'oracle.nup.standard')
+      "
+    >
       <div class="col-md-3">
         <mat-form-field appearance="outline">
-          <mat-label>{{'First Equipment' | translate}}</mat-label>
-          <input matInput id="firstEquipment" [value]="metricDetails.StartEqType" readonly>
+          <mat-label>{{ "First Equipment" | translate }}</mat-label>
+          <input
+            matInput
+            id="firstEquipment"
+            [value]="metricDetails.StartEqType"
+            readonly
+          />
         </mat-form-field>
       </div>
       <div class="col-md-3">
         <mat-form-field appearance="outline">
-          <mat-label>{{'Reference Equipment' | translate}}</mat-label>
-          <input matInput id="refEquipment" [value]="metricDetails.BaseEqType" readonly>
+          <mat-label>{{ "Reference Equipment" | translate }}</mat-label>
+          <input
+            matInput
+            id="refEquipment"
+            [value]="metricDetails.BaseEqType"
+            readonly
+          />
         </mat-form-field>
       </div>
       <div class="col-md-3">
         <mat-form-field appearance="outline">
           <mat-label>Core</mat-label>
-          <input matInput id="core" [value]="metricDetails.NumCoreAttr" readonly>
+          <input
+            matInput
+            id="core"
+            [value]="metricDetails.NumCoreAttr"
+            readonly
+          />
         </mat-form-field>
       </div>
       <div class="col-md-3">
         <mat-form-field appearance="outline">
           <mat-label>CPU</mat-label>
-          <input matInput id="CPU" [value]="metricDetails.NumCPUAttr" readonly>
+          <input
+            matInput
+            id="CPU"
+            [value]="metricDetails.NumCPUAttr"
+            readonly
+          />
         </mat-form-field>
       </div>
     </div>
-    <div class="row" *ngIf="metricDetails && (metricType=='oracle.processor.standard' || metricType == 'oracle.nup.standard')">      
+    <div
+      class="row"
+      *ngIf="
+        metricDetails &&
+        (metricType == 'oracle.processor.standard' ||
+          metricType == 'oracle.nup.standard')
+      "
+    >
       <div class="col-md-3">
         <mat-form-field appearance="outline">
           <mat-label>Corefactor</mat-label>
-          <input matInput id="corefactor" [value]="metricDetails.CoreFactorAttr" readonly>
+          <input
+            matInput
+            id="corefactor"
+            [value]="metricDetails.CoreFactorAttr"
+            readonly
+          />
         </mat-form-field>
       </div>
       <div class="col-md-3">
         <mat-form-field appearance="outline">
-          <mat-label>{{'Aggregation level' | translate}}</mat-label>
-          <input matInput id="aggregationLevel" [value]="metricDetails.AggerateLevelEqType" readonly>
+          <mat-label>{{ "Aggregation level" | translate }}</mat-label>
+          <input
+            matInput
+            id="aggregationLevel"
+            [value]="metricDetails.AggerateLevelEqType"
+            readonly
+          />
         </mat-form-field>
       </div>
       <div class="col-md-3">
         <mat-form-field appearance="outline">
-          <mat-label>{{'Last Equipment' | translate}}</mat-label>
-          <input matInput id="lastEquipment" [value]="metricDetails.EndEqType" readonly>
+          <mat-label>{{ "Last Equipment" | translate }}</mat-label>
+          <input
+            matInput
+            id="lastEquipment"
+            [value]="metricDetails.EndEqType"
+            readonly
+          />
         </mat-form-field>
       </div>
       <div class="col-md-3">
-        <mat-form-field appearance="outline" *ngIf="metricType == 'oracle.nup.standard'">
-          <mat-label>{{'No. of users' | translate}}</mat-label>
-          <input matInput id="numberOfUsers" [value]="metricDetails.NumberOfUsers" readonly>
+        <mat-form-field
+          appearance="outline"
+          *ngIf="metricType == 'oracle.nup.standard'"
+        >
+          <mat-label>{{ "No. of users" | translate }}</mat-label>
+          <input
+            matInput
+            id="numberOfUsers"
+            [value]="metricDetails.NumberOfUsers"
+            readonly
+          />
         </mat-form-field>
       </div>
     </div>
+
+    <ng-container
+      *ngIf="metricType == 'oracle.nup.standard' && metricDetails?.Transform"
+    >
+      <div class="row">
+        <div class="col-md-3">
+          <mat-form-field appearance="outline">
+            <mat-label>{{ "Transform to processor" | translate }}</mat-label>
+            <input
+              matInput
+              id="transformProcessorMetric"
+              [value]="metricDetails?.TransformMetricName"
+              readonly
+            />
+          </mat-form-field>
+        </div>
+      </div>
+    </ng-container>
+
     <!-- SAG Processor or IBM PVU-->
-    <div class="row" *ngIf="metricDetails &&( metricType == 'sag.processor.standard' || metricType == 'ibm.pvu.standard')">
+    <div
+      class="row"
+      *ngIf="
+        metricDetails &&
+        (metricType == 'sag.processor.standard' ||
+          metricType == 'ibm.pvu.standard')
+      "
+    >
       <div class="col-md-3">
         <mat-form-field appearance="outline">
-          <mat-label>{{'Reference Equipment' | translate}}</mat-label>
-          <input matInput id="refEquipment" [value]="metricDetails.BaseEqType" readonly>
+          <mat-label>{{ "Reference Equipment" | translate }}</mat-label>
+          <input
+            matInput
+            id="refEquipment"
+            [value]="metricDetails.BaseEqType"
+            readonly
+          />
         </mat-form-field>
       </div>
       <div class="col-md-3">
         <mat-form-field appearance="outline">
           <mat-label>Core</mat-label>
-          <input matInput id="core" [value]="metricDetails.NumCoreAttr" readonly>
+          <input
+            matInput
+            id="core"
+            [value]="metricDetails.NumCoreAttr"
+            readonly
+          />
         </mat-form-field>
       </div>
       <div class="col-md-3">
         <mat-form-field appearance="outline">
           <mat-label>CPU</mat-label>
-          <input matInput id="CPU" [value]="metricDetails.NumCPUAttr" readonly>
+          <input
+            matInput
+            id="CPU"
+            [value]="metricDetails.NumCPUAttr"
+            readonly
+          />
         </mat-form-field>
       </div>
       <div class="col-md-3">
         <mat-form-field appearance="outline">
           <mat-label>Corefactor</mat-label>
-          <input matInput id="corefactor" [value]="metricDetails.CoreFactorAttr" readonly>
+          <input
+            matInput
+            id="corefactor"
+            [value]="metricDetails.CoreFactorAttr"
+            readonly
+          />
         </mat-form-field>
       </div>
     </div>
     <!-- Attribute Counter -->
-    <div  class="row" *ngIf="metricDetails && (metricType == 'attribute.counter.standard' || metricType == 'attribute.sum.standard')">
+    <div
+      class="row"
+      *ngIf="
+        metricDetails &&
+        (metricType == 'attribute.counter.standard' ||
+          metricType == 'attribute.sum.standard' ||
+          metricType == 'equipment.attribute.standard')
+      "
+    >
       <div class="col-md-3">
         <mat-form-field appearance="outline">
-          <mat-label>{{'Reference Equipment' | translate}}</mat-label>
-          <input matInput id="refEquipment" [value]="metricDetails.EqType" readonly>
+          <mat-label>{{ "Reference Equipment" | translate }}</mat-label>
+          <input
+            matInput
+            id="refEquipment"
+            [value]="metricDetails.EqType"
+            readonly
+          />
         </mat-form-field>
       </div>
+
+      <div
+        class="col-md-3"
+        *ngIf="metricType == 'equipment.attribute.standard'"
+      >
+        <mat-form-field appearance="outline">
+          <mat-label>{{ "Environment" | translate }}</mat-label>
+          <input
+            matInput
+            id="attributeValue"
+            [value]="metricDetails.Environment"
+            readonly
+          />
+        </mat-form-field>
+      </div>
+
       <div class="col-md-3">
         <mat-form-field appearance="outline">
-          <mat-label>{{'Attribute Name' | translate}}</mat-label>
-          <input matInput id="attributeName" [value]="metricDetails.AttributeName" readonly>
+          <mat-label>{{ "Attribute Name" | translate }}</mat-label>
+          <input
+            matInput
+            id="attributeName"
+            [value]="metricDetails.AttributeName"
+            readonly
+          />
         </mat-form-field>
       </div>
-      <div class="col-md-3" *ngIf="metricType == 'attribute.counter.standard'">
+      <div
+        class="col-md-3"
+        *ngIf="
+          metricType == 'attribute.counter.standard' ||
+          metricType == 'equipment.attribute.standard'
+        "
+      >
         <mat-form-field appearance="outline">
-          <mat-label>{{'Value' | translate}}</mat-label>
-          <input matInput id="attributeValue" [value]="metricDetails.Value" readonly>
+          <mat-label>{{ "Value" | translate }}</mat-label>
+          <input
+            matInput
+            id="attributeValue"
+            [value]="metricDetails.Value"
+            readonly
+          />
         </mat-form-field>
       </div>
       <div class="col-md-3" *ngIf="metricType == 'attribute.sum.standard'">
         <mat-form-field appearance="outline">
-          <mat-label>{{'Reference Value'|translate}}</mat-label>
-          <input matInput id="attributeValue" [value]="metricDetails.ReferenceValue" readonly>
+          <mat-label>{{ "Reference Value" | translate }}</mat-label>
+          <input
+            matInput
+            id="attributeValue"
+            [value]="metricDetails.ReferenceValue"
+            readonly
+          />
         </mat-form-field>
       </div>
     </div>
+
     <!-- Instance Number -->
-    <div class="row" *ngIf="metricDetails && metricType == 'instance.number.standard'">
+    <div
+      class="row"
+      *ngIf="metricDetails && metricType == 'instance.number.standard'"
+    >
       <div class="col-md-3">
         <mat-form-field appearance="outline">
-          <mat-label>{{'Number of deployments' | translate}}</mat-label>
-          <input matInput id="noofDeployments" [value]="metricDetails.Coefficient" readonly>
+          <mat-label>{{ "Number of deployments" | translate }}</mat-label>
+          <input
+            matInput
+            id="noofDeployments"
+            [value]="metricDetails.Coefficient"
+            readonly
+          />
         </mat-form-field>
       </div>
     </div>
     <!-- Static Standard -->
     <div class="row" *ngIf="metricDetails && metricType == 'static.standard'">
       <div class="col-md-3">
-      <mat-form-field appearance="outline">
-        <mat-label>{{'Reference Value'|translate}}</mat-label>
-        <input matInput id="attributeValue" [value]="metricDetails.ReferenceValue" readonly>
-      </mat-form-field>
-    </div>
+        <mat-form-field appearance="outline">
+          <mat-label>{{ "Reference Value" | translate }}</mat-label>
+          <input
+            matInput
+            id="attributeValue"
+            [value]="metricDetails.ReferenceValue"
+            readonly
+          />
+        </mat-form-field>
+      </div>
     </div>
     <app-loading-spinner *ngIf="_loading"></app-loading-spinner>
   </mat-card-content>
   <mat-dialog-actions>
-    <button class="btn-two" mat-raised-button mat-dialog-close>{{'Cancel' | translate}}</button>
+    <button class="btn-two" mat-raised-button mat-dialog-close>
+      {{ "Cancel" | translate }}
+    </button>
   </mat-dialog-actions>
 </mat-card>

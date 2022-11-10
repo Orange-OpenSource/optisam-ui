@@ -11,9 +11,9 @@
 }
 
 .mat-column-computedDetails{   
-    word-break: break-word !important;
+    min-width: 9rem;
   }
-  
+ 
   .mat-column-metric{
       min-width: 7rem;
   }
@@ -116,4 +116,12 @@ mat-menu-item {
 
 .mat-cell{
     word-break: break-word !important;
+}
+
+.alert_green{
+    color: green;
+}
+
+.alert_red{
+    color: red;
 }

@@ -1,6 +1,6 @@
 <link rel="stylesheet" href="../../../css/enlargeImage.css" />
 
-# Check a products informations
+# Check a product informations
 
 ## Access to the page
 

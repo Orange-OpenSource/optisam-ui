@@ -65,9 +65,9 @@
               aria-labelledby="nav-eqp-home-tab"
             >
               <div class="tab-content-inner">
-                <div *ngFor="let x of keyArr; let colIndex = index">
+                <div *ngFor="let x of detailEq; let colIndex = index">
                   <p>
-                    <strong>{{ x }}:</strong> {{ valueArr[colIndex] }}
+                    <strong>{{ x.key }}:</strong> {{ x.value }}
                   </p>
                 </div>
                 <app-loading-spinner *ngIf="_loading"></app-loading-spinner>
@@ -171,7 +171,7 @@
                               <mat-form-field>
                                 <input
                                   matInput
-                                  placeholder="{{ search }}"
+                                  placeholder="{{ typeArray[search] }}"
                                   formControlName="{{ search }}"
                                 />
                               </mat-form-field>
@@ -238,7 +238,7 @@
                           matColumnDef="{{ x }}"
                         >
                           <mat-header-cell *matHeaderCellDef mat-sort-header>
-                            {{ x }}</mat-header-cell
+                            {{ typeArray[x] }}</mat-header-cell
                           >
                           <mat-cell *matCellDef="let element">
                             {{ element[x] }}
@@ -358,6 +358,55 @@
                           </mat-header-cell>
                           <mat-cell *matCellDef="let product">
                             {{ product.numofEquipments }}
+                          </mat-cell>
+                        </ng-container>
+
+                        <ng-container matColumnDef="equipmentUsers">
+                          <mat-header-cell *matHeaderCellDef
+                            >{{ "ALLOCATED_USER" | translate }}
+                          </mat-header-cell>
+                          <mat-cell *matCellDef="let product">
+                            {{ product.allocatedUser }}
+                          </mat-cell>
+                        </ng-container>
+
+                        <ng-container matColumnDef="allocatedMetric">
+                          <mat-header-cell *matHeaderCellDef
+                            >{{ "Allocated Metric" | translate }}
+                          </mat-header-cell>
+                          <mat-cell *matCellDef="let product">
+                            {{ product.allocatedMetric }}
+                          </mat-cell>
+                        </ng-container>
+
+                        <!-- <ng-container matColumnDef="action">
+                          <mat-header-cell *matHeaderCellDef
+                            >{{ "Action" | translate }}
+                          </mat-header-cell>
+                          <mat-cell *matCellDef="let product">
+                            {{ product.action }}
+                          </mat-cell>
+                        </ng-container> -->
+
+                        <ng-container matColumnDef="action">
+                          <mat-header-cell *matHeaderCellDef>{{
+                            "Action" | translate
+                          }}</mat-header-cell>
+                          <mat-cell *matCellDef="let product; let i = index">
+                            <mat-icon
+                              class="action-icon"
+                              matTooltip="{{ 'Edit' | translate }}"
+                              (click)="openEditDialog(product)"
+                              >edit</mat-icon
+                            >
+
+                            <mat-icon
+                              class="action-icon"
+                              *ngIf="!!product.allocatedMetric"
+                              matTooltip="{{ 'Delete' | translate }}"
+                              (click)="deleteConfirm(product)"
+                              >delete</mat-icon
+                            >
                           </mat-cell>
                         </ng-container>
 

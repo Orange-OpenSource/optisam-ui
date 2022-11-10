@@ -37,18 +37,20 @@
           <mat-cell *matCellDef="let rights">
             <div [ngSwitch]="column">
               <span *ngSwitchCase="'sku'">
-                <div *ngIf="rights.file_name"  matTooltip="{{ 'Click here to download the file' }}">
-                  <a  class="ellipsis mat-button-link" (click)="
-                  downloadFile(
-                    rights.sku,rights.file_name
-                      )
-                    ">
+                <div
+                  *ngIf="rights.file_name"
+                  matTooltip="{{ 'Click here to download the file' }}"
+                >
+                  <a
+                    class="ellipsis mat-button-link"
+                    (click)="downloadFile(rights.sku, rights.file_name)"
+                  >
                     {{ rights.sku }}
                   </a>
                 </div>
                 <div *ngIf="!rights.file_name">
-                {{ rights.sku }}
-              </div>
+                  {{ rights.sku }}
+                </div>
               </span>
               <span
                 *ngSwitchCase="'swidtags'"
@@ -160,19 +162,6 @@
                     <span *ngSwitchCase="'total_cost'">{{
                       element.total_cost || 0 | formatCost
                     }}</span>
-                    <!-- <span
-                      *ngSwitchCase="'product_name'"
-                      matTooltip="{{ element.product_name }}"
-                    >
-                      <a
-                        class="ellipsis mat-button-link"
-                        (click)="
-                          openDialog(element.swid_tag, element.product_name)
-                        "
-                      >
-                        {{ element.product_name }}
-                      </a>
-                    </span> -->
                     <span *ngSwitchDefault>{{ element[column] || "-" }}</span>
                   </mat-cell>
                   ,

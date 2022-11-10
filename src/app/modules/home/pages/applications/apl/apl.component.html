@@ -35,7 +35,7 @@
             >{{ "Owner" | translate }}
           </mat-header-cell>
           <mat-cell *matCellDef="let application"
-            >{{ application.owner }}
+            >{{ application.owner || "-" }}
           </mat-cell>
         </ng-container>
 
@@ -45,6 +45,15 @@
           </mat-header-cell>
           <mat-cell *matCellDef="let application"
             >{{ application.domain }}
+          </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="environment">
+          <mat-header-cell *matHeaderCellDef mat-sort-header="environment"
+            >{{ "Environment" | translate }}
+          </mat-header-cell>
+          <mat-cell *matCellDef="let application"
+            >{{ application.environment | titlecase }}
           </mat-cell>
         </ng-container>
 
@@ -76,7 +85,7 @@
           </mat-cell>
         </ng-container>
 
-        <ng-container matColumnDef="num_of_instances">
+        <!-- <ng-container matColumnDef="num_of_instances">
           <mat-header-cell *matHeaderCellDef mat-sort-header="num_of_instances"
             >{{ "Instance Count" | translate
             }}<mat-icon
@@ -103,7 +112,7 @@
             </a>
             <span *ngIf="!application.num_of_instances">0</span>
           </mat-cell>
-        </ng-container>
+      </ng-container> -->
 
         <ng-container matColumnDef="num_of_equipment">
           <mat-header-cell *matHeaderCellDef>{{

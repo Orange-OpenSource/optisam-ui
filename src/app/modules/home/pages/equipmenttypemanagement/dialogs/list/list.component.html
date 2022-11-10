@@ -1,36 +1,51 @@
-        <mat-card-title  class="page-heading">{{'Attribute List for'|translate}} {{this.equipName}}
-        </mat-card-title>
+<mat-card-title class="page-heading"
+  >{{ "Attribute List for" | translate }} {{ this.equipName }}
+</mat-card-title>
 
-      <mat-table #table [dataSource]="attribute" class="equipments-action-table">
-        <ng-container matColumnDef="name">
-          <mat-header-cell *matHeaderCellDef >{{'Name' | translate}}</mat-header-cell>
-          <mat-cell *matCellDef="let row"><span  [ngClass]="(row.primary_key)?'highlight':''">{{row.name}}</span></mat-cell>
-        </ng-container>
+<mat-table #table [dataSource]="attribute" class="equipments-action-table">
+  <ng-container matColumnDef="name">
+    <mat-header-cell *matHeaderCellDef>{{
+      "Name" | translate
+    }}</mat-header-cell>
+    <mat-cell *matCellDef="let row"
+      ><span [ngClass]="row.primary_key ? 'highlight' : ''">{{
+        row.schema_name
+      }}</span></mat-cell
+    >
+  </ng-container>
 
-        <ng-container matColumnDef="data_type">
-          <mat-header-cell *matHeaderCellDef >{{'DataType' | translate}}</mat-header-cell>
-          <mat-cell *matCellDef="let row"> {{row.data_type}}</mat-cell>
-        </ng-container>
+  <ng-container matColumnDef="data_type">
+    <mat-header-cell *matHeaderCellDef>{{
+      "DataType" | translate
+    }}</mat-header-cell>
+    <mat-cell *matCellDef="let row"> {{ row.data_type }}</mat-cell>
+  </ng-container>
 
-        <ng-container matColumnDef="mapped_to">
-            <mat-header-cell *matHeaderCellDef >{{'Mapped Column' | translate}}</mat-header-cell>
-            <mat-cell *matCellDef="let row">{{row.mapped_to}}</mat-cell>
-          </ng-container>
-          <ng-container matColumnDef="searchable">
-              <mat-header-cell *matHeaderCellDef >{{'Searchable' | translate}}</mat-header-cell>
-              <mat-cell *matCellDef="let row">{{row.searchable||null}}</mat-cell>
-            </ng-container>
-            <ng-container matColumnDef="displayed">
-                <mat-header-cell *matHeaderCellDef >{{'Displayable' | translate}}</mat-header-cell>
-                <mat-cell *matCellDef="let row">{{row.displayed}}</mat-cell>
-              </ng-container>
+  <ng-container matColumnDef="mapped_to">
+    <mat-header-cell *matHeaderCellDef>{{
+      "Mapped Column" | translate
+    }}</mat-header-cell>
+    <mat-cell *matCellDef="let row">{{ row.mapped_to }}</mat-cell>
+  </ng-container>
+  <ng-container matColumnDef="searchable">
+    <mat-header-cell *matHeaderCellDef>{{
+      "Searchable" | translate
+    }}</mat-header-cell>
+    <mat-cell *matCellDef="let row">{{ row.searchable || null }}</mat-cell>
+  </ng-container>
+  <ng-container matColumnDef="displayed">
+    <mat-header-cell *matHeaderCellDef>{{
+      "Displayable" | translate
+    }}</mat-header-cell>
+    <mat-cell *matCellDef="let row">{{ row.displayed }}</mat-cell>
+  </ng-container>
 
+  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+  <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+</mat-table>
 
-        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
-      </mat-table>
-
-      <mat-dialog-actions align="right">
-        <button id="cancelButton" mat-raised-button class="btn-two" mat-dialog-close>{{'Cancel' | translate}}</button>
-      </mat-dialog-actions>
-
+<mat-dialog-actions align="right">
+  <button id="cancelButton" mat-raised-button class="btn-two" mat-dialog-close>
+    {{ "Cancel" | translate }}
+  </button>
+</mat-dialog-actions>

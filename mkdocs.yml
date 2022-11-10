@@ -1,6 +1,8 @@
-site_name: OpTISAM IT Documentation
+site_name: OpTISAM IT Documentation v1.2.1
 site_url: https://optisam-ui-prod.kermit-noprod-b.itn.intraorange/optisam
 repo_url: https://gitlab.tech.orange/optisam/optisam-it/optisam-guide
+
+
 nav:
   - Introduction : 
     - What is OpTISAM : pages/presentation/whatIs.md
@@ -11,19 +13,30 @@ nav:
       - Equipments : pages/exploring/parkInventory/equipments.md
       - Products : pages/exploring/parkInventory/products.md
       - Applications : pages/exploring/parkInventory/applications.md
-    - Check global informations : pages/exploring/checkGlobalInfo.md
-    - Check products informations: pages/exploring/checkProdInfo.md
-    - Check aggregations informations: pages/exploring/checkAggrInfo.md
-    - Check global compliance : pages/exploring/checkGlobalCompliance.md
-    - Check compliance for one product : pages/exploring/checkComplianceOne.md 
-    - Check compliance for an aggregation of product: pages/exploring/checkAggregationCompliance.md
+    - Check informations: 
+      - Global: pages/exploring/checkGlobalInfo.md
+      - One product: pages/exploring/checkProdInfo.md
+      - Aggregation: pages/exploring/checkAggrInfo.md
+   # - Check global informations : pages/exploring/checkGlobalInfo.md
+   # - Check products informations: pages/exploring/checkProdInfo.md
+   # - Check aggregations informations: pages/exploring/checkAggrInfo.md
+  
+    - Check compliance: 
+      - Global: pages/exploring/checkGlobalCompliance.md
+      - One product : pages/exploring/checkComplianceOne.md 
+      - Aggregation: pages/exploring/checkAggregationCompliance.md
+      #- Metric allocated: /pages/exploring/checkAllocatedCompliance.md
+    # - Check global compliance : pages/exploring/checkGlobalCompliance.md
+    #- Check compliance for one product : pages/exploring/checkComplianceOne.md 
+    #- Check compliance for an aggregation of product: pages/exploring/checkAggregationCompliance.md
     - Check products deployment : pages/exploring/checkProdDeployment.md  
     - Licensing :
       - Acquired rights : pages/exploring/licensing/acquiredRights.md
       - Aggregations : pages/exploring/licensing/aggregations.md
-    - Simulation :
+    - Simulation : 
+      - Cost: pages/exploring/simulation/cost.md
       - Metrics : pages/exploring/simulation/metrics.md
-      - Hardware : pages/exploring/simulation/hardware.md
+      #- Hardware : pages/exploring/simulation/hardware.md
     - Reports : 
       - Compliance : pages/exploring/reports/compliance.md
       - Inventory : pages/exploring/reports/inventory.md
@@ -38,13 +51,15 @@ nav:
     - Users management : pages/managing/usersManagement.md
     - Equipments management : pages/managing/equipmentsManagement.md
     - Metrics management : pages/managing/metricsManagement.md
-    - Acquired rights management : pages/managing/acquiredRights.md
-    - Acquired rights aggregation mangament : pages//managing/acquiredRightsAggregation.md
-    - Data management :
+    - Aggregations management : pages/managing/aggregationsManagement.md
+    - Acquired rights management :
+      - Individual : pages/managing/acquiredRights.md
+      - Aggregation : pages/managing/acquiredRightsAggregation.md
+   # - Acquired rights aggregation managament : pages//managing/acquiredRightsAggregation.md
+    - Inventory management :
       - Upload all of your data in one global file : pages/managing/genericTemplate.md
       - Delete the inventory data : pages/managing/dataManagement.md
       - Importation errors management : pages/managing/errorData.md
-    - Aggregations management : pages/managing/aggregationsManagement.md
     - Simulation management : pages/managing/simulationsManagement.md
     - Obsolescence management : pages/managing/obsolescenceManagement.md
   - Glossary : pages/glossary.md

@@ -30,7 +30,7 @@ export class ProdAplComponent implements OnInit {
 
   displayedColumns: string[] = [
     'name',
-    'num_of_instances',
+    // 'num_of_instances',
     'owner',
     'num_of_equipments',
   ];

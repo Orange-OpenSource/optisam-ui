@@ -1,71 +1,162 @@
 <mat-card>
   <mat-card-title class="page-heading">
-    {{'Group Management'|translate}}
+    {{ "Group Management" | translate }}
   </mat-card-title>
 
   <mat-card-content class="mat-elevation-z8">
     <app-loading-spinner *ngIf="_loading || !dataSource"></app-loading-spinner>
     <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
-      <mat-tree-node *matTreeNodeDef="let node;" matTreeNodePadding>
-        <button *ngIf="isExpandable(node)" mat-icon-button [attr.aria-label]="'Toggle ' + node.item" matTreeNodeToggle>
+      <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
+        <button
+          *ngIf="isExpandable(node)"
+          mat-icon-button
+          [attr.aria-label]="'Toggle ' + node.item"
+          matTreeNodeToggle
+        >
           <mat-icon class="mat-icon-rtl-mirror action-icon">
-            {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+            {{ treeControl.isExpanded(node) ? "expand_more" : "chevron_right" }}
           </mat-icon>
         </button>
         <button *ngIf="!isExpandable(node)" mat-icon-button disabled></button>
-        <div id="groupName" mat-menu-item [ngClass]="isExpandable(node)?'strongText':''" matTooltip="{{node.item.fully_qualified_name}}">{{node.item.name}}</div>
-        <div id="groupUsers" class="clickable" mat-menu-item matTooltip="{{'Manage Users'|translate}}" (click)="manageUsers(node.item)"> 
-          {{node.item.num_of_users}}
-          <span *ngIf="node.item.num_of_users <= 1">{{'user'|translate}}</span>
-          <span *ngIf="node.item.num_of_users > 1">{{'users'|translate}}</span>
+        <div
+          id="groupName"
+          mat-menu-item
+          [ngClass]="isExpandable(node) ? 'strongText' : ''"
+          matTooltip="{{ node.item.fully_qualified_name }}"
+        >
+          {{ node.item.name }}
         </div>
-        <div id="groupScopes" *ngIf="!node.item.scopes || (node.item.scopes && node.item.scopes.length === 0)" mat-menu-item> 
-            0 {{'scope'|translate}}
-        </div>  
-        <div id="groupScopes" *ngIf="node.item.scopes && node.item.scopes.length !== 0" mat-menu-item matTooltip="{{formatScopes(node.item.scopes)}}"> 
-            {{node.item.scopes.length}}
-            <span *ngIf="node.item.scopes.length === 1">{{'scope'|translate}}</span>
-            <span *ngIf="node.item.scopes.length > 1">{{'scopes'|translate}}</span>
-        </div>      
-        <div id="addButton" class="action-icon tree-icon" matTooltip="{{'Create Group'|translate}}" (click)="createNewGroup(node.item)"> 
+        <div
+          id="groupUsers"
+          class="clickable"
+          mat-menu-item
+          matTooltip="{{ 'Manage Users' | translate }}"
+          (click)="manageUsers(node.item)"
+        >
+          {{ node.item.num_of_users }}
+          <span *ngIf="node.item.num_of_users <= 1">{{
+            "user" | translate
+          }}</span>
+          <span *ngIf="node.item.num_of_users > 1">{{
+            "users" | translate
+          }}</span>
+        </div>
+        <div
+          id="groupScopes"
+          *ngIf="
+            !node.item.scopes ||
+            (node.item.scopes && node.item.scopes.length === 0)
+          "
+          mat-menu-item
+        >
+          0 {{ "scope" | translate }}
+        </div>
+        <div
+          id="groupScopes"
+          *ngIf="node.item.scopes && node.item.scopes.length !== 0"
+          mat-menu-item
+          matTooltip="{{ formatScopes(node.item.scopes) }}"
+        >
+          {{ node.item.scopes.length }}
+          <span *ngIf="node.item.scopes.length === 1">{{
+            "scope" | translate
+          }}</span>
+          <span *ngIf="node.item.scopes.length > 1">{{
+            "scopes" | translate
+          }}</span>
+        </div>
+        <div
+          id="addButton"
+          class="action-icon tree-icon"
+          matTooltip="{{ 'Create Group' | translate }}"
+          (click)="createNewGroup(node.item)"
+        >
           <mat-icon>add_circle</mat-icon>
-        </div>    
-        <div id="editButton" class="action-icon tree-icon" matTooltip="{{'Edit Group Name'|translate}}" (click)="editGroup(node.item)"> 
+        </div>
+        <div
+          id="editButton"
+          class="action-icon tree-icon"
+          matTooltip="{{ 'Edit Group Name' | translate }}"
+          (click)="editGroup(node.item)"
+        >
           <mat-icon>edit</mat-icon>
         </div>
-        <div id="deleteButton" class="action-icon tree-icon" matTooltip="{{'Delete Group'|translate}}" *ngIf="node.item.num_of_users == 0 && node.item.num_of_child_groups == 0"
-          (click)="deleteConfirmation(node.item.ID, node, deleteConfirmationDialog)">
+        <div
+          id="deleteButton"
+          class="action-icon tree-icon"
+          matTooltip="{{ 'Delete Group' | translate }}"
+          *ngIf="
+            node.item.num_of_users == 0 && node.item.num_of_child_groups == 0
+          "
+          (click)="
+            deleteConfirmation(node.item.ID, node, deleteConfirmationDialog)
+          "
+        >
           <mat-icon>delete</mat-icon>
-        </div>        
-        <mat-progress-bar *ngIf="node.isLoading" mode="indeterminate" class="example-tree-progress-bar">
+        </div>
+        <mat-progress-bar
+          *ngIf="node.isLoading"
+          mode="indeterminate"
+          class="example-tree-progress-bar"
+        >
         </mat-progress-bar>
       </mat-tree-node>
     </mat-tree>
   </mat-card-content>
 
-    <ng-template #succesGroupDeleteDialog>
-      <mat-dialog-content>
-        <p>{{'DELETE_GROUP_SUCCESS'|translate}}</p>
-      </mat-dialog-content>
-      <mat-dialog-actions align="center">
-        <button [mat-dialog-close]="true" class="btn-two" mat-button cdkFocusInitial (click)="processTree()">{{'OK'|translate}}</button>
-      </mat-dialog-actions>
-    </ng-template>
-    <ng-template #errorGroupDeleteDialog>
-      <mat-dialog-content>
-        <p>{{'DELETE_GROUP_ERROR'|translate}}</p>
-      </mat-dialog-content>
-      <mat-dialog-actions align="center">
-        <button [mat-dialog-close]="true" class="btn-two" mat-button cdkFocusInitial>{{'OK'|translate}}</button>
-      </mat-dialog-actions>
-    </ng-template>
-    <ng-template #deleteConfirmationDialog>
-      <mat-dialog-content>
-        <p>{{'DELETE_GROUP_CONFIRM_MSG' | translate}}?</p>
-      </mat-dialog-content>
-      <mat-dialog-actions align="center">
-        <button mat-button [mat-dialog-close]="true" class="btn-two" (click)="deleteGrp(succesGroupDeleteDialog,errorGroupDeleteDialog)"
-          cdkFocusInitial>{{'OK'|translate}}</button>
-        <button mat-button [mat-dialog-close]="true"class="btn-three" cdkFocusInitial>{{'Cancel'|translate}}</button>
-      </mat-dialog-actions>
-    </ng-template>
+  <ng-template #succesGroupDeleteDialog>
+    <mat-dialog-content>
+      <p>{{ "DELETE_GROUP_SUCCESS" | translate }}</p>
+    </mat-dialog-content>
+    <mat-dialog-actions align="center">
+      <button
+        [mat-dialog-close]="true"
+        class="btn-two"
+        mat-button
+        cdkFocusInitial
+        (click)="processTree()"
+      >
+        {{ "OK" | translate }}
+      </button>
+    </mat-dialog-actions>
+  </ng-template>
+  <ng-template #errorGroupDeleteDialog>
+    <mat-dialog-content>
+      <p>{{ "DELETE_GROUP_ERROR" | translate }}</p>
+    </mat-dialog-content>
+    <mat-dialog-actions align="center">
+      <button
+        [mat-dialog-close]="true"
+        class="btn-two"
+        mat-button
+        cdkFocusInitial
+      >
+        {{ "OK" | translate }}
+      </button>
+    </mat-dialog-actions>
+  </ng-template>
+  <ng-template #deleteConfirmationDialog>
+    <mat-dialog-content>
+      <p>{{ "DELETE_GROUP_CONFIRM_MSG" | translate }}?</p>
+    </mat-dialog-content>
+    <mat-dialog-actions align="center">
+      <button
+        mat-button
+        [mat-dialog-close]="true"
+        class="btn-two"
+        (click)="deleteGrp(succesGroupDeleteDialog, errorGroupDeleteDialog)"
+        cdkFocusInitial
+      >
+        {{ "OK" | translate }}
+      </button>
+      <button
+        mat-button
+        [mat-dialog-close]="true"
+        class="btn-three"
+        cdkFocusInitial
+      >
+        {{ "Cancel" | translate }}
+      </button>
+    </mat-dialog-actions>
+  </ng-template></mat-card
+>

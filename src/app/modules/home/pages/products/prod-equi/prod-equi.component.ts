@@ -9,6 +9,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
+import { AttributeData } from '@core/modals';
 
 @Component({
   selector: 'app-prod-equi',
@@ -56,6 +57,7 @@ export class ProdEquiComponent implements OnInit {
     other: [],
   };
   searchFields: any = {};
+  typeArray: object;
 
   constructor(
     public httpClient: HttpClient,
@@ -127,6 +129,13 @@ export class ProdEquiComponent implements OnInit {
     );
   }
 
+  private getNameToSchemaName(attributes: AttributeData[]): object {
+    return attributes.reduce(
+      (set, attr) => ({ ...set, [attr.name]: attr.schema_name }),
+      {}
+    );
+  }
+
   getFilterData(testData: any): string {
     return testData.filteredData;
   }
@@ -144,17 +153,19 @@ export class ProdEquiComponent implements OnInit {
     this.advanceSearchModel.primary = '';
     this.advanceSearchModel.title = '';
     this.advanceSearchModel.other = [];
+    this.advanceSearchModel.translate = false;
+    this.typeArray = this.getNameToSchemaName(list.attributes);
 
     for (const filter of list.attributes) {
       if (filter.searchable) {
         if (filter.primary_key) {
           this.name = filter.name;
-          this.advanceSearchModel.title = 'Search by ' + filter.name;
+          this.advanceSearchModel.title = 'Search by ' + filter.schema_name;
           this.advanceSearchModel.primary = filter.name;
         }
         this.advanceSearchModel.other.push({
           key: filter.name,
-          label: filter.name,
+          label: filter.schema_name,
         });
       }
     }

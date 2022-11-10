@@ -14,7 +14,7 @@ A metric is a unit of measurement used to count the number of licenses necessary
 
 You can access to "Metrics management" by clicking here :
 
-![select APM](../../img/metricsMana/accessu.jpg){: .zoom}
+![select APM](../../img/metricsMana/access.jpg){: .zoom}
 
 ## Possibilities
 
@@ -40,7 +40,7 @@ You can see these different fields :
 - "Type Name" : Write the name of your choice for your new metric <span style="color:red">(**It must be the same name as in your acquired rights**)</span>    
 - "Metric Type" : Choose the type of your new metric  
 
-When you choose the "Metric Type", the window changes depending on which "Metric Type" has been chosen. For example, if I choose "sag.processor.standard" : 
+When you choose the "Metric Type", the window changes depending on which "Metric Type" has been chosen. For example, if we choose "sag.processor.standard" : 
 
 ![select APM](../../img/metricsMana/addNew2.jpg){: .zoom}
 
@@ -52,7 +52,7 @@ Here is an example with the fields to complete for the "sag.processor.standard" 
 
 Once you have completed all the fields, you have to click on "Create" to create your new metric !
 
-<span style="color:red">Notice that, if a metric type already exists, you con create another one of the same type with a different name.</span>
+<span style="color:red">Notice that, if a metric type already exists, you can create another one of the same type with a different name.</span>
 
 ## See the details of an existing metric 
 
@@ -92,3 +92,58 @@ You will be allowed to edit all parameters except the metric name and type.
 
 Once the changes done, click on update to save the news parameters.
 
+<br/>
+
+### ***Translate NUP into Processor metric***
+
+During the creation or updatation, it is possible to translate NUP to processor metric.
+
+To do that, after fill all the field required to create the metric, check the box named "Transform to prossor" as shown below. The NUP metric will be translate to processor metric.
+
+![select APM](../../img/metricsMana/translateNUP.jpg){: .zoom}
+
+1. Check the box 
+2. Chose your oracle.processor.standard metric name. Here "oracle.processor"
+
+Once the box checked and the metric name chosed, OpTISAM will translate  the NUP as 1 licence NUP = 50 lincenses processor. 
+
+<span style="color:red"> Notice that, once the NUP translated to processor, it will be consider like processor licences during the compliance computation </span>
+
+### ***Allocate a metric to an equipment***
+
+It's possible to allocate a metric to a product and an equipment. 
+
+Notice that the metric is applied to all parent equipments till the upper equipment in the hierarchy given as last equipment of the metric and if the equipment is part of a vcenter, all equipments under the same vcenter will have the metric for the same product, and when the metric is modified, it impacts all the equipments under the vcenter. 
+
+Only metrics with types oracle.nup.standard and oracle.processor.standard can be allocated. 
+
+To allocate a metric to a product and an equipment, go first to equipment.
+
+![select APM](../../img/metricsMana/allocate.jpg){: .zoom}
+
+This page will be shown:
+
+![select APM](../../img/metricsMana/allocate2.jpg){: .zoom}
+
+You will have now to chose on which equipment you desire to allocate the metric by its ID and click on it.
+
+![select APM](../../img/metricsMana/allocate3.jpg){: .zoom}
+
+Then go to product:
+
+![select APM](../../img/metricsMana/allocate4.jpg){: .zoom}
+
+Once on product page, you will have to chose the product on which do the allocation by clicking on the pencil icone. 
+
+![select APM](../../img/metricsMana/allocate5.jpg){: .zoom}
+
+This page will be shown:
+
+![select APM](../../img/metricsMana/allocate6.jpg){: .zoom}
+
+You will have to fill the two fields.
+
+1. Equipment user: The number of user of the equipment
+2. Allocated metric: The type of metric (oracle.nup.standard or oracle.processor.standard)
+
+Once the two fields fill, click on update. Now a metric is allocated to a specific product and equipment. 

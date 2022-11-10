@@ -16,7 +16,9 @@ import {
   FILE_ANALYSIS_STATUS,
   UPLOAD_TYPES,
   REPORT_FILE_NAME,
+  IMPORT_FILE_SIZE,
 } from '@core/util/constants/constants';
+import { bytesToMB } from '@core/util/common.functions';
 
 function fileErrorCheck(control: AbstractControl): ValidationErrors | null {
   return this.fileValidationError
@@ -325,6 +327,14 @@ export class UploadDataComponent implements OnInit {
     this.fileError = '';
     if (!this.allowedInventoryFiles.includes(file.type)) {
       this.fileError = 'Invalid file type!';
+      return true;
+    }
+    const fileSize: number = file.size;
+
+    if (fileSize > IMPORT_FILE_SIZE) {
+      this.fileError = `File size exceeding the limit of ${bytesToMB(
+        IMPORT_FILE_SIZE
+      )} mb`;
       return true;
     }
     return false;

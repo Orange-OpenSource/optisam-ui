@@ -88,6 +88,7 @@ export class EditAcquiredRightComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.skuForm = new FormGroup({
       sku: new FormControl({ value: '', disabled: true }),
+      repartition: new FormControl(false),
     });
 
     this.contractForm = new FormGroup({
@@ -104,7 +105,6 @@ export class EditAcquiredRightComponent implements OnInit, AfterViewInit {
         this.validatePattern,
       ]),
       product_version: new FormControl('', [
-        Validators.required,
         Validators.pattern(/^\S+(?: \S+)*$/),
         this.validatePattern,
       ]),
@@ -121,7 +121,6 @@ export class EditAcquiredRightComponent implements OnInit, AfterViewInit {
         Validators.pattern(/^[0-9]*$/),
       ]),
       unit_price: new FormControl(null, [
-        Validators.required,
         Validators.pattern(/^[0-9]+(\.[0-9]{1,2})*$/),
       ]),
     });
@@ -249,14 +248,14 @@ export class EditAcquiredRightComponent implements OnInit, AfterViewInit {
   listMetrics() {
     this.metricService.getMetricList().subscribe(
       (res) => {
+        debugger;
         this.metricsList = res.metrices.sort((a, b) => {
           if (a.name.toLowerCase() > b.name.toLowerCase()) return 1;
           if (a.name.toLowerCase() < b.name.toLowerCase()) return -1;
           return 0;
         });
-        this.currentMetricType = this.metricsList.find(
-          (m) => m.name === this.data.metric
-        ).type;
+        this.currentMetricType =
+          this.metricsList.find((m) => m.name === this.data.metric)?.type || '';
         this.changed([]);
       },
       (err) => {
@@ -268,6 +267,7 @@ export class EditAcquiredRightComponent implements OnInit, AfterViewInit {
   setFormData() {
     if (this.data) {
       this.sku.setValue(this.data.SKU);
+      this.repartition.setValue(this.data.repartition);
       this.product_name.setValue(this.data.product_name);
       this.product_version.setValue(this.data.version);
       this.product_editor.setValue(this.data.editor);
@@ -322,6 +322,9 @@ export class EditAcquiredRightComponent implements OnInit, AfterViewInit {
 
   get sku() {
     return this.skuForm.get('sku');
+  }
+  get repartition() {
+    return this.skuForm.get('repartition');
   }
   get orderingDate() {
     return this.contractForm.get('orderingDate');
@@ -519,6 +522,7 @@ export class EditAcquiredRightComponent implements OnInit, AfterViewInit {
     this._updateLoading = true;
     const body = {
       sku: this.sku.value,
+      repartition: this.repartition.value,
       product_name: this.product_name.value,
       version: this.product_version.value,
       product_editor: this.product_editor.value,

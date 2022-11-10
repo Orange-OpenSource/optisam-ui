@@ -4,6 +4,7 @@ import {
   Inject,
   ViewChild,
   SystemJsNgModuleLoader,
+  TemplateRef,
 } from '@angular/core';
 import {
   MAT_DIALOG_DATA,
@@ -16,6 +17,17 @@ import { MoreDetailsComponent } from '../../../dialogs/product-details/more-deta
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
+import { EditMetricAllocatedComponent } from '../edit-metricAllocated/edit-metric-allocated/edit-metric-allocated.component';
+import { DeleteAllocatedMetricConfirmationDialogComponent } from './delete-allocated-metric-confirmation-dialog/delete-allocated-metric-confirmation-dialog.component';
+import {
+  DeleteAllocatedMetricParams,
+  DeleteAllocatedMetricResponse,
+  ErrorResponse,
+} from '@core/modals';
+import { LOCAL_KEYS } from '@core/util/constants/constants';
+import { CommonService } from '@core/services';
+import { AllocatedMetricDeleteErrorComponent } from './allocated-metric-delete-error/allocated-metric-delete-error.component';
+
 /*  import { DialogData } from './details'; */
 
 @Component({
@@ -83,6 +95,7 @@ export class AttributeDetailComponent implements OnInit {
   moreRows: boolean;
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: false }) sort: MatSort;
+  typeArray: object;
 
   advanceSearchModel: any = {
     title: 'Search by Product Name',
@@ -94,6 +107,7 @@ export class AttributeDetailComponent implements OnInit {
     ],
   };
   searchFields: any = {};
+  detailEq: any = [];
 
   /*
      productdetails: DialogData = new DialogData();  */
@@ -101,7 +115,8 @@ export class AttributeDetailComponent implements OnInit {
     public equipmentTypeManagementService: EquipmentTypeManagementService,
     private dialog: MatDialog,
     public dialogRef: MatDialogRef<AttributeDetailComponent>,
-    @Inject(MAT_DIALOG_DATA) public data
+    @Inject(MAT_DIALOG_DATA) public data,
+    private cs: CommonService
   ) {
     // this.dialog.afterAllClosed.subscribe(res=>this.getProduct());
   }
@@ -114,7 +129,7 @@ export class AttributeDetailComponent implements OnInit {
     this.type = this.data['types'];
     this.equipName = this.data['equipName'];
     this.equipNameCapitalized = this.equipName.toUpperCase();
-    console.log('data : ', this.type);
+
     for (let i = 0; i <= this.type.length - 1; i++) {
       if (this.type[i].ID === this.equimId) {
         this.parentId = this.type[i].ID;
@@ -143,10 +158,23 @@ export class AttributeDetailComponent implements OnInit {
       .subscribe(
         (res: any) => {
           this.equiObj = JSON.parse(res.equipment);
-          this.keyArr = Object.keys(this.equiObj);
-          this.valueArr = Object.values(this.equiObj);
-          this.keyArr.shift();
-          this.valueArr.shift();
+          // getting all the attributes of the selected tab (equipment)
+          const equipmentAttributes =
+            this.type.find((t) => t.ID === this.equimId)?.attributes || [];
+          // Creating an array with key == schema_name and value = attribute's value
+          this.detailEq = Object.entries(this.equiObj).reduce(
+            (detailEqArray, [key, value]) => {
+              detailEqArray.push({
+                key: equipmentAttributes.find((a) => a.name === key)
+                  ?.schema_name,
+                value,
+              });
+              return detailEqArray;
+            },
+            []
+          );
+          this.detailEq.shift();
+
           this.MyDataSource = new MatTableDataSource(this.childRefrenceArr);
           this._loading = false;
           //  this.getParent();
@@ -157,6 +185,7 @@ export class AttributeDetailComponent implements OnInit {
         }
       );
   }
+
   onNoClick(): void {
     this.dialogRef.close();
   }
@@ -168,15 +197,21 @@ export class AttributeDetailComponent implements OnInit {
         (res: any) => {
           const decodedEquipments: any = atob(res.equipments);
           const parentObj = JSON.parse(decodedEquipments);
-          for (let k = 0; k <= parentObj.length - 1; k++) {
-            const keyObj = Object.keys(parentObj[k]);
-            for (let l = 0; l <= keyObj.length - 1; l++) {
-              if (this.reuseKeyName.includes(keyObj[l])) {
-                this.reuseKeyName.push(keyObj[l]);
-              }
-            }
-          }
           this.reuseKeyName = Object.keys(parentObj[0]);
+          // get parent ID  of the current equipment
+          const parentId = this.type.find(
+            (t) => t.ID === this.equimId
+          )?.parent_id;
+
+          // get all of the attributes of the parent of the current attribute
+          const attributes = this.type.find(
+            (t) => t.ID === parentId
+          )?.attributes;
+
+          // change the key with it's schema_name
+          this.reuseKeyName = this.reuseKeyName.map(
+            (key) => attributes.find((a) => a.name === key)?.schema_name
+          );
           this.reuseKeyName.shift();
           this.reuseValueName = parentObj;
           this._loading = false;
@@ -226,6 +261,7 @@ export class AttributeDetailComponent implements OnInit {
               this.displayedrows.push(x);
               this.filterGroup.addControl(x, new FormControl(null));
             }
+
             this.dataSource[0].ID = idValue;
             if (this.displayedrows.length > 6) {
               this.moreRows = true;
@@ -233,6 +269,13 @@ export class AttributeDetailComponent implements OnInit {
               this.moreRows = false;
             }
           }
+          this.typeArray = this.type
+            .find((t) => t.parent_id === this.equimId)
+            .attributes.reduce((set, t) => {
+              set = { ...set, [t.name]: t.schema_name };
+              return set;
+            }, {});
+
           this._loading = false;
         },
         (error) => {
@@ -343,7 +386,15 @@ export class AttributeDetailComponent implements OnInit {
       .getProductDetail(this.equimId, this.typeName, length, pageSize, sortBy)
       .subscribe(
         (res: any) => {
-          this.productColumn = ['swidTag', 'name', 'editor', 'numofEquipments']; //'version'];
+          this.productColumn = [
+            'swidTag',
+            'name',
+            'editor',
+            'numofEquipments',
+            'equipmentUsers',
+            'allocatedMetric',
+            'action',
+          ]; //'version'];
           this.productdataSource = new MatTableDataSource(res.products);
           this.productdataSource.sort = this.sort;
           this.productLength = res.totalRecords;
@@ -580,5 +631,64 @@ export class AttributeDetailComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe((result) => {});
+  }
+
+  deleteConfirm(product): void {
+    const dialogRef = this.dialog.open(
+      DeleteAllocatedMetricConfirmationDialogComponent,
+      {
+        width: '500px',
+        disableClose: true,
+      }
+    );
+    dialogRef.afterClosed().subscribe((res: boolean) => {
+      if (res) {
+        // hit delete request
+        console.log('loading start');
+        this._loading = true;
+        this.productStatus = true;
+        const params: DeleteAllocatedMetricParams = {
+          scope: this.cs.getLocalData(LOCAL_KEYS.SCOPE),
+          swidtag: product?.swidTag || '',
+          equipment_id: this.data?.typeId || '',
+          eq_type: this.data?.equipName || '',
+          allocated_metrics: product?.allocatedMetric,
+          eqTypeId: this.data?.equiId || '',
+        };
+        this.equipmentTypeManagementService
+          .deleteAllocatedMetric(params)
+          .subscribe(
+            (res: DeleteAllocatedMetricResponse) => {
+              this.getProduct();
+            },
+            (error: ErrorResponse) => {
+              this.dialog.open(AllocatedMetricDeleteErrorComponent, {
+                width: '500px',
+                disableClose: true,
+                data: { error },
+              });
+            }
+          );
+      }
+    });
+  }
+
+  openEditDialog(product): void {
+    const dialogRef = this.dialog.open(EditMetricAllocatedComponent, {
+      width: '500px',
+      disableClose: true,
+      data: {
+        datakey: product,
+        equimId: this.data['equiId'],
+        typeName: this.data['typeName'],
+        type: this.data['types'],
+        typeId: this.data['typeId'],
+        // dataName: name,
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      this.getProduct();
+    });
   }
 }

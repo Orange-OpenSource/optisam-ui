@@ -10,13 +10,13 @@
 
 If you want to create a new metric, you will have to go to "Metrics Management" by clicking here :
 
-![select APM](../../img/metricsMana/accessu.jpg){: .zoom}
+![select APM](../../img/metricsMana/access.jpg){: .zoom}
 
 ## Create the new metric
 
 You have to click on Add Metric :
 
-![select APM](../../img/metricsMana/firstu.jpg){: .zoom}
+![select APM](../../img/metricsMana/first.jpg){: .zoom} 
 
 This window will be shown :
 

@@ -1,5 +1,6 @@
 import { PROHIBIT_SCOPES } from './constants/constants';
 import { format } from 'date-fns';
+import { throwError } from 'rxjs';
 
 export function allowedScopes(): boolean {
   const currentScope: string = localStorage.getItem('scopeType') || '';
@@ -14,7 +15,15 @@ export function _dateUTC(date: Date) {
   );
 }
 
-export function ISOFormat(date: Date): string {
+export function ISOFormat(date: Date | string): string {
   if (!date) return '';
+  date = typeof date === 'string' ? new Date(date) : date;
   return format(date, "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+}
+
+export const fixErrorResponse = (e) =>
+  e?.error ? throwError(e.error) : throwError(e);
+
+export function bytesToMB(number: number): number {
+  return Number((number / 1024 / 1000).toFixed(2));
 }

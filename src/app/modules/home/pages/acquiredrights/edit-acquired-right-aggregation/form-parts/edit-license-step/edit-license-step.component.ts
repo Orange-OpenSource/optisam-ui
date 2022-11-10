@@ -44,7 +44,6 @@ export class EditLicenseStepComponent implements OnInit {
         Validators.pattern(/^[0-9]*$/),
       ]),
       unit_price: this.fb.control(null, [
-        Validators.required,
         Validators.pattern(/^[0-9]+(\.[0-9]{1,2})*$/),
       ]),
       productsMetrics: this.fb.control(null, [Validators.required]),

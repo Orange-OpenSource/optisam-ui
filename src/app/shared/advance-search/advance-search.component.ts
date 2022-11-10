@@ -63,6 +63,7 @@ export class AdvanceSearchComponent
       model.type = model?.type || 'text';
       return model;
     });
+    this.model.translate = this.model?.translate !== false ? true : false;
     this.hideToggleFlag = this.hideAdvanceToggle;
     this.cd.detectChanges();
   }

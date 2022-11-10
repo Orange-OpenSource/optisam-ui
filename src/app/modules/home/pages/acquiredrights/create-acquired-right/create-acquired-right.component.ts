@@ -175,6 +175,7 @@ export class CreateAcquiredRightComponent implements OnInit {
         Validators.required,
         Validators.pattern(/^[a-zA-Z0-9_.]*$/),
       ]),
+      repartition: new FormControl(false),
     });
 
     this.contractForm = new FormGroup({
@@ -191,7 +192,6 @@ export class CreateAcquiredRightComponent implements OnInit {
         this.validatePattern,
       ]),
       product_version: new FormControl('', [
-        Validators.required,
         Validators.pattern(/^\S+(?: \S+)*$/),
         this.validatePattern,
       ]),
@@ -208,7 +208,6 @@ export class CreateAcquiredRightComponent implements OnInit {
         Validators.pattern(/^[0-9]*$/),
       ]),
       unit_price: new FormControl(null, [
-        Validators.required,
         Validators.pattern(/^[0-9]+(\.[0-9]{1,2})*$/),
       ]),
     });
@@ -242,6 +241,9 @@ export class CreateAcquiredRightComponent implements OnInit {
 
   get sku() {
     return this.skuForm.get('sku');
+  }
+  get repartition() {
+    return this.skuForm.get('repartition');
   }
   get orderingDate() {
     return this.contractForm.get('orderingDate');
@@ -430,6 +432,7 @@ export class CreateAcquiredRightComponent implements OnInit {
     this._createLoading = true;
     const body = {
       sku: this.sku.value,
+      repartition: this.repartition.value,
       product_name: this.product_name.value,
       version: this.product_version.value,
       product_editor: this.product_editor.value,

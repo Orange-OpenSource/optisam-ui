@@ -1,26 +1,30 @@
-import { Component, OnInit, AfterContentChecked } from "@angular/core";
-import { FormControl, FormGroup } from "@angular/forms";
-import { MatDialog } from "@angular/material/dialog";
-import { ActivatedRoute, Router } from "@angular/router";
-import { TabMenu } from "@core/modals";
-import { DataManagementService } from "src/app/core/services/data-management.service";
-import { allowedScopes } from "src/app/core/util/common.functions";
-import { ListInventoryLogsComponent } from "./list-inventory-logs/list-inventory-logs.component";
+import { Component, OnInit, AfterContentChecked } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
+import { ActivatedRoute, Router } from '@angular/router';
+import { TabMenu } from '@core/modals';
+import { DataManagementService } from 'src/app/core/services/data-management.service';
+import { allowedScopes } from 'src/app/core/util/common.functions';
+import { ListInventoryLogsComponent } from './list-inventory-logs/list-inventory-logs.component';
 
 @Component({
-  selector: "app-data-management",
-  templateUrl: "./data-management.component.html",
-  styleUrls: ["./data-management.component.scss"],
+  selector: 'app-data-management',
+  templateUrl: './data-management.component.html',
+  styleUrls: ['./data-management.component.scss'],
 })
 export class DataManagementComponent implements OnInit, AfterContentChecked {
   tabMenus: TabMenu[] = [
-    { title: "Data", link: "/optisam/dm/data", show: true },
     {
-      title: "Metadata",
-      link: "/optisam/dm/metadata",
+      title: 'Metadata',
+      link: '/optisam/dm/metadata',
       show: this.allowedScope,
     },
-    { title: "Global Data", link: "/optisam/dm/globaldata", show: true },
+    {
+      title: 'Infrastructure inventory',
+      link: '/optisam/dm/globaldata',
+      show: true,
+    },
+    { title: 'Log', link: '/optisam/dm/data', show: true },
   ];
   activeLink = this.tabMenus[0].link;
   _loading: Boolean;
@@ -45,11 +49,11 @@ export class DataManagementComponent implements OnInit, AfterContentChecked {
   }
 
   get inventoryPark() {
-    return this.deletionType.get("inventoryPark");
+    return this.deletionType.get('inventoryPark');
   }
 
   get acquiredRights() {
-    return this.deletionType.get("acquiredRights");
+    return this.deletionType.get('acquiredRights');
   }
 
   get noOptionSelected(): Boolean {
@@ -62,10 +66,10 @@ export class DataManagementComponent implements OnInit, AfterContentChecked {
   ngAfterContentChecked() {
     if (
       this.route.snapshot.firstChild &&
-      this.route.snapshot.firstChild.params["globalFileId"]
+      this.route.snapshot.firstChild.params['globalFileId']
     ) {
-      this.activeLink = "/optisam/dm/data";
-      this.globalFileName = localStorage.getItem("globalFileName");
+      this.activeLink = '/optisam/dm/data';
+      this.globalFileName = localStorage.getItem('globalFileName');
     } else {
       this.activeLink = this.router.url;
       this.globalFileName = null;
@@ -73,33 +77,33 @@ export class DataManagementComponent implements OnInit, AfterContentChecked {
   }
 
   deleteInventoryConfirmation(deleteInventoryConfirmation) {
-    this.openModal(deleteInventoryConfirmation, "40%");
+    this.openModal(deleteInventoryConfirmation, '40%');
   }
 
   deleteInventory(successDialog, errorDialog) {
     this._loading = true;
     let deletionType;
     if (this.inventoryPark.value && this.acquiredRights.value) {
-      deletionType = "FULL";
+      deletionType = 'FULL';
     } else if (this.inventoryPark.value) {
-      deletionType = "PARK";
+      deletionType = 'PARK';
     } else {
-      deletionType = "ACQRIGHTS";
+      deletionType = 'ACQRIGHTS';
     }
     this.dpsService.deleteInventory(deletionType).subscribe(
       (res) => {
         this.dialog.closeAll();
         this.deletionType.reset();
-        this.openModal(successDialog, "30%");
+        this.openModal(successDialog, '30%');
         this._loading = false;
       },
       (err) => {
         this.errorMsg =
           err.error.message ||
-          "Some error occured! Could not complete delete operation.";
+          'Some error occured! Could not complete delete operation.';
         this.dialog.closeAll();
         this.deletionType.reset();
-        this.openModal(errorDialog, "30%");
+        this.openModal(errorDialog, '30%');
         this._loading = false;
       }
     );
@@ -108,14 +112,14 @@ export class DataManagementComponent implements OnInit, AfterContentChecked {
   viewDeletionLogs() {
     const dialogRef = this.dialog.open(ListInventoryLogsComponent, {
       autoFocus: false,
-      maxHeight: "90vh",
-      width: "70vw",
+      maxHeight: '90vh',
+      width: '70vw',
     });
   }
 
   backToAllDataFiles() {
     this.globalFileName = undefined;
-    this.router.navigate(["/optisam/dm/data"]);
+    this.router.navigate(['/optisam/dm/data']);
   }
 
   openModal(templateRef, width) {

@@ -1,0 +1,11 @@
+<h1 mat-dialog-title>{{ "DELETE_CONFIRMATION_MSG" | translate }}</h1>
+
+<mat-dialog-content> </mat-dialog-content>
+<mat-dialog-actions fxLayout="row" fxLayoutAlign="center" fxLayoutGap="10px">
+  <button class="btn-four mat-raised-button" (click)="confirmed()">
+    {{ "Delete" | translate }}
+  </button>
+  <button cdkFocusInitial class="btn-two mat-raised-button" mat-dialog-close>
+    {{ "Close" | translate }}
+  </button>
+</mat-dialog-actions>

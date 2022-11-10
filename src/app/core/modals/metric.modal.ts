@@ -15,6 +15,7 @@ export interface MetricTypes {
   IBM_PVU_STANDARD: string;
   ATTRIBUTE_COUNTER_STANDARD: string;
   ATTRIBUTE_SUM_STANDARD: string;
+  EQUIPMENT_ATTRIBUTE_STANDARD: string;
   INSTANCE_NUMBER_STANDARD: string;
   STATIC_STANDARD: string;
 }
@@ -30,7 +31,7 @@ export interface MetricDependencyTypes {
   PROCESSOR_OR_NUP: string;
   ORACLE_NUP: string;
   SAG_OR_IBM: string;
-  ATTRIBUTE_COUNTER_OR_ATTRIBUTE_SUM: string;
+  ATTRIBUTE_COUNTER_OR_ATTRIBUTE_SUM_OR_EQUIPMENT_ATTRIBUTE: string;
   INSTANCE_NUMBER: string;
   STATIC_STANDARD: string;
 }
@@ -85,6 +86,8 @@ export interface OracleProcessorStandardParams {
 
 export interface OracleNupStandardParams extends OracleProcessorStandardParams {
   number_of_users: number;
+  transform: boolean;
+  transform_metric_name: string;
 }
 
 export interface MetricUpdateErrorDetails {
@@ -129,6 +132,16 @@ export interface AttributeSumStandardParams {
   eq_type: string;
   attribute_name: string;
   reference_value: number;
+  scopes: string[];
+}
+
+export interface EquipmentAttributeParams {
+  ID: string;
+  name: string;
+  eq_type: string;
+  environment: string;
+  attribute_name: string;
+  value: number;
   scopes: string[];
 }
 

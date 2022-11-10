@@ -4,6 +4,7 @@ import {
   MetricTypes,
   PaginationDefaults,
   TableSortOrder,
+  CommonRegex,
 } from '@core/modals';
 
 export const PROHIBIT_SCOPES: string[] = ['GENERIC'];
@@ -44,6 +45,7 @@ export const METRIC_TYPES: MetricTypes = {
   ATTRIBUTE_SUM_STANDARD: 'attribute.sum.standard',
   INSTANCE_NUMBER_STANDARD: 'instance.number.standard',
   STATIC_STANDARD: 'static.standard',
+  EQUIPMENT_ATTRIBUTE_STANDARD: 'equipment.attribute.standard',
 };
 
 export const ORACLE_TYPES = [
@@ -55,7 +57,8 @@ export const METRIC_DEPENDENCY_TYPES = {
   PROCESSOR_OR_NUP: 'processorOrNUP',
   ORACLE_NUP: 'oracleNUP',
   SAG_OR_IBM: 'sagOrIbm',
-  ATTRIBUTE_COUNTER_OR_ATTRIBUTE_SUM: 'attributeCounterOrAttributeSum',
+  ATTRIBUTE_COUNTER_OR_ATTRIBUTE_SUM_OR_EQUIPMENT_ATTRIBUTE:
+    'attributeCounterOrAttributeSumOrEquipmentAttribute',
   INSTANCE_NUMBER: 'instanceNumber',
   STATIC_STANDARD: 'staticStandard',
 };
@@ -66,3 +69,11 @@ export const PAGINATION_DEFAULTS: PaginationDefaults = {
   sortOrder: TableSortOrder.ASC,
   length: null,
 };
+
+export const COMMON_REGEX: CommonRegex = {
+  DIGITS_WITH_NAV:
+    '^[0-9]*$|Backspace|ArrowLeft|ArrowRight|ArrowDown|ArrowUp|Tab',
+  ONLY_DIGITS: '^[0-9]*$',
+};
+
+export const IMPORT_FILE_SIZE: number = 13 * 1024 * 1000; // converting MB into bytes

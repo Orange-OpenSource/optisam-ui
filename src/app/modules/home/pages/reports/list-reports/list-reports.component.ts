@@ -3,6 +3,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import { ReportByIdResponse, ReportMetaData } from '@core/modals';
+import { format } from 'date-fns';
 import { Subscription } from 'rxjs';
 import { ReportService } from 'src/app/core/services/report.service';
 import { CreateReportComponent } from '../create-report/create-report.component';
@@ -20,6 +22,7 @@ export class ListReportsComponent implements OnInit {
     'report_type',
     'created_on',
     'created_by',
+    'editor',
     'report_status',
     'actions',
   ];
@@ -95,9 +98,16 @@ export class ListReportsComponent implements OnInit {
 
   getReportById(successMsg, errorMsg) {
     this.isDownloading = true;
+
     this.reportService.getReportById(this.selectedReportID).subscribe(
-      (res) => {
+      (res: ReportByIdResponse) => {
         let decodedReportData: any = atob(res.report_data);
+        const metaData: ReportMetaData = {
+          reportType: res.report_type,
+          scope: res.scope,
+          createdOn: format(new Date(res.created_on), 'yyyy-MM-dd'),
+          createdBy: res.created_by,
+        };
         const dataInJSONFormat = JSON.parse(decodedReportData);
         let reportContents = [];
         reportContents = dataInJSONFormat;
@@ -107,7 +117,8 @@ export class ListReportsComponent implements OnInit {
           reportContents,
           headerList,
           'Report_' + this.selectedReportType + '_' + this.selectedReportID,
-          this.selectedFileFormat
+          this.selectedFileFormat,
+          metaData
         );
         this.dialog.closeAll();
         this.isDownloading = false;

@@ -6,6 +6,8 @@ import {
   TemplateRef,
   ElementRef,
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  AfterViewChecked,
 } from '@angular/core';
 import {
   FormBuilder,
@@ -45,13 +47,17 @@ import {
   SetSelectionObject,
   AttributeCounterStandardParams,
   AttributeSumStandardParams,
+  EquipmentAttributeParams,
   InstanceNumberStandardParams,
   StaticStandardParams,
   MetricEquipmentAttributes,
 } from '@core/modals';
 import { Observable } from 'rxjs';
-import { tap, map } from 'rxjs/operators';
+import { tap, map, filter, pluck } from 'rxjs/operators';
 import { SharedService } from '@shared/shared.service';
+import { MatCheckboxChange } from '@angular/material/checkbox';
+
+const TRANSFORM_METRIC_TYPES: string[] = ['oracle.processor.standard'];
 
 @Component({
   selector: 'app-edit-metrics',
@@ -59,7 +65,7 @@ import { SharedService } from '@shared/shared.service';
   styleUrls: ['./edit-metrics.component.scss'],
   changeDetection: ChangeDetectionStrategy.Default,
 })
-export class EditMetricsComponent implements OnInit {
+export class EditMetricsComponent implements OnInit, AfterViewChecked {
   @ViewChild('successDialog') successDialog: TemplateRef<any>;
   @ViewChild('errorDialog') errorDialog: TemplateRef<any>;
 
@@ -73,9 +79,10 @@ export class EditMetricsComponent implements OnInit {
     METRIC_TYPES.SAG_PROCESSOR_STANDARD,
     METRIC_TYPES.IBM_PVU_STANDARD,
   ];
-  attributeCounterOrAttributeSumTypes: string[] = [
+  attributeCounterOrAttributeSumOrEquipemntTypes: string[] = [
     METRIC_TYPES.ATTRIBUTE_COUNTER_STANDARD,
     METRIC_TYPES.ATTRIBUTE_SUM_STANDARD,
+    METRIC_TYPES.EQUIPMENT_ATTRIBUTE_STANDARD,
   ];
   metricDetails: any;
   _loading: boolean = false;
@@ -95,6 +102,8 @@ export class EditMetricsComponent implements OnInit {
   referenceEquipmentsList: MetricEquipmentTypes[] = [];
   excludeFields: string[] = ['metricName', 'metricType', 'metricDescription'];
   errorMsg: string;
+  transformProcessor: boolean = false;
+  processorMetricList$: Observable<any>;
 
   constructor(
     private cs: CommonService,
@@ -103,8 +112,12 @@ export class EditMetricsComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: MetricEditInputData,
     private equipmentTypeService: EquipmentTypeManagementService,
     private sharedService: SharedService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private cd: ChangeDetectorRef
   ) {}
+  ngAfterViewChecked(): void {
+    this.updateTransformProcessorValidator();
+  }
 
   ngOnInit(): void {
     this.sharedService.httpLoading().subscribe((status) => {
@@ -112,11 +125,35 @@ export class EditMetricsComponent implements OnInit {
     });
     this.initiateForm();
     this.fetchMetricDetails();
+    this.processorMetricList$ = this.metricService.getMetricList().pipe(
+      filter((list) => {
+        list.metrices = list?.metrices.filter((metric) => {
+          return TRANSFORM_METRIC_TYPES.includes(metric.type);
+        });
+        return list;
+      }),
+
+      pluck('metrices')
+    );
+  }
+
+  updateTransformProcessorValidator(): void {
+    if (!this.transformProcessorMetric) return;
+    if (this.transformProcessor)
+      this.transformProcessorMetric.setValidators(Validators.required);
+    else this.transformProcessorMetric.clearValidators();
+
+    this.transformProcessorMetric.updateValueAndValidity();
+    this.cd.detectChanges();
   }
 
   // getters
   get isProcessorOrNUP(): boolean {
     return this.oracleTypes.includes(this.metricType);
+  }
+
+  get transformProcessorMetric(): FormControl {
+    return this.metricEditForm.get('transformProcessorMetric') as FormControl;
   }
 
   get isOracleNUP(): boolean {
@@ -127,12 +164,14 @@ export class EditMetricsComponent implements OnInit {
     return this.sagOrIbmTypes.includes(this.metricType);
   }
 
-  get isAttributeCounterOrAttributeSum(): boolean {
-    return this.attributeCounterOrAttributeSumTypes.includes(this.metricType);
+  get isAttributeCounterOrAttributeSumOrEquipemntAttribute(): boolean {
+    return this.attributeCounterOrAttributeSumOrEquipemntTypes.includes(
+      this.metricType
+    );
   }
 
   get getOracleTypeGroup(): FormControlObject[] {
-    const controls: FormControlObject[] = [
+    let controls: FormControlObject[] = [
       {
         name: 'firstEquipment',
         value: null,
@@ -170,14 +209,22 @@ export class EditMetricsComponent implements OnInit {
       },
     ];
     if (this.isOracleNUP) {
-      controls.push({
-        name: 'noOfUsers',
-        value: null,
-        validation: [
-          Validators.required,
-          Validators.pattern(/^(?=.*[1-9])\d*$/),
-        ],
-      });
+      controls = [
+        ...controls,
+        {
+          name: 'noOfUsers',
+          value: null,
+          validation: [
+            Validators.required,
+            Validators.pattern(/^(?=.*[1-9])\d*$/),
+          ],
+        },
+        {
+          name: 'transformProcessorMetric',
+          value: '',
+          validation: [Validators.required],
+        },
+      ];
     }
 
     return controls;
@@ -234,6 +281,23 @@ export class EditMetricsComponent implements OnInit {
         name: 'referenceValue',
         value: null,
         validation: [Validators.required],
+      });
+
+    if (this.metricType === this.metricTypes.EQUIPMENT_ATTRIBUTE_STANDARD)
+      controls.push({
+        name: 'environmentValue',
+        value: null,
+        validation: [
+          Validators.required,
+          Validators.pattern(/^[a-zA-Z0-9,]*$/),
+        ],
+      });
+
+    if (this.metricType === this.metricTypes.EQUIPMENT_ATTRIBUTE_STANDARD)
+      controls.push({
+        name: 'value',
+        value: null,
+        validation: [Validators.required, Validators.pattern(/^[1-9]*$/)],
       });
 
     return controls;
@@ -305,6 +369,10 @@ export class EditMetricsComponent implements OnInit {
     return this.metricEditForm.get('referenceValue') as FormControl;
   }
 
+  get environmentValue(): FormControl {
+    return this.metricEditForm.get('environmentValue') as FormControl;
+  }
+
   get metricName(): FormControl {
     return this.metricEditForm.get('metricName') as FormControl;
   }
@@ -356,7 +424,7 @@ export class EditMetricsComponent implements OnInit {
       (res) => {
         const { metric_config } = res;
         this.metricDetails = JSON.parse(metric_config);
-        console.log(this.metricDetails);
+
         this.metricType = this.data.metric.type;
         this.checkForMetricType();
         this._loading = false;
@@ -387,10 +455,11 @@ export class EditMetricsComponent implements OnInit {
       return;
     }
 
-    if (this.isAttributeCounterOrAttributeSum) {
+    if (this.isAttributeCounterOrAttributeSumOrEquipemntAttribute) {
       this.addControls(this.getAttributeCounterOrAttributeSumGroup);
       this.getDependency(
-        this.dependencyTypes.ATTRIBUTE_COUNTER_OR_ATTRIBUTE_SUM
+        this.dependencyTypes
+          .ATTRIBUTE_COUNTER_OR_ATTRIBUTE_SUM_OR_EQUIPMENT_ATTRIBUTE
       );
       return;
     }
@@ -420,8 +489,6 @@ export class EditMetricsComponent implements OnInit {
           .pipe(
             map((res: any) => (res['equipment_types'] || []).reverse()),
             tap((res: MetricEquipmentTypes[]) => {
-              console.log('working');
-
               this.equipmentsTypesList = res;
               this.setSelections({
                 firstEquipment: this.metricDetails.StartEqTypeID,
@@ -430,6 +497,8 @@ export class EditMetricsComponent implements OnInit {
                 cpu: this.metricDetails.NumCPUAttrID,
                 aggregationLevel: this.metricDetails.AggerateLevelEqTypeID,
               });
+
+              this.transformProcessor = this.metricDetails.Transform;
 
               this.metricEditForm.patchValue({
                 firstEquipment: this.metricDetails.StartEqTypeID,
@@ -440,6 +509,8 @@ export class EditMetricsComponent implements OnInit {
                 aggregationLevel: this.metricDetails.AggerateLevelEqTypeID,
                 lastEquipment: this.metricDetails.EndEqTypeID,
                 noOfUsers: this.metricDetails.NumberOfUsers,
+                transformProcessorMetric:
+                  this.metricDetails.TransformMetricName,
               });
             })
           );
@@ -469,14 +540,35 @@ export class EditMetricsComponent implements OnInit {
           );
         break;
 
-      case this.dependencyTypes.ATTRIBUTE_COUNTER_OR_ATTRIBUTE_SUM:
+      case this.dependencyTypes
+        .ATTRIBUTE_COUNTER_OR_ATTRIBUTE_SUM_OR_EQUIPMENT_ATTRIBUTE:
         this.firstEquipmentsList$ = this.equipmentTypeService
           .getTypes(this.currentScope)
           .pipe(
             map((res: any) => (res['equipment_types'] || []).reverse()),
             tap((res: MetricEquipmentTypes[]) => {
-              this.equipmentsTypesList = res;
-              console.log('this.equipmentsTypesList', this.equipmentsTypesList);
+              if (this.metricType === this.metricTypes.ATTRIBUTE_SUM_STANDARD) {
+                this.equipmentsTypesList = res
+                  .filter(
+                    (e) =>
+                      e.attributes
+                        .map((attr) => attr.data_type)
+                        .includes('FLOAT') ||
+                      e.attributes.map((attr) => attr.data_type).includes('INT')
+                  )
+                  .reverse();
+              } else if (
+                this.metricType ===
+                this.metricTypes.EQUIPMENT_ATTRIBUTE_STANDARD
+              ) {
+                this.equipmentsTypesList = res.filter(
+                  (e) =>
+                    e.attributes.some((attr) => attr.data_type === 'INT') &&
+                    this.isValidEquipment(e, res)
+                );
+              } else {
+                this.equipmentsTypesList = res;
+              }
 
               const tempReferenceEquipmentId = this.equipmentsTypesList.find(
                 (e: MetricEquipmentTypes) =>
@@ -487,20 +579,19 @@ export class EditMetricsComponent implements OnInit {
                 'referenceEquipment',
                 tempReferenceEquipmentId
               );
-              console.log('tempReferenceEquipmentId', tempReferenceEquipmentId);
-              console.log('this.attributesList', this.attributesList);
 
               const tempAttributeNameId = this.attributesList.find(
                 (a) => a.name === this.metricDetails.AttributeName
               )?.ID;
 
-              console.log('tempAttributeNameId', tempAttributeNameId);
-
               this.metricEditForm.patchValue({
                 referenceEquipment: tempReferenceEquipmentId,
+                environmentValue: this.metricDetails.Environment,
                 attributeName: tempAttributeNameId,
                 ...(this.metricType ===
-                this.metricTypes.ATTRIBUTE_COUNTER_STANDARD
+                  this.metricTypes.ATTRIBUTE_COUNTER_STANDARD ||
+                this.metricType ===
+                  this.metricTypes.EQUIPMENT_ATTRIBUTE_STANDARD
                   ? { value: this.metricDetails.Value }
                   : { referenceValue: this.metricDetails.ReferenceValue }),
               });
@@ -536,6 +627,22 @@ export class EditMetricsComponent implements OnInit {
     }
   }
 
+  private isValidEquipment(e, equipments): boolean {
+    // debugger;
+
+    const isValid = e.attributes.some((attr) => attr.name === 'environment');
+
+    if (isValid) return true;
+
+    if (!e.parent_type) return false;
+
+    const parent = equipments.find((eqp) => eqp.type === e.parent_type);
+
+    if (!parent) return false;
+
+    return this.isValidEquipment(parent, equipments);
+  }
+
   selectionChanged(property, data) {
     switch (property) {
       case 'firstEquipment':
@@ -562,20 +669,28 @@ export class EditMetricsComponent implements OnInit {
         this.referenceEquipment.markAsDirty();
         //  Populate list for core
         this.coresList = [];
-        console.log('id', data);
-
         const selectedRefEquipment = this.equipmentsTypesList.find(
           (eq) => eq.ID === data
         );
-        console.log('selectedRefEquipment', selectedRefEquipment);
 
-        this.coresList = this.cs.customSort(
-          selectedRefEquipment?.attributes.filter((a) =>
-            ['FLOAT', 'INT'].includes(a.data_type)
-          ) || [],
-          'asc',
-          'name'
-        );
+        if (this.metricType === this.metricTypes.EQUIPMENT_ATTRIBUTE_STANDARD) {
+          this.attributeName.reset();
+          this.coresList = this.cs.customSort(
+            selectedRefEquipment?.attributes.filter((a) =>
+              ['INT'].includes(a.data_type)
+            ) || [],
+            'asc',
+            'name'
+          );
+        } else {
+          this.coresList = this.cs.customSort(
+            selectedRefEquipment?.attributes.filter((a) =>
+              ['FLOAT', 'INT'].includes(a.data_type)
+            ) || [],
+            'asc',
+            'name'
+          );
+        }
 
         this.checkReset(this.core, this.coresList);
 
@@ -609,6 +724,16 @@ export class EditMetricsComponent implements OnInit {
             'name'
           );
         }
+        if (this.metricType === this.metricTypes.EQUIPMENT_ATTRIBUTE_STANDARD) {
+          this.attributesList = this.cs.customSort(
+            selectedRefEquipment?.attributes.filter(
+              (attr) => attr.data_type === 'INT'
+            ) || [],
+            'asc',
+            'name'
+          );
+        }
+
         break;
       case 'core':
         this.cpusList = [];
@@ -655,7 +780,10 @@ export class EditMetricsComponent implements OnInit {
         this.checkReset(this.lastEquipment, this.lastEquipmentsList);
         break;
       case 'attributeName':
-        if (this.metricType === this.metricTypes.ATTRIBUTE_COUNTER_STANDARD) {
+        if (
+          this.metricType === this.metricTypes.ATTRIBUTE_COUNTER_STANDARD ||
+          this.metricType === this.metricTypes.EQUIPMENT_ATTRIBUTE_STANDARD
+        ) {
           this.zeroValueMsg = null;
           this.value.reset();
           this.value.enable();
@@ -716,6 +844,10 @@ export class EditMetricsComponent implements OnInit {
         this.updateAttributeSumStandard();
         break;
 
+      case this.metricTypes.EQUIPMENT_ATTRIBUTE_STANDARD:
+        this.updateEquipmentAttributeStandard();
+        break;
+
       case this.metricTypes.INSTANCE_NUMBER_STANDARD:
         this.updateInstanceNumberStandard();
         break;
@@ -765,6 +897,10 @@ export class EditMetricsComponent implements OnInit {
       aggerateLevel_eq_type_id: this.aggregationLevel.value,
       end_eq_type_id: this.lastEquipment.value,
       number_of_users: this.noOfUsers.value,
+      transform: this.transformProcessor,
+      transform_metric_name: this.transformProcessor
+        ? this.transformProcessorMetric.value
+        : '',
       scopes: [this.cs.getLocalData(LOCAL_KEYS.SCOPE)],
     };
     this.metricService.updateOracleNupStandard(params).subscribe(
@@ -837,6 +973,39 @@ export class EditMetricsComponent implements OnInit {
     };
 
     this.metricService.updateAttributeCounterStandard(params).subscribe(
+      (res: MetricUpdateSuccess) => {
+        this.openModal(this.successDialog);
+      },
+      (error: MetricUpdateError) => {
+        this.openModal(this.errorDialog);
+        this.errorMsg = error.message;
+      }
+    );
+  }
+
+  private updateEquipmentAttributeStandard(): void {
+    const eqType: MetricEquipmentTypes = this.equipmentsTypesList.find(
+      (e: MetricEquipmentTypes) => e.ID === this.referenceEquipment.value
+    );
+    const params: EquipmentAttributeParams = {
+      ID: this.metricDetails.ID,
+      name: this.metricName.value,
+      eq_type: eqType.type,
+      attribute_name: eqType.attributes.reduce(
+        (attributeName: string, attribute: MetricEquipmentAttributes) => {
+          if (attribute.ID === this.attributeName.value) {
+            attributeName = attribute.name;
+          }
+          return attributeName;
+        },
+        ''
+      ),
+      value: Number(this.value.value),
+      environment: this.environmentValue.value,
+      scopes: [this.cs.getLocalData(LOCAL_KEYS.SCOPE)],
+    };
+
+    this.metricService.equipmentAttributeStandard(params).subscribe(
       (res: MetricUpdateSuccess) => {
         this.openModal(this.successDialog);
       },
@@ -960,5 +1129,14 @@ export class EditMetricsComponent implements OnInit {
 
   inputChangeDetection(value: any): void {
     this.metricEditForm.markAsTouched();
+  }
+
+  transformChange({ checked }: MatCheckboxChange): void {
+    this.transformProcessor = checked;
+    if (!checked) {
+      this.transformProcessorMetric.setValue('');
+      this.transformProcessorMetric.updateValueAndValidity();
+      this.metricEditForm.markAsTouched();
+    }
   }
 }

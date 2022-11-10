@@ -193,11 +193,10 @@ export class ProductAggregationComponent implements OnInit {
 
   openAggregationDetailsDialog(aggregation: any): void {
     const dialogRef = this.dialog.open(ProductAggregationDetailsComponent, {
-      width: '850px',
+      width: '1300px',
       autoFocus: false,
       disableClose: true,
       data: {
-        
         productName: aggregation.product_name,
         aggregationName: aggregation.aggregation_name,
         aggregationID: aggregation.ID,
@@ -271,16 +270,20 @@ export class ProductAggregationComponent implements OnInit {
     this._loading = true;
     this.aggregationDetails = null;
     this.expandedRow = this.expandedRow === product ? null : product;
-    this.productservice.getAggregationProductDetails(product.aggregation_name).subscribe(
-      (res) => {
-        this.aggregationDetails = res.products;
-        this._loading = false;
-      },
-      (error) => {
-        this._loading = false;
-        console.log('There was an error while retrieving Products !!!' + error);
-      }
-    );
+    this.productservice
+      .getAggregationProductDetails(product.aggregation_name)
+      .subscribe(
+        (res) => {
+          this.aggregationDetails = res.products;
+          this._loading = false;
+        },
+        (error) => {
+          this._loading = false;
+          console.log(
+            'There was an error while retrieving Products !!!' + error
+          );
+        }
+      );
   }
 
   closeAggregation() {

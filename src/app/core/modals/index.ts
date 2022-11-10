@@ -5,3 +5,5 @@ export * from './acquired-rights-aggregation.modal';
 export * from './aggregation.modal';
 export * from './simulation.modal';
 export * from './about.modal';
+export * from './equipment.modal';
+export * from './report.modal';

@@ -55,7 +55,7 @@ objects:
         spec:
          containers:
          - name: optisam-ui
-           image: ${DOCKER_REGISTRY}/optisam/ui-service:${TAG}
+           image: ${DOCKER_REGISTRY}/optisam-it/ui-service:${TAG}
            imagePullPolicy: Always
            env: 
            - name: "ENV"
@@ -94,4 +94,5 @@ parameters:
   - name: DOCKER_REGISTRY
     description: Artifactory URL to download images
     required: true
-    value: dockerfactory-unstable-iva.si.francetelecom.fr
+    value: optisam-it-virt-docker-unstable.repos.tech.orange
+

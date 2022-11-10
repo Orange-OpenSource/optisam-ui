@@ -1,0 +1,12 @@
+<h2 mat-dialog-title>{{ "WARNING" | translate }}</h2>
+<mat-dialog-content>{{
+  "ALLOCATED_METRIC_WARN" | translate
+}}</mat-dialog-content>
+<mat-dialog-action fxLayout="row" fxLayoutAlign="center" fxLayoutGap="10px">
+  <button class="btn-two" mat-raised-button (click)="closeDialog(true)">
+    {{ "OK" | translate }}
+  </button>
+  <button class="btn-four" mat-raised-button (click)="closeDialog(false)">
+    {{ "Cancel" | translate }}
+  </button>
+</mat-dialog-action>

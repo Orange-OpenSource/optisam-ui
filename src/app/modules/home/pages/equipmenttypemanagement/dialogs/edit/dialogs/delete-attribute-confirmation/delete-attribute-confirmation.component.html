@@ -1,0 +1,20 @@
+<h2 mat-dialog-title>{{ "CONFIRMATION_TITLE" | translate }}</h2>
+<mat-dialog-content>
+  <p class="confirm-msg">{{ "DELETE_CONFIRMATION_MSG" | translate }}</p>
+</mat-dialog-content>
+<mat-dialog-actions fxLayout="row" fxLayoutAlign="center" fxLayoutGap="10px">
+  <button
+    mat-raised-button
+    class="btn-two"
+    (click)="confirmationResponse(true)"
+  >
+    OK
+  </button>
+  <button
+    mat-raised-button
+    class="btn-four"
+    (click)="confirmationResponse(false)"
+  >
+    Cancel
+  </button>
+</mat-dialog-actions>

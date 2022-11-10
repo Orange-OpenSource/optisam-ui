@@ -12,7 +12,7 @@ The simulations in OpTISAM are used to simulate a change in the inventory park o
 
 You can access to "Simulation management" by clicking here :
 
-![select APM](../../img/simuMana/accessu.jpg){: .zoom}
+![select APM](../../img/simuMana/access.jpg){: .zoom}
 
 ## Presentation
 

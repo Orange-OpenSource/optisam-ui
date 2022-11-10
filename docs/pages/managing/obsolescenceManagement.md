@@ -12,7 +12,7 @@ The risk of obsolescence corresponds, for a metric, to the impact rate on a scop
 
 You can access to "Obsolescence management" by clicking here :
 
-![select APM](../../img/obsoMana/accessu.jpg){: .zoom}
+![select APM](../../img/obsoMana/access.jpg){: .zoom}
 
 ## Possibilities
 

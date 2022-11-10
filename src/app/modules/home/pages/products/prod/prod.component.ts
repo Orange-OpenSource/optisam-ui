@@ -77,7 +77,7 @@ export class ProdComponent implements OnInit {
 
   openDialog(value, name): void {
     this.dialogRef = this.dialog.open(MoreDetailsComponent, {
-      width: '850px',
+      width: '1300px',
       disableClose: true,
       data: {
         datakey: value,

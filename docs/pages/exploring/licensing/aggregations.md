@@ -18,7 +18,7 @@ You are now able to see the list of all of your acquired rights by aggregations 
 
 You have two tables in one, the first one is for your aggregations, the attributes are :  
 - SKU : The identifier of your acquired right  
-- CSC :  
+- CSC :  The name of the Corporate Sourcing the Contract
 - Ordering Date : Date the ordedring
 - Number of swidtags : The number of swidtags in the aggregation
 - Aggregation name : The name of the aggregation  
@@ -41,7 +41,7 @@ You have two tables in one, the first one is for your aggregations, the attribut
 
 The second one is giving the details of the rights for each product present in the aggregations :  
 - SKU : The identifier of your acquired right  
-- CSC :
+- CSC : The name of the Corporate Sourcing the Contract
 - Ordering Date : Date the ordedring
 - SWIDtag : The identifier of the product  
 - Product name : The name of the product (You can click on it to have more information about it)  

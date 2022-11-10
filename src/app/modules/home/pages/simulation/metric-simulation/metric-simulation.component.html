@@ -130,10 +130,12 @@
       "
     >
       <p>
-        {{ "Total cost by editor before: " }}{{ simulationTotal.beforeTotal }}
+        {{ "Total cost by editor before: " | translate
+        }}{{ simulationTotal.beforeTotal }}
       </p>
       <p>
-        {{ "Total cost by editor after: " }} {{ simulationTotal.afterTotal }}
+        {{ "Total cost by editor after: " | translate }}
+        {{ simulationTotal.afterTotal }}
       </p>
     </div>
 
@@ -157,12 +159,12 @@
             <div>
               <div *ngIf="result.not_deployed">
                 <p class="productNotDeployed">
-                  <strong>{{ "Product is not deployed." | translate }}</strong>
+                  <strong>{{ "Product is not deployed" | translate }}</strong>
                 </p>
               </div>
               <div *ngIf="result.metric_not_defined">
                 <p class="metricNotDefined">
-                  <strong>{{ "Metric is not defined." | translate }}</strong>
+                  <strong>{{ "Metric is not defined" | translate }}</strong>
                 </p>
               </div>
               <p>
@@ -193,12 +195,12 @@
             <div>
               <div *ngIf="result.not_deployed">
                 <p class="productNotDeployed">
-                  <strong>{{ "Product is not deployed." | translate }}</strong>
+                  <strong>{{ "Product is not deployed" | translate }}</strong>
                 </p>
               </div>
               <div *ngIf="result.metric_not_defined">
                 <p class="metricNotDefined">
-                  <strong>{{ "Metric is not defined." | translate }}</strong>
+                  <strong>{{ "Metric is not defined" | translate }}</strong>
                 </p>
               </div>
               <p>
