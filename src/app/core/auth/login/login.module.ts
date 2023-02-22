@@ -9,6 +9,7 @@ import { CustomMaterialModule } from 'src/app/material.module';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { HttpClientModule } from '@angular/common/http';
 
+import { HeaderComponent } from '@core/header/header.component';
 @NgModule({
   imports: [
     FlexLayoutModule,

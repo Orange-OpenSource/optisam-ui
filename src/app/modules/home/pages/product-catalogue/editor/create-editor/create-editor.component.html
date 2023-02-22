@@ -1,0 +1,202 @@
+<div class="body-container">
+  <form [formGroup]="createEditor">
+    <div *ngIf="!_loading">
+      <mat-card>
+        <mat-card-title>
+          <div class="page-heading" *ngIf="isCreateMode && !isViewMode">
+            {{ "EDITOR.CREATE_EDITOR" | translate }}
+          </div>
+          <div class="page-heading" *ngIf="!isCreateMode && !isViewMode">
+            {{ "Update Editor" | translate }}
+          </div>
+          <div class="page-heading" *ngIf="isViewMode">
+            {{ "View Editor" | translate }}
+          </div>
+        </mat-card-title>
+        <mat-card-content class="editor">
+          <div fxLayout="column" fxLayoutAlign="start">
+            <mat-card-title>
+              <h6 class="editor-heading">
+                {{ "EDITOR.EDITOR_NAME" | translate }}
+              </h6>
+            </mat-card-title>
+            <mat-form-field
+              appearance="outline"
+              class="editor-section"
+              *ngIf="!isViewMode"
+              (click)="openDetails(createEditor)"
+            >
+              <mat-label>{{ "EDITOR.EDITOR" | translate }}*</mat-label>
+              <input matInput formControlName="name" />
+              <mat-error *ngIf="editorName.hasError('maxlength')"
+                >Only
+                {{ editorName.errors?.maxlength?.requiredLength }} characters
+                are allowed!</mat-error
+              >
+              <mat-error
+                *ngIf="editorName.touched && editorName.hasError('required')"
+                >Editor name is required!</mat-error
+              >
+            </mat-form-field>
+
+            <mat-form-field
+              appearance="outline"
+              class="editor-section"
+              *ngIf="isViewMode"
+            >
+              <mat-label>{{ "EDITOR.EDITOR" | translate }}</mat-label>
+              <input matInput formControlName="name" readonly />
+              <mat-error *ngIf="name?.true">Name is Required</mat-error>
+            </mat-form-field>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <app-partner-managers
+        [partnerData]="editorData?.partner_managers"
+        [view]="isViewMode"
+      ></app-partner-managers>
+      <mat-card>
+        <mat-card-content class="general-info">
+          <div fxLayout="column" fxLayoutAlign="start">
+            <mat-card-title>
+              <h6 class="general-info-heading">
+                {{ "EDITOR.GENERAL_INFO" | translate }}
+              </h6>
+            </mat-card-title>
+            <mat-form-field
+              appearance="outline"
+              class="general-info-text"
+              *ngIf="!isViewMode"
+            >
+              <mat-label>{{ "EDITOR.GENERAL_INFO" | translate }}</mat-label>
+              <textarea
+                matInput
+                formControlName="genearlInformation"
+                placeholder="{{ 'EDITOR.GENERAL_INFO_AREA' | translate }}"
+              ></textarea>
+
+              <mat-error *ngIf="generalInfo.hasError('maxlength')"
+                >Only
+                {{ generalInfo.errors?.maxlength?.requiredLength }} characters
+                are allowed!</mat-error
+              >
+            </mat-form-field>
+
+            <mat-form-field
+              appearance="outline"
+              class="general-info-text"
+              *ngIf="isViewMode"
+            >
+              <mat-label>{{ "EDITOR.GENERAL_INFO" | translate }}</mat-label>
+              <textarea
+                matInput
+                formControlName="genearlInformation"
+                placeholder="{{ 'EDITOR.GENERAL_INFO_AREA' | translate }}"
+                readonly
+              ></textarea>
+            </mat-form-field>
+          </div>
+        </mat-card-content>
+      </mat-card>
+      <app-audits [auditData]="editorData?.audits"></app-audits>
+      <app-vendors [fg]="createEditor" [view]="isViewMode"></app-vendors>
+      <div>
+        <div fxLayout="row" fxLayoutAlign="end">
+          <button
+            id="cancelEditor"
+            *ngIf="!isViewMode"
+            (click)="cancelForm()"
+            class="btn-four"
+            mat-raised-button
+          >
+            {{ "Cancel" | translate }}
+          </button>
+          <button
+            id="cancelEditor"
+            *ngIf="isViewMode"
+            (click)="closeDialog()"
+            class="btn-four"
+            mat-raised-button
+          >
+            {{ "Close" | translate }}
+          </button>
+          <button
+            mat-raised-button
+            *ngIf="isCreateMode && !isViewMode"
+            [disabled]="createEditor.invalid"
+            class="btn-two"
+            (click)="submitForm(succesCreateDialog, errorCreateDialog)"
+            id="submitForm"
+          >
+            {{ "Submit" | translate }}
+          </button>
+          <button
+            *ngIf="!isCreateMode && !isViewMode"
+            [disabled]="createEditor.invalid"
+            (click)="updateForm(succesUpdateDialog, errorCreateDialog)"
+            id="submitForm"
+            class="btn-two"
+            mat-raised-button
+          >
+            {{ "Update" | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
+    <app-loading-spinner *ngIf="_loading"></app-loading-spinner>
+
+    <ng-template #succesCreateDialog>
+      <h1 mat-dialog-title>Success !</h1>
+      <mat-dialog-content>
+        <p>{{ "Editor created successfully." | translate }}</p>
+      </mat-dialog-content>
+      <mat-dialog-actions align="center">
+        <button
+          [mat-dialog-close]="true"
+          (click)="cancelForm()"
+          class="btn-two"
+          mat-button
+          cdkFocusInitial
+        >
+          {{ "OK" }}
+        </button>
+      </mat-dialog-actions>
+    </ng-template>
+    <!-- Create error message -->
+    <ng-template #errorCreateDialog>
+      <mat-dialog-content>
+        <p>{{ errorMessage | translate }}</p>
+      </mat-dialog-content>
+      <mat-dialog-actions align="center">
+        <button
+          [mat-dialog-close]="true"
+          (click)="cancelForm()"
+          class="btn-two"
+          mat-button
+          cdkFocusInitial
+        >
+          {{ "OK" }}
+        </button>
+      </mat-dialog-actions>
+    </ng-template>
+
+    <ng-template #succesUpdateDialog>
+      <h1 mat-dialog-title>Success !</h1>
+      <mat-dialog-content>
+        <p>{{ "Editor updated successfully." | translate }}</p>
+      </mat-dialog-content>
+      <mat-dialog-actions align="center">
+        <button
+          [mat-dialog-close]="true"
+          (click)="cancelForm()"
+          class="btn-two"
+          mat-button
+          cdkFocusInitial
+        >
+          {{ "OK" }}
+        </button>
+      </mat-dialog-actions>
+    </ng-template>
+  </form>
+</div>

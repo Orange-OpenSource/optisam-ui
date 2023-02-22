@@ -17,6 +17,8 @@ import { ProductTabsComponent } from './product-tabs/product-tabs.component';
 import { ProductAggregationEquipmentsComponent } from './product-aggregation-equipments/product-aggregation-equipments.component';
 import { ProductAggregationApplicationsComponent } from './product-aggregation-applications/product-aggregation-applications.component';
 import { AttributeDetailComponent } from '../equipments/attribute-detail/attribute-detail.component';
+import { ViewProductsComponent } from './prod/view-products/view-products.component';
+import { AuditLastYearPipe } from './prod/view-products/audit-last-year.pipe';
 
 @NgModule({
   imports: [
@@ -40,7 +42,7 @@ import { AttributeDetailComponent } from '../equipments/attribute-detail/attribu
     ProductAggregationComponent, 
     ProductTabsComponent, 
     ProductAggregationEquipmentsComponent, 
-    ProductAggregationApplicationsComponent
+    ProductAggregationApplicationsComponent, ViewProductsComponent, AuditLastYearPipe
   ],
 })
 export class ProductsModule { }

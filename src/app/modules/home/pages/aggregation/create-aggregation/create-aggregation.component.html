@@ -30,23 +30,33 @@
         <mat-form-field appearance="outline">
           <mat-label>{{ "AGGREGATIONS.TEXTS.EDITOR" | translate }}</mat-label>
           <mat-select
-            id="aggrEditor"
+            [panelClass]="['aggrEditor']"
             formControlName="editor"
             [disabled]="HTTPActivity || editorList.length === 0"
             (selectionChange)="selectionChanged($event, 'editor')"
             #editorInput
           >
-            <mat-option
-              >--
-              {{ "AGGREGATIONS.TEXTS.SELECT_EDITOR" | translate }}
-              --</mat-option
-            >
-            <mat-option
-              id="editor_option_{{ idx }}"
-              *ngFor="let editor of editorList; let idx = index"
-              [value]="editor"
-              >{{ editor }}</mat-option
-            >
+            <mat-option>
+              <input
+                autocomplete="off"
+                #searchInput
+                cdkFocusInitial
+                placeholder="Search..."
+                matInput
+                (click)="searchEditor($event)"
+                (keydown)="searchKeydown($event)"
+                (input)="searchInputEvent($event)"
+              />
+            </mat-option>
+            <app-loading-spinner *ngIf="searchLoading"></app-loading-spinner>
+            <ng-container *ngIf="!searchLoading">
+              <mat-option
+                id="editor_option_{{ idx }}"
+                *ngFor="let editor of filteredEditor; let idx = index"
+                [value]="editor"
+                >{{ editor }}</mat-option
+              >
+            </ng-container>
           </mat-select>
         </mat-form-field>
         <mat-form-field appearance="outline">
@@ -71,7 +81,7 @@
       <div class="swidtabs" *ngIf="createForm.value.product_names">
         <div class="left">
           <h5 class="transtitle">
-            {{ "AGGREGATIONS.TEXTS.SWIDTAGS_ALL" | translate }}
+            {{ "Product Version" | translate }}
           </h5>
           <div class="body">
             <div
@@ -80,9 +90,7 @@
               fxLayoutAlign="start"
               *ngIf="swidList.length"
             >
-              <span>{{
-                "AGGREGATIONS.TEXTS.SELECT_ALL_SWIDTAGS" | translate
-              }}</span>
+              <span>{{ "Select Product Versions" | translate }}</span>
               <div class="action-checkbox">
                 <mat-checkbox
                   disableRipple
@@ -94,7 +102,13 @@
               class="list-item"
               *ngFor="let swid of swidList; let idx = index"
             >
-              <span class="text-3-dot" matTooltip="{{swid.swidtag}}">{{ swid.swidtag }}</span>
+              <span
+                class="text-3-dot"
+                matTooltip="{{
+                  swid.product_name + ' ' + swid.product_version
+                }}"
+                >{{ swid.product_name + " " + swid.product_version }}</span
+              >
               <mat-icon class="add" (click)="addSwidTag(swid, idx)"
                 >add_circle</mat-icon
               >
@@ -106,14 +120,16 @@
         </div>
         <div class="right">
           <h5 class="transtitle">
-            {{ "AGGREGATIONS.TEXTS.SWIDTAGS_SELECTED" | translate }}
+            {{ "Selected Product Version" | translate }}
           </h5>
           <div class="body">
             <div
               class="list-item"
               *ngFor="let swid of selectedSwidList; let idx = index"
             >
-              <span class="text-3-dot" matTooltip="{{swid.swidtag}}">{{ swid.swidtag }}</span>
+              <span class="text-3-dot" matTooltip="{{ swid.swidVersion }}">{{
+                swid.swidVersion
+              }}</span>
               <mat-icon class="cancel" (click)="removeSwidTag(swid, idx)"
                 >remove_circle</mat-icon
               >

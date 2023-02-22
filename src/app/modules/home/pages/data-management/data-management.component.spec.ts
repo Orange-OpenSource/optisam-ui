@@ -13,18 +13,15 @@ describe('DataManagementComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ DataManagementComponent ],
+      declarations: [DataManagementComponent],
       imports: [
         CustomMaterialModule,
         RouterTestingModule,
         HttpClientTestingModule,
-        TranslateModule.forRoot()
+        TranslateModule.forRoot(),
       ],
-      providers: [
-        DataManagementService
-      ]
-    })
-    .compileComponents();
+      providers: [DataManagementService],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -37,20 +34,29 @@ describe('DataManagementComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it("should display 'Data Management' as page heading", () => {
-    const viewEquipListHeading = fixture.nativeElement.querySelector('div.page-heading');
-    expect(viewEquipListHeading.innerText).toBe('Data Management');
+  it("should display 'Inventory Management' as page heading", () => {
+    const viewEquipListHeading =
+      fixture.nativeElement.querySelector('div.page-heading');
+    expect(viewEquipListHeading.innerText).toBe('Inventory Management');
   });
 
-  it("should display button to delete inventory", () => {
-    const deleteInventoryBtn = fixture.nativeElement.querySelector('button#deleteInventoryBtn');
+  it('should display button to delete inventory', () => {
+    const deleteInventoryBtn = fixture.nativeElement.querySelector(
+      'button#deleteInventoryBtn'
+    );
     expect(deleteInventoryBtn).toBeTruthy();
   });
 
-  it("should display tabs for 'Data' & 'Metadata'", () => {
+  it("should display tabs for 'log' & 'Metadata'", () => {
     const allNavTabs = fixture.nativeElement.querySelectorAll('a.mat-tab-link');
     expect(allNavTabs).toBeTruthy();
-    expect(allNavTabs[0].innerText).toContain('Data');
-    expect(allNavTabs[1].innerText).toContain('Metadata');
+    if (component.allowedScope) {
+      expect(allNavTabs[0].innerText).toContain('Metadata');
+      expect(allNavTabs[1].innerText).toContain('Infrastructure inventory');
+      expect(allNavTabs[2].innerText).toContain('Log');
+      return;
+    }
+    expect(allNavTabs[0].innerText).toContain('Infrastructure inventory');
+    expect(allNavTabs[1].innerText).toContain('Log');
   });
 });

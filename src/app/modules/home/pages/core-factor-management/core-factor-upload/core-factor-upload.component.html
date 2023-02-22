@@ -1,6 +1,11 @@
 <mat-card fxLayout="column" fxLayoutAlign="space-between">
   <mat-card-title
+  *ngIf="data!=='yes'"
     >{{ "Upload Core Factor Reference File" | translate }}
+  </mat-card-title>
+  <mat-card-title
+  *ngIf="data==='yes'"
+    >{{ "Product Catalog Reference File" | translate }}
   </mat-card-title>
   <mat-card-action
     fxFlex

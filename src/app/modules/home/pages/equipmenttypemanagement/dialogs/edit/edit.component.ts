@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, Inject } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import {
   MatDialogRef,
   MAT_DIALOG_DATA,
@@ -8,7 +8,18 @@ import { EquipmentTypeManagementService } from 'src/app/core/services/equipmentt
 import { FormArray, FormGroup, FormControl, Validators } from '@angular/forms';
 import { ModifyJSONFormat } from './model';
 import { RequiredJSONFormat } from '../model';
-
+import { MatSlideToggleChange } from '@angular/material/slide-toggle';
+import { DeleteAttributeConfirmationComponent } from './dialogs/delete-attribute-confirmation/delete-attribute-confirmation.component';
+import {
+  AttributeData,
+  DeleteAttributeParams,
+  ErrorResponse,
+} from '@core/modals';
+import { CommonService } from '@core/services';
+import { LOCAL_KEYS } from '@core/util/constants/constants';
+import { ErrorMessageComponent } from './dialogs/error-message/error-message.component';
+import { SuccessMessageComponent } from './dialogs/success-message/success-message.component';
+const SCHEMA_NAME_LIMIT = 60;
 @Component({
   selector: 'app-edit',
   templateUrl: './edit.component.html',
@@ -28,24 +39,34 @@ export class EditComponent implements OnInit {
   parentId: String;
   scope: any = '';
   parent: any;
-  attribute: any;
+  attribute: AttributeData[] = [];
+  updattrs: any[] = [];
+
   displayedColumns = [
     'name',
     'data_type',
     'mapped_to',
     'searchable',
     'displayed',
+    // 'action',
   ];
   errorMessage: string;
   reqInProgress: Boolean;
   attributeControls: FormControl[];
-  private mappingKey: string = 'parentid';
+  private mappingKey: string[] = ['parentid', 'parent_id'];
+  schemaNameLimit: number = SCHEMA_NAME_LIMIT;
+
+  errorSet: { blank: string[]; overLimit: string[] } = {
+    blank: [],
+    overLimit: [],
+  };
 
   constructor(
     private equipmentTypeService: EquipmentTypeManagementService,
     private dialogRef: MatDialogRef<EditComponent>,
     private dialog: MatDialog,
-    @Inject(MAT_DIALOG_DATA) private data: RequiredJSONFormat
+    @Inject(MAT_DIALOG_DATA) private data: RequiredJSONFormat,
+    private cs: CommonService
   ) {}
 
   ngOnInit() {
@@ -55,7 +76,8 @@ export class EditComponent implements OnInit {
     this.metadata_source = this.data['metadata_source'];
     this.scope = this.data['scope'];
     this.parent_type = this.data['parent_type'];
-    this.attribute = this.data.attributes;
+    this.attribute = JSON.parse(JSON.stringify(this.data?.attributes || []));
+
     this.getTypes();
     this.getMappedSource();
     this.initForm();
@@ -71,6 +93,7 @@ export class EditComponent implements OnInit {
   get root() {
     return this.attributeForm.get('root');
   }
+
   get attribute_form() {
     return this.attributeForm.get('attribute') as FormArray;
   }
@@ -78,6 +101,35 @@ export class EditComponent implements OnInit {
     return (<FormArray>this.attributeForm.get('attribute'))
       .controls as FormControl[];
   }
+
+  get parent_identifier(): FormControl {
+    return this.attributeForm.get('parent_identifier') as FormControl;
+  }
+
+  get checkParent(): boolean {
+    return (
+      this.root?.value != null ||
+      (this.root?.value != '' && this.parent_identifier?.value)
+    );
+  }
+
+  get isModifiable(): boolean {
+    return (
+      this.attributeForm.valid &&
+      this.attributeForm.dirty &&
+      !this.blankAttr.length &&
+      !this.overLimitAttr.length
+    );
+  }
+
+  get blankAttr(): string[] {
+    return this.errorSet.blank;
+  }
+
+  get overLimitAttr(): string[] {
+    return this.errorSet.overLimit;
+  }
+
   // Get data
   getTypes() {
     this.equipmentTypeService.getTypes(this.scope).subscribe(
@@ -86,7 +138,7 @@ export class EditComponent implements OnInit {
         this.types = equipTypes.filter((eq) => eq.type !== this.type);
         this.parent = equipTypes.filter(
           (eq) => eq.type === this.parent_type
-        )[0].ID;
+        )[0]?.ID;
         this.root.setValue(this.parent);
       },
       (error) => {
@@ -109,27 +161,25 @@ export class EditComponent implements OnInit {
     );
   }
 
-  get missingParentAttribute(): Boolean {
-    if (this.root.value) {
-      // below if condition is checking if any of the attribute's parent_identifier(FormControl) has value = true.
-      if (
-        this.attribute_form.controls.some(
-          (control: FormGroup) => !!control.get('parent_identifier').value
-        )
-      )
-        return false;
-      // for (let i = 0; i < this.attribute_form.value.length; i++) {
-      //   if (this.attribute_form.controls[i].get('parent_identifier').value) {
-      //     return false;
-      //   }
-      // }
-      this.selectedAttributes = this.attribute.map((atr) => atr.mapped_to);
+  get missingParentAttribute(): boolean {
+    console.log('test');
+    console.log('this.root', this.root);
+    if (!this.root.value) return false;
+    console.log('test1');
+    // below if condition is checking if any of the attribute's parent_identifier(FormControl) has value = true.
+    const hasParentIdentifier: boolean = this.attribute_form.controls.some(
+      (control: FormGroup) => !!control.get('parent_identifier').value
+    );
+    if (hasParentIdentifier) return false;
 
-      if (this.selectedAttributes.includes(this.mappingKey)) return false;
-      return true;
-    } else {
+    this.selectedAttributes = this.attribute.map((atr) => atr.mapped_to);
+    if (
+      this.mappingKey.some((mappingKey: string) =>
+        this.selectedAttributes.includes(mappingKey)
+      )
+    )
       return false;
-    }
+    return true;
   }
 
   onAddAttribute() {
@@ -164,6 +214,56 @@ export class EditComponent implements OnInit {
     return listOfItems && selectedItem && listOfItems === selectedItem;
   }
 
+  displayableChange({ checked }: MatSlideToggleChange, result): void {
+    if (result.primary_key) return;
+    this.attributeForm.markAsDirty();
+    result.displayed = checked;
+    const idx = this.updattrs.some((attr) => attr.ID === result.ID);
+    if (idx) {
+      this.updattrs = this.updattrs.map((x) => {
+        if (x.ID === result.ID) {
+          x.displayed = checked;
+        }
+        return x;
+      });
+    } else {
+      this.updattrs.push({
+        ID: result.ID,
+        name: result.name,
+        schema_name: result.schema_name,
+        displayed: checked,
+        searchable: result.searchable,
+      });
+    }
+  }
+
+  searchableChange({ checked }: MatSlideToggleChange, result) {
+    if (result.primary_key) return;
+    this.attributeForm.markAsDirty();
+
+    result.searchable = checked;
+    result.displayed = checked ? true : result.displayed;
+
+    const idx = this.updattrs.some((attr) => attr.ID === result.ID);
+
+    if (idx) {
+      this.updattrs = this.updattrs.map((x) => {
+        if (x.ID === result.ID) {
+          x.searchable = checked;
+        }
+        return x;
+      });
+    } else {
+      this.updattrs.push({
+        ID: result.ID,
+        name: result.name,
+        schema_name: result.schema_name,
+        displayed: result.displayed,
+        searchable: checked,
+      });
+    }
+  }
+
   modifyAttribute(successMsg, errorMsg, parentErrorMsg, equipmentDataErrorMsg) {
     this.reqInProgress = true;
     this.attributeForm.markAsPristine();
@@ -171,7 +271,9 @@ export class EditComponent implements OnInit {
     const attributeData = new ModifyJSONFormat();
     attributeData.attributes = attribute_data.attribute;
     attributeData.parent_id = this.root.value;
+    attributeData.updattr = this.updattrs;
     attributeData.scopes = [localStorage.getItem('scope')];
+
     if (attribute_data) {
       this.equipmentTypeService
         .updateAttribute(this.id, attributeData)
@@ -205,6 +307,7 @@ export class EditComponent implements OnInit {
   onFormReset() {
     this.attributeForm.reset();
     this.root.setValue(this.parent);
+    this.attribute = JSON.parse(JSON.stringify(this.data?.attributes || []));
     this.attribute_form.clear();
   }
 
@@ -213,6 +316,85 @@ export class EditComponent implements OnInit {
       width: '30%',
       disableClose: true,
     });
+  }
+
+  attrNameChange(e: any, row: AttributeData): void {
+    e = e?.clipboardData ? (e as ClipboardEvent) : (e as KeyboardEvent);
+    this.attributeForm.markAsDirty();
+    const attrName = e?.target?.value.trim();
+
+    const idx = this.updattrs.some((attr) => attr.ID === row.ID);
+
+    if (idx) {
+      this.updattrs = this.updattrs.map((x) => {
+        if (x.ID === row.ID) {
+          x.schema_name = attrName;
+        }
+        return x;
+      });
+      this.checkForErrorSet();
+      return;
+    }
+    this.updattrs.push({
+      ID: row.ID,
+      name: row.name,
+      displayed: row.displayed,
+      searchable: row.searchable,
+      schema_name: attrName,
+    });
+    this.checkForErrorSet();
+  }
+
+  private checkForErrorSet(): void {
+    this.errorSet = {
+      blank: [],
+      overLimit: [],
+    };
+    this.updattrs.forEach((u: AttributeData) => {
+      if (u.schema_name == '') {
+        this.errorSet.blank.push(u.ID);
+      }
+      if (u.schema_name.length > SCHEMA_NAME_LIMIT)
+        this.errorSet.overLimit.push(u.ID);
+    });
+  }
+
+  confirmAttributeDelete(attribute: AttributeData): void {
+    let dialog = this.dialog.open(DeleteAttributeConfirmationComponent, {
+      width: '30%',
+      disableClose: true,
+    });
+
+    dialog.afterClosed().subscribe((res: boolean) => {
+      if (!res) return;
+      this.deleteAttribute(attribute);
+    });
+  }
+
+  deleteAttribute(attribute: AttributeData): void {
+    const query: DeleteAttributeParams = {
+      id: this.data.ID,
+      equip_type: this.data.type,
+      'deleteAttributes.ID': attribute.ID,
+      'deleteAttributes.name': attribute.name,
+      scope: this.cs.getLocalData(LOCAL_KEYS.SCOPE),
+    };
+
+    this.equipmentTypeService.deleteAttribute(query).subscribe(
+      () => {
+        this.dialog.open(SuccessMessageComponent, {
+          width: '30%',
+          disableClose: true,
+        });
+      },
+      ({ message }: ErrorResponse) => {
+        this.dialog.open(ErrorMessageComponent, {
+          width: '30%',
+          disableClose: true,
+          data: { message },
+        });
+      }
+    );
   }
 
   ngOnDestroy() {

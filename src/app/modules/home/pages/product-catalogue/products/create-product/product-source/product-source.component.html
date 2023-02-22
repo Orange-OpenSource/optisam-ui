@@ -1,0 +1,20 @@
+<div class="section" fxLayout="column">
+  <div class="section-title">
+    {{ "Licenses" | translate }}
+  </div>
+  <div fxLayout="row">
+    <div fxFlex="50">
+      <form [formGroup]="openSourceGroup">
+        <app-product-open-source [crud]="crud"></app-product-open-source>
+      </form>
+    </div>
+    <div fxFlex="50">
+      <form [formGroup]="closeSourceGroup">
+        <app-product-close-source
+          [data]="data"
+          [crud]="crud"
+        ></app-product-close-source>
+      </form>
+    </div>
+  </div>
+</div>

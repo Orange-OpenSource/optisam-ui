@@ -1,18 +1,18 @@
-import { Location } from "@angular/common";
-import { Injectable } from "@angular/core";
+import { Location } from '@angular/common';
+import { Injectable } from '@angular/core';
 import {
   CanActivate,
   ActivatedRouteSnapshot,
   RouterStateSnapshot,
   UrlTree,
-} from "@angular/router";
-import { allowedScopes } from "@core/util/common.functions";
-import { Observable } from "rxjs";
+} from '@angular/router';
+import { isSpecificScopeType } from '@core/util/common.functions';
+import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
-export class AllowScopesGuard implements CanActivate {
+export class AllowSpecificScopesGuard implements CanActivate {
   constructor(private _location: Location) {}
   canActivate(
     route: ActivatedRouteSnapshot,
@@ -22,7 +22,8 @@ export class AllowScopesGuard implements CanActivate {
     | Promise<boolean | UrlTree>
     | boolean
     | UrlTree {
-    const permission: boolean = allowedScopes();
+    const permission: boolean = isSpecificScopeType();
+
     if (!permission) {
       this._location.back();
     }

@@ -6,6 +6,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
+import { AdvanceSearchModel, AttributeData } from '@core/modals';
 
 @Component({
   selector: 'app-product-aggregation-equipments',
@@ -15,10 +16,11 @@ import { MatSort } from '@angular/material/sort';
 export class ProductAggregationEquipmentsComponent implements OnInit {
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: false }) sort: MatSort;
-  advanceSearchModel: any = {
+  advanceSearchModel: AdvanceSearchModel = {
     title: '',
     primary: '',
     other: [],
+    translate: true,
   };
   searchFields: any = {};
   equipmentTypes: any[];
@@ -35,6 +37,7 @@ export class ProductAggregationEquipmentsComponent implements OnInit {
   _loading: Boolean;
   _equipLoading: Boolean;
   activeLink: any;
+  typeArray: object;
 
   constructor(
     private route: ActivatedRoute,
@@ -75,18 +78,19 @@ export class ProductAggregationEquipmentsComponent implements OnInit {
       title: '',
       primary: '',
       other: [],
+      translate: false,
     };
 
     // Dynamically fill advance search fields
     for (const filter of equipType.attributes) {
       if (filter.searchable) {
         if (filter.primary_key) {
-          this.advanceSearchModel.title = 'Search by ' + filter.name;
+          this.advanceSearchModel.title = 'Search by ' + filter.schema_name;
           this.advanceSearchModel.primary = filter.name;
         }
         this.advanceSearchModel.other.push({
           key: filter.name,
-          label: filter.name,
+          label: filter.schema_name,
         });
       }
     }
@@ -138,6 +142,14 @@ export class ProductAggregationEquipmentsComponent implements OnInit {
           this.displayedrows = decodedData[0]
             ? Object.keys(decodedData[0]).filter((d) => d !== 'ID')
             : [];
+
+          console.log('this.disabledrows', this.displayedrows);
+          console.log(
+            'selectedEquipment',
+            (this.typeArray = this.getNameToSchemaName(
+              this.selectedEquipment.attributes
+            ))
+          );
           this._equipLoading = false;
         },
         (err) => {
@@ -145,6 +157,13 @@ export class ProductAggregationEquipmentsComponent implements OnInit {
           console.log('Error => ', err.error);
         }
       );
+  }
+
+  private getNameToSchemaName(attributes: AttributeData[]): object {
+    return attributes.reduce(
+      (set, attr) => ({ ...set, [attr.name]: attr.schema_name }),
+      {}
+    );
   }
 
   sortData(event: any) {

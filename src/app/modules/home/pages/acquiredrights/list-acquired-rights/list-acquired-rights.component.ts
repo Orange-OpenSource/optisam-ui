@@ -26,6 +26,7 @@ import {
   PAGINATION_DEFAULTS,
 } from '@core/util/constants/constants';
 import { AcquiredRightsIndividualParams } from '@core/modals/acquired.rights.modal';
+import { ViewEditorDetailsAccComponent } from '../view-editor-details-acc/view-editor-details-acc.component';
 // import { MatTabChangeEvent } from '@angular/material/tabs';
 export interface NotLicensedProduct {
   swid_tag: string;
@@ -69,7 +70,7 @@ export class ListAcquiredRightsComponent implements OnInit, AfterViewInit {
     title: 'Search by Product Name',
     primary: 'productName',
     other: [
-      { key: 'swidTag', label: 'SWIDtag' },
+      // { key: 'swidTag', label: 'SWIDtag' },
       { key: 'sku', label: 'SKU' },
       { key: 'editorName', label: 'Editor Name' },
       { key: 'productName', label: 'Product Name' },
@@ -93,6 +94,7 @@ export class ListAcquiredRightsComponent implements OnInit, AfterViewInit {
   };
 
   searchFields: any = {};
+  dialogRef: any;
 
   constructor(
     private productService: ProductService,
@@ -166,7 +168,6 @@ export class ListAcquiredRightsComponent implements OnInit, AfterViewInit {
       case this.tabList[0]:
         this.displayedColumns = [
           'SKU',
-          'swid_tag',
           'product_name',
           'version',
           'editor',
@@ -179,13 +180,7 @@ export class ListAcquiredRightsComponent implements OnInit, AfterViewInit {
         break;
 
       case this.tabList[1]:
-        this.displayedColumns = [
-          'swid_tag',
-          'product_name',
-          'version',
-          'editor',
-          'action',
-        ];
+        this.displayedColumns = ['product_name', 'version', 'editor', 'action'];
         this.getNotLicensedProducts();
         break;
       case this.tabList[2]:
@@ -214,6 +209,16 @@ export class ListAcquiredRightsComponent implements OnInit, AfterViewInit {
     this.getTableData();
   }
 
+  openEditorDialog(data: any) {
+    this.dialogRef = this.dialog.open(ViewEditorDetailsAccComponent, {
+      width: '1300px',
+      disableClose: true,
+      data: data,
+    });
+
+    this.dialogRef.afterClosed().subscribe((result) => {});
+  }
+
   sortData(sort) {
     localStorage.setItem('acquired_direction', sort.direction);
     localStorage.setItem('acquired_active', sort.active);
@@ -223,6 +228,7 @@ export class ListAcquiredRightsComponent implements OnInit, AfterViewInit {
   }
 
   createNewAcqRight(data?: NotLicensedProduct) {
+    //console.log(data)
     const dialogRef = this.dialog.open(CreateAcquiredRightComponent, {
       width: '850px',
       maxHeight: '90vh',
@@ -435,6 +441,7 @@ export class ListAcquiredRightsComponent implements OnInit, AfterViewInit {
   }
 
   advSearchTrigger(event) {
+    console.log(event);
     this.searchFields = event;
     this.applyFilter();
   }
@@ -463,7 +470,7 @@ export class ListAcquiredRightsComponent implements OnInit, AfterViewInit {
     if (!this.sortOrder) {
       this.sortOrder = 'asc';
     }
-
+    console.log(this.filters);
     this.productService
       .filteredDataAcqRights(this.filters)
       .subscribe((res: AcquiredRightsResponse) => {

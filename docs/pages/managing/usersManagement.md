@@ -12,7 +12,7 @@ User is anybody who can access/use OpTISAM application. User can be human or api
 
 You can access to "Users Management" by clicking here :
 
-![select APM](../../img/userMana/accessu.jpg){: .zoom}
+![select APM](../../img/userMana/access.jpg){: .zoom}
 
 ## Presentation
 

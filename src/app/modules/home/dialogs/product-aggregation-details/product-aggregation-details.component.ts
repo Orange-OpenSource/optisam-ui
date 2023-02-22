@@ -3,8 +3,25 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ProductService } from 'src/app/core/services/product.service';
 import { Subscription } from 'rxjs';
 import { SharedService } from 'src/app/shared/shared.service';
-import { animate, state, style, transition, trigger } from '@angular/animations';
+import {
+  animate,
+  state,
+  style,
+  transition,
+  trigger,
+} from '@angular/animations';
 import { MatTableDataSource } from '@angular/material/table';
+
+type AlertColor = {
+  green: string;
+  red: string;
+};
+
+const ALERT_COLOR: AlertColor = {
+  green: 'alert_green',
+  red: 'alert_red',
+};
+
 @Component({
   selector: 'app-product-aggregation-details',
   templateUrl: './product-aggregation-details.component.html',
@@ -17,7 +34,6 @@ import { MatTableDataSource } from '@angular/material/table';
       transition('collapsed => expanded', animate('200ms ease-in')),
     ]),
   ],
-
 })
 export class ProductAggregationDetailsComponent implements OnInit, OnDestroy {
   value: any;
@@ -51,7 +67,7 @@ export class ProductAggregationDetailsComponent implements OnInit, OnDestroy {
     computedDetails: 'Computation details',
     numAcqLicences: 'Acquired Licenses',
     deltaNumber: 'Delta (licenses)',
-    deltaCost: 'Delta',
+    deltaCost: 'Delta Cost',
     totalCost: 'Total Cost',
   };
 
@@ -66,15 +82,18 @@ export class ProductAggregationDetailsComponent implements OnInit, OnDestroy {
     'blankColumn2',
   ];
   num_equipments: any;
+  alertColor: string = '';
   constructor(
     private productsService: ProductService,
     private sharedService: SharedService,
     public dialogRef: MatDialogRef<ProductAggregationDetailsComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
-    this.loadingSubscription = this.sharedService.httpLoading().subscribe(load => {
-      this._loading = load;
-    });
+    this.loadingSubscription = this.sharedService
+      .httpLoading()
+      .subscribe((load) => {
+        this._loading = load;
+      });
   }
 
   ngOnInit() {
@@ -86,49 +105,78 @@ export class ProductAggregationDetailsComponent implements OnInit, OnDestroy {
   // Get aggregation details
   getDetails() {
     this._loading = true;
-    this.productsService.getAggregationInfoDetails(this.data.aggregationID).subscribe(
-      (res: any) => {
-        this.productdetails = res;
-        this.num_equipments = res.num_equipments;
-        this._loading = false;
-      },
-      error => {
-        this._loading = false;
-        console.log('There was an error while retrieving Posts !!!' + error);
-      });
+    this.productsService
+      .getAggregationInfoDetails(this.data.aggregationID)
+      .subscribe(
+        (res: any) => {
+          this.productdetails = res;
+          this.num_equipments = res.num_equipments;
+          this._loading = false;
+        },
+        (error) => {
+          this._loading = false;
+          console.log('There was an error while retrieving Posts !!!' + error);
+        }
+      );
   }
 
   // Get aggregation options
   getOptionDetails() {
     this._loading = true;
-    this.productsService.getAggregationOptions(this.data.aggregationID).subscribe(
-      (res: any) => {
-        this.aggregationOptions = res;
-        this._loading = false;
-      },
-      error => {
-        this._loading = false;
-        console.log('There was an error while retrieving Posts !!!' + error);
-      });
+    this.productsService
+      .getAggregationOptions(this.data.aggregationID)
+      .subscribe(
+        (res: any) => {
+          this.aggregationOptions = res;
+          this._loading = false;
+        },
+        (error) => {
+          this._loading = false;
+          console.log(
+            'There was an error while retrieving Posts !!!' + error.message
+          );
+        }
+      );
   }
 
   get hasCompliance(): boolean {
     return this.acquireRight?.length !== 0;
   }
-  
+
   // Get acquire rights
   getAcquiredRights() {
     this._loading = true;
-    this.productsService.getAggregationAquiredRights(this.data.aggregationName).subscribe(
-      (res: any) => {
-        this.acquireRight = res.acq_rights;
-        this.aggregationName = res.aggregationName;
-        this._loading = false;
-      },
-      error => {
-        this._loading = false;
-        console.log('There was an error while retrieving Posts !!!' + error);
-      });
+    this.productsService
+      .getAggregationAquiredRights(this.data.aggregationName)
+      .subscribe(
+        (res: any) => {
+          this.acquireRight = res.acq_rights;
+
+          const anyNegativeDelta: boolean = res.acq_rights.some(
+            (ar: any) => ar.deltaCost < 0
+          );
+          this.alertColor = anyNegativeDelta
+            ? ALERT_COLOR.red
+            : !!res.acq_rights?.length
+            ? ALERT_COLOR.green
+            : '';
+
+          if (this.acquireRight?.filteredData?.length > 0) {
+            for (var i = 0; i < this.acquireRight.filteredData.length; i++) {
+              this.acquireRight.filteredData[i].computedDetails =
+                this.acquireRight.filteredData[i].computedDetails
+                  .split(',')
+                  .join(',\n');
+            }
+          }
+          this.aggregationName = res.aggregationName;
+          this._loading = false;
+        },
+        (error) => {
+          this._loading = false;
+          console.log('There was an error while retrieving Posts !!!' + error);
+        }
+      );
   }
 
   expandMetrics(product) {
@@ -163,5 +211,4 @@ export class ProductAggregationDetailsComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.loadingSubscription.unsubscribe();
   }
-
 }

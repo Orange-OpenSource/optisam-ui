@@ -9,12 +9,14 @@ import { CustomMaterialModule } from 'src/app/material.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { HardwareSimulationComponent } from './hardware-simulation/hardware-simulation.component';
 import { MetricSimulationComponent } from './metric-simulation/metric-simulation.component';
+import { ProductSimulationComponent } from './product-simulation/product-simulation/product-simulation.component';
 
 @NgModule({
   declarations: [
     SimulationComponent,
     HardwareSimulationComponent,
-    MetricSimulationComponent
+    MetricSimulationComponent,
+    ProductSimulationComponent
   ],
   imports: [
     CommonModule,

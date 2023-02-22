@@ -43,10 +43,11 @@ export class AplComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = [
     'name',
     'owner',
+    'environment',
     'domain',
     'obsolescence_risk',
     'num_of_products',
-    'num_of_instances',
+    // 'num_of_instances',
   ];
   loadingSubscription: Subscription;
   _loading: Boolean;

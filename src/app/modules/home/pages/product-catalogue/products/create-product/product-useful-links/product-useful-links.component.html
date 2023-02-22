@@ -1,0 +1,26 @@
+<div class="section" fxLayout="column">
+  <form [formGroup]="form">
+    <!-- Support Vendor Name -->
+    <mat-form-field appearance="outline">
+      <mat-label>{{
+        "PRODUCT_CATALOG.FORM_FIELD.USEFUL_LINK" | translate
+      }}</mat-label>
+      <input
+        [readonly]="crud == crudRead"
+        matInput
+        formControlName="link"
+        placeholder="{{ 'PRODUCT_CATALOG.FORM_FIELD.USEFUL_LINK' | translate }}"
+      />
+    </mat-form-field>
+  </form>
+
+  <div
+    *ngIf="crud != crudRead"
+    class="close-btn"
+    fxLayout="row"
+    fxLayoutAlign="center center"
+    (click)="confirmRemove()"
+  >
+    <mat-icon>close</mat-icon>
+  </div>
+</div>

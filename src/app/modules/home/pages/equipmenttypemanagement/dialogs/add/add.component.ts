@@ -1,6 +1,10 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import {
+  MatDialog,
+  MatDialogRef,
+  MAT_DIALOG_DATA,
+} from '@angular/material/dialog';
 import { EquipmentTypeManagementService } from 'src/app/core/services/equipmenttypemanagement.service';
 import { RequiredJSONFormat } from '../model';
 import { GroupService } from 'src/app/core/services/group.service';
@@ -8,7 +12,7 @@ import { GroupService } from 'src/app/core/services/group.service';
 @Component({
   selector: 'app-add',
   templateUrl: './add.component.html',
-  styleUrls: ['./add.component.scss']
+  styleUrls: ['./add.component.scss'],
 })
 export class AddComponent implements OnInit {
   createForm: FormGroup;
@@ -26,11 +30,12 @@ export class AddComponent implements OnInit {
   selectedScope: any;
   reqInProgress: Boolean;
 
-  constructor(private equipmentTypeService: EquipmentTypeManagementService,
-              private dialog: MatDialog
-            ) { 
-              this.selectedScope = localStorage.getItem('scope');
-            }
+  constructor(
+    private equipmentTypeService: EquipmentTypeManagementService,
+    private dialog: MatDialog
+  ) {
+    this.selectedScope = localStorage.getItem('scope');
+  }
 
   ngOnInit() {
     this.initForm();
@@ -40,10 +45,14 @@ export class AddComponent implements OnInit {
 
   initForm() {
     this.createForm = new FormGroup({
-      'type': new FormControl(null, [Validators.required, Validators.minLength(1), Validators.pattern(/^[-_,A-Za-z0-9]+$/)]),
-      'from': new FormControl(null, [Validators.required]),
-      'root': new FormControl(null),
-      'attribute': new FormArray([])
+      type: new FormControl(null, [
+        Validators.required,
+        Validators.minLength(1),
+        Validators.pattern(/^[-_,A-Za-z0-9]+$/),
+      ]),
+      from: new FormControl(null, [Validators.required]),
+      root: new FormControl(null),
+      attribute: new FormArray([]),
     });
   }
   get type() {
@@ -58,46 +67,72 @@ export class AddComponent implements OnInit {
   get attribute() {
     return this.createForm.get('attribute');
   }
+
+  get parent_identifier(): FormControl {
+    return this.createForm.get('parent_identifier') as FormControl;
+  }
+
+  // get checkParent(): boolean {
+  //   return (
+  //     this.root.value != null ||
+  //     (this.root.value != '' && this.parent_identifier.value)
+  //   );
+  // }
   getControls() {
     return (<FormArray>this.createForm.get('attribute')).controls;
   }
 
   get duplicateName(): Boolean {
     const value = this.type.value || '';
-    const typeNamesList = (this.types.length > 0) ? this.types.map(eq => eq.type) : [];
+    const typeNamesList =
+      this.types.length > 0 ? this.types.map((eq) => eq.type) : [];
     return typeNamesList.includes(value.trim());
   }
 
-  getTypes() { //TODO: scope based equipment types fetch
+  get hasAllDataTypes(): boolean {
+    const attributeFormData = (
+      this.createForm.get('attribute') as FormArray
+    ).getRawValue();
+    return attributeFormData.every(
+      (attribute: any) => attribute.primary_key || !!attribute.data_type
+    );
+  }
+
+  getTypes() {
+    //TODO: scope based equipment types fetch
     this.equipmentTypeService.getTypes(this.selectedScope).subscribe(
       (res: any) => {
         this.types = (res.equipment_types || []).reverse();
       },
-      error => {
+      (error) => {
         console.log('There was an error while retrieving Posts !!!' + error);
-      });
+      }
+    );
   }
   getAttributes() {
     this.equipmentTypeService.getMetaData(this.selectedScope).subscribe(
       (res: any) => {
         this.metaData = res.metadata || [];
       },
-      error => {
+      (error) => {
         console.log('There was an error while retrieving Posts !!!' + error);
-      });
+      }
+    );
   }
+
   // On metadata select
   filterAttributes(ID) {
     if (ID.isUserInput) {
-      this.selectedAttributes = this.metaData.filter(x => x.ID === ID.source.value).map(x => x.attributes);
-      this.selectedAttributes.forEach(sa => sa.sort());
+      this.selectedAttributes = this.metaData
+        .filter((x) => x.ID === ID.source.value)
+        .map((x) => x.attributes);
+      this.selectedAttributes.forEach((sa) => sa.sort());
     }
   }
   // On mapped_to select
   reduceMapped_toList(type, selectedAttributes, value) {
     for (let j = 0; j < selectedAttributes[value].length; j++) {
       if (selectedAttributes[value][j] === type) {
-
         const arr = [];
         for (let m = 0; m < selectedAttributes[value].length; m++) {
           if (selectedAttributes[value][m] !== type) {
@@ -107,7 +142,6 @@ export class AddComponent implements OnInit {
         selectedAttributes[selectedAttributes.length] = arr;
       }
     }
-
   }
   onSelect(ID) {
     this.selectedParent = ID;
@@ -139,6 +173,8 @@ export class AddComponent implements OnInit {
     }
   }
   onChange(event, i) {
+    console.log('event', event);
+
     if (event.checked === true) {
       this.primaryKeyValue[i] = true;
       this.selected[i] = 'STRING';
@@ -178,14 +214,17 @@ export class AddComponent implements OnInit {
 
     (<FormArray>this.createForm.get('attribute')).push(
       new FormGroup({
-        'name': new FormControl(null, [Validators.required, Validators.minLength(1),
-        Validators.pattern(/^[-_,A-Za-z0-9]+$/)]),
-        'data_type': new FormControl(null),
-        'primary_key': new FormControl(null),
-        'displayed': new FormControl(null),
-        'searchable': new FormControl(null),
-        'parent_identifier': new FormControl(null),
-        'mapped_to': new FormControl(null, [Validators.required]),
+        name: new FormControl(null, [
+          Validators.required,
+          Validators.minLength(1),
+          Validators.pattern(/^[-_,A-Za-z0-9]+$/),
+        ]),
+        data_type: new FormControl(null),
+        primary_key: new FormControl(null),
+        displayed: new FormControl(null),
+        searchable: new FormControl(null),
+        parent_identifier: new FormControl(null),
+        mapped_to: new FormControl(null, [Validators.required]),
       })
     );
   }
@@ -210,23 +249,28 @@ export class AddComponent implements OnInit {
         form_data.attribute[i].data_type = 'STRING';
       }
     }
-    const attributeData = new RequiredJSONFormat;
+    const attributeData = new RequiredJSONFormat();
     attributeData.parent_id = form_data.root;
     attributeData.type = form_data.type;
     attributeData.metadata_id = form_data.from;
     attributeData.attributes = form_data.attribute;
     attributeData.scopes = [this.selectedScope];
     if (form_data) {
-      this.equipmentTypeService.createEquipments(attributeData)
-        .subscribe(res => {
+      this.equipmentTypeService.createEquipments(attributeData).subscribe(
+        (res) => {
           this.errorMsg = '';
           this.openModal(successMsg);
           this.reqInProgress = false;
-        }, err => {
-          this.errorMsg = (err.error && err.error.message) ? err.error.message : 'Backend validation failed';
+        },
+        (err) => {
+          this.errorMsg =
+            err.error && err.error.message
+              ? err.error.message
+              : 'Backend validation failed';
           this.reqInProgress = false;
           this.openModal(errorMsg);
-        });
+        }
+      );
     }
   }
   onFormReset() {
@@ -243,7 +287,7 @@ export class AddComponent implements OnInit {
   openModal(templateRef) {
     let dialogRef = this.dialog.open(templateRef, {
       width: '30%',
-      disableClose: true
+      disableClose: true,
     });
   }
   ngOnDestroy() {

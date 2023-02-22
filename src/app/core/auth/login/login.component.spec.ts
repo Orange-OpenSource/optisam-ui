@@ -8,6 +8,7 @@ import { AuthService } from '../auth.service';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatDialogModule } from '@angular/material/dialog';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
@@ -15,18 +16,19 @@ describe('LoginComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ LoginComponent ],
+      declarations: [LoginComponent],
       imports: [
-        RouterTestingModule, HttpClientTestingModule,
+        RouterTestingModule,
+        HttpClientTestingModule,
         FormsModule,
         ReactiveFormsModule,
         MatMenuModule,
         TranslateModule.forRoot(),
+        MatDialogModule,
       ],
       providers: [AuthService],
-      schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
-    })
-    .compileComponents();
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

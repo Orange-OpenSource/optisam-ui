@@ -1,0 +1,278 @@
+<mat-card>
+  <div *ngIf="!data" class="container-fluid page-content-header">
+    <app-header-product-catalog
+      [currentTab]="currentTab"
+    ></app-header-product-catalog>
+  </div>
+  <mat-card-content>
+    <div class="action-bar" fxLayout="row" fxLayoutAlign="end end">
+      <button
+        id="createProdBtn"
+        mat-raised-button
+        class="btn-two"
+        *ngIf="!data"
+        (click)="createProduct()"
+      >
+        <mat-icon>add</mat-icon>
+        {{ "Create New" }}
+      </button>
+    </div>
+    <ng-container>
+      <app-advance-search
+        [advanceSearchModel]="advanceSearchModel"
+        (advFilterEvent)="advanceSearchFilter($event)"
+      ></app-advance-search>
+    </ng-container>
+    <div id="Products" class="mat-elevation-z8">
+      <mat-table
+        matSort
+        (matSortChange)="sortData($event)"
+        #listTable
+        [dataSource]="listData"
+        class="mat-elevation-z8"
+      >
+        <ng-container *ngFor="let col of columns">
+          <ng-container [ngSwitch]="col.key">
+            <!-- Name -->
+            <ng-container *ngSwitchCase="'name'" matColumnDef="{{ col.key }}">
+              <mat-header-cell
+                *matHeaderCellDef
+                mat-sort-header="{{ col.key }}"
+                disableClear
+              >
+                {{ col.label | translate }}
+              </mat-header-cell>
+              <mat-cell *matCellDef="let element">
+                <a class="link" (click)="viewProduct(element)">{{
+                  element[col.key]
+                }}</a>
+              </mat-cell>
+            </ng-container>
+            <!-- Version -->
+            <ng-container
+              *ngSwitchCase="'version'"
+              matColumnDef="{{ col.key }}"
+            >
+              <mat-header-cell *matHeaderCellDef>
+                {{ col.label | translate }}
+              </mat-header-cell>
+              <mat-cell *matCellDef="let element">
+                {{ element[col.key] | getVersions }}
+              </mat-cell>
+            </ng-container>
+
+            <!-- Open Sources -->
+            <ng-container
+              *ngSwitchCase="'openSource'"
+              matColumnDef="{{ col.key }}"
+            >
+              <mat-header-cell *matHeaderCellDef>
+                {{ col.label | translate }}
+              </mat-header-cell>
+              <mat-cell *matCellDef="let element">
+                {{ element[col.key]?.openLicences }}
+              </mat-cell>
+            </ng-container>
+
+            <!-- Close sources -->
+            <ng-container
+              *ngSwitchCase="'closeSource'"
+              matColumnDef="{{ col.key }}"
+            >
+              <mat-header-cell *matHeaderCellDef>
+                {{ col.label | translate }}
+              </mat-header-cell>
+              <mat-cell *matCellDef="let element">
+                {{ element[col.key] | getCloseSources }}
+              </mat-cell>
+            </ng-container>
+
+            <ng-container
+              *ngSwitchCase="'licensing'"
+              matColumnDef="{{ col.key }}"
+            >
+              <mat-header-cell
+                *matHeaderCellDef
+                mat-sort-header="{{ col.key }}"
+                disableClear
+              >
+                {{ col.label | translate }}
+              </mat-header-cell>
+              <mat-cell *matCellDef="let element">
+                <span
+                  *ngIf="
+                    element?.openSource?.isOpenSource &&
+                    element?.closeSource?.isCloseSource
+                  "
+                  >{{ "Open Source and Closed Source" }}</span
+                >
+                <span
+                  *ngIf="
+                    element?.openSource?.isOpenSource &&
+                    !element.closeSource?.isCloseSource
+                  "
+                  >{{ "Open Source" }}</span
+                >
+                <span
+                  *ngIf="
+                    !element?.openSource?.isOpenSource &&
+                    element.closeSource?.isCloseSource
+                  "
+                  >{{ "Closed Source" }}</span
+                >
+              </mat-cell>
+            </ng-container>
+
+            <ng-container *ngSwitchDefault matColumnDef="{{ col.key }}">
+              <mat-header-cell
+                *matHeaderCellDef
+                mat-sort-header="{{ col.key }}"
+                disableClear
+                >{{ col.label | translate }}</mat-header-cell
+              >
+              <mat-cell *matCellDef="let element">
+                {{ element[col.key] === "NONE" ? "" : element[col.key] }}
+              </mat-cell>
+            </ng-container>
+          </ng-container>
+        </ng-container>
+
+        <ng-container matColumnDef="action">
+          <mat-header-cell *matHeaderCellDef>{{
+            "Action" | translate
+          }}</mat-header-cell>
+          <mat-cell *matCellDef="let element; let i = index">
+            <span
+              *ngIf="!data"
+              id="editBtn_{{ i }}"
+              class="action-icon"
+              matTooltip="{{
+                'PRODUCT_CATALOG.PLACE_HOLDER.EDIT_PRODUCT' | translate
+              }}"
+              (click)="editProducts(element)"
+            >
+              <mat-icon>edit</mat-icon>
+            </span>
+            <span
+              *ngIf="data"
+              id="editBtn_{{ i }}"
+              class="action-icon"
+              matTooltip="{{
+                'PRODUCT_CATALOG.PLACE_HOLDER.EDIT_PRODUCT' | translate
+              }}"
+              (click)="editDialogProducts(element)"
+            >
+              <mat-icon>edit</mat-icon>
+            </span>
+            <span
+              id="deleteBtn_{{ i }}"
+              class="action-icon"
+              matTooltip="{{
+                'PRODUCT_CATALOG.PLACE_HOLDER.DELETE_PRODUCT' | translate
+              }}"
+              (click)="
+                deleteProductsConfirmation(
+                  element,
+                  deleteConfirmationDialog,
+                  false
+                )
+              "
+            >
+              <mat-icon>delete</mat-icon>
+            </span>
+          </mat-cell>
+        </ng-container>
+
+        <mat-header-row
+          [ngClass]="{ tops: data !== null }"
+          *matHeaderRowDef="displayedColumns; sticky: true"
+        ></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+      </mat-table>
+      <app-loading-spinner *ngIf="_loading"></app-loading-spinner>
+      <div
+        class="no-data"
+        *ngIf="
+          !_loading &&
+          listData?.filteredData &&
+          listData?.filteredData?.length == 0
+        "
+      >
+        {{ "No data available" | translate }}
+      </div>
+      <mat-paginator
+        [length]="length"
+        [pageSize]="pageSize"
+        [pageSizeOptions]="pageSizeOptions"
+        (page)="pageEvent = getPaginatorData($event)"
+        [ngClass]="{ matPaginators: data !== null }"
+        showFirstLastButtons
+      >
+      </mat-paginator>
+    </div> </mat-card-content
+></mat-card>
+<!-- <mat-dialog-actions *ngIf="data" align="right">
+  <button id="cancelBtn" class="btn-two" mat-raised-button mat-dialog-close>
+    {{ "Cancel" | translate }}
+  </button>
+</mat-dialog-actions> -->
+
+<ng-template #successDialog>
+  <h1 mat-dialog-title>Success !</h1>
+  <mat-dialog-content>
+    <p>{{ "product Deleted Successfully" | translate }}</p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="center">
+    <button
+      mat-button
+      [mat-dialog-close]="true"
+      class="btn-two"
+      cdkFocusInitial
+    >
+      {{ "OK" | translate }}
+    </button>
+  </mat-dialog-actions>
+</ng-template>
+
+<ng-template #errorDialog>
+  <mat-dialog-content>
+    <p>{{ "DELETE_AGGR_ERROR" | translate }}</p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="center">
+    <button
+      mat-button
+      [mat-dialog-close]="true"
+      class="btn-two"
+      cdkFocusInitial
+    >
+      {{ "OK" | translate }}
+    </button>
+  </mat-dialog-actions>
+</ng-template>
+
+<ng-template #deleteConfirmation>
+  <mat-dialog-content>
+    <p>
+      <strong>{{ "Are you Sure want to delete Product" | translate }}?</strong>
+    </p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="center">
+    <button
+      mat-button
+      [mat-dialog-close]="true"
+      class="btn-two"
+      (click)="deleteProducts(successDialog, errorDialog)"
+      cdkFocusInitial
+    >
+      {{ "OK" | translate }}</button
+    >&nbsp;
+    <button
+      mat-button
+      [mat-dialog-close]="true"
+      class="btn-three"
+      cdkFocusInitial
+    >
+      {{ "Cancel" | translate }}
+    </button>
+  </mat-dialog-actions>
+</ng-template>

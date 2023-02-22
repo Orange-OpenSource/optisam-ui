@@ -72,7 +72,16 @@
             >{{ "Status" | translate }}
           </mat-header-cell>
           <mat-cell *matCellDef="let report">
-            {{ report.report_status }}
+            {{ report.report_status | translate}}
+          </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="editor">
+          <mat-header-cell *matHeaderCellDef mat-sort-header="editor"
+            >{{ "Editor" | translate }}
+          </mat-header-cell>
+          <mat-cell *matCellDef="let report">
+            {{ report.editor }}
           </mat-cell>
         </ng-container>
 

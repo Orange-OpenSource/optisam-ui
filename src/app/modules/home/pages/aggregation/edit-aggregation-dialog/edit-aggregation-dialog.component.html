@@ -64,7 +64,7 @@
       <div class="swidtabs" *ngIf="updateForm.value.product_names">
         <div class="left">
           <h5 class="transtitle">
-            {{ "AGGREGATIONS.TEXTS.SWIDTAGS_ALL" | translate }}
+            {{ "AGGREGATIONS.TEXTS.SWIDVERSIONS" | translate }}
           </h5>
           <div class="body">
             <div
@@ -73,9 +73,7 @@
               fxLayoutAlign="start"
               *ngIf="swidList.length"
             >
-              <span>{{
-                "AGGREGATIONS.TEXTS.SELECT_ALL_SWIDTAGS" | translate
-              }}</span>
+              <span>{{ "AGGREGATIONS.TEXTS.SWIDVERSIONS" | translate }}</span>
               <div class="action-checkbox">
                 <mat-checkbox
                   disableRipple
@@ -88,8 +86,8 @@
               class="list-item"
               *ngFor="let swid of swidList; let idx = index"
             >
-              <span class="text-3-dot" matTooltip="{{ swid.swidtag }}">{{
-                swid.swidtag
+              <span class="text-3-dot" matTooltip="{{ swid.swidVersion }}">{{
+                swid.swidVersion
               }}</span>
               <mat-icon class="add" (click)="addSwidTag(swid, idx)"
                 >add_circle</mat-icon
@@ -102,15 +100,15 @@
         </div>
         <div class="right">
           <h5 class="transtitle">
-            {{ "AGGREGATIONS.TEXTS.SWIDTAGS_SELECTED" | translate }}
+            {{ "AGGREGATIONS.TEXTS.SWIDVERSIONS_SELECTED" | translate }}
           </h5>
           <div class="body">
             <div
               class="list-item"
               *ngFor="let swid of selectedSwidList; let idx = index"
             >
-              <span class="text-3-dot" matTooltip="{{ swid.swidtag }}">{{
-                swid.swidtag
+              <span class="text-3-dot" matTooltip="{{ swid.swidVersion }}">{{
+                swid.swidVersion
               }}</span>
               <mat-icon class="cancel" (click)="removeSwidTag(swid, idx)"
                 >remove_circle</mat-icon

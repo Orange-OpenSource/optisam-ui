@@ -3,7 +3,7 @@
 # Simulation - Hardware
 
 The hardware simulation enables you to see the impact of a hardware change on the compliance or on the financial aspect.
-
+<!--
 ## Access to the page
 
 Click on "Simulation" and "Hardware" : 
@@ -58,3 +58,24 @@ As you can see, there are some values displayed for each simulation :
 For further details, you can check [here](../../../managing/simulationsManagement) the documentation about "Simulations management".
 
 <script src="../../../../js/zoomImage.js"></script>
+--> 
+
+## Access to the page
+
+Click on "Simulation" and "Hardware" : 
+
+![select APM](../../../img/exploring/simulation/hardAccess.jpg){: .zoom}
+
+You will able to see the environment page shown above. 
+
+<br/>
+
+## Create the simulation
+
+![select APM](../../../img/exploring/simulation/hardCreateSimu.jpg){: .zoom}
+
+
+
+
+
+

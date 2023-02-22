@@ -6,6 +6,8 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import { ViewProductCatalogProductDialogComponent } from '@home/pages/product-catalogue/products/product-list/view-product-catalog-product-dialog/view-product-catalog-product-dialog.component';
+import { ViewProductsComponent } from './view-products/view-products.component';
 
 @Component({
   selector: 'app-prod',
@@ -30,7 +32,6 @@ export class ProdComponent implements OnInit {
   dialogRef: any;
 
   displayedColumns: string[] = [
-    'swidTag',
     'name',
     'version',
     'editor',
@@ -45,7 +46,6 @@ export class ProdComponent implements OnInit {
     title: 'Search by Product Name',
     primary: 'name',
     other: [
-      { key: 'swidTag', label: 'SWIDtag' },
       { key: 'name', label: 'Product name' },
       { key: 'editor', label: 'Editor name' },
     ],
@@ -76,8 +76,9 @@ export class ProdComponent implements OnInit {
   ngOnInit() {}
 
   openDialog(value, name): void {
+    console.log(value ,name)
     this.dialogRef = this.dialog.open(MoreDetailsComponent, {
-      width: '850px',
+      width: '1300px',
       disableClose: true,
       data: {
         datakey: value,
@@ -87,6 +88,17 @@ export class ProdComponent implements OnInit {
 
     this.dialogRef.afterClosed().subscribe((result) => {});
   }
+
+  openEditorDialog(data:any){
+    this.dialogRef=this.dialog.open(ViewProductsComponent,{
+      width: '1300px',
+      disableClose: true,
+      data: data
+    });
+
+    this.dialogRef.afterClosed().subscribe((result) => {});
+  }
+
   RenderDataTable() {
     this.productservice.getProducts(this.pageSize, 1).subscribe(
       (res: any) => {
@@ -133,6 +145,7 @@ export class ProdComponent implements OnInit {
       });
   }
   sortData(sort) {
+    console.log(sort)
     this._loading = true;
     this.MyDataSource = null;
     localStorage.setItem('product_direction', sort.direction);

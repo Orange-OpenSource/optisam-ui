@@ -20,7 +20,7 @@ Each customer entity of OpTISAM will have its scope.
 
 You can access to "Scope Management" by clicking here :
 
-![select APM](../../img/scopeMana/accessu.jpg){: .zoom}
+![select APM](../../img/scopeMana/access.jpg){: .zoom}
 
 ## Presentation
 

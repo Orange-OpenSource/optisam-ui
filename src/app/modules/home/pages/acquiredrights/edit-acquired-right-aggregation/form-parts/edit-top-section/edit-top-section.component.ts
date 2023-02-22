@@ -51,6 +51,7 @@ export class EditTopSectionComponent implements OnInit {
         { value: null, disabled: false },
         Validators.required
       ),
+      repartition: this.fb.control(false),
     });
   }
 
@@ -60,6 +61,10 @@ export class EditTopSectionComponent implements OnInit {
 
   get aggregationName(): FormControl {
     return this.aggregationForm.get('aggregationName') as FormControl;
+  }
+
+  get repartition() {
+    return this.aggregationForm.get('repartition');
   }
 
   getAggregationList(): void {
@@ -79,6 +84,7 @@ export class EditTopSectionComponent implements OnInit {
           aggregationName: this.aggregationList.find(
             (a) => a.aggregation_name === this.data.aggregation_name
           ).ID,
+          repartition:this.data.repartition
         });
       },
       (error) => {

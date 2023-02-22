@@ -14,6 +14,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
+import { ViewProductsComponent } from '../prod/view-products/view-products.component';
 
 @Component({
   selector: 'app-product-aggregation',
@@ -44,7 +45,7 @@ export class ProductAggregationComponent implements OnInit {
   filteringOrder: any;
 
   displayedColumns: string[] = [
-    'swidTag',
+    
     'aggregation_name',
     'editor',
     'total_cost',
@@ -52,7 +53,7 @@ export class ProductAggregationComponent implements OnInit {
     'num_equipments',
   ];
   expandDisplayedColumns: string[] = [
-    'swidTag',
+    
     'Name',
     'version',
     'editor',
@@ -87,7 +88,6 @@ export class ProductAggregationComponent implements OnInit {
     title: 'Search by Aggregation Name',
     primary: 'name',
     other: [
-      { key: 'swidTag', label: 'SWIDtag' },
       { key: 'name', label: 'Aggregation name' },
       { key: 'editor', label: 'Editor name' },
     ],
@@ -99,6 +99,7 @@ export class ProductAggregationComponent implements OnInit {
   searchQuery: string;
   sortQuery: string;
   aggregationDetails: any;
+  dialogRef: any;
 
   constructor(
     private productservice: ProductService,
@@ -150,6 +151,17 @@ export class ProductAggregationComponent implements OnInit {
     this.getProductAggregationData();
   }
 
+  openEditorDialog(data:any){
+    console.log("working")
+    this.dialogRef=this.dialog.open(ViewProductsComponent,{
+      width: '1300px',
+      disableClose: true,
+      data: data
+    });
+
+    this.dialogRef.afterClosed().subscribe((result) => {});
+  }
+
   sortData(ev) {
     if (!ev.direction) {
       return false;
@@ -193,11 +205,10 @@ export class ProductAggregationComponent implements OnInit {
 
   openAggregationDetailsDialog(aggregation: any): void {
     const dialogRef = this.dialog.open(ProductAggregationDetailsComponent, {
-      width: '850px',
+      width: '1300px',
       autoFocus: false,
       disableClose: true,
       data: {
-        
         productName: aggregation.product_name,
         aggregationName: aggregation.aggregation_name,
         aggregationID: aggregation.ID,
@@ -271,16 +282,20 @@ export class ProductAggregationComponent implements OnInit {
     this._loading = true;
     this.aggregationDetails = null;
     this.expandedRow = this.expandedRow === product ? null : product;
-    this.productservice.getAggregationProductDetails(product.aggregation_name).subscribe(
-      (res) => {
-        this.aggregationDetails = res.products;
-        this._loading = false;
-      },
-      (error) => {
-        this._loading = false;
-        console.log('There was an error while retrieving Products !!!' + error);
-      }
-    );
+    this.productservice
+      .getAggregationProductDetails(product.aggregation_name)
+      .subscribe(
+        (res) => {
+          this.aggregationDetails = res.products;
+          this._loading = false;
+        },
+        (error) => {
+          this._loading = false;
+          console.log(
+            'There was an error while retrieving Products !!!' + error
+          );
+        }
+      );
   }
 
   closeAggregation() {

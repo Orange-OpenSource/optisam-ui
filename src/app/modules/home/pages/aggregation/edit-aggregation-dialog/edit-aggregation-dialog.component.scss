@@ -18,12 +18,12 @@
 }
 .swidtabs {
   display: flex;
-  align-items: center;
 }
 .left,
 .right {
   width: 46%;
   border: 1px solid;
+  overflow-y: auto;
   border-radius: 5px 5px 0px 0px;
 }
 .transtitle {
@@ -45,7 +45,7 @@
 .right .body,
 .left .body {
   height: 100px;
-  overflow-y: auto;
+  // overflow-y: auto;
 }
 .trans-icon {
   width: 8%;

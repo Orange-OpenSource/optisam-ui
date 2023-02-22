@@ -22,12 +22,13 @@ export interface AdvanceSearchModel {
   title: string;
   other: AdvanceSearchField[];
   primary: string;
+  translate?: boolean;
 }
 
 export interface AdvanceSearchField {
   key: string;
   label: string;
-  type: 'text' | 'date';
+  type?: 'text' | 'date';
 }
 
 export enum TableSortOrder {
@@ -38,5 +39,17 @@ export interface PaginationDefaults {
   currentPageNum: number;
   pageSize: number;
   sortOrder: TableSortOrder;
+  length: number;
+}
+
+export interface CommonRegex {
+  ONLY_DIGITS: string;
+  DIGITS_WITH_NAV: string;
+}
+
+export interface PaginationEvent {
+  previousPageIndex: number;
+  pageIndex: number;
+  pageSize: number;
   length: number;
 }

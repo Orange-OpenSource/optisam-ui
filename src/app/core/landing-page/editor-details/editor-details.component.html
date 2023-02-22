@@ -1,0 +1,220 @@
+<app-loading-spinner *ngIf="_loading"></app-loading-spinner>
+<ng-container *ngIf="!_loading && isEditorId && editorDetails">
+  <h5 class="details-panel-header">
+    {{ "Editor details" | translate }}
+  </h5>
+  <div id="product-details" class="mat-elevation-z8">
+    <div class="prod-table" fxLayout="column">
+      <!-- Editor Name -->
+      <div class="item-row" fxLayout="row">
+        <div class="item-column" fxFlex fxLayout="column">
+          <div
+            class="item-label-box"
+            fxLayout="row"
+            fxLayoutAlign="start center"
+            fxLayoutGap="5px"
+          >
+            <div class="item-icon" fxLayout="row" fxLayoutAlign="center">
+              <mat-icon>work</mat-icon>
+            </div>
+            <div class="item-label" fxFlex>{{ "Editor Name" | translate }}</div>
+          </div>
+          <div class="item-content" fxLayout="row">
+            {{ editorDetails?.name }}
+          </div>
+        </div>
+      </div>
+      <!-- General Information -->
+      <div class="item-row" fxLayout="row">
+        <div class="item-column" fxFlex fxLayout="column">
+          <div
+            class="item-label-box"
+            fxLayout="row"
+            fxLayoutAlign="start center"
+            fxLayoutGap="5px"
+          >
+            <div class="item-icon" fxLayout="row" fxLayoutAlign="center">
+              <mat-icon>info</mat-icon>
+            </div>
+            <div class="item-label" fxFlex>
+              {{ "General Information" | translate }}
+            </div>
+          </div>
+          <div class="item-content" fxLayout="row">
+            {{
+              editorDetails?.general_information
+                ? editorDetails.general_information
+                : ""
+            }}
+          </div>
+        </div>
+      </div>
+      <!-- Partner Manager -->
+      <div fxLayout="row" class="item-row">
+        <div class="item-column" fxFlex fxLayout="column">
+          <div
+            class="item-label-box"
+            fxLayout="row"
+            fxLayoutAlign="start center"
+            fxLayoutGap="5px"
+          >
+            <div class="item-icon" fxLayout="row" fxLayoutAlign="center">
+              <mat-icon>supervisor_account</mat-icon>
+            </div>
+            <div class="item-label" fxFlex>
+              {{ "Partner Manager" | translate }}
+            </div>
+          </div>
+
+          <!-- partner manager table -->
+          <div
+            class="version-table"
+            fxLayout="row"
+            *ngIf="editorDetails?.partner_managers?.length"
+          >
+            <mat-table [dataSource]="editorDetails?.partner_managers">
+              <ng-container *ngFor="let header of partnerManagerHeaders">
+                <ng-container matColumnDef="{{ header.key }}">
+                  <mat-header-cell *matHeaderCellDef>
+                    {{ header.header }}
+                  </mat-header-cell>
+                  <mat-cell *matCellDef="let element">
+                    {{ element[header.key] }}
+                  </mat-cell>
+                </ng-container>
+              </ng-container>
+
+              <mat-header-row
+                *matHeaderRowDef="partnerManagerTableHeaders"
+              ></mat-header-row>
+              <mat-row
+                *matRowDef="let row; columns: partnerManagerTableHeaders"
+              ></mat-row>
+            </mat-table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Audits -->
+      <div fxLayout="row" class="item-row">
+        <div class="item-column" fxFlex fxLayout="column">
+          <div
+            class="item-label-box"
+            fxLayout="row"
+            fxLayoutAlign="start center"
+            fxLayoutGap="5px"
+          >
+            <div class="item-icon" fxLayout="row" fxLayoutAlign="center">
+              <mat-icon>rate_review</mat-icon>
+            </div>
+            <div class="item-label" fxFlex>
+              {{ "Audits" | translate }}
+            </div>
+          </div>
+
+          <!-- partner manager table -->
+          <div
+            class="version-table"
+            fxLayout="row"
+            *ngIf="editorDetails?.audits?.length"
+          >
+            <mat-table [dataSource]="editorDetails?.audits">
+              <ng-container *ngFor="let header of auditHeaders">
+                <div [ngSwitch]="header.key">
+                  <div *ngSwitchCase="'date'">
+                    <ng-container matColumnDef="{{ header.key }}">
+                      <mat-header-cell *matHeaderCellDef>
+                        {{ header.header }}
+                      </mat-header-cell>
+                      <mat-cell *matCellDef="let element">
+                        {{ element[header.key] | date : "yyyy" }}
+                      </mat-cell>
+                    </ng-container>
+                  </div>
+                  <div *ngSwitchDefault>
+                    <ng-container matColumnDef="{{ header.key }}">
+                      <mat-header-cell *matHeaderCellDef>
+                        {{ header.header }}
+                      </mat-header-cell>
+                      <mat-cell *matCellDef="let element">
+                        {{ element[header.key] }}
+                      </mat-cell>
+                    </ng-container>
+                  </div>
+                </div>
+              </ng-container>
+
+              <mat-header-row
+                *matHeaderRowDef="auditTableHeaders"
+              ></mat-header-row>
+              <mat-row
+                *matRowDef="let row; columns: auditTableHeaders"
+              ></mat-row>
+            </mat-table>
+          </div>
+        </div>
+      </div>
+      <!-- Vendor -->
+      <div fxLayout="row" class="item-row">
+        <div class="item-column" fxFlex fxLayout="column">
+          <div
+            class="item-label-box"
+            fxLayout="row"
+            fxLayoutAlign="start center"
+            fxLayoutGap="5px"
+          >
+            <div class="item-icon" fxLayout="row" fxLayoutAlign="center">
+              <mat-icon>store</mat-icon>
+            </div>
+            <div class="item-label" fxFlex>
+              {{ "Vendors" | translate }}
+            </div>
+          </div>
+          <div
+            class="item-content"
+            fxLayout="row wrap"
+            fxLayoutAlign="start center"
+            fxLayoutGap="8px"
+            *ngIf="editorDetails?.vendors?.length"
+          >
+            <ng-container *ngFor="let vendor of editorDetails?.vendors">
+              <span *ngIf="vendor" class="vendor-item">{{ vendor.name }}</span>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+      <!-- Scopes -->
+      <div fxLayout="row" class="item-row">
+        <div class="item-column" fxFlex fxLayout="column">
+          <div
+            class="item-label-box"
+            fxLayout="row"
+            fxLayoutAlign="start center"
+            fxLayoutGap="5px"
+          >
+            <div class="item-icon" fxLayout="row" fxLayoutAlign="center">
+              <mat-icon>person_pin_circle</mat-icon>
+            </div>
+            <div class="item-label" fxFlex>
+              {{ "Scopes" | translate }}
+            </div>
+          </div>
+          <div
+            class="item-content"
+            fxLayout="row wrap"
+            fxLayoutAlign="start center"
+            fxLayoutGap="8px"
+            *ngIf="editorDetails?.scopes?.length"
+          >
+            <ng-container *ngFor="let scope of editorDetails?.scopes">
+              <span class="scope-item">{{ scope }}</span>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-container>
+<div *ngIf="!isEditorId && !_loading" class="no-data">
+  {{ "No data available" | translate }}
+</div>

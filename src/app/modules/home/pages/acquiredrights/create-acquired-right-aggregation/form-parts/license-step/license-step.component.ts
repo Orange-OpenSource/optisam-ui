@@ -34,7 +34,6 @@ export class LicenseStepComponent implements OnInit {
       ]),
       productsMetrics: this.fb.control(null, [Validators.required]),
       unit_price: this.fb.control(null, [
-        Validators.required,
         Validators.pattern(/^[0-9]+(\.[0-9]{1,2})*$/),
       ]),
     });

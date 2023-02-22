@@ -1,0 +1,171 @@
+<div>
+  <app-advance-search
+    [advanceSearchModel]="advanceSearchModel"
+    [existingFilterFields]="existingFilterFields"
+    (advFilterEvent)="advanceSearchFilter($event)"
+  >
+  </app-advance-search>
+</div>
+
+<ng-container>
+  <div id="editors" class="mat-elevation-z8">
+    <mat-table
+      [dataSource]="productList"
+      class="mat-elevation-z8"
+      matSort
+      (matSortChange)="sortData($event)"
+      #listTable
+    >
+      <ng-container *ngFor="let col of columns">
+        <ng-container [ngSwitch]="col.key">
+          <!-- Name -->
+          <ng-container *ngSwitchCase="'name'" matColumnDef="{{ col.key }}">
+            <mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header="{{ col.key }}"
+              disableClear
+            >
+              {{ col.label | translate }}
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+              <a class="link" (click)="openProduct(element.id)">{{
+                element[col.key]
+              }}</a>
+            </mat-cell>
+          </ng-container>
+          <!-- Version -->
+          <ng-container *ngSwitchCase="'version'" matColumnDef="{{ col.key }}">
+            <mat-header-cell *matHeaderCellDef>
+              {{ col.label | translate }}
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+              {{ element[col.key] | getVersions }}
+            </mat-cell>
+          </ng-container>
+
+          <ng-container
+            *ngSwitchCase="'locationType'"
+            matColumnDef="{{ col.key }}"
+          >
+            <mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header="{{ col.key }}"
+              disableClear
+            >
+              {{ col.label | translate }}
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+              <span *ngIf="element.locationType === 'NONE'"></span>
+              <span *ngIf="element.locationType !== 'NONE'"
+                >{{ element[col.key] }}
+              </span>
+            </mat-cell>
+          </ng-container>
+
+          <ng-container
+            *ngSwitchCase="'licensing'"
+            matColumnDef="{{ col.key }}"
+          >
+            <mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header="{{ col.key }}"
+              disableClear
+            >
+              {{ col.label | translate }}
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+              <span
+                *ngIf="
+                  element?.openSource?.isOpenSource &&
+                  element?.closeSource.isCloseSource
+                "
+                >{{ "Open Source and Closed Source" }}</span
+              >
+              <span
+                *ngIf="
+                  element?.openSource?.isOpenSource &&
+                  !element.closeSource.isCloseSource
+                "
+                >{{ "Open Source" }}</span
+              >
+              <span
+                *ngIf="
+                  !element?.openSource?.isOpenSource &&
+                  element.closeSource.isCloseSource
+                "
+                >{{ "Closed Source" }}</span
+              >
+              <span
+                *ngIf="
+                  !element?.openSource?.isOpenSource &&
+                  !element.closeSource.isCloseSource
+                "
+              ></span>
+            </mat-cell>
+          </ng-container>
+
+          <!-- Open Sources -->
+          <ng-container
+            *ngSwitchCase="'openSource'"
+            matColumnDef="{{ col.key }}"
+          >
+            <mat-header-cell *matHeaderCellDef>
+              {{ col.label | translate }}
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+              {{ element[col.key]?.openLicences }}
+            </mat-cell>
+          </ng-container>
+
+          <!-- Close sources -->
+          <ng-container
+            *ngSwitchCase="'closeSource'"
+            matColumnDef="{{ col.key }}"
+          >
+            <mat-header-cell *matHeaderCellDef>
+              {{ col.label | translate }}
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+              {{ element[col.key] | getCloseSources }}
+            </mat-cell>
+          </ng-container>
+
+          <ng-container *ngSwitchDefault matColumnDef="{{ col.key }}">
+            <mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header="{{ col.key }}"
+              disableClear
+              >{{ col.label | translate }}</mat-header-cell
+            >
+            <mat-cell *matCellDef="let element">
+              {{ element[col.key] }}
+            </mat-cell>
+          </ng-container>
+        </ng-container>
+      </ng-container>
+      <mat-header-row
+        *matHeaderRowDef="displayedColumns; sticky: true"
+      ></mat-header-row>
+
+      <mat-row
+        *matRowDef="let row; columns: displayedColumns"
+        [ngClass]="{ active: currentId == row.id }"
+      ></mat-row>
+    </mat-table>
+    <div class="no-data" *ngIf="_loading">
+      <app-loading-spinner></app-loading-spinner>
+    </div>
+
+    <div class="no-data" *ngIf="!_loading && listData && listData?.length == 0">
+      {{ "No data available" | translate }}
+    </div>
+    <mat-paginator
+      [length]="length"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="pageSizeOptions"
+      (page)="pageEvent = getPaginatorData($event)"
+      showFirstLastButtons
+    >
+    </mat-paginator>
+  </div>
+</ng-container>

@@ -2,19 +2,24 @@
   <mat-card-header>
     <mat-card-title class="page-heading">{{
       "Create Acquired Right" | translate
-      }}</mat-card-title>
+    }}</mat-card-title>
   </mat-card-header>
   <mat-card class="card">
     <mat-card-content fxLayout="column">
       <form [formGroup]="skuForm">
-        <div class="col-md-6">
-          <mat-form-field appearance="outline">
+        <div fxLayout="row" fxLayoutAlign="space-between">
+          <mat-form-field appearance="outline" fxFlex="49">
             <mat-label>{{ "SKU" | translate }}*</mat-label>
-            <input id="sku" matInput placeholder="{{ 'SKU' | translate }}" formControlName="sku" />
+            <input
+              id="sku"
+              matInput
+              placeholder="{{ 'SKU' | translate }}"
+              formControlName="sku"
+            />
             <mat-hint>{{
               "Stock keeping unit referencing the package sold by the editor"
-              | translate
-              }}</mat-hint>
+                | translate
+            }}</mat-hint>
             <mat-error *ngIf="sku.invalid && sku.hasError('required')">
               {{ "SKU is mandatory" | translate }}
             </mat-error>
@@ -22,33 +27,84 @@
               {{ "SKU is required in ^[a-zA-Z0-9_.]*$ format" | translate }}
             </mat-error>
           </mat-form-field>
+          <div
+            fxFlex="49"
+            fxLayout="row"
+            fxLayoutAlign="start center"
+            style="height: 47.6px"
+          >
+            <mat-checkbox
+              fxLayout="row"
+              fxLayoutAlign="start center"
+              id="repartition"
+              formControlName="repartition"
+              matTooltip="{{
+                'Allow OpTISAM to compute the allocation of licenses for the product in order to have the least expensive total cost'
+                  | translate
+              }}"
+              >{{ "COST OPTIMIZATION" | translate }}</mat-checkbox
+            >
+          </div>
         </div>
+
         <mat-horizontal-stepper [linear]="false" #stepper>
           <!-- Contract Block-->
-          <mat-step [stepControl]="contractForm" label="{{ 'Contract' | translate }}">
+          <mat-step
+            [stepControl]="contractForm"
+            label="{{ 'Contract' | translate }}"
+          >
             <form [formGroup]="contractForm">
-              <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="10px">
-                <mat-form-field appearance="outline" fxFlex class="formField m-r-6">
-                  <mat-label>{{
-                    "Ordering date" | translate
-                    }}</mat-label>
-                  <input matInput [matDatepicker]="picker3" (click)="picker3.open()" id="orderingDate"
-                    placeholder="{{ 'Ordering date' | translate }}" formControlName="orderingDate" />
-                  <mat-datepicker-toggle matSuffix [for]="picker3"></mat-datepicker-toggle>
+              <div
+                fxLayout="row"
+                fxLayoutAlign="center center"
+                fxLayoutGap="10px"
+              >
+                <mat-form-field
+                  appearance="outline"
+                  fxFlex
+                  class="formField m-r-6"
+                >
+                  <mat-label>{{ "Ordering Date" | translate }}</mat-label>
+                  <input
+                    matInput
+                    [matDatepicker]="picker3"
+                    (click)="picker3.open()"
+                    id="orderingDate"
+                    placeholder="{{ 'Ordering Date' | translate }}"
+                    formControlName="orderingDate"
+                  />
+                  <mat-datepicker-toggle
+                    matSuffix
+                    [for]="picker3"
+                  ></mat-datepicker-toggle>
                   <mat-datepicker #picker3></mat-datepicker>
                   <mat-error>
                     {{ "Invaid ordering date" | translate }}
                   </mat-error>
                 </mat-form-field>
                 <mat-form-field appearance="outline" fxFlex>
-                  <mat-label>{{ "Corporate sourcing contract" | translate }}</mat-label>
-                  <input id="corporateSource" maxlength="16" matInput
-                    placeholder="{{ 'Corporate sourcing contract' | translate }}" formControlName="corporateSource" />
+                  <mat-label>{{
+                    "AGGREGATIONS.TEXTS.CSC" | translate
+                  }}</mat-label>
+                  <input
+                    id="corporateSource"
+                    maxlength="16"
+                    matInput
+                    placeholder="{{
+                      'Corporate sourcing contract' | translate
+                    }}"
+                    formControlName="corporateSource"
+                  />
                 </mat-form-field>
                 <mat-form-field appearance="outline" fxFlex>
                   <mat-label>{{ "Software provider" | translate }}</mat-label>
-                  <input id="softwareProvider" maxlength="16" matInput
-                    placeholder="{{ 'Software provider' | translate }}" formControlName="softwareProvider" />
+                  <input
+                    id="softwareProvider"
+                    maxlength="16"
+                    matInput
+                    placeholder="{{ 'Software provider' | translate }}"
+                    formControlName="softwareProvider"
+                  />
                 </mat-form-field>
               </div>
               <div class="flexEnd">
@@ -59,125 +115,194 @@
             </form>
           </mat-step>
           <!-- Product Block -->
-          <mat-step [stepControl]="productForm" label="{{ 'Product' | translate }}*">
+          <mat-step
+            [stepControl]="productForm"
+            label="{{ 'Product' | translate }}*"
+          >
             <form [formGroup]="productForm">
               <div class="horizontal">
                 <mat-form-field appearance="outline">
                   <mat-label>{{ "Product Editor" | translate }}*</mat-label>
-                  <input id="product_editor" type="text" matInput placeholder="{{ 'Product Editor' | translate }}"
-                    formControlName="product_editor" [matAutocomplete]="autoEditor" />
-                  <mat-autocomplete autoActiveFirstOption #autoEditor="matAutocomplete"
-                    (optionSelected)="listProducts()">
-                    <mat-option *ngFor="let option of filteredEditorsList" [value]="option">
+                  <input
+                    id="product_editor"
+                    type="text"
+                    matInput
+                    placeholder="{{ 'Product Editor' | translate }}"
+                    formControlName="product_editor"
+                    [matAutocomplete]="autoEditor"
+                  />
+                  <mat-autocomplete
+                    autoActiveFirstOption
+                    #autoEditor="matAutocomplete"
+                    (optionSelected)="listProducts()"
+                  >
+                    <mat-option
+                      *ngFor="let option of filteredEditorsList"
+                      [value]="option"
+                    >
                       {{ option }}
                     </mat-option>
                   </mat-autocomplete>
                   <mat-hint>{{ "Editor of the product" | translate }}</mat-hint>
-                  <mat-error *ngIf="
+                  <mat-error
+                    *ngIf="
                       product_editor.invalid &&
                       product_editor.hasError('required')
-                    ">
+                    "
+                  >
                     {{ "Product editor is mandatory" | translate }}
                   </mat-error>
-                  <mat-error *ngIf="
+                  <mat-error
+                    *ngIf="
                       product_editor.invalid &&
                       product_editor.hasError('pattern')
-                    ">
+                    "
+                  >
                     {{
-                    "Value cannot contain leading or trailing whitespace"
-                    | translate
+                      "Value cannot contain leading or trailing whitespace"
+                        | translate
                     }}
                   </mat-error>
-                  <mat-error *ngIf="
+                  <mat-error
+                    *ngIf="
                       product_editor.invalid &&
                       product_editor.hasError('hasUnderscore')
-                    ">
+                    "
+                  >
                     {{ "Value cannot contain an underscore" | translate }}
                   </mat-error>
                 </mat-form-field>
                 <div class="width-clearfix"></div>
                 <mat-form-field appearance="outline">
                   <mat-label>{{ "Product Name" | translate }}*</mat-label>
-                  <input id="product_name" type="text" matInput placeholder="{{ 'Product Name' | translate }}"
-                    formControlName="product_name" [matAutocomplete]="autoProduct" />
-                  <mat-autocomplete autoActiveFirstOption #autoProduct="matAutocomplete"
-                    (optionSelected)="listVersions()">
-                    <mat-option *ngFor="let option of filteredProductsList" [value]="option">
+                  <input
+                    id="product_name"
+                    type="text"
+                    matInput
+                    placeholder="{{ 'Product Name' | translate }}"
+                    formControlName="product_name"
+                    [matAutocomplete]="autoProduct"
+                  />
+                  <mat-autocomplete
+                    autoActiveFirstOption
+                    #autoProduct="matAutocomplete"
+                    (optionSelected)="listVersions()"
+                  >
+                    <mat-option
+                      *ngFor="let option of filteredProductsList"
+                      [value]="option"
+                    >
                       {{ option }}
                     </mat-option>
                   </mat-autocomplete>
                   <mat-hint>{{ "Name of the product" | translate }}</mat-hint>
-                  <mat-error *ngIf="
+                  <mat-error
+                    *ngIf="
                       product_name.invalid && product_name.hasError('required')
-                    ">
+                    "
+                  >
                     {{ "Product name is mandatory" | translate }}
                   </mat-error>
-                  <mat-error *ngIf="
+                  <mat-error
+                    *ngIf="
                       product_name.invalid && product_name.hasError('pattern')
-                    ">
+                    "
+                  >
                     {{
-                    "Value cannot contain leading or trailing whitespace"
-                    | translate
+                      "Value cannot contain leading or trailing whitespace"
+                        | translate
                     }}
                   </mat-error>
-                  <mat-error *ngIf="
+                  <mat-error
+                    *ngIf="
                       product_name.invalid &&
                       product_name.hasError('hasUnderscore')
-                    ">
+                    "
+                  >
                     {{ "Value cannot contain an underscore" | translate }}
                   </mat-error>
                 </mat-form-field>
               </div>
               <div class="horizontal">
                 <mat-form-field appearance="outline">
-                  <mat-label>{{ "Product Version" | translate }}*</mat-label>
-                  <input id="product_version" type="text" matInput placeholder="{{ 'Product Version' | translate }}"
-                    formControlName="product_version" [matAutocomplete]="autoVersion" />
-                  <mat-autocomplete autoActiveFirstOption #autoVersion="matAutocomplete">
-                    <mat-option *ngFor="let option of filteredVersionsList" [value]="option">
+                  <mat-label>{{ "Product Version" | translate }}</mat-label>
+                  <input
+                    id="product_version"
+                    type="text"
+                    matInput
+                    placeholder="{{ 'Product Version' | translate }}"
+                    formControlName="product_version"
+                    [matAutocomplete]="autoVersion"
+                  />
+                  <mat-autocomplete
+                    autoActiveFirstOption
+                    #autoVersion="matAutocomplete"
+                  >
+                    <mat-option
+                      *ngFor="let option of filteredVersionsList"
+                      [value]="option"
+                    >
                       {{ option }}
                     </mat-option>
                   </mat-autocomplete>
                   <mat-hint>{{
                     "Version of the product" | translate
-                    }}</mat-hint>
-                  <mat-error *ngIf="
+                  }}</mat-hint>
+                  <mat-error
+                    *ngIf="
                       product_version.invalid &&
                       product_version.hasError('required')
-                    ">
+                    "
+                  >
                     {{ "Product version is mandatory" | translate }}
                   </mat-error>
-                  <mat-error *ngIf="
+                  <mat-error
+                    *ngIf="
                       product_version.invalid &&
                       product_version.hasError('pattern')
-                    ">
+                    "
+                  >
                     {{
-                    "Value cannot contain leading or trailing whitespace"
-                    | translate
+                      "Value cannot contain leading or trailing whitespace"
+                        | translate
                     }}
                   </mat-error>
-                  <mat-error *ngIf="
+                  <mat-error
+                    *ngIf="
                       product_version.invalid &&
                       product_version.hasError('hasUnderscore')
-                    ">
+                    "
+                  >
                     {{ "Value cannot contain an underscore" | translate }}
                   </mat-error>
                 </mat-form-field>
                 <div class="width-clearfix"></div>
                 <mat-form-field appearance="outline">
                   <mat-label>{{ "Metric " | translate }}*</mat-label>
-                  <mat-select multiple id="acqMetrics" formControlName="metrics"
-                    (selectionChange)="changed($event.value)">
-                    <mat-option *ngFor="let metric of metricsList; let i = index" [value]="metric.name"
-                      [disabled]="disabledMetricNameList.includes(metric.name)" #option (click)="
+                  <mat-select
+                    multiple
+                    id="acqMetrics"
+                    formControlName="metrics"
+                    (selectionChange)="changed($event.value)"
+                  >
+                    <mat-option
+                      *ngFor="let metric of metricsList; let i = index"
+                      [value]="metric.name"
+                      [disabled]="disabledMetricNameList.includes(metric.name)"
+                      #option
+                      (click)="
                         metricClickHandler(option._selected, metric.type)
-                      ">{{ metric.name }}</mat-option>
+                      "
+                      >{{ metric.name }}</mat-option
+                    >
                   </mat-select>
                   <mat-hint>{{
                     "Metric to be used in OpTISAM for license computation"
-                    | translate
-                    }}</mat-hint>
-                  <mat-error *ngIf="metrics.invalid && metrics.hasError('required')">
+                      | translate
+                  }}</mat-hint>
+                  <mat-error
+                    *ngIf="metrics.invalid && metrics.hasError('required')"
+                  >
                     {{ "Metric is mandatory" | translate }}
                   </mat-error>
                 </mat-form-field>
@@ -193,44 +318,66 @@
             </form>
           </mat-step>
           <!-- License Block -->
-          <mat-step [stepControl]="licenseForm" label="{{ 'Acquired licenses' | translate }}*">
+          <mat-step
+            [stepControl]="licenseForm"
+            label="{{ 'Acquired licenses' | translate }}*"
+          >
             <form [formGroup]="licenseForm">
               <div class="horizontal">
                 <mat-form-field appearance="outline">
-                  <mat-label>{{ "Number of licenses acquired" | translate }}*</mat-label>
-                  <input id="licenses_acquired" matInput placeholder="{{
+                  <mat-label
+                    >{{ "Number of licenses acquired" | translate }}*</mat-label
+                  >
+                  <input
+                    id="licenses_acquired"
+                    matInput
+                    placeholder="{{
                       'Number of licenses acquired' | translate
-                    }}" formControlName="licenses_acquired" />
+                    }}"
+                    formControlName="licenses_acquired"
+                  />
                   <mat-hint>{{
                     "Number of licenses acquired for the product at the specified price and for the selected
                     metric"
-                    | translate
-                    }}</mat-hint>
-                  <mat-error *ngIf="
+                      | translate
+                  }}</mat-hint>
+                  <mat-error
+                    *ngIf="
                       licenses_acquired.invalid &&
                       licenses_acquired.hasError('required')
-                    ">
+                    "
+                  >
                     {{ "Licenses acquired is mandatory" | translate }}
                   </mat-error>
-                  <mat-error *ngIf="
+                  <mat-error
+                    *ngIf="
                       licenses_acquired.invalid &&
                       licenses_acquired.hasError('pattern')
-                    ">
+                    "
+                  >
                     {{ "Invalid number" | translate }}
                   </mat-error>
                 </mat-form-field>
                 <div class="width-clearfix"></div>
                 <mat-form-field appearance="outline">
-                  <mat-label>{{ "Unit price" | translate }}*</mat-label>
-                  <input id="unit_price" matInput placeholder="{{ 'Unit price' | translate }}"
-                    formControlName="unit_price" />
+                  <mat-label>{{ "Unit price" | translate }}</mat-label>
+                  <input
+                    id="unit_price"
+                    matInput
+                    placeholder="{{ 'Unit price' | translate }}"
+                    formControlName="unit_price"
+                  />
                   <mat-hint>{{ "Unit price of license" | translate }}</mat-hint>
-                  <mat-error *ngIf="
+                  <mat-error
+                    *ngIf="
                       unit_price.invalid && unit_price.hasError('required')
-                    ">
+                    "
+                  >
                     {{ "Unit price is mandatory" | translate }}
                   </mat-error>
-                  <mat-error *ngIf="unit_price.invalid && unit_price.hasError('pattern')">
+                  <mat-error
+                    *ngIf="unit_price.invalid && unit_price.hasError('pattern')"
+                  >
                     {{ "Invalid unit price" | translate }}
                   </mat-error>
                 </mat-form-field>
@@ -246,29 +393,42 @@
             </form>
           </mat-step>
           <!-- Maintenance Block -->
-          <mat-step [stepControl]="maintenanceForm" label="{{ 'Maintenance' | translate }}">
+          <mat-step
+            [stepControl]="maintenanceForm"
+            label="{{ 'Maintenance' | translate }}"
+          >
             <form [formGroup]="maintenanceForm">
               <div class="horizontal">
                 <mat-form-field appearance="outline">
                   <mat-label>{{
                     "Number of licenses under maintenance" | translate
-                    }}</mat-label>
-                  <input id="licenses_maintenance" matInput (input)="valueChange($event)" placeholder="{{
+                  }}</mat-label>
+                  <input
+                    id="licenses_maintenance"
+                    matInput
+                    (input)="valueChange($event)"
+                    placeholder="{{
                       'Number of licenses under maintenance' | translate
-                    }}" formControlName="licenses_maintenance" />
+                    }}"
+                    formControlName="licenses_maintenance"
+                  />
                   <mat-hint>{{
                     "Number of licenses under maintenance" | translate
-                    }}</mat-hint>
-                  <mat-error *ngIf="
+                  }}</mat-hint>
+                  <mat-error
+                    *ngIf="
                       licenses_maintenance.invalid &&
                       licenses_maintenance.hasError('required')
-                    ">
+                    "
+                  >
                     {{ "Number of licenses is mandatory" | translate }}
                   </mat-error>
-                  <mat-error *ngIf="
+                  <mat-error
+                    *ngIf="
                       licenses_maintenance.invalid &&
                       licenses_maintenance.hasError('pattern')
-                    ">
+                    "
+                  >
                     {{ "Invalid number" | translate }}
                   </mat-error>
                 </mat-form-field>
@@ -276,23 +436,31 @@
                 <mat-form-field appearance="outline">
                   <mat-label>{{
                     "Maintenance unit price" | translate
-                    }}</mat-label>
-                  <input id="maintenance_price" matInput placeholder="{{ 'Unit price' | translate }}"
-                    formControlName="maintenance_price" />
+                  }}</mat-label>
+                  <input
+                    id="maintenance_price"
+                    matInput
+                    placeholder="{{ 'Unit price' | translate }}"
+                    formControlName="maintenance_price"
+                  />
                   <mat-hint>{{
                     "Unit price of maintenance for the period, for one license"
-                    | translate
-                    }}</mat-hint>
-                  <mat-error *ngIf="
+                      | translate
+                  }}</mat-hint>
+                  <mat-error
+                    *ngIf="
                       maintenance_price.invalid &&
                       maintenance_price.hasError('required')
-                    ">
+                    "
+                  >
                     {{ "Maintenance unit price is mandatory" | translate }}
                   </mat-error>
-                  <mat-error *ngIf="
+                  <mat-error
+                    *ngIf="
                       maintenance_price.invalid &&
                       maintenance_price.hasError('pattern')
-                    ">
+                    "
+                  >
                     {{ "Invalid maintenance unit price" | translate }}
                   </mat-error>
                 </mat-form-field>
@@ -300,70 +468,120 @@
               <div class="horizontal">
                 <div class="col-md-6 flexLine">
                   <span class="textInline p-l-0">{{
-                    "Period from" | translate
-                    }}</span>
+                    "PERIOD_FROM" | translate
+                  }}</span>
                   <mat-form-field appearance="outline" class="formField m-r-6">
                     <mat-label>{{
                       "Start of maintenance" | translate
-                      }}</mat-label>
-                    <input matInput [disabled]="allowDate" readonly="allowDate" [matDatepicker]="picker1"
-                      (click)="picker1.open()" id="startMaintenanceDate"
-                      placeholder="{{ 'Start of maintenance' | translate }}" formControlName="startMaintenanceDate"
-                      (dateChange)="orgStartValueChange()" />
-                    <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                    }}</mat-label>
+                    <input
+                      matInput
+                      [disabled]="allowDate"
+                      readonly="allowDate"
+                      [matDatepicker]="picker1"
+                      (click)="picker1.open()"
+                      id="startMaintenanceDate"
+                      placeholder="{{ 'Start of maintenance' | translate }}"
+                      formControlName="startMaintenanceDate"
+                      (dateChange)="orgStartValueChange()"
+                    />
+                    <mat-datepicker-toggle
+                      matSuffix
+                      [for]="picker1"
+                    ></mat-datepicker-toggle>
                     <mat-datepicker #picker1></mat-datepicker>
-                    <mat-error *ngIf="
+                    <mat-error
+                      *ngIf="
                         startMaintenanceDate.invalid &&
                         (startMaintenanceDate.dirty ||
                           startMaintenanceDate.touched) &&
                         startMaintenanceDate.errors.required
-                      ">
-                      {{ "Invalid Start Date" | translate }}</mat-error>
+                      "
+                    >
+                      {{ "Invalid Start Date" | translate }}</mat-error
+                    >
                   </mat-form-field>
                 </div>
                 <div class="col-md-6 flexLine">
-                  <span class="textInline">{{ "to" | translate }}</span>
+                  <span class="textInline">{{ "PERIOD_TO" | translate }}</span>
                   <mat-form-field appearance="outline" class="formField m-l-6">
                     <mat-label>{{
                       "End of maintenance" | translate
-                      }}</mat-label>
-                    <input matInput [matDatepicker]="picker2" [disabled]="allowEndDate" (click)="picker2.open()"
-                      id="endMaintenanceDate" placeholder="{{ 'End of maintenance' | translate }}"
-                      formControlName="endMaintenanceDate" [matDatepickerFilter]="boundDateStart" [readonly]="
+                    }}</mat-label>
+                    <input
+                      matInput
+                      [matDatepicker]="picker2"
+                      [disabled]="allowEndDate"
+                      (click)="picker2.open()"
+                      id="endMaintenanceDate"
+                      placeholder="{{ 'End of maintenance' | translate }}"
+                      formControlName="endMaintenanceDate"
+                      [matDatepickerFilter]="boundDateStart"
+                      [readonly]="
                         this.startMaintenanceDate.invalid ||
                         !this.startMaintenanceDate.value
-                      " [disabled]="
+                      "
+                      [disabled]="
                         this.startMaintenanceDate.invalid ||
                         !this.startMaintenanceDate.value
-                      " />
-                    <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                      "
+                    />
+                    <mat-datepicker-toggle
+                      matSuffix
+                      [for]="picker2"
+                    ></mat-datepicker-toggle>
                     <mat-datepicker #picker2></mat-datepicker>
-                    <mat-error *ngIf="
+                    <mat-error
+                      *ngIf="
                         endMaintenanceDate.invalid &&
                         (endMaintenanceDate.dirty ||
                           endMaintenanceDate.touched) &&
                         endMaintenanceDate.errors.required
-                      ">
+                      "
+                    >
                       {{ "Invalid End Date" | translate }}
                     </mat-error>
                   </mat-form-field>
                 </div>
               </div>
-              <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="10px">
+              <div
+                fxLayout="row"
+                fxLayoutAlign="center center"
+                fxLayoutGap="10px"
+              >
                 <mat-form-field appearance="outline" fxFlex>
-                  <mat-label>{{ "Last purchased order" | translate }}</mat-label>
-                  <input id="lastPurchasedOrder" maxlength="16" matInput
-                    placeholder="{{ 'Last purchased order' | translate }}" formControlName="lastPurchasedOrder" />
+                  <mat-label>{{
+                    "Last purchased order" | translate
+                  }}</mat-label>
+                  <input
+                    id="lastPurchasedOrder"
+                    maxlength="16"
+                    matInput
+                    placeholder="{{ 'Last purchased order' | translate }}"
+                    formControlName="lastPurchasedOrder"
+                  />
                 </mat-form-field>
                 <mat-form-field appearance="outline" fxFlex>
                   <mat-label>{{ "Support number" | translate }}</mat-label>
-                  <input id="supportNumber" maxlength="16" matInput placeholder="{{ 'Support number' | translate }}"
-                    formControlName="supportNumber" />
+                  <input
+                    id="supportNumber"
+                    maxlength="16"
+                    matInput
+                    placeholder="{{ 'Support number' | translate }}"
+                    formControlName="supportNumber"
+                  />
                 </mat-form-field>
                 <mat-form-field appearance="outline" fxFlex>
-                  <mat-label>{{ "Maintenance provider" | translate }}</mat-label>
-                  <input id="maintenanceProvider" maxlength="16" matInput
-                    placeholder="{{ 'Maintenance provider' | translate }}" formControlName="maintenanceProvider" />
+                  <mat-label>{{
+                    "Maintenance provider" | translate
+                  }}</mat-label>
+                  <input
+                    id="maintenanceProvider"
+                    maxlength="16"
+                    matInput
+                    placeholder="{{ 'Maintenance provider' | translate }}"
+                    formControlName="maintenanceProvider"
+                  />
                 </mat-form-field>
               </div>
               <div id="maintenanceAlert" *ngIf="incompleteMaintenanceForm">
@@ -380,41 +598,91 @@
             </form>
           </mat-step>
           <!-- Comment Block -->
-          <mat-step [stepControl]="commentForm" label="{{ 'Additional info' | translate }}">
+          <mat-step
+            [stepControl]="commentForm"
+            label="{{ 'Additional info' | translate }}"
+          >
             <form [formGroup]="commentForm">
-              <mat-card-action fxFlex fxLayout="column" fxLayoutAlign="space-between start" class="body">
+              <mat-card-action
+                fxFlex
+                fxLayout="column"
+                fxLayoutAlign="space-between start"
+                class="body"
+              >
                 <div class="content-section" fxLayout="row" fxLayoutGap="70px">
-                  <mat-hint>{{ "Select the pdf file to upload" | translate }}</mat-hint>
-                  <button (click)="onBrowseClickHandler()" id="browse-btn" mat-raised-button class="btn-two">
+                  <mat-hint>{{
+                    "Select the pdf file to upload" | translate
+                  }}</mat-hint>
+                  <button
+                    (click)="onBrowseClickHandler()"
+                    id="browse-btn"
+                    mat-raised-button
+                    class="btn-two"
+                  >
                     {{ "Browse" | translate }}
                   </button>
-                  <input #fileInput (change)="onFileChangeHandler()" type="file" accept=".pdf"
-                    style="display: none" id="file-input" />
+                  <input
+                    #fileInput
+                    (change)="onFileChangeHandler()"
+                    type="file"
+                    accept=".pdf"
+                    style="display: none"
+                    id="file-input"
+                  />
 
                   <div class="show-file-name" *ngIf="selectedFile && checkFile">
                     <div class="border-icon">
-                      <div fxLayoutGap="10px" class="name-icon" fxFlex fxLayout="row" fxLayoutAlign="start start">
+                      <div
+                        fxLayoutGap="10px"
+                        class="name-icon"
+                        fxFlex
+                        fxLayout="row"
+                        fxLayoutAlign="start start"
+                      >
                         <mat-icon>insert_drive_file</mat-icon>
-                        <span class="file-heading" fxFlex>{{ selectedFile.name }}</span>
+                        <span class="file-heading" fxFlex>{{
+                          selectedFile.name
+                        }}</span>
                         <div>
-                          <mat-icon class="action-icon dlt" matTooltip="Delete Selected file" (click)="deleteSelectedFile()"
-                            >delete</mat-icon>
-                          </div>
+                          <mat-icon
+                            class="action-icon dlt"
+                            matTooltip="Delete Selected file"
+                            (click)="deleteSelectedFile()"
+                            >delete</mat-icon
+                          >
                         </div>
+                      </div>
                     </div>
                   </div>
-  
-                    <div class="show-errors" *ngIf="errorMsg" fxLayout="row" fxLayout="space-between start">
-                    <div fxLayoutGap="10px" class="name-icon" fxFlex fxLayout="row" fxLayoutAlign="start start">
+
+                  <div
+                    class="show-errors"
+                    *ngIf="errorMsg"
+                    fxLayout="row"
+                    fxLayout="space-between start"
+                  >
+                    <div
+                      fxLayoutGap="10px"
+                      class="name-icon"
+                      fxFlex
+                      fxLayout="row"
+                      fxLayoutAlign="start start"
+                    >
                       <mat-icon>error</mat-icon>
                       <span fxFlex>{{ errorMsg }}</span>
                     </div>
                   </div>
                 </div>
 
-
-                <textarea class="comment" rows="4" cols="115" maxlength="100" id="comment"
-                  placeholder="{{ 'Comment' | translate }}" formControlName="comment"></textarea>
+                <textarea
+                  class="comment"
+                  rows="4"
+                  cols="115"
+                  maxlength="100"
+                  id="comment"
+                  placeholder="{{ 'Comment' | translate }}"
+                  formControlName="comment"
+                ></textarea>
 
                 <div class="flexStart">
                   <button class="stepperBtn" mat-button matStepperPrevious>
@@ -423,7 +691,6 @@
                 </div>
               </mat-card-action>
             </form>
-
           </mat-step>
           <!-- change default 'error' icon -->
           <ng-template matStepperIcon="error">
@@ -434,17 +701,37 @@
     </mat-card-content>
   </mat-card>
   <mat-card-actions align="center">
-    <button id="cancelBtn" mat-raised-button class="btn-four" [disabled]="_createLoading" [mat-dialog-close]="1">
+    <button
+      id="cancelBtn"
+      mat-raised-button
+      class="btn-four"
+      [disabled]="_createLoading"
+      [mat-dialog-close]="1"
+    >
       {{ "Cancel" | translate }}
     </button>
-    <button id="resetBtn" mat-raised-button class="btn-three" [disabled]="isPristine || _createLoading"
-      (click)="resetForm(stepper)">
+    <button
+      id="resetBtn"
+      mat-raised-button
+      class="btn-three"
+      [disabled]="isPristine || _createLoading"
+      (click)="resetForm(stepper)"
+    >
       {{ "Reset" | translate }}
     </button>
-    <button id="createBtn" mat-raised-button class="btn-two"
+    <button
+      id="createBtn"
+      mat-raised-button
+      class="btn-two"
       [disabled]="isPristine || incompleteFormForCreate || _createLoading"
-      (click)="createAcquiredRight(successDialog, errorDialog)">
-      <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" *ngIf="_createLoading"></span>
+      (click)="createAcquiredRight(successDialog, errorDialog)"
+    >
+      <span
+        class="spinner-border spinner-border-sm"
+        role="status"
+        aria-hidden="true"
+        *ngIf="_createLoading"
+      ></span>
       {{ "Create" | translate }}
     </button>
   </mat-card-actions>
@@ -453,7 +740,12 @@
       <p>{{ "CREATE_ACQRIGHT_SUCCESS" | translate }}</p>
     </mat-dialog-content>
     <mat-dialog-actions align="center">
-      <button mat-button [mat-dialog-close]="true" class="btn-two" cdkFocusInitial>
+      <button
+        mat-button
+        [mat-dialog-close]="true"
+        class="btn-two"
+        cdkFocusInitial
+      >
         {{ "OK" | translate }}
       </button>
     </mat-dialog-actions>
@@ -463,7 +755,12 @@
       <p>{{ "Error" | translate }}: {{ errorMsg }}.</p>
     </mat-dialog-content>
     <mat-dialog-actions align="center">
-      <button mat-button [mat-dialog-close]="true" class="btn-two" cdkFocusInitial>
+      <button
+        mat-button
+        [mat-dialog-close]="true"
+        class="btn-two"
+        cdkFocusInitial
+      >
         {{ "OK" | translate }}
       </button>
     </mat-dialog-actions>

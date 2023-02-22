@@ -6,7 +6,7 @@
   >
     <div class="left-header">
       <div class="page-heading" fxFlexAlign="center">
-        {{ "Core Factor Management" }}
+        {{ "Core factor Management" | translate }}
       </div>
     </div>
     <div class="right-header">
@@ -29,7 +29,7 @@
           <ng-container *ngSwitchDefault>
             <ng-container matColumnDef="{{ column }}">
               <mat-header-cell *matHeaderCellDef>
-                {{ displayedColumns[column] }}
+                {{ displayedColumns[column] | translate }}
               </mat-header-cell>
               <mat-cell *matCellDef="let element">{{
                 element[column]

@@ -8,6 +8,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import { AdvanceSearchModel } from '@core/modals';
 
 @Component({
   selector: 'app-equipments-list',
@@ -42,11 +43,13 @@ export class EquipmentsListComponent implements OnInit {
   dynamicSearchForm: any = {};
   activeLink: any;
   moreRows: Boolean;
+  currentTabAttributes: any = [];
 
-  advanceSearchModel: any = {
+  advanceSearchModel: AdvanceSearchModel = {
     title: '',
     primary: '',
     other: [],
+    translate: false,
   };
   searchFields: any = {};
 
@@ -111,18 +114,18 @@ export class EquipmentsListComponent implements OnInit {
       }
       if (attr.searchable && !attr.parent_identifier) {
         if (attr.primary_key) {
-          this.advanceSearchModel.title = 'Search by ' + attr.name;
-          this.advanceSearchModel.primary = attr.name;
+          this.advanceSearchModel.title = 'Search by ' + attr.schema_name;
+          this.advanceSearchModel.primary = attr.schema_name;
         }
         this.advanceSearchModel.other.push({
           key: attr.name,
-
-          label: attr.name,
+          label: attr.schema_name,
         });
       }
     }
     this.dataSource = null;
     this.displayedrows = [];
+
     this.equipmentTypeManagementService
       .getEquipmentsdata(this.id, this.name, this.pageSize, 1)
       .subscribe(
@@ -133,11 +136,7 @@ export class EquipmentsListComponent implements OnInit {
           for (var k in JSON.parse(decodedEquipments)[0]) {
             headerList.push(k);
           }
-          if (headerList.length >= 8) {
-            this.moreRows = true;
-          } else {
-            this.moreRows = false;
-          }
+          this.moreRows = headerList.length >= 8 ? true : false;
           const testData = new MatTableDataSource(decodedEquipments);
           this.dataSource = JSON.parse(this.getFilterData(testData));
           this.length = res.totalRecords;
@@ -145,6 +144,19 @@ export class EquipmentsListComponent implements OnInit {
           this.paginator.pageSize = this.pageSize;
           this._equipLoading = false;
           this.displayedrows = this.makeTableRows(this.dataSource);
+          /*  
+          ** In the below code finding the particular equipment and it's attributes that has
+             displayed = true.
+          ** With reduce function below mapping attribute name with the attribute data 
+          */
+          this.currentTabAttributes = (
+            (this.allType || [])
+              .find((eq) => eq.ID === this.id)
+              ?.attributes?.filter((attr) => attr.displayed) || []
+          ).reduce((attributes, attr) => {
+            attributes[attr.name] = attr;
+            return attributes;
+          }, {});
         },
         (err) => {
           this._equipLoading = false;
@@ -272,6 +284,7 @@ export class EquipmentsListComponent implements OnInit {
   }
 
   openDialog(ele, x): void {
+    console.log("working")
     const dialogRef = this.dialog.open(AttributeDetailComponent, {
       width: '1600px',
       maxHeight: '550px',

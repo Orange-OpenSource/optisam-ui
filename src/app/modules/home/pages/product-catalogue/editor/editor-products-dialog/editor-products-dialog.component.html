@@ -1,0 +1,12 @@
+<p class="header" mat-dialog-title>
+  {{ "Editor" | translate }}: <strong>{{ data?.name }}</strong> >
+  {{ "Products" | translate }}
+</p>
+<mat-dialog-content>
+  <app-product-list></app-product-list>
+</mat-dialog-content>
+<mat-dialog-actions fxLayout="row" fxLayoutAlign="end">
+  <button class="btn btn-two mat-raised-button" mat-dialog-close>
+    {{ "Close" | translate }}
+  </button>
+</mat-dialog-actions>

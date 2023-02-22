@@ -1,20 +1,36 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { Type } from '../../modules/home/pages/equipmenttypemanagement/model';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { map } from 'rxjs/operators';
+import { catchError, last, map } from 'rxjs/operators';
 import {
   RequiredJSONFormat,
   EquipmentTypes,
   EquipmentType,
 } from 'src/app/modules/home/pages/equipmenttypemanagement/dialogs/model';
 import { Equipments } from './equipments';
+import {
+  DeleteAllocatedMetricParams,
+  DeleteAllocatedMetricResponse,
+  DeleteAttributeParams,
+  ErrorResponse,
+} from '@core/modals';
+import { fixErrorResponse } from '@core/util/common.functions';
+
+type Urls = {
+  allocatedMetric: string;
+  equipmentTypeAttribute: string;
+};
 
 @Injectable()
 export class EquipmentTypeManagementService {
   apiProductUrl = environment.API_PRODUCT_URL;
   apiEquipUrl = environment.API_EQUIPMENT_URL;
+  URLs: Urls = {
+    allocatedMetric: `${this.apiEquipUrl}/equipment/allocatedmetric`,
+    equipmentTypeAttribute: `${this.apiEquipUrl}/equipment/types/attribute`,
+  };
   token = localStorage.getItem('access_token');
   dataChange: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
   dialogData: any;
@@ -67,7 +83,14 @@ export class EquipmentTypeManagementService {
     const url = this.apiEquipUrl + '/equipment/types/' + id;
     return this.httpClient.patch<any>(url, attributeData);
   }
-
+  updateMetricAllocated(body): Observable<any | ErrorResponse> {
+    const url = this.apiEquipUrl + '/equipment/allocatedmetric';
+    return this.httpClient
+      .put<any | ErrorResponse>(url, body)
+      .pipe(
+        catchError((e) => (e?.error ? throwError(e.error) : throwError(e)))
+      );
+  }
   getEquipmentsdata(key, name, pageSize, length) {
     const url =
       this.apiEquipUrl +
@@ -137,7 +160,7 @@ export class EquipmentTypeManagementService {
       '&scopes=' +
       localStorage.getItem('scope') +
       filteringCondition;
-    return this.httpClient.get<Equipments[]>(url);
+    return this.httpClient.get<Equipments[]>(url).pipe(last());
   }
 
   filteredData(key, length, pageSize, sort_by, sort_order, searchFilter) {
@@ -423,5 +446,33 @@ export class EquipmentTypeManagementService {
       '?scope=' +
       localStorage.getItem('scope');
     return this.httpClient.delete<any>(url);
+  }
+
+  deleteAllocatedMetric(
+    inputs: DeleteAllocatedMetricParams
+  ): Observable<DeleteAllocatedMetricResponse | ErrorResponse> {
+    let params = new HttpParams();
+    for (const key in inputs)
+      key !== 'eqTypeId' && (params = params.set(key, inputs[key]));
+    return this.httpClient
+      .delete<DeleteAllocatedMetricResponse | ErrorResponse>(
+        `${this.URLs.allocatedMetric}/${inputs.equipment_id}`,
+        { params }
+      )
+      .pipe(
+        catchError((e) => (e?.error ? throwError(e.error) : throwError(e)))
+      );
+  }
+
+  deleteAttribute(
+    input: DeleteAttributeParams
+  ): Observable<{ success: boolean } | ErrorResponse> {
+    let params = new HttpParams();
+    for (let key in input) params = params.set(key, input[key]);
+    return this.httpClient
+      .delete<{ success: boolean }>(`${this.URLs.equipmentTypeAttribute}`, {
+        params,
+      })
+      .pipe(catchError(fixErrorResponse));
   }
 }

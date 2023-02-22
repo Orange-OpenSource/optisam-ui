@@ -1,0 +1,124 @@
+<div class="section" fxLayout="column">
+  <form [formGroup]="form">
+    <div fxLayout="row wrap" fxLayoutAlign="space-between">
+      <!-- Version Name -->
+      <mat-form-field appearance="outline">
+        <mat-label
+          >{{
+            "PRODUCT_CATALOG.FORM_FIELD.VERSION_NAME" | translate
+          }}*</mat-label
+        >
+        <input
+          [readonly]="crud == crudRead"
+          matInput
+          formControlName="versionName"
+          placeholder="{{
+            'PRODUCT_CATALOG.FORM_FIELD.VERSION_NAME' | translate
+          }}"
+        />
+        <mat-error *ngIf="versionName?.hasError('required')">
+          {{ "PRODUCT.ERROR.REQUIRED.VERSION_NAME" | translate }}
+        </mat-error>
+
+        <mat-error *ngIf="versionName?.hasError('maxlength')">
+          {{
+            "ERROR.MAX_LENGTH"
+              | translate
+                : {
+                    requiredLength:
+                      versionName.errors?.maxlength?.requiredLength
+                  }
+          }}
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>{{ "SwidTag" | translate }}</mat-label>
+        <input
+          [readonly]="crud == crudRead"
+          matInput
+          formControlName="swidTag"
+          placeholder="{{ 'SwidTag' | translate }}"
+        />
+      </mat-form-field>
+    </div>
+
+    <div fxLayout="row wrap" fxLayoutAlign="space-between">
+      <mat-form-field appearance="outline" fxFill>
+        <mat-label>{{
+          "PRODUCT_CATALOG.FORM_FIELD.RECOMMENDATION" | translate
+        }}</mat-label>
+        <textarea
+          [readonly]="crud == crudRead"
+          matInput
+          formControlName="versionRecommendation"
+        ></textarea>
+        <mat-error *ngIf="versionRecommendation?.hasError('maxlength')">
+          {{
+            "ERROR.MAX_LENGTH"
+              | translate
+                : {
+                    requiredLength:
+                      versionRecommendation.errors?.maxlength?.requiredLength
+                  }
+          }}
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <div fxLayout="row wrap" fxLayoutAlign="space-between">
+      <mat-form-field appearance="outline">
+        <mat-label>{{
+          "PRODUCT_CATALOG.FORM_FIELD.END_OF_LIFE" | translate
+        }}</mat-label>
+        <input
+          formControlName="versionEOL"
+          matInput
+          [matDatepicker]="EOL"
+          [readonly]="crud == crudRead"
+        />
+        <mat-datepicker-toggle
+          *ngIf="crud != crudRead"
+          matSuffix
+          [for]="EOL"
+        ></mat-datepicker-toggle>
+        <mat-datepicker
+          #EOL
+          startView="year"
+          [startAt]="startDate"
+        ></mat-datepicker>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>{{
+          "PRODUCT_CATALOG.FORM_FIELD.END_OF_SUPPORT" | translate
+        }}</mat-label>
+        <input
+          [readonly]="crud == crudRead"
+          formControlName="versionEOS"
+          matInput
+          [matDatepicker]="EOS"
+        />
+        <mat-datepicker-toggle
+          *ngIf="crud != crudRead"
+          matSuffix
+          [for]="EOS"
+        ></mat-datepicker-toggle>
+        <mat-datepicker
+          #EOS
+          startView="year"
+          [startAt]="startDate"
+        ></mat-datepicker>
+      </mat-form-field>
+    </div>
+  </form>
+
+  <div
+    *ngIf="crud != crudRead"
+    class="close-btn"
+    fxLayout="row"
+    fxLayoutAlign="center center"
+    (click)="confirmRemove()"
+  >
+    <mat-icon>close</mat-icon>
+  </div>
+</div>

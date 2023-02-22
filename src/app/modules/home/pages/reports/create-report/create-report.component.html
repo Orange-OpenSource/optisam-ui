@@ -1,6 +1,6 @@
 <mat-card>
   <mat-card-title color="primary" class="page-heading">
-    {{'Create Report'|translate}}
+    {{ "Create Report" | translate }}
   </mat-card-title>
 
   <mat-card-content>
@@ -8,28 +8,81 @@
       <div class="row">
         <div class="col-md-6">
           <mat-form-field appearance="outline">
-            <mat-label>{{'Report Type' | translate}}</mat-label>
-            <mat-select id="reportType" formControlName="reportType" [disabled]="reportTypesList.length == 0|| !selectedScope"
-              (selectionChange)="reportTypeSelected()">
-              <mat-option>-- {{'Select Type' | translate}} --</mat-option>
-              <mat-option id="report_type_option_{{i}}" *ngFor="let reportType of reportTypesList;let i = index;"
-                [value]="reportType">{{reportType.report_type_name}}</mat-option>
+            <mat-label>{{ "Report Type" | translate }}</mat-label>
+            <mat-select
+              id="reportType"
+              formControlName="reportType"
+              [disabled]="reportTypesList.length == 0 || !selectedScope"
+              (selectionChange)="reportTypeSelected()"
+            >
+              <mat-option>-- {{ "Select Type" | translate }} --</mat-option>
+              <mat-option
+                id="report_type_option_{{ i }}"
+                *ngFor="let reportType of reportTypesList; let i = index"
+                [value]="reportType"
+                >{{ reportType.report_type_name }}</mat-option
+              >
             </mat-select>
           </mat-form-field>
         </div>
-        <div class="col-md-6" *ngIf="selectedReportType === 'Compliance' || selectedReportType === 'ProductEquipments'">
+        <div
+          class="col-md-6"
+          *ngIf="
+            selectedReportType === 'Compliance' ||
+            selectedReportType === 'ProductEquipments'
+          "
+        >
           <mat-form-field appearance="outline">
-            <mat-label>{{'Editor' | translate}}</mat-label>
-            <mat-select id="editor" formControlName="editor" [disabled]="editorsList.length == 0" (selectionChange)="editorSelected()">
-              <mat-option>-- {{'Select Editor' | translate}} --</mat-option>
-              <mat-option id="editor_option_{{i}}" *ngFor="let editor of editorsList;let i = index;" [value]="editor">
-                {{editor}}</mat-option>
+            <mat-label>{{ "Editor" | translate }}</mat-label>
+            <mat-select
+              id="editor"
+              formControlName="editor"
+              [disabled]="editorsList.length == 0"
+              (selectionChange)="editorSelected()"
+              (openedChange)="searchInputOpenChange($event, editorSearch)"
+            >
+              <mat-option
+                style="
+                  position: sticky;
+                  top: 0;
+                  border: 1px solid #d4d4d4;
+                  z-index: 9999999;
+                  background: #fff;
+                  border-radius: 5px;
+                "
+              >
+                <input
+                  #searchInput
+                  placeholder="Search..."
+                  matInput
+                  [value]="searchText"
+                  (click)="searchEditor($event)"
+                  (keydown)="searchKeydown($event)"
+                  (input)="searchInputEvent($event)"
+                  autocomplete="off"
+                />
+              </mat-option>
+              <app-loading-spinner *ngIf="searchLoading"></app-loading-spinner>
+              <ng-container *ngIf="!searchLoading && !loadingEditor">
+                <mat-option
+                  *ngFor="let editor of filteredEditor"
+                  [value]="editor"
+                >
+                  {{ editor }}
+                </mat-option>
+              </ng-container>
             </mat-select>
           </mat-form-field>
         </div>
       </div>
 
-      <div *ngIf="selectedReportType === 'Compliance' || selectedReportType === 'ProductEquipments'" class="row">
+      <div
+        *ngIf="
+          selectedReportType === 'Compliance' ||
+          selectedReportType === 'ProductEquipments'
+        "
+        class="row"
+      >
         <!-- <div class="col-md-6">
           <mat-form-field appearance="outline">
             <mat-label>{{'Product' | translate}}</mat-label>
@@ -42,13 +95,27 @@
             </mat-select>
           </mat-form-field>
         </div> -->
-        <div class="col-md-6" *ngIf="selectedReportType === 'ProductEquipments'">
+        <div
+          class="col-md-6"
+          *ngIf="selectedReportType === 'ProductEquipments'"
+        >
           <mat-form-field appearance="outline">
-            <mat-label>{{'Equipment Type' | translate}}</mat-label>
-            <mat-select id="equipType"  formControlName = "equipmentType" [disabled]="equipmentTypesList.length == 0">
-                <mat-option value="">-- {{'AGGREGATIONS.TEXTS.SELECT_PRODUCT' | translate}} --</mat-option>
-                <mat-option *ngFor="let equipment of equipmentTypesList;" [value]="equipment">{{equipment.type}}
-                </mat-option>
+            <mat-label>{{ "Equipment Type" | translate }}</mat-label>
+            <mat-select
+              id="equipType"
+              formControlName="equipmentType"
+              [disabled]="equipmentTypesList.length == 0"
+            >
+              <mat-option value=""
+                >--
+                {{ "AGGREGATIONS.TEXTS.SELECT_PRODUCT" | translate }}
+                --</mat-option
+              >
+              <mat-option
+                *ngFor="let equipment of equipmentTypesList"
+                [value]="equipment"
+                >{{ equipment.type }}
+              </mat-option>
             </mat-select>
           </mat-form-field>
         </div>
@@ -57,11 +124,37 @@
     <app-loading-spinner *ngIf="_loading"></app-loading-spinner>
   </mat-card-content>
   <mat-card-actions align="center">
-    <button id="cancelButton" class="btn-four" mat-raised-button mat-dialog-close="true">{{'Cancel'|translate}}</button>
-    <button id="resetButton"  class="btn-three" mat-raised-button [disabled]="reportForm.pristine" (click)="resetForm()">{{'Reset'|translate}}</button>
-    <button id="submitButton" class="btn-two" mat-raised-button [disabled]="!reportForm.valid" (click)="createReport(successDialog, errorDialog)">
-      <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" *ngIf="reqInProgress"></span>       
-      {{'Create'|translate}}
+    <button
+      id="cancelButton"
+      class="btn-four"
+      mat-raised-button
+      mat-dialog-close="true"
+    >
+      {{ "Cancel" | translate }}
+    </button>
+    <button
+      id="resetButton"
+      class="btn-three"
+      mat-raised-button
+      [disabled]="reportForm.pristine"
+      (click)="resetForm()"
+    >
+      {{ "Reset" | translate }}
+    </button>
+    <button
+      id="submitButton"
+      class="btn-two"
+      mat-raised-button
+      [disabled]="!reportForm.valid"
+      (click)="createReport(successDialog, errorDialog)"
+    >
+      <span
+        class="spinner-border spinner-border-sm"
+        role="status"
+        aria-hidden="true"
+        *ngIf="reqInProgress"
+      ></span>
+      {{ "Create" | translate }}
     </button>
   </mat-card-actions>
 </mat-card>
@@ -69,18 +162,32 @@
 <!-- Create success message -->
 <ng-template #successDialog>
   <mat-dialog-content>
-    <p>{{'SUCCESS_REPORT_CREATE_MSG'|translate}}</p>
+    <p>{{ "SUCCESS_REPORT_CREATE_MSG" | translate }}</p>
   </mat-dialog-content>
   <mat-dialog-actions align="center">
-    <button [mat-dialog-close]="true" class="btn-two" mat-button cdkFocusInitial>{{'OK'|translate}}</button>
+    <button
+      [mat-dialog-close]="true"
+      class="btn-two"
+      mat-button
+      cdkFocusInitial
+    >
+      {{ "OK" | translate }}
+    </button>
   </mat-dialog-actions>
 </ng-template>
 <!-- Create error message -->
 <ng-template #errorDialog>
   <mat-dialog-content>
-    <p>{{'ERROR_REPORT_CREATE_MSG'|translate}}</p>
+    <p>{{ "ERROR_REPORT_CREATE_MSG" | translate }}</p>
   </mat-dialog-content>
   <mat-dialog-actions align="center">
-    <button [mat-dialog-close]="true" class="btn-two" mat-button cdkFocusInitial>{{'OK'|translate}}</button>
+    <button
+      [mat-dialog-close]="true"
+      class="btn-two"
+      mat-button
+      cdkFocusInitial
+    >
+      {{ "OK" | translate }}
+    </button>
   </mat-dialog-actions>
 </ng-template>

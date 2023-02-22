@@ -1,39 +1,103 @@
-.add-attribute-button { padding-left: 0;  padding-bottom: 10px; text-align: right; padding-right: 0;}
-.attribute-list .add-atr-row { margin: 0; }
-.attribute-list .add-atr-row .add-attribute-button { padding-top: 20px; }
-.cta-button-bx .left-btn .cancel-btn { margin-right: 10px; }
-.cta-button-bx .right-btn { text-align: right; }
+.add-attribute-button {
+  padding-left: 0;
+  padding-bottom: 10px;
+  text-align: right;
+  padding-right: 0;
+}
+.attribute-list .add-atr-row {
+  margin: 0;
+}
+.attribute-list .add-atr-row .add-attribute-button {
+  padding-top: 20px;
+}
+.cta-button-bx .left-btn .cancel-btn {
+  margin-right: 10px;
+}
+.cta-button-bx .right-btn {
+  text-align: right;
+}
 
 /* 05-08-2019 */
-.mat-card { max-height: 620px; overflow-y: auto;}
-.create-equipment { margin: 0; }
-.create-equipment .field-left {padding: 0 15px 0 0;}
-.create-equipment .field-center {padding: 0 15px 0 0;}
-.create-equipment .field-right {padding: 0px;}
-.attribute-list { margin-top: 30px; }
-.attribute-list .add-atr-row .attributes { padding: 0 15px 0 0; margin-bottom: 0; }
-.attribute-list .add-atr-row .attributes .mat-button { margin-top: 45px; }
-.mat-form-field { display: block; }
-.attribute-list .add-atr-row .attributes .attribute-label { width: 100%; }
+.mat-card {
+  max-height: 620px;
+  overflow-y: auto;
+}
+.create-equipment {
+  margin: 0;
+}
+.create-equipment .field-left {
+  padding: 0 15px 0 0;
+}
+.create-equipment .field-center {
+  padding: 0 15px 0 0;
+}
+.create-equipment .field-right {
+  padding: 0px;
+}
+.attribute-list {
+  margin-top: 30px;
+}
+.attribute-list .add-atr-row .attributes {
+  padding: 0 15px 0 0;
+  margin-bottom: 0;
+}
+.attribute-list .add-atr-row .attributes .mat-button {
+  margin-top: 45px;
+}
+.mat-form-field {
+  display: block;
+}
+.attribute-list .add-atr-row .attributes .attribute-label {
+  width: 100%;
+}
 .mat-table {
   max-height: 250px;
   overflow-y: scroll;
 }
 .mat-icon {
-    color: #008AFC !important;
+  color: #008afc !important;
 }
+
+// .mat-slide-toggle{
+//   color: #008AFC !important;
+// }
+
+// .mat-slide-toggle.mat-checked .mat-slide-toggle-thumb {
+//   background-color:  #008AFC !important;
+// }
+
+::ng-deep .mat-slide-toggle.mat-checked .mat-slide-toggle-thumb {
+  background-color: #008afc !important;
+}
+
+::ng-deep .mat-slide-toggle.mat-checked .mat-slide-toggle-bar {
+  background-color: #e9ecef !important;
+}
+
+// .mat-slide-toggle.mat-checked:not(.mat-disabled) .mat-slide-toggle-thumb {
+//   background-color: #49c5b6 !important;
+// }
+
 // .mat-cell { margin: 0 0 30px 0; }
-.mat-header-cell { color: inherit !important; font-size: inherit !important; font-weight: 700 !important;}
-.mat-form-field-infix { border-top: none !important; }
-.mat-form-field-wrapper { padding-bottom: 0 !important; }
+.mat-header-cell {
+  color: inherit !important;
+  font-size: inherit !important;
+  font-weight: 700 !important;
+}
+.mat-form-field-infix {
+  border-top: none !important;
+}
+.mat-form-field-wrapper {
+  padding-bottom: 0 !important;
+}
 .highlight:after {
-  content:" *";
+  content: " *";
 }
 #addAttrButton {
   margin-right: 10px !important;
 }
 .cancelBtn {
-  margin-top:5px;
+  margin-top: 5px;
 }
 .checkbox-section {
   width: 100%;
@@ -52,17 +116,35 @@
 .chkbox {
   display: flex;
   justify-content: center;
-  margin-top:5px;
+  margin-top: 5px;
 }
 
-::ng-deep .mat-checkbox-checked.mat-accent .mat-checkbox-ripple .mat-ripple-element {
+mat-cell mat-icon {
+  cursor: pointer;
+}
+
+mat-cell span.disabled mat-icon {
+  color: #bbb !important;
+  cursor: not-allowed;
+}
+
+::ng-deep
+  .mat-checkbox-checked.mat-accent
+  .mat-checkbox-ripple
+  .mat-ripple-element {
   opacity: 0.03 !important;
-  background-color: #008AFC!important;
+  background-color: #008afc !important;
 }
 
-::ng-deep .mat-checkbox-checked.mat-accent .mat-checkbox-background,::ng-deep .mat-checkbox-indeterminate.mat-accent .mat-checkbox-background {
-background-color: #008AFC !important;
+::ng-deep .mat-checkbox-checked.mat-accent .mat-checkbox-background,
+::ng-deep .mat-checkbox-indeterminate.mat-accent .mat-checkbox-background {
+  background-color: #008afc !important;
 }
-::ng-deep .mat-primary .mat-pseudo-checkbox-checked,::ng-deep .mat-primary .mat-pseudo-checkbox-indeterminate {
-background: #008afc;
+::ng-deep .mat-primary .mat-pseudo-checkbox-checked,
+::ng-deep .mat-primary .mat-pseudo-checkbox-indeterminate {
+  background: #008afc;
+}
+
+::ng-deep .input-error .mat-form-field-underline {
+  background-color: red !important;
 }

@@ -35,24 +35,33 @@ Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protrac
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
 
-------------------
-For open source GCP deployment
-
-Open cloud shell and clone source code.
-
-cd ~/optisam-ui
-
-npm install
-npm run build --prod
-docker build .
-export PROJECT_ID=diese-dev-optisam-it
-docker tag 377eaa1477e6 eu.gcr.io/${PROJECT_ID}/optisam/optisam_ui:v1.0.0
-docker push  eu.gcr.io/${PROJECT_ID}/optisam/optisam_ui:v1.0.0
-
-## Tag the image id created
-------------------------
-
 ## Dependency Pkg Version
-`minimist` - `1.2.6`
-`url-parse` - `1.5.8`
-
+`minimist`
+`url-parse`
+`handlebars`
+`pathval`
+`path-parse`
+`ssri`
+`elliptic`
+`y18n`
+`lodash`
+`hosted-git-info`
+`browserslist`
+`dns-packet`
+`socket.io-parser`
+`log4js`
+`cached-path-relative`
+`follow-redirects`
+`is-svg`
+`xmlhttprequest-ssl`
+`ua-parser-js`
+`marked`
+`node-forge`
+`object-path`
+`ansi-html`
+`async`
+`engine.io`
+`glob-parent`
+`ini`
+`eventsource`
+`moment`

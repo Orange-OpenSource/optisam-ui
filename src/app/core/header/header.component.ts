@@ -7,9 +7,10 @@ import { MatDialog } from '@angular/material/dialog';
 import { SharedService } from 'src/app/shared/shared.service';
 import { AccountService } from '../services/account.service';
 import { AboutComponent } from 'src/app/modules/home/pages/about/about/about.component';
-import { AboutFuture } from '@core/modals';
+import { AboutFuture, MenuItemImg, MenuItemMat } from '@core/modals';
 import { CommonService } from '@core/services';
-import { LOCAL_KEYS } from '@core/util/constants/constants';
+import { LOCAL_KEYS, MENU_ROUTER_LINKS } from '@core/util/constants/constants';
+import { isSpecificScopeType } from '@core/util/common.functions';
 
 @Component({
   selector: 'app-header',
@@ -35,6 +36,109 @@ export class HeaderComponent implements OnInit {
   future: AboutFuture[];
   copyRight: string;
 
+  menuItems: Array<MenuItemMat | MenuItemImg> = [
+    {
+      id: 'nav-acq-rights-management',
+      matTooltip: 'HEADER.MENU_ITEM.ACQUIRED_RIGHTS',
+      routerLink: MENU_ROUTER_LINKS.acquiredRightsManagement,
+      auth: ['ADMIN', 'SUPER_ADMIN'],
+      menuItemName: 'HEADER.MENU_ITEM.ACQUIRED_RIGHTS',
+      isMatIcon: false,
+      imgSrc: `/assets/images/acquired-rights-admin.svg`,
+    },
+    {
+      id: 'nav-metrics-management',
+      matTooltip: 'HEADER.MENU_ITEM.METRICS',
+      routerLink: MENU_ROUTER_LINKS.metricsManagement,
+      auth: ['ADMIN', 'SUPER_ADMIN'],
+      isMatIcon: false,
+      imgSrc: `/assets/images/Metrics-ManagementSmall.png`,
+      menuItemName: 'HEADER.MENU_ITEM.METRICS',
+    },
+    {
+      id: 'nav-equipment-management',
+      matTooltip: 'HEADER.MENU_ITEM.EQUIPMENTS',
+      routerLink: MENU_ROUTER_LINKS.equipmentsManagement,
+      auth: ['ADMIN', 'SUPER_ADMIN'],
+      menuItemName: 'HEADER.MENU_ITEM.EQUIPMENTS',
+      isMatIcon: false,
+      imgSrc: '/assets/images/Equipment-managementSmall.png',
+    },
+    {
+      id: 'nav-scope-management',
+      matTooltip: 'HEADER.MENU_ITEM.SCOPES',
+      routerLink: MENU_ROUTER_LINKS.scopesManagement,
+      auth: ['ADMIN', 'SUPER_ADMIN'],
+      isMatIcon: false,
+      imgSrc: '/assets/images/scope-management.svg',
+      menuItemName: 'HEADER.MENU_ITEM.SCOPES',
+    },
+    {
+      id: 'nav-product-catalog-management',
+      matTooltip: 'HEADER.MENU_ITEM.PRODUCT_CATALOG',
+      routerLink: MENU_ROUTER_LINKS.productCatalogManagement,
+      auth: ['ADMIN', 'SUPER_ADMIN'],
+      isMatIcon: true,
+      matIconName: 'shopping_cart',
+      menuItemName: 'HEADER.MENU_ITEM.PRODUCT_CATALOG',
+    },
+
+    {
+      id: 'nav-aggregation-management',
+      matTooltip: 'HEADER.MENU_ITEM.AGGREGATION',
+      routerLink: MENU_ROUTER_LINKS.aggregationManagement,
+      auth: ['ADMIN', 'SUPER_ADMIN'],
+      menuItemName: 'HEADER.MENU_ITEM.AGGREGATION',
+      isMatIcon: true,
+      matIconName: 'devices_other',
+    },
+    {
+      id: 'nav-group-management',
+      matTooltip: 'HEADER.MENU_ITEM.GROUP',
+      routerLink: MENU_ROUTER_LINKS.groupManagement,
+      auth: ['ADMIN', 'SUPER_ADMIN'],
+      isMatIcon: true,
+      matIconName: 'group_add',
+      menuItemName: 'HEADER.MENU_ITEM.GROUP',
+    },
+    {
+      id: 'nav-inventory-management',
+      matTooltip: 'HEADER.MENU_ITEM.INVENTORY',
+      routerLink: MENU_ROUTER_LINKS.inventoryManagement,
+      auth: ['ADMIN', 'SUPER_ADMIN'],
+      isMatIcon: true,
+      matIconName: 'cloud_upload',
+      menuItemName: 'HEADER.MENU_ITEM.INVENTORY',
+    },
+    {
+      id: 'nav-obsolescence-management',
+      matTooltip: 'HEADER.MENU_ITEM.OBSOLESCENCE',
+      routerLink: MENU_ROUTER_LINKS.obsolescenceManagement,
+      auth: ['ADMIN', 'SUPER_ADMIN'],
+      isMatIcon: true,
+      matIconName: 'warning',
+      menuItemName: 'HEADER.MENU_ITEM.OBSOLESCENCE',
+    },
+    {
+      id: 'nav-user-management',
+      matTooltip: 'HEADER.MENU_ITEM.USERS',
+      routerLink: MENU_ROUTER_LINKS.usersManagement,
+      auth: ['ADMIN', 'SUPER_ADMIN'],
+      isMatIcon: true,
+      matIconName: 'person',
+      menuItemName: 'HEADER.MENU_ITEM.USERS',
+    },
+    {
+      id: 'nav-configuration-management',
+      matTooltip: 'HEADER.MENU_ITEM.SIMULATIONS',
+      routerLink: MENU_ROUTER_LINKS.simulatorsManagement,
+      auth: ['ADMIN', 'SUPER_ADMIN'],
+      isMatIcon: true,
+      matIconName: 'settings',
+      menuItemName: 'HEADER.MENU_ITEM.SIMULATIONS',
+    },
+  ];
+
   constructor(
     public router: Router,
     private authservice: AuthService,
@@ -53,12 +157,47 @@ export class HeaderComponent implements OnInit {
     this.translate.setDefaultLang(this.userLang);
     this.getScopesList();
   }
+
   ngOnInit() {
     this.token = localStorage.getItem(this.authservice.access_token);
     const emailId = localStorage.getItem('email') || '';
     this.userName = emailId.substring(0, emailId.lastIndexOf('@'));
     this.role = localStorage.getItem('role');
     this.fetchAboutData();
+  }
+
+  get inventoryManagementLink(): string {
+    return this.allowedScope
+      ? '/optisam/dm/metadata'
+      : '/optisam/dm/globaldata';
+  }
+
+  get allowedScope(): boolean {
+    return isSpecificScopeType();
+  }
+
+  get navMenuItems(): Array<MenuItemMat | MenuItemImg> {
+    // return sorted menu by the menu name.
+    return this.menuItems.sort(
+      (a: MenuItemMat | MenuItemImg, b: MenuItemMat | MenuItemImg) => {
+        return a.menuItemName > b.menuItemName
+          ? 1
+          : a.menuItemName === b.menuItemName
+          ? 0
+          : -1;
+      }
+    );
+  }
+
+  menuOpened(): void {
+    //TODO: look for a better solution for inventory management link navigation for specific/generic scopetypes.
+
+    this.menuItems = this.menuItems.map((menu) => {
+      if (menu.id === 'nav-inventory-management') {
+        menu.routerLink = this.inventoryManagementLink;
+      }
+      return menu;
+    });
   }
 
   fetchAboutData(): void {
@@ -101,6 +240,7 @@ export class HeaderComponent implements OnInit {
     localStorage.setItem('role', '');
     localStorage.getItem('access_token');
     this.router.navigate(['/']);
+    this.authservice.sendMessage(false);
   }
   langchange() {
     localStorage.getItem('access_token');

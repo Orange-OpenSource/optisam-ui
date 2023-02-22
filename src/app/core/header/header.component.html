@@ -64,6 +64,7 @@
         id="nav-management-menu"
         mat-button
         [matMenuTriggerFor]="menu2"
+        (menuOpened)="menuOpened()"
         *ngIf="role === 'ADMIN' || role === 'SUPER_ADMIN'"
       >
         <img style="height: 24px" src="\assets\images\Admin-2.svg" />
@@ -76,124 +77,32 @@
       </a> -->
 
       <mat-menu #menu2>
-        <button
-          id="nav-acq-rights-management"
-          mat-menu-item
-          matTooltip="{{ 'Acquired Rights Management' | translate }}"
-          *ngIf="role === 'ADMIN' || role === 'SUPER_ADMIN'"
-          [routerLink]="['/optisam/ar/list-acquired-rights']"
-          [routerLinkActive]="['routeactive']"
-        >
-          <img
-            style="height: 20px; width: 20px; margin-right: 16px"
-            src="\assets\images\acquired-rights-admin.svg"
-          />
-          {{ "Acquired Rights Management" | translate }}
-        </button>
-        <button
-          id="nav-products-management"
-          mat-menu-item
-          matTooltip="{{ 'Aggregation Management' | translate }}"
-          [routerLink]="['/optisam/ag/list-aggregation']"
-          [routerLinkActive]="['routeactive']"
-        >
-          <mat-icon class="mat-icon-admin">devices_other</mat-icon>
-          {{ "Aggregation Management" | translate }}
-        </button>
-        <button
-          id="nav-data-management"
-          mat-menu-item
-          matTooltip="{{ 'Data Management' | translate }}"
-          *ngIf="role === 'ADMIN' || role === 'SUPER_ADMIN'"
-          [routerLink]="['/optisam/dm/data']"
-          [routerLinkActive]="['routeactive']"
-        >
-          <mat-icon class="mat-icon-admin">cloud_upload</mat-icon>
-          {{ "Data Management" | translate }}
-        </button>
-        <button
-          id="nav-equipment-management"
-          mat-menu-item
-          matTooltip="{{ 'Equipment Management' | translate }}"
-          [routerLink]="['/optisam/eqm']"
-          [routerLinkActive]="['routeactive']"
-        >
-          <img
-            style="height: 20px; width: 20px; margin-right: 16px"
-            src="\assets\images\Equipment-managementSmall.png"
-          />
-          {{ "Equipment Management" | translate }}
-        </button>
-        <button
-          id="nav-group-management"
-          mat-menu-item
-          matTooltip="{{ 'Group Management' | translate }}"
-          [routerLink]="['/optisam/gr/groupMang']"
-          [routerLinkActive]="['routeactive']"
-        >
-          <mat-icon class="mat-icon-admin">group_add</mat-icon>
-          {{ "Group Management" | translate }}
-        </button>
-        <button
-          id="nav-metrics-management"
-          mat-menu-item
-          matTooltip="{{ 'Metrics Management' | translate }}"
-          [routerLink]="['/optisam/ma']"
-          [routerLinkActive]="['routeactive']"
-        >
-          <img
-            style="height: 20px; width: 20px; margin-right: 16px"
-            src="\assets\images\Metrics-ManagementSmall.png"
-          />
-          {{ "Metrics Management" | translate }}
-        </button>
-        <button
-          id="nav-obsolescence-management"
-          mat-menu-item
-          matTooltip="{{ 'Obsolescence Management' | translate }}"
-          *ngIf="role === 'ADMIN' || role === 'SUPER_ADMIN'"
-          [routerLink]="['/optisam/om/define-obsolescence']"
-          [routerLinkActive]="['routeactive']"
-        >
-          <mat-icon class="mat-icon-admin">warning</mat-icon>
-          {{ "Obsolescence Management" | translate }}
-        </button>
-        <button
-          id="nav-scope-management"
-          mat-menu-item
-          matTooltip="{{ 'Scope Management' | translate }}"
-          *ngIf="role === 'SUPER_ADMIN'"
-          [routerLink]="['/optisam/sm']"
-          [routerLinkActive]="['routeactive']"
-        >
-          <img
-            style="height: 20px; width: 20px; margin-right: 16px"
-            src="\assets\images\scope-management.svg"
-          />
-          {{ "Scope Management" | translate }}
-        </button>
-        <!-- <button
-          id="nav-configuration-management"
-          mat-menu-item
-          matTooltip="{{ 'Simulation Management' | translate }}"
-          *ngIf="role === 'ADMIN' || role === 'SUPER_ADMIN'"
-          [routerLink]="['/optisam/cm/simulation-configuration']"
-          [routerLinkActive]="['routeactive']"
-        >
-          <mat-icon class="mat-icon-admin">settings</mat-icon>
-          {{ "Simulation Management" | translate }}
-        </button> -->
-        <button
-          id="nav-user-management"
-          mat-menu-item
-          matTooltip="{{ 'User Management' | translate }}"
-          *ngIf="role === 'ADMIN' || role === 'SUPER_ADMIN'"
-          [routerLink]="['/optisam/gr/viewUsers']"
-          [routerLinkActive]="['routeactive']"
-        >
-          <mat-icon class="mat-icon-admin">person</mat-icon>
-          {{ "User Management" | translate }}
-        </button>
+        <ng-container *ngFor="let menuItem of navMenuItems">
+          <button
+            mat-menu-item
+            *ngIf="menuItem.auth.includes(role)"
+            matTooltip="{{ menuItem.matTooltip | translate }}"
+            [routerLink]="[menuItem.routerLink]"
+            [routerLinkActive]="['routeactive']"
+            [attr.id]="menuItem.id"
+          >
+            <!-- mat icon -->
+            <ng-container *ngIf="menuItem.isMatIcon">
+              <mat-icon class="mat-icon-admin">{{
+                menuItem.matIconName
+              }}</mat-icon>
+            </ng-container>
+            <!--  image -->
+            <ng-container *ngIf="!menuItem.isMatIcon">
+              <img
+                class="menu-item-icon-img"
+                [attr.style]="menuItem.imgStyle"
+                [src]="menuItem.imgSrc"
+              />
+            </ng-container>
+            {{ menuItem.menuItemName | translate }}
+          </button>
+        </ng-container>
       </mat-menu>
 
       <a id="nav-admin-menu" mat-button [matMenuTriggerFor]="menu">

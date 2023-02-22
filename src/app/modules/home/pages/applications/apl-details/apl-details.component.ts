@@ -6,6 +6,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
+import { ViewEditorDetailsApplComponent } from '../view-editor-details-appl/view-editor-details-appl.component';
 
 @Component({
   selector: 'app-apl-details',
@@ -27,7 +28,7 @@ export class AplDetailsComponent implements OnInit {
   key: any;
 
   displayedColumns: string[] = [
-    'swidTag',
+    // 'swidTag',
     'name',
     'Editor',
     'Edition',
@@ -38,6 +39,7 @@ export class AplDetailsComponent implements OnInit {
   _loading: Boolean;
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: false }) sort: MatSort;
+  dialogRef: any;
 
   constructor(
     private applicationservice: ApplicationService,
@@ -46,6 +48,7 @@ export class AplDetailsComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    console.log("working")
     this.page_size = 50;
     this._loading = true;
     this.RenderDataTable();
@@ -83,6 +86,15 @@ export class AplDetailsComponent implements OnInit {
     dialogRef.afterClosed().subscribe((result) => {});
   }
 
+  openEditorDialog(data:any){
+    this.dialogRef=this.dialog.open(ViewEditorDetailsApplComponent,{
+      width: '1300px',
+      disableClose: true,
+      data: data
+    });
+
+    this.dialogRef.afterClosed().subscribe((result) => {});
+  }
   getEquipData(value) {
     console.log(value);
     localStorage.setItem('prodName', value.name);

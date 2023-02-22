@@ -29,3 +29,8 @@
   width: 20px;
   font-size: 20px;
 }
+
+::ng-deep .unset-max-width {
+  max-width: unset !important;
+  white-space: pre-wrap !important;
+}

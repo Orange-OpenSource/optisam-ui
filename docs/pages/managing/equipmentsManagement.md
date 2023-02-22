@@ -14,14 +14,15 @@ An equipment is a part of the park where products are installed. A physical or v
 
 You can access to "Equipment management" by clicking here :
 
-![select APM](../../img/equipMana/accessu.jpg){: .zoom}
-
+![select APM](../../img/equipMana/access.jpg){: .zoom}
+<!--
 ## Possibilities
 
 You can do 3 things from there :  
 - <span style="color:red">Add a new equipment type</span> ([here](#add-a-new-equipment-type))  
 - <span style="color:blue">Edit an existing equipment type</span> ([here](#Edit-an-existing-equipment-type))  
 - <span style="color:orange">See the details of an existing equipment type</span> ([here](#see-the-details-of-an-existing-equipment-type))  
+- <span style="color:green"> Edit 
 
 ![select APM](../../img/equipMana/firstemu.jpg){: .zoom}
 
@@ -122,6 +123,53 @@ From there, you can click on "Add Attribute" to add an attribute, you can follow
 You can check all of the attributes of your equipment type and their details :
 
 ![select APM](../../img/equipMana/details.jpg){: .zoom}
+-->
+
+This page will be shown:
+
+![select APM](../../img/equipMana/presentation.jpg){: .zoom}
+
+- Type Name: The type of the equipment
+- Source Name: The file from where the equipment type informations can be found
+- Parent type: The name of the equipment parent
+- Attributes: The number of attributes of the equipment type
+- Actions: Actions possible (Edit or delete)
+
+From there you have 2 possibilities:
+
+- <span style="color:red">Delete an equipment type</span>  
+- <span style="color:blue">Edit an existing equipment type</span> 
+
+## Delete an equipment type
+
+To delete an equipment type, you have to click on the trash icone in front of the target equipment type and confirm the deletion.
+
+![select APM](../../img/equipMana/delete.jpg){: .zoom}
+
+Here, only softpartition can be deteleted.
+
+## Edit an equipment type
+
+To edit an equipment type, you have to click on the pencil icone in front of the target equipmnet type. 
+
+![select APM](../../img/equipMana/edit.jpg){: .zoom}
+
+Once you are clicked one the pencil icone, this page will be shown: 
+
+![select APM](../../img/equipMana/edit2.jpg){: .zoom}
+
+From there you have the possibility to make attributes searchable and displayable or not. 
+
+To do that you will hhave to switch the bottons to enable or diseable the function wished.
+
+
+![select APM](../../img/equipMana/edit3.jpg){: .zoom}
+
+<span style="color:red"> Notice that to hide an attribute, you have to make it no searchable first. But you can make an attribute no searchable without hide it. </span>
+
+Once you finished the edition, click on modify to validate your modifications. 
+
+![select APM](../../img/equipMana/edit4.jpg){: .zoom}
 
 
 <script src="../../../js/zoomImage.js"></script>

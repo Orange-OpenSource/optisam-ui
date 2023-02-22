@@ -7,7 +7,8 @@ import { Role } from 'src/app/utils/roles.config';
 import { ListDataComponent } from './list-data/list-data.component';
 import { ListMetadataComponent } from './list-metadata/list-metadata.component';
 import { ListGlobaldataComponent } from './list-globaldata/list-globaldata.component';
-import { AllowScopesGuard } from '@core/guards/allow-scopes.guard';
+import { AllowSpecificScopesGuard } from '@core/guards/allow-scopes.guard';
+import { AllowGenericScopesGuard } from '@core/guards/allow-generic-scopes.guard';
 
 const routes: Routes = [
   {
@@ -15,34 +16,32 @@ const routes: Routes = [
     component: DataManagementComponent,
     children: [
       {
-        path: 'data',
-        component: ListDataComponent,
+        path: '',
         canActivate: [AuthGuard],
         data: { roles: [Role.SuperAdmin.valueOf(), Role.Admin.valueOf()] },
-      },
-      {
-        path: 'data/:globalFileId',
-        component: ListDataComponent,
-        canActivate: [AuthGuard],
-        data: { roles: [Role.SuperAdmin.valueOf(), Role.Admin.valueOf()] },
-      },
-      {
-        path: 'metadata',
-        component: ListMetadataComponent,
-        canActivate: [AuthGuard, AllowScopesGuard],
-        data: { roles: [Role.SuperAdmin.valueOf(), Role.Admin.valueOf()] },
-      },
-      {
-        path: 'globaldata',
-        component: ListGlobaldataComponent,
-        canActivate: [AuthGuard],
-        data: { roles: [Role.SuperAdmin.valueOf(), Role.Admin.valueOf()] },
-      },
-      {
-        path: 'upload-data',
-        component: UploadDataComponent,
-        canActivate: [AuthGuard],
-        data: { roles: [Role.SuperAdmin.valueOf(), Role.Admin.valueOf()] },
+        children: [
+          {
+            path: 'data',
+            component: ListDataComponent,
+          },
+          {
+            path: 'data/:globalFileId',
+            component: ListDataComponent,
+          },
+          {
+            path: 'metadata',
+            component: ListMetadataComponent,
+            canActivate: [AllowSpecificScopesGuard],
+          },
+          {
+            path: 'globaldata',
+            component: ListGlobaldataComponent,
+          },
+          {
+            path: 'upload-data',
+            component: UploadDataComponent,
+          },
+        ],
       },
     ],
   },

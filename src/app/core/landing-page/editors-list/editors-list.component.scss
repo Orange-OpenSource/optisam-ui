@@ -1,0 +1,42 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: calc(100% - 36px);
+}
+
+table {
+  width: 100%;
+}
+// mat-header-cell, mat-cell {
+//   justify-content: center;
+// }
+.mat-table {
+  overflow-y: auto;
+  max-height: calc(100% - 36px);
+}
+.mat-column-editor {
+  flex: 3 0 75px;
+}
+
+//   .mat-header-cell:first-of-type {
+//     margin-left: 135px;
+//     padding-right: 96px;
+//     border: none;
+// }
+
+#editors {
+  min-height: 160px;
+  max-height: 100%;
+}
+
+::ng-deep .mat-paginator-range-label {
+  margin: 1px 3px 0 7px !important;
+}
+
+.no-data {
+  padding-top: 46px;
+}
+
+.mat-row.active {
+  background-color: #ecf7ff;
+}

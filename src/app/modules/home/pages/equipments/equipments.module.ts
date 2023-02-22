@@ -8,6 +8,14 @@ import { EquipmentsComponent } from './equipments.component';
 import { EquipmentsRoutingModule } from './equipments-routing.module';
 import { EquipmentsListComponent } from './equipments-list/equipments-list.component';
 import { AttributeDetailComponent } from './attribute-detail/attribute-detail.component';
+import { EditMetricAllocatedComponent } from './edit-metricAllocated/edit-metric-allocated/edit-metric-allocated.component';
+import { DeleteAllocatedMetricConfirmationDialogComponent } from './attribute-detail/delete-allocated-metric-confirmation-dialog/delete-allocated-metric-confirmation-dialog.component';
+import { ErrorDialogComponent } from './edit-metricAllocated/dialog/error-dialog/error-dialog.component';
+import { SuccessDialogComponent } from './edit-metricAllocated/dialog/success-dialog/success-dialog.component';
+import { AllocatedMetricDeleteErrorComponent } from './attribute-detail/allocated-metric-delete-error/allocated-metric-delete-error.component';
+import { WarningAllocationChangeComponent } from './edit-metricAllocated/edit-metric-allocated/dialog/warning-allocation-change/warning-allocation-change.component';
+import { GetEquipmentAttributeNamePipe } from './attribute-detail/pipes/get-equipment-attribute-name.pipe';
+import { ViewEditorDetailsEquipComponent } from './view-editor-details-equip/view-editor-details-equip.component';
 
 @NgModule({
   imports: [
@@ -17,11 +25,20 @@ import { AttributeDetailComponent } from './attribute-detail/attribute-detail.co
     ReactiveFormsModule,
     CustomMaterialModule,
     EquipmentsRoutingModule,
-    SharedModule
+    SharedModule,
   ],
-  entryComponents: [
-    AttributeDetailComponent
+  entryComponents: [AttributeDetailComponent],
+  declarations: [
+    EquipmentsComponent,
+    EquipmentsListComponent,
+    EditMetricAllocatedComponent,
+    DeleteAllocatedMetricConfirmationDialogComponent,
+    ErrorDialogComponent,
+    SuccessDialogComponent,
+    AllocatedMetricDeleteErrorComponent,
+    WarningAllocationChangeComponent,
+    GetEquipmentAttributeNamePipe,
+    ViewEditorDetailsEquipComponent,
   ],
-  declarations:  [ EquipmentsComponent, EquipmentsListComponent],
 })
-export class EquipmentsModule { }
+export class EquipmentsModule {}

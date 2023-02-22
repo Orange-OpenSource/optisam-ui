@@ -1,10 +1,10 @@
 export class RequiredJSONFormat {
-  ID: String = '';
-  type: String = '';
-  parent_id: String = '';
-  metadata_id: String = '';
+  ID: string = '';
+  type: string = '';
+  parent_id: string = '';
+  metadata_id: string = '';
   attributes: Attribute[];
-  scopes:String[] = [];
+  scopes: string[] = [];
 }
 
 export class Attribute {
@@ -18,7 +18,6 @@ export class Attribute {
 }
 export class EquipmentType {
   equipment_types: EquipmentTypes[];
-
 }
 export class EquipmentTypes {
   ID: String = '';

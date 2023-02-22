@@ -14,7 +14,8 @@
         <mat-icon color="panel">add</mat-icon>
         {{ "Add Equipment Type" | translate }}
       </button>
-      <button *ngIf="role === 'SUPER_ADMIN'"
+      <button
+        *ngIf="role === 'SUPER_ADMIN'"
         id="core-factor-btn"
         mat-raised-button
         [routerLink]="['/optisam/cfm/list-core-factor']"
@@ -77,7 +78,6 @@
           }}</mat-header-cell>
           <mat-cell *matCellDef="let equipment; let i = index">
             <button
-              *ngIf="allowedScope"
               id="editBtn{{ i }}"
               mat-icon-button
               matTooltip="{{ 'Edit Equipment Type' | translate }}"

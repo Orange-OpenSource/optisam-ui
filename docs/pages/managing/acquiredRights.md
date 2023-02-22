@@ -6,9 +6,9 @@
 
 ![select APM](../../img/goodScopeu.jpg){: .zoom}
 
-## What is an acquired right ? 
+## What is an acquired right ?
 
-An acquired right represent the licensing rights owned by a scope for a product.  
+An acquired right represent the licensing rights owned by a scope for a product.
 
 ## Access
 
@@ -18,93 +18,101 @@ You can access to "Acquired rights management" by clicking here :
 
 ## Presentation
 
-The presentation table will be shown: 
+The presentation table will be shown:
 
-![select APM](../../img/ARMana/pres.jpg){: .zoom}  
+![select APM](../../img/ARMana/pres.jpg){: .zoom}
+
 The list of acquireds rights is ordered alphabetically.
 
-There are different attributes :  
-- SKU : The identifier of your acquired right  
-- SWIDtag : The identifier of the product  
-- Product name : The name of the product (You can click on it to have more information about it)  
-- Version / Editor : The version and the editor of the product  
-- Metric : Name of the metric used for the acquired right  
-- Acquired licenses : The number of licences acquired  
-- Unit Price (€) : The unit price of licences in euros   
+There are different attributes :
+
+- SKU : The identifier of your acquired right
+- SWIDtag : The identifier of the product
+- Product name : The name of the product (You can click on it to have more information about it)
+- Version / Editor : The version and the editor of the product
+- Metric : Name of the metric used for the acquired right
+- Acquired licenses : The number of licences acquired
+- Unit Price (€) : The unit price of licences in euros
 
 **If you have 2 different "Acquired Rights" with different SKUs for the same product and the same metric, OpTISAM will automatically detect that the product has several SKUs and will only show the total in a single line in the compliance tab.**
 
 ## Possibilities
 
-You can do 3 things from there :  
-- <span style="color:blue">Create a new acquired right</span> ([here](#create-a-new-acquired-right))  
-- <span style="color:green">Edit an acquired right</span> ([here](#edit-an-acquired-right))  
-- <span style="color:red">Delete an exiting aquired right</span> ([here](#delete-an-existing-acquired-right))      
+You can do 3 things from there :
+
+- <span style="color:blue">Create a new acquired right</span> ([here](#create-a-new-acquired-right))
+- <span style="color:green">Edit an acquired right</span> ([here](#edit-an-acquired-right))
+- <span style="color:red">Delete an exiting aquired right</span> ([here](#delete-an-existing-acquired-right))
 
 ![select APM](../../img/ARMana/possibilities.jpg){: .zoom}
 
 ## Create a new acquired right
 
-Click on "Create New" button : 
+Click on "Create New" button :
 
 ![select APM](../../img/ARMana/create1.jpg){: .zoom}
 
-This window will be shown : 
+This window will be shown :
 
-![select APM](../../img/ARMana/create0.jpg){: .zoom}
+![select APM](../../img/ARMana/create0.png){: .zoom}
 
 You will have to fill in the fields (if needed, not mandatory):
-1. SKU : The id of the acquired right (mandatory)    
-2. Ordering date : The date of the ordering 
+
+1. SKU : The id of the acquired right (mandatory)
+2. Ordering date : The date of the ordering
 3. Corporate sourcing contract : The name of the corporate sourcing the contract
 4. Software provider : The name of the software provider
+5. Cost Optimization : Allow optisam to find the best repartition of licences amongs SKUs (for same product or aggregation) to optimize the delta (less counterfeiting and minimum delta).  
+   <span style="color:red">To activate the cost optimization, check the box "Cost Optimization" </span>
 
-Then you can click on "Next" (5) or navigate with <span style="color:dodgerblue">the 5 categories in the navigation bar</span>  
+Then you can click on "Next" (6) or navigate with <span style="color:dodgerblue">the 5 categories in the navigation bar</span>
 
-The next screen is: 
+The next screen is:
 
 ![select APM](../../img/ARMana/create2.jpg){: .zoom}
 
-You will have to fill in the fields (mandatory) :  
+You will have to fill in the fields (mandatory) :
 
-1. Product Editor : The editor of the product licensed by the acquired right. You can choose an existing editor proposed or add a new one.   
-2. Product Name : The name of the product licensed by the acquired right. You can choose an existing product proposed or add a new one.       
-3. Product Version : The version of the product licensed by the acquired right. You can choose an existing version of the product or add a new one.  
+1. Product Editor : The editor of the product licensed by the acquired right. You can choose an existing editor proposed or add a new one.
+2. Product Name : The name of the product licensed by the acquired right. You can choose an existing product proposed or add a new one.
+3. Product Version : The version of the product licensed by the acquired right. You can choose an existing version of the product or add a new one.
 4. Metric : The metric(s) used to compute the licenses for the product.  
-**You can select many metrics for the same acquired right**    
+   **You can select many metrics for the same acquired right**
 
-Then you can click on "Next" to continue or "Back" to modify the fields of the first step or navigate with the navigation bar. 
+Then you can click on "Next" to continue or "Back" to modify the fields of the first step or navigate with the navigation bar.
 
-The next screen is : 
+The next screen is :
 
 ![select APM](../../img/ARMana/create3.jpg){: .zoom}
 
-You will have to fill in the fields (mandatory) :  
-1. Number of licenses acquired : The number of licenses acquired for the product with this acquired right  
-2. Unit price : The unit price for each licenses acquired for the product with this acquired right  
+You will have to fill in the fields (mandatory) :
 
-Then you can click on "Next" to continue or "Back" to modify the fields of the second step or navigate with the navigation bar.  
+1. Number of licenses acquired : The number of licenses acquired for the product with this acquired right
+2. Unit price : The unit price for each licenses acquired for the product with this acquired right
 
-**If you don't have any maintenance data or additional info to add, you can click on "Create" to create the Acquired Right.**  
+Then you can click on "Next" to continue or "Back" to modify the fields of the second step or navigate with the navigation bar.
 
-The next screen is :  
+**If you don't have any maintenance data or additional info to add, you can click on "Create" to create the Acquired Right.**
+
+The next screen is :
 
 ![select APM](../../img/ARMana/create4.jpg){: .zoom}
 
-You will have to fill in the fields (if needed, not mandatory) :  
-1. Number of licenses under maintenance : The number of licenses that are under this maintenance during this period  
-2. Maintenance unit price : The price of each license under maintenance during this period  
-3. Start of maintenance : The date when the maintenance starts  
-4. End of maintenance : The date when the maintenance ends  
+You will have to fill in the fields (if needed, not mandatory) :
+
+1. Number of licenses under maintenance : The number of licenses that are under this maintenance during this period
+2. Maintenance unit price : The price of each license under maintenance during this period
+3. Start of maintenance : The date when the maintenance starts
+4. End of maintenance : The date when the maintenance ends
 5. Last purchased order : The date of the last purchase
 6. Support number : The number of support
 7. Maintenance provider : The name of the maintenance provider  
-**If you don't enter the number of licenses under maintenance, you could not enter the start date and the end date of the maintenance.**
+   **If you don't enter the number of licenses under maintenance, you could not enter the start date and the end date of the maintenance.**
 
 Then you can click on "Next" to continue or "Back" to modify the fields of the first 3 steps or navigate with the navigation bar.  
-**If you don't have any additional info to add, you can click on "Create" to create the Acquired Right.**  
+**If you don't have any additional info to add, you can click on "Create" to create the Acquired Right.**
 
-The next screen is :  
+The next screen is :
 
 ![select APM](../../img/ARMana/create5.jpg){: .zoom}
 
@@ -113,7 +121,7 @@ You will have to fill in the field of the comment (if needed, not mandatory) or 
 Then you can click on "Back" to modify the fields of the first 4 steps or navigate with the navigation bar.  
 When you are done, click on "Create" to create the new acquired right.
 
-<span style="color:red">When you upload a product without specified the aquired  right,the associated acquired right is created with default values in the Not licensed products tab as shown below.</span>
+<span style="color:red">When you upload a product without specified the aquired right,the associated acquired right is created with default values in the Not licensed products tab as shown below.</span>
 
 ![select APM](../../img/ARMana/notLicenses1.jpg){: .zoom}
 
@@ -121,7 +129,7 @@ You can easily create an aquired right for the product by clicking on the plus i
 
 ![select APM](../../img/ARMana/notLicenses2.jpg){: .zoom}
 
-After clicking, on the plus icon, you will see the frame of creation of an  aquired right as sawn above. The only differences are that the Product Editor, Product Name and Product Version field will be filled automatically as shown below. 
+After clicking, on the plus icon, you will see the frame of creation of an aquired right as sawn above. The only differences are that the Product Editor, Product Name and Product Version field will be filled automatically as shown below.
 
 ![select APM](../../img/ARMana/create2.jpg){: .zoom}
 
@@ -131,43 +139,44 @@ Once the aquired right create, the product will be remove from the not licences 
 
 ## Edit an acquired right
 
-Click on the pencil icon next to the Acquired Right that you want to edit : 
+Click on the pencil icon next to the Acquired Right that you want to edit :
 
 ![select APM](../../img/ARMana/edit1.jpg){: .zoom}
 
-This window will be shown : 
+This window will be shown :
 
 ![select APM](../../img/ARMana/edit2.jpg){: .zoom}
 
-From there, you will be able to edit everything in all tabs except the SKU.  
+From there, you will be able to edit everything in all tabs except the SKU.
+
 <!--
-In this first screen, you will be able to edit :    
-- Product Editor : The editor of the product licensed by the acquired right  
-- Product Name : The name of the product licensed by the acquired right  
-- Product Version : The version of the product licensed by the acquired right  
-- Metric : The metric used to compute the licenses for the product  
+In this first screen, you will be able to edit :
+- Product Editor : The editor of the product licensed by the acquired right
+- Product Name : The name of the product licensed by the acquired right
+- Product Version : The version of the product licensed by the acquired right
+- Metric : The metric used to compute the licenses for the product
 
 ![select APM](../../img/ARMana/edit3.jpg){: .zoom}
 
-In this second screen, you will be able to edit :  
-- Number of licenses acquired : The number of licenses acquired for the product with this acquired right  
-- Unit price : The unit price for each licenses acquired for the product with this acquired right  
+In this second screen, you will be able to edit :
+- Number of licenses acquired : The number of licenses acquired for the product with this acquired right
+- Unit price : The unit price for each licenses acquired for the product with this acquired right
 
 ![select APM](../../img/ARMana/edit4.jpg){: .zoom}
 
-In this third screen, you will be able to edit (if needed, not mandatory) :  
-- Number of licenses under maintenance : The number of licenses that are under this maintenance during this period  
-- Maintenance unit price : The price of each license under maintenance during this period  
-- Start of maintenance : The date when the maintenance starts  
-- End of maintenance : The date when the maintenance ends  
+In this third screen, you will be able to edit (if needed, not mandatory) :
+- Number of licenses under maintenance : The number of licenses that are under this maintenance during this period
+- Maintenance unit price : The price of each license under maintenance during this period
+- Start of maintenance : The date when the maintenance starts
+- End of maintenance : The date when the maintenance ends
 **If you don't enter the number of licenses under maintenance, you could not enter the start date and the end date of the maintenance.**
 
 ![select APM](../../img/ARMana/edit5.jpg){: .zoom}
 
 In this last screen, you will be able to edit the commentary (if needed, not mandatory).
 -->
-When you are done, click on "Update" to edit the acquired right.
 
+When you are done, click on "Update" to edit the acquired right.
 
 ## Delete an existing acquired right
 
@@ -181,17 +190,4 @@ This window will be shown:
 
 You have to click on "OK" to delete the acquired right.
 
-
-
-
-
-
-
-
-
-
-
-
-
 <script src="../../../js/zoomImage.js"></script>
-

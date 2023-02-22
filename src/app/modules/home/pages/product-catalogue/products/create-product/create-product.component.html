@@ -1,0 +1,383 @@
+<mat-card>
+  <mat-card-title>
+    <ng-container *ngIf="crud == crudCreate">
+      {{ "PRODUCT_CATALOG.TITLE.CREATE_PRODUCT" | translate }}
+    </ng-container>
+    <ng-container *ngIf="crud == crudUpdate">
+      {{ "Update Product" | translate }}
+    </ng-container>
+  </mat-card-title>
+  <mat-card-content>
+    <form [formGroup]="productForm">
+      <div class="main" fxLayout="column">
+        <div class="section" fxLayout="column">
+          <div fxLayout="row wrap" fxLayoutAlign="space-between">
+            <!-- Product Name -->
+            <mat-form-field appearance="outline">
+              <mat-label
+                >{{
+                  "PRODUCT_CATALOG.FORM_FIELD.PRODUCT_NAME" | translate
+                }}*</mat-label
+              >
+              <input
+                matInput
+                formControlName="productName"
+                placeholder="{{
+                  'PRODUCT_CATALOG.FORM_FIELD.PRODUCT_NAME' | translate
+                }}"
+              />
+              <mat-error *ngIf="productName?.hasError('required')">
+                {{ "PRODUCT.ERROR.REQUIRED.PRODUCT_NAME" | translate }}
+              </mat-error>
+              <mat-error *ngIf="productName?.hasError('maxlength')">
+                {{
+                  "ERROR.MAX_LENGTH"
+                    | translate
+                      : {
+                          requiredLength:
+                            productName.errors?.maxlength?.requiredLength
+                        }
+                }}
+              </mat-error>
+            </mat-form-field>
+            <!-- Product Editor -->
+            <mat-form-field appearance="outline">
+              <mat-label
+                >{{
+                  "PRODUCT_CATALOG.FORM_FIELD.EDITOR" | translate
+                }}*</mat-label
+              >
+
+              <input
+                *ngIf="crud == crudRead"
+                matInput
+                formControlName="productEditor"
+              />
+
+              <mat-select
+                [panelClass]="['product-editor-list']"
+                #editorSearch
+                *ngIf="crud != crudRead"
+                formControlName="productEditor"
+                (openedChange)="searchInputOpenChange($event, editorSearch)"
+                [disableRipple]="true"
+                cdkFocusInitial
+                [disabled]="loadingEditor"
+              >
+                <!-- <mat-option value="">{{
+                  "PRODUCT_CATALOG.BUTTON.SELECT" | translate
+                }}</mat-option> -->
+
+                <mat-option>
+                  <input
+                    #searchInput
+                    placeholder="Search..."
+                    matInput
+                    (click)="searchEditor($event)"
+                    (keydown)="searchKeydown($event)"
+                    (input)="searchInputEvent($event)"
+                    autocomplete="off"
+                  />
+                </mat-option>
+                <app-loading-spinner
+                  *ngIf="searchLoading"
+                ></app-loading-spinner>
+                <ng-container *ngIf="!searchLoading && !loadingEditor">
+                  <mat-option
+                    *ngFor="let editor of filteredEditor"
+                    [value]="editor.id"
+                  >
+                    {{ editor.name }}
+                  </mat-option>
+                </ng-container>
+              </mat-select>
+              <mat-hint *ngIf="loadingEditor" fxLayout="column">
+                <span>{{ "Loading" | translate }}...</span
+                ><mat-progress-bar mode="indeterminate"></mat-progress-bar
+              ></mat-hint>
+              <mat-error *ngIf="productEditor?.hasError('required')">
+                {{ "PRODUCT.ERROR.REQUIRED.EDITOR" | translate }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div fxLayout="row wrap" fxLayoutAlign="space-between">
+            <!-- Product Metrics -->
+            <mat-form-field appearance="outline">
+              <mat-label>{{
+                "PRODUCT_CATALOG.FORM_FIELD.METRIC" | translate
+              }}</mat-label>
+              <input
+                matInput
+                formControlName="productMetric"
+                placeholder="{{
+                  'PRODUCT_CATALOG.FORM_FIELD.METRIC' | translate
+                }}"
+              />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>{{ "SwidTag" | translate }}</mat-label>
+              <input
+                matInput
+                formControlName="swidTag"
+                placeholder="{{ 'SwidTag' | translate }}"
+              />
+            </mat-form-field>
+          </div>
+        </div>
+        <!-- Product Versions -->
+        <div class="section" fxLayout="column">
+          <div class="section-title">
+            {{ "PRODUCT_CATALOG.TITLE.VERSIONS" | translate }}
+          </div>
+
+          <app-product-version
+            *ngFor="let version of productVersions.controls; let i = index"
+            [index]="i"
+            (removeVersion)="removeProductVersion($event)"
+            [crud]="crud"
+          ></app-product-version>
+          <div fxLayout="row">
+            <button
+              *ngIf="crud != crudRead"
+              mat-raised-button
+              class="btn-two"
+              fxLayout="row"
+              fxLayoutAlign="center center"
+              (click)="addVersion()"
+            >
+              <mat-icon>add</mat-icon>
+              <span>{{
+                "PRODUCT_CATALOG.BUTTON.ADD_VERSION" | translate
+              }}</span>
+            </button>
+          </div>
+        </div>
+        <!-- Product Support Vendor -->
+        <div class="section" fxLayout="column">
+          <div class="section-title">
+            {{ "PRODUCT_CATALOG.TITLE.SUPPORT_VENDOR" | translate }}
+          </div>
+          <div fxLayout="row wrap" fxLayoutGap="30px">
+            <app-product-support-vendor
+              [crud]="crud"
+              *ngFor="
+                let version of productSupportVendor.controls;
+                let i = index
+              "
+              [index]="i"
+              (removeSupportVendor)="removeProductSupportVendor($event)"
+            ></app-product-support-vendor>
+          </div>
+          <div fxLayout="row">
+            <button
+              *ngIf="crud != crudRead"
+              mat-raised-button
+              class="btn-two"
+              fxLayout="row"
+              fxLayoutAlign="center center"
+              (click)="addSupportVendor()"
+            >
+              <mat-icon>add</mat-icon>
+              <span>{{
+                "PRODUCT_CATALOG.BUTTON.ADD_SUPPORT_VENDOR" | translate
+              }}</span>
+            </button>
+          </div>
+        </div>
+        <!-- Product General Information -->
+        <div class="section" fxLayout="column">
+          <div class="section-title">
+            {{ "PRODUCT_CATALOG.TITLE.GENERAL_INFORMATION" | translate }}
+          </div>
+          <div fxLayout="row">
+            <mat-form-field appearance="outline" fxFill>
+              <mat-label>{{
+                "PRODUCT_CATALOG.FORM_FIELD.GENERAL_INFORMATION" | translate
+              }}</mat-label>
+              <textarea
+                [readonly]="crud == crudRead"
+                matInput
+                formControlName="productGeneralInformation"
+              ></textarea>
+              <mat-error
+                *ngIf="productGeneralInformation.hasError('maxlength')"
+              >
+                {{
+                  "ERROR.MAX_LENGTH"
+                    | translate
+                      : {
+                          requiredLength:
+                            productGeneralInformation.errors?.maxlength
+                              ?.requiredLength
+                        }
+                }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+        <!-- Product Contract Tips -->
+        <div class="section" fxLayout="column">
+          <div class="section-title">
+            {{ "PRODUCT_CATALOG.TITLE.CONTRACT_TIPS" | translate }}
+          </div>
+          <div fxLayout="row">
+            <mat-form-field appearance="outline" fxFill>
+              <mat-label>{{
+                "PRODUCT_CATALOG.FORM_FIELD.CONTRACT_TIPS" | translate
+              }}</mat-label>
+              <textarea
+                [readonly]="crud == crudRead"
+                matInput
+                formControlName="productContractTips"
+              ></textarea>
+              <mat-error *ngIf="productContractTips.hasError('maxlength')">
+                {{
+                  "ERROR.MAX_LENGTH"
+                    | translate
+                      : {
+                          requiredLength:
+                            productContractTips.errors?.maxlength
+                              ?.requiredLength
+                        }
+                }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+        <!-- Product Recommendation -->
+        <div class="section" fxLayout="column">
+          <div class="section-title">
+            {{ "PRODUCT_CATALOG.TITLE.RECOMMENDATION" | translate }}
+          </div>
+          <div fxLayout="row">
+            <mat-form-field appearance="outline" fxFill>
+              <mat-label>{{
+                "PRODUCT_CATALOG.FORM_FIELD.RECOMMENDATION" | translate
+              }}</mat-label>
+              <textarea
+                [readonly]="crud == crudRead"
+                matInput
+                formControlName="productRecommendation"
+              ></textarea>
+              <mat-error *ngIf="productRecommendation.hasError('maxlength')">
+                {{
+                  "ERROR.MAX_LENGTH"
+                    | translate
+                      : {
+                          requiredLength:
+                            productRecommendation.errors?.maxlength
+                              ?.requiredLength
+                        }
+                }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+        <!-- Product Location Type -->
+        <div class="section" fxLayout="column">
+          <div class="section-title">
+            {{ "PRODUCT_CATALOG.TITLE.LOCATION" | translate }}
+          </div>
+          <form
+            [formGroup]="productLocation"
+            fxLayout="row"
+            fxLayoutAlign="space-between"
+            class="product-location-type"
+          >
+            <div fxFlex>
+              <mat-checkbox
+                [disabled]="crud == crudRead"
+                formControlName="onPremise"
+                color="primary"
+                disableRipple
+                >{{
+                  "PRODUCT_CATALOG.FORM_FIELD.OPEN_PREMISE" | translate
+                }}</mat-checkbox
+              >
+            </div>
+            <div fxFlex>
+              <mat-checkbox
+                [disabled]="crud == crudRead"
+                formControlName="saas"
+                color="primary"
+                disableRipple
+                >{{
+                  "PRODUCT_CATALOG.FORM_FIELD.SAAS" | translate
+                }}</mat-checkbox
+              >
+            </div>
+          </form>
+        </div>
+        <!-- Product Source -->
+        <app-product-source [data]="data" [crud]="crud"></app-product-source>
+
+        <!-- Product Useful Links -->
+        <div class="section" fxLayout="column">
+          <div class="section-title">
+            {{ "PRODUCT_CATALOG.TITLE.USEFUL_LINKS" | translate }}
+          </div>
+          <div fxLayout="row wrap" fxLayoutGap="30px">
+            <app-product-useful-links
+              [crud]="crud"
+              *ngFor="let link of productUsefulLinks.controls; let i = index"
+              [index]="i"
+              (removeLink)="removeProductUsefulLink($event)"
+            ></app-product-useful-links>
+          </div>
+          <div fxLayout="row">
+            <button
+              *ngIf="crud != crudRead"
+              mat-raised-button
+              class="btn-two"
+              fxLayout="row"
+              fxLayoutAlign="center center"
+              (click)="addUsefulLink()"
+            >
+              <mat-icon>add</mat-icon>
+              <span>{{ "PRODUCT_CATALOG.BUTTON.ADD_LINK" | translate }}</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </mat-card-content>
+  <mat-card-actions>
+    <div fxLayout="row" fxLayoutAlign="end center">
+      <button
+        mat-raised-button
+        class="btn-four"
+        routerLink="/optisam/pc/products"
+        *ngIf="crud != crudRead && !updatedData"
+      >
+        {{ "PRODUCT_CATALOG.BUTTON.CANCEL" | translate }}
+      </button>
+      <button
+        mat-raised-button
+        mat-dialog-close
+        class="btn-four"
+        *ngIf="crud != crudRead && updatedData"
+      >
+        {{ "PRODUCT_CATALOG.BUTTON.CANCEL" | translate }}
+      </button>
+      <button
+        *ngIf="crud === crudCreate && !updatedData"
+        mat-raised-button
+        class="btn-two"
+        (click)="createProduct()"
+        [disabled]="productForm.invalid || httpLoading"
+      >
+        {{ "PRODUCT_CATALOG.BUTTON.CREATE" | translate }}
+      </button>
+      <button
+        *ngIf="crud === crudUpdate || updatedData"
+        mat-raised-button
+        class="btn-two"
+        (click)="updateForm()"
+        [disabled]="productForm.invalid || httpLoading"
+      >
+        {{ "Update" | translate }}
+      </button>
+    </div>
+  </mat-card-actions>
+</mat-card>

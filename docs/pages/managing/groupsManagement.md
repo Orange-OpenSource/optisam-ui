@@ -12,7 +12,7 @@ Group enables access to one or more scopes. Group in OpTISAM context is logical 
 
 You can access to "Groups Management" by clicking here :
 
-![select APM](../../img/groupsMana/accessu.jpg){: .zoom}
+![select APM](../../img/groupsMana/access.jpg){: .zoom}
 
 ## Presentation
 

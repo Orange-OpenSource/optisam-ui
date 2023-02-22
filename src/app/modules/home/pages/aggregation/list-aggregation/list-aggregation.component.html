@@ -28,7 +28,6 @@
         [dataSource]="aggregationData"
         matSort
         (matSortChange)="sortData($event)"
-       
       >
         <ng-container matColumnDef="name">
           <mat-header-cell *matHeaderCellDef>
@@ -52,8 +51,23 @@
           <mat-header-cell *matHeaderCellDef
             >{{ "AGGREGATIONS.TEXTS.EDITOR" | translate }}
           </mat-header-cell>
-          <mat-cell *matCellDef="let aggregation">
+          <!-- <mat-cell *matCellDef="let aggregation">
             {{ aggregation.product_editor }}
+          </mat-cell> -->
+          <mat-cell *matCellDef="let aggregation">
+            <span *ngIf="aggregation.editor_id == ''">{{
+              aggregation.product_editor
+            }}</span>
+            <span *ngIf="aggregation.editor_id != ''">
+              <a
+                id="editor_name_{{ i }}"
+                class="ellipsis mat-button-link"
+                matTooltip="{{ aggregation.editor }}"
+                (click)="openEditorDialog(aggregation)"
+              >
+                {{ aggregation.product_editor }}</a
+              >
+            </span>
           </mat-cell>
         </ng-container>
 
@@ -68,12 +82,15 @@
 
         <ng-container matColumnDef="numofSwidTags">
           <mat-header-cell *matHeaderCellDef>{{
-            "AGGREGATIONS.TEXTS.NUMBER_OF_SWIDTAGS" | translate
+            "Number of Products" | translate
           }}</mat-header-cell>
           <mat-cell *matCellDef="let aggregation">
-            <span matTooltip="{{ aggregation.swidtags?.join(',\n ') }}">
+            <a
+              matTooltip="{{ aggregation?.mapping | joinProductVersion }}"
+              matTooltipClass="unset-max-width"
+            >
               {{ aggregation.swidtags?.length }}
-            </span>
+            </a>
           </mat-cell>
         </ng-container>
 
@@ -132,16 +149,15 @@
         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
         <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
       </mat-table>
-      
+
       <div
-      class="no-data"
-      *ngIf="!_loading && aggregationData && aggregationData.data.length == 0"
-     >
-      {{ "No data available" | translate }}
-     </div>
+        class="no-data"
+        *ngIf="!_loading && aggregationData && aggregationData.data.length == 0"
+      >
+        {{ "No data available" | translate }}
+      </div>
 
       <app-loading-spinner *ngIf="_loading"></app-loading-spinner>
-      <!-- <mat-paginator #paginator [pageSize]="7" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons> -->
       <mat-paginator
         [length]="length"
         [pageSize]="pageSize"

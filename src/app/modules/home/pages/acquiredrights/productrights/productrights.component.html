@@ -16,14 +16,14 @@
         matSort
         (matSortChange)="sortData($event)"
       >
-        <ng-container matColumnDef="swid_tag">
+        <!-- <ng-container matColumnDef="swid_tag">
           <mat-header-cell *matHeaderCellDef mat-sort-header="SWID_TAG"
             >{{ "SWIDtag" | translate }}
           </mat-header-cell>
           <mat-cell *matCellDef="let acquired_rights">
             {{ acquired_rights.swid_tag || 0 }}
           </mat-cell>
-        </ng-container>
+        </ng-container> -->
 
         <ng-container matColumnDef="product_name">
           <mat-header-cell *matHeaderCellDef mat-sort-header="PRODUCT_NAME"
@@ -60,9 +60,21 @@
           <mat-header-cell *matHeaderCellDef mat-sort-header="EDITOR"
             >{{ "Editor" | translate }}
           </mat-header-cell>
-          <mat-cell *matCellDef="let acquired_rights"
+          <!-- <mat-cell *matCellDef="let acquired_rights"
             >{{ acquired_rights.editor || 0 }}
-          </mat-cell>
+          </mat-cell> -->
+          <mat-cell *matCellDef="let acquired_rights"> 
+            <span *ngIf="acquired_rights.editor_id==''">{{acquired_rights.editor}}</span>  
+            <span *ngIf="acquired_rights.editor_id!=''">
+              <a
+                id="editor_name_{{ i }}"
+                class="ellipsis mat-button-link"
+                matTooltip="{{ acquired_rights.editor }}"
+                (click)="openEditorDialog(acquired_rights)"
+              >
+                {{ acquired_rights.editor }}</a>
+            </span>
+            </mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="SKU">
@@ -212,7 +224,7 @@
 
         <ng-container matColumnDef="ordering_date">
           <mat-header-cell *matHeaderCellDef>
-            {{ "Ordering date" | translate }}</mat-header-cell
+            {{ "Ordering Date" | translate }}</mat-header-cell
           >
           <mat-cell *matCellDef="let acquired_rights">
             {{ acquired_rights.ordering_date | formatShortdate }}</mat-cell
@@ -221,8 +233,7 @@
 
         <ng-container matColumnDef="corporate_sourcing_contract">
           <mat-header-cell *matHeaderCellDef>
-            {{ "CSC" | translate }}</mat-header-cell
-          >
+            {{ "CSC" | translate }}</mat-header-cell>
           <mat-cell *matCellDef="let acquired_rights">
             {{ acquired_rights.corporate_sourcing_contract || "-" }}</mat-cell
           >
@@ -230,11 +241,9 @@
 
         <ng-container matColumnDef="software_provider">
           <mat-header-cell *matHeaderCellDef>
-            {{ "Software provider" | translate }}</mat-header-cell
-          >
+            {{ "Software provider" | translate }}</mat-header-cell>
           <mat-cell *matCellDef="let acquired_rights">
-            {{ acquired_rights.software_provider || "-" }}</mat-cell
-          >
+            {{ acquired_rights.software_provider || "-" }}</mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="last_purchased_order">

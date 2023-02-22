@@ -113,6 +113,10 @@ export class CreateAcquiredRightAggregationComponent
     return this.aggregationForm.get('sku');
   }
 
+  get repartition() {
+    return this.aggregationForm.get('repartition');
+  }
+
   get aggregationName(): FormControl {
     return this.aggregationForm.get('aggregationName') as FormControl;
   }
@@ -269,6 +273,7 @@ export class CreateAcquiredRightAggregationComponent
     const body: AcquiredRightAggregationBody = {
       ID: 0,
       sku: this.sku.value,
+      repartition: this.repartition.value,
       // aggregation_name: this.aggregationName.value,
       metric_name: this.productsMetrics.value.map((d) => d.name).join(','),
       aggregationID: this.aggregationName.value,

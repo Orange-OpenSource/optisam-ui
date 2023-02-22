@@ -132,8 +132,23 @@
           <mat-header-cell *matHeaderCellDef mat-sort-header="EDITOR"
             >{{ "Editor" | translate }}
           </mat-header-cell>
-          <mat-cell *matCellDef="let acquired_rights"
+          <!-- <mat-cell *matCellDef="let acquired_rights"
             >{{ acquired_rights.editor || 0 }}
+          </mat-cell> -->
+          <mat-cell *matCellDef="let acquired_rights">
+            <span *ngIf="acquired_rights.editor_id == ''">{{
+              acquired_rights.editor
+            }}</span>
+            <span *ngIf="acquired_rights.editor_id != ''">
+              <a
+                id="editor_name_{{ i }}"
+                class="ellipsis mat-button-link"
+                matTooltip="{{ acquired_rights.editor }}"
+                (click)="openEditorDialog(acquired_rights)"
+              >
+                {{ acquired_rights.editor }}</a
+              >
+            </span>
           </mat-cell>
         </ng-container>
 
@@ -308,8 +323,23 @@
           <mat-header-cell *matHeaderCellDef mat-sort-header="EDITOR"
             >{{ "Editor" | translate }}
           </mat-header-cell>
-          <mat-cell *matCellDef="let acquired_rights"
+          <!-- <mat-cell *matCellDef="let acquired_rights"
             >{{ acquired_rights.editor || 0 }}
+          </mat-cell> -->
+          <mat-cell *matCellDef="let acquired_rights">
+            <span *ngIf="acquired_rights.editor_id == ''">{{
+              acquired_rights.editor
+            }}</span>
+            <span *ngIf="acquired_rights.editor_id != ''">
+              <a
+                id="editor_name_{{ i }}"
+                class="ellipsis mat-button-link"
+                matTooltip="{{ acquired_rights.editor }}"
+                (click)="openEditorDialog(acquired_rights)"
+              >
+                {{ acquired_rights.editor }}</a
+              >
+            </span>
           </mat-cell>
         </ng-container>
 
@@ -423,11 +453,26 @@
             <mat-header-cell *matHeaderCellDef mat-sort-header="editor"
               >{{ "Editor" | translate }}
             </mat-header-cell>
-            <mat-cell
+            <!-- <mat-cell
               *matCellDef="let aggregation"
               matTooltip="{{ aggregation.editor }}"
             >
               {{ aggregation.product_editor || "-" }}
+            </mat-cell> -->
+            <mat-cell *matCellDef="let acquired_rights">
+              <span *ngIf="acquired_rights.editor_id == ''">{{
+                acquired_rights.product_editor
+              }}</span>
+              <span *ngIf="acquired_rights.editor_id != ''">
+                <a
+                  id="editor_name_{{ i }}"
+                  class="ellipsis mat-button-link"
+                  matTooltip="{{ acquired_rights.editor }}"
+                  (click)="openEditorDialog(acquired_rights)"
+                >
+                  {{ acquired_rights.product_editor }}</a
+                >
+              </span>
             </mat-cell>
           </ng-container>
 
@@ -442,11 +487,12 @@
 
           <ng-container matColumnDef="swidtags">
             <mat-header-cell *matHeaderCellDef mat-sort-header="swidtags"
-              >{{ "Number of Swidtags" | translate }}
+              >{{ "Number of Products" | translate }}
             </mat-header-cell>
             <mat-cell
               *matCellDef="let aggregation"
-              matTooltip="{{ aggregation.swidtags.join(', ') }}"
+              matTooltipClass="unset-max-width"
+              matTooltip="{{ aggregation.mapping | joinProductVersion }}"
             >
               <a class="ellipsis mat-button-link">
                 {{ aggregation.swidtags.length || 0 }}

@@ -14,7 +14,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   public userName:any;
   public role:any;
   sidebarOpenFlag:Boolean = true;
-  sidebarWidth:any = 15;
+  sidebarWidth:number = 17;
   ngStyle: string;
   profilePicData: any=null;
   firstName:any;
@@ -86,7 +86,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   increaseWidth() {
-    this.sidebarWidth = 15;
+    this.sidebarWidth = 17;
   }
   decreaseWidth() {
     this.sidebarWidth = 6;

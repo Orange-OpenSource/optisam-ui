@@ -1,0 +1,41 @@
+.action-icon {
+  cursor: pointer;
+  color: #008afc;
+  // height: 20px;
+  // width: 20px;
+  // font-size: 20px;
+}
+
+.inc {
+  width: 100px;
+}
+
+.mat-column-action {
+  flex: 0 0 100px;
+}
+
+.mat-column-locationType {
+  flex: 0 0 85px;
+}
+
+.mat-column-licensing {
+  flex: 0 0 90px;
+}
+
+.matPaginators {
+  bottom: 0px;
+  position: static;
+  z-index: 10;
+}
+
+.tops {
+  top: 0px !important;
+  z-index: 100 !important;
+}
+.mat-column-editorName {
+  flex: 0 0 280px;
+}
+
+mat-cell {
+  word-break: break-word;
+}

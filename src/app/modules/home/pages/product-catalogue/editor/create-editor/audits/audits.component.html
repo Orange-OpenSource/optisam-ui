@@ -1,0 +1,35 @@
+<ng-container [formGroup]="editorGroup">
+  <mat-card>
+    <mat-card-content
+      class="list-audits"
+      fxLayout="column"
+      fxLayoutAlign="space-between"
+    >
+      <mat-card-title>
+        <h6 class="audits-heading">{{ "EDITOR.AUDITS" | translate }}</h6>
+      </mat-card-title>
+      <ng-container formArrayName="audits">
+        <app-single-audit
+          *ngFor="let audit of audits?.controls; let i = index"
+          [index]="i"
+        ></app-single-audit>
+      </ng-container>
+      <button
+        mat-raised-button
+        class="btn-primary add-pm-type-btn"
+        disableRipple
+        (click)="addNewAudits()"
+      >
+        <div
+          fxLayout="row"
+          fxLayoutAlign="space-between center"
+          fxLayoutGap="5px"
+          class="add-btn-content"
+        >
+          <mat-icon>add</mat-icon>
+          <span>{{ "EDITOR.ADD_AUDITS" | translate }}</span>
+        </div>
+      </button>
+    </mat-card-content>
+  </mat-card>
+</ng-container>

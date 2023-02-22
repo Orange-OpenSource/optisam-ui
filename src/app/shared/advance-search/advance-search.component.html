@@ -12,12 +12,15 @@
       matTooltipClass="search-label-tooltip"
       #labelHTML
       matTooltip="{{
-        label.type === 'text'
-          ? filterFields[label.key]
-          : (filterFields[label.key] | date: 'M/d/y')
+        label.type === 'date'
+          ? (filterFields[label.key] | date : 'M/d/y')
+          : filterFields[label.key]
       }}"
     >
-      <span class="text">{{ label.label }}</span>
+      <span *ngIf="model.translate" class="text">{{
+        label.label | translate
+      }}</span>
+      <span *ngIf="!model.translate" class="text">{{ label.label }}</span>
       <mat-icon (click)="removeLabel(label)">cancel</mat-icon>
     </div>
   </div>
@@ -28,7 +31,9 @@
           id="adv-search-input"
           matInput
           [(ngModel)]="filterFields[model.primary]"
-          placeholder="{{ model.title | translate }}"
+          placeholder="{{
+            model.translate ? (model.title | translate) : model.title
+          }}"
           autocomplete="off"
           (keyup)="onFocusOut()"
           (keydown.enter)="pressEnter()"
@@ -107,7 +112,9 @@
               <input
                 matInput
                 id="{{ itm.label }}"
-                placeholder="{{ itm.label | translate }}"
+                placeholder="{{
+                  model.translate ? (itm.label | translate) : itm.label
+                }}"
                 class="advanceChild"
                 [(ngModel)]="filterFields[itm.key]"
                 (keyup)="onFocusOut()"
@@ -117,7 +124,9 @@
           </ng-container>
           <ng-container *ngIf="itm.type === 'date'">
             <mat-form-field appearance="fill">
-              <mat-label>{{ itm.label | translate }}</mat-label>
+              <mat-label>{{
+                model.translate ? (itm.label | translate) : itm.label
+              }}</mat-label>
               <input
                 matInput
                 class="advanceChild"

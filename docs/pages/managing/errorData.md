@@ -9,14 +9,14 @@
 ## Access to the page
 
 1. Click on "Administration"
-2. Click on "Data Management" 
-3. Click on "Global Data" 
+2. Click on "Inventory Management" 
 
-![select APM](../../img/configure/import1u.jpg){: .zoom}
+
+![select APM](../../img/configure/import1.jpg){: .zoom}
 
 ## Check if there is any error
 
-![select APM](../../img/dataMana/errors/firstu.jpg){: .zoom}
+![select APM](../../img/dataMana/errors/first.jpg){: .zoom}
 
 If there is a red exclamation mark in front of the "COMPLETED" in the line of the file that you've just imported, then this significates that you have at least one error in your file.
 
@@ -26,7 +26,7 @@ If there isn't any red exclamation mark, then your file has been completely impo
 
 You have to click on the red excalamation mark, in order to download an archive that contains CSV files that correspond to your importation : 
 
-![select APM](../../img/dataMana/errors/secondu.jpg){: .zoom}
+![select APM](../../img/dataMana/errors/second.jpg){: .zoom}
 
 Save this file and unzip it with the unzipper of your choice (e.g. : 7zip) : 
 

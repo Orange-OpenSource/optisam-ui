@@ -14,6 +14,7 @@ import {
 import { CommonService } from '@core/services/common.service';
 import { LOCAL_KEYS } from '@core/util/constants/constants';
 import { MatTableDataSource } from '@angular/material/table';
+import { ViewEditorDetailsAggComponent } from '../view-editor-details-agg/view-editor-details-agg.component';
 
 @Component({
   selector: 'app-list-aggregation',
@@ -42,6 +43,7 @@ export class ListAggregationComponent implements OnInit, AfterViewInit {
   sortOrder: 'asc' | 'desc' = 'asc';
   length: any;
   pageEvent: any;
+  dialogRef: any;
 
   constructor(
     private productService: ProductService,
@@ -166,6 +168,16 @@ export class ListAggregationComponent implements OnInit, AfterViewInit {
         this.getAggregations();
       }
     });
+  }
+
+  openEditorDialog(data: any) {
+    this.dialogRef = this.dialog.open(ViewEditorDetailsAggComponent, {
+      width: '1300px',
+      disableClose: true,
+      data: data,
+    });
+
+    this.dialogRef.afterClosed().subscribe((result) => {});
   }
 
   addNew() {

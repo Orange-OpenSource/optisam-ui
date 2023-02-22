@@ -1,97 +1,172 @@
-<mat-card class="example-card" style="z-index: 0;">
-
+<mat-card class="example-card" style="z-index: 0">
   <div class="container-fluid page-content-header">
-    <div class="row">
-      <div class="page-heading">
-        {{'User Management' | translate}}
+    <div class="row" fxLayout="row" fxLayoutAlign="space-between">
+      <div class="page-heading" fxFlex>
+        {{ "User Management" | translate }}
       </div>
-      <div class="add-btn">
-        <button id="addUserBtn" mat-raised-button class="btn-two" (click)="addNew()">
-          <mat-icon>add</mat-icon>
-          {{'Add User' | translate}}
-        </button>
-      </div>
+      <button
+        id="addUserBtn"
+        mat-raised-button
+        class="btn-two"
+        (click)="addNew()"
+      >
+        <mat-icon>add</mat-icon>
+        {{ "Add User" | translate }}
+      </button>
     </div>
   </div>
 
   <mat-card-content>
     <div class="mat-elevation-z8">
-      <mat-table [dataSource]="dataSource" class="mat-elevation-z8"  matSort>
+      <mat-table [dataSource]="dataSource" class="mat-elevation-z8" matSort>
         <!-- Last Name Column -->
         <ng-container matColumnDef="last_name">
-          <mat-header-cell *matHeaderCellDef mat-sort-header>{{'Last Name'|translate}} </mat-header-cell>
-          <mat-cell *matCellDef="let element"> {{element.last_name}} </mat-cell>
+          <mat-header-cell *matHeaderCellDef mat-sort-header
+            >{{ "Last Name" | translate }}
+          </mat-header-cell>
+          <mat-cell *matCellDef="let element">
+            {{ element.last_name }}
+          </mat-cell>
         </ng-container>
-      
+
         <!-- First Name Column -->
         <ng-container matColumnDef="first_name">
-          <mat-header-cell *matHeaderCellDef mat-sort-header>{{'First Name'|translate}}</mat-header-cell>
-          <mat-cell *matCellDef="let element"> {{element.first_name}} </mat-cell>
+          <mat-header-cell *matHeaderCellDef mat-sort-header>{{
+            "First Name" | translate
+          }}</mat-header-cell>
+          <mat-cell *matCellDef="let element">
+            {{ element.first_name }}
+          </mat-cell>
         </ng-container>
-      
+
         <!-- Email Column -->
         <ng-container matColumnDef="user_id">
-          <mat-header-cell *matHeaderCellDef mat-sort-header> {{'Email'|translate}} </mat-header-cell>
-          <mat-cell *matCellDef="let element"> {{element.user_id}} </mat-cell>
+          <mat-header-cell *matHeaderCellDef mat-sort-header>
+            {{ "Email" | translate }}
+          </mat-header-cell>
+          <mat-cell *matCellDef="let element"> {{ element.user_id }} </mat-cell>
         </ng-container>
-      
+
         <!-- Groups Column -->
         <ng-container matColumnDef="groups">
-          <mat-header-cell *matHeaderCellDef mat-sort-header> {{'Groups'|translate}} </mat-header-cell>
-          <mat-cell *matCellDef="let element"> {{element.groups || '-'}} </mat-cell>
+          <mat-header-cell *matHeaderCellDef mat-sort-header>
+            {{ "Groups" | translate }}
+          </mat-header-cell>
+          <mat-cell *matCellDef="let element">
+            {{ element.groups || "-" }}
+          </mat-cell>
         </ng-container>
-      
+
         <!-- Role Column -->
         <ng-container matColumnDef="role">
-          <mat-header-cell *matHeaderCellDef mat-sort-header> {{'Role'|translate}} </mat-header-cell>
-          <mat-cell *matCellDef="let element"> {{element.role}} </mat-cell>
+          <mat-header-cell *matHeaderCellDef mat-sort-header>
+            {{ "Role" | translate }}
+          </mat-header-cell>
+          <mat-cell *matCellDef="let element"> {{ element.role }} </mat-cell>
         </ng-container>
-      
-        <!-- Action Column -->      
+
+        <!-- Action Column -->
         <ng-container matColumnDef="action">
-          <div *ngIf="(role === 'ADMIN') || (role === 'SUPER_ADMIN')">
-            <mat-header-cell *matHeaderCellDef> {{'Action'|translate}} </mat-header-cell>
-            <mat-cell *matCellDef="let element; let i = index;">
-                <mat-icon id="editBtn_{{i}}" *ngIf = "element.role !== 'SUPER_ADMIN'" class="action-icon" matTooltip="Edit Role" (click)="editUser(element)" >edit</mat-icon>
-                <mat-icon id="deleteBtn_{{i}}" *ngIf = "element.role !== 'SUPER_ADMIN'" class="action-icon dlt" matTooltip="Delete User" (click)="deleteUserConfirmation(element, deleteConfirmationDialog)">delete</mat-icon>
+          <div *ngIf="role === 'ADMIN' || role === 'SUPER_ADMIN'">
+            <mat-header-cell *matHeaderCellDef>
+              {{ "Action" | translate }}
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element; let i = index">
+              <mat-icon
+                id="editBtn_{{ i }}"
+                *ngIf="element.role !== 'SUPER_ADMIN'"
+                class="action-icon"
+                matTooltip="{{ 'Edit role' | translate }}"
+                (click)="editUser(element)"
+                >edit</mat-icon
+              >
+              <mat-icon
+                id="deleteBtn_{{ i }}"
+                *ngIf="element.role !== 'SUPER_ADMIN'"
+                class="action-icon dlt"
+                matTooltip="{{ 'Delete User' | translate }}"
+                (click)="
+                  deleteUserConfirmation(element, deleteConfirmationDialog)
+                "
+                >delete</mat-icon
+              >
             </mat-cell>
           </div>
         </ng-container>
         <ng-template #deleteConfirmationDialog>
           <mat-dialog-content>
-              <p>{{'DELETE_USER_CONFIRM_MSG' | translate}}</p>
+            <p>{{ "DELETE_USER_CONFIRM_MSG" | translate }}</p>
           </mat-dialog-content>
           <mat-dialog-actions align="center">
-              <button mat-button class="btn-two" (click)="deleteUser(successDialog,errorDialog)" cdkFocusInitial>
-                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" *ngIf="_deleteInProgress"></span>
-                {{'OK'|translate}}
-              </button>
-              <button mat-button [mat-dialog-close]="true" class="btn-three" cdkFocusInitial>{{'Cancel'|translate}}</button>
-            </mat-dialog-actions>
-        </ng-template>      
-      
-        <mat-header-row *matHeaderRowDef="displayedColumns;sticky:true"></mat-header-row>
-        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+            <button
+              mat-button
+              class="btn-two"
+              (click)="deleteUser(successDialog, errorDialog)"
+              cdkFocusInitial
+            >
+              <span
+                class="spinner-border spinner-border-sm"
+                role="status"
+                aria-hidden="true"
+                *ngIf="_deleteInProgress"
+              ></span>
+              {{ "OK" | translate }}
+            </button>
+            <button
+              mat-button
+              [mat-dialog-close]="true"
+              class="btn-three"
+              cdkFocusInitial
+            >
+              {{ "Cancel" | translate }}
+            </button>
+          </mat-dialog-actions>
+        </ng-template>
+
+        <mat-header-row
+          *matHeaderRowDef="displayedColumns; sticky: true"
+        ></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
       </mat-table>
       <app-loading-spinner *ngIf="_loading"></app-loading-spinner>
-      <div class="no-data" *ngIf="!_loading && userList && userList.length === 0">{{'No data available' | translate}}</div>
+      <div
+        class="no-data"
+        *ngIf="!_loading && userList && userList.length === 0"
+      >
+        {{ "No data available" | translate }}
+      </div>
     </div>
   </mat-card-content>
 </mat-card>
 
 <ng-template #successDialog>
   <mat-dialog-content>
-    <p>{{'DELETE_USER_SUCCESS'|translate}}</p>
+    <p>{{ "DELETE_USER_SUCCESS" | translate }}</p>
   </mat-dialog-content>
   <mat-dialog-actions align="center">
-    <button mat-button [mat-dialog-close]="true" class="btn-two" (click)="loadData()" cdkFocusInitial>{{'OK'|translate}}</button>
+    <button
+      mat-button
+      [mat-dialog-close]="true"
+      class="btn-two"
+      (click)="loadData()"
+      cdkFocusInitial
+    >
+      {{ "OK" | translate }}
+    </button>
   </mat-dialog-actions>
 </ng-template>
 <ng-template #errorDialog>
   <mat-dialog-content>
-    <p>{{'Error'|translate}}: {{errorMsg}}.</p>
+    <p>{{ "Error" | translate }}: {{ errorMsg }}.</p>
   </mat-dialog-content>
   <mat-dialog-actions align="center">
-    <button mat-button [mat-dialog-close]="true" class="btn-two" cdkFocusInitial>{{'OK'|translate}}</button>
+    <button
+      mat-button
+      [mat-dialog-close]="true"
+      class="btn-two"
+      cdkFocusInitial
+    >
+      {{ "OK" | translate }}
+    </button>
   </mat-dialog-actions>
 </ng-template>

@@ -1,3 +1,4 @@
+import { ProductVersionMapping } from './product-catalog.modal';
 export interface AcquiredRightsAggregation {
   aggregations: Aggregation[];
 }
@@ -50,9 +51,10 @@ export interface AggregationProductObject {
 }
 
 export interface AcquiredRightAggregationBody
-  extends Omit<Aggregation, 'aggregation_name' | 'sku'> {
+  extends Omit<Aggregation, 'aggregation_name' | 'sku' | 'repartition'> {
   aggregation_name?: string;
   sku?: string;
+  repartition?: boolean;
 }
 
 export type AggregationData = AcquiredRightAggregationBody | {};
@@ -142,4 +144,5 @@ export interface AggregationSingle {
   product_names: string[];
   swidtags: string[];
   scope: string;
+  mapping: ProductVersionMapping[];
 }

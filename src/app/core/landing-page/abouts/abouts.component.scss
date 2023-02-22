@@ -1,0 +1,32 @@
+.mat-dialog-content {
+    overflow: unset;
+}
+.mat-dialog-actions {
+    padding: 16px 0;
+    margin-top: -16px;
+    display: flex;
+    justify-content: flex-end;
+}
+#top-section {
+    display: flex;
+    justify-content: space-between;
+}
+img {
+    width: fit-content;
+}
+p {
+    margin-bottom: 12px;
+}
+.header1 {
+    font-size: 16px;
+    font-weight: 600;
+}
+.header2 {
+    font-size: 14px;
+    font-weight: 600;
+}
+#btn-container {
+    display: flex;
+    justify-content: flex-end;
+    padding-bottom: 16px;
+}

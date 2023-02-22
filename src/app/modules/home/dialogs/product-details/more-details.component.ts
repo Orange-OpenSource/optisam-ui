@@ -1,5 +1,9 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef, MatDialog } from '@angular/material/dialog';
+import {
+  MAT_DIALOG_DATA,
+  MatDialogRef,
+  MatDialog,
+} from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ViewChild } from '@angular/core';
 
@@ -18,6 +22,16 @@ import { SharedService } from 'src/app/shared/shared.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { ProductAggregationDetailsComponent } from '../product-aggregation-details/product-aggregation-details.component';
+
+type AlertColor = {
+  green: string;
+  red: string;
+};
+
+const ALERT_COLOR: AlertColor = {
+  green: 'alert_green',
+  red: 'alert_red',
+};
 
 @Component({
   selector: 'app-more-details',
@@ -47,8 +61,7 @@ export class MoreDetailsComponent implements OnInit {
   swidTag: any;
   productInfo: DialogData = new DialogData();
   productOptions: DialogData = new DialogData();
-  emptyMsg: string =
-    'The compliance can not be computed because no right has been defined for the product. Please contact your admin to define acquired rights for the product.';
+//  emptyMsg: string ='The compliance can not be computed because no right has been defined for the product. Please contact your admin to define acquired rights for the product.';
 
   @ViewChild(MatSort, { static: false }) sort: MatSort;
   displayedColumns: string[] = [
@@ -70,7 +83,7 @@ export class MoreDetailsComponent implements OnInit {
     computedDetails: 'Computation details',
     numAcqLicences: 'Acquired Licenses',
     deltaNumber: 'Delta (licenses)',
-    deltaCost: 'Delta',
+    deltaCost: 'Delta Cost',
     totalCost: 'Total Cost',
   };
 
@@ -86,6 +99,10 @@ export class MoreDetailsComponent implements OnInit {
   ];
   length: any;
   metricSku: any;
+  alertColor: string;
+  isCostOptimization: boolean = false;
+  totalCostOfCostOptimization: number = 0;
+  deltaCostOfCostOptimization: number = 0;
 
   //new table
   constructor(
@@ -112,6 +129,7 @@ export class MoreDetailsComponent implements OnInit {
       this.appID = null;
     }
     this.getProductDetails();
+    this.getAcquiredRights();
   }
 
   get hasCompliance(): boolean {
@@ -122,6 +140,7 @@ export class MoreDetailsComponent implements OnInit {
     this._loading = true;
     this.productsService.getMoreDetails(this.swidTag).subscribe(
       (res: any) => {
+        console.log(res)
         this.productInfo = res;
         this._loading = false;
       },
@@ -146,7 +165,7 @@ export class MoreDetailsComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((result) => {});
   }
-  
+
   getProductOptions() {
     this._loading = true;
     this.productsService.getOptionsDetails(this.swidTag).subscribe(
@@ -168,14 +187,36 @@ export class MoreDetailsComponent implements OnInit {
       .subscribe(
         (res: any) => {
           this.acquireRight = new MatTableDataSource(res.acq_rights);
-            // if(res.aggregation_name != null && res.aggregation_name != "")
-            // {
-                
-            // }
           this.acquireRight.sort = this.sort;
+          let anyNegativeDelta: boolean = false;
+          this.totalCostOfCostOptimization = 0;
+          this.deltaCostOfCostOptimization = 0;
+          for (const aqrRight of res.acq_rights) {
+            // checking for any negative delta
+            if (aqrRight.deltaCost < 0) anyNegativeDelta = true;
+            if (aqrRight.costOptimization) {
+              this.isCostOptimization = true;
+              this.totalCostOfCostOptimization += aqrRight.totalCost;
+              this.deltaCostOfCostOptimization += aqrRight.deltaCost;
+            }
+          }
+
+          this.alertColor = anyNegativeDelta
+            ? ALERT_COLOR.red
+            : !!res.acq_rights.length
+            ? ALERT_COLOR.green
+            : '';
+
+          if (this.acquireRight.filteredData.length > 0) {
+            for (var i = 0; i < this.acquireRight.filteredData.length; i++) {
+              this.acquireRight.filteredData[i].computedDetails =
+                this.acquireRight.filteredData[i].computedDetails
+                  .split(',')
+                  .join(',\n');
+            }
+          }
           this.agg_name = res.aggregation_name;
           this._loading = false;
-          
         },
         (error) => {
           this._loading = false;

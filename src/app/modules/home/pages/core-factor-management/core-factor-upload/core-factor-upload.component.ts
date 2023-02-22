@@ -46,6 +46,7 @@ export class CoreFactorUploadComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    console.log(this.data)
     this.activityLogError$ = this.coreFactorService.getActivityLogError();
     this.activityLogVisibility$ =
       this.coreFactorService.getActivityLogVisibility();

@@ -328,7 +328,7 @@
               </mat-grid-tile>
               <mat-grid-tile class="contentTile">
                 <div class="tileHeader">
-                  {{ "Underusage Amount " | translate
+                  {{ "Underusage Amount" | translate
                   }}<mat-icon
                     class="mat-icon-info"
                     matTooltipClass="alertTooltip"
@@ -761,17 +761,50 @@
           <mat-label>{{ "Editor" | translate }}</mat-label>
           <mat-select
             id="editor"
+            [panelClass]="['product-editor-list']"
+            #editorSearch
             [(ngModel)]="selectedEditor"
             [disabled]="editorsList && editorsList.length == 0"
             (selectionChange)="editorSelected()"
+            (openedChange)="searchInputOpenChange($event, editorSearch)"
           >
-            <mat-option
+            <!-- <mat-option
               id="editor_option_{{ i }}"
               *ngFor="let editor of editorsList; let i = index"
               [value]="editor"
             >
               {{ editor }}</mat-option
+            > -->
+            <mat-option
+              style="
+                position: sticky;
+                top: 0;
+                border: 1px solid #d4d4d4;
+                z-index: 9999999;
+                background: #fff;
+                border-radius: 5px;
+              "
             >
+              <input
+                #searchInput
+                placeholder="Search..."
+                [value]="searchText"
+                matInput
+                (click)="searchEditor($event)"
+                (keydown)="searchKeydown($event)"
+                (input)="searchInputEvent($event)"
+                autocomplete="off"
+              />
+            </mat-option>
+            <app-loading-spinner *ngIf="searchLoading"></app-loading-spinner>
+            <ng-container *ngIf="!searchLoading && !loadingEditor">
+              <mat-option
+                *ngFor="let editor of filteredEditor"
+                [value]="editor"
+              >
+                {{ editor }}
+              </mat-option>
+            </ng-container>
           </mat-select>
         </mat-form-field>
       </div>
@@ -941,12 +974,12 @@
   <mat-dialog-content>
     <div class="mat-elevation-z8">
       <mat-table [dataSource]="productsNotDeployedInfo">
-        <ng-container matColumnDef="swidTag">
+        <!-- <ng-container matColumnDef="swidTag">
           <mat-header-cell *matHeaderCellDef>{{
             "SWIDtag" | translate
           }}</mat-header-cell>
           <mat-cell *matCellDef="let product">{{ product.swid_tag }} </mat-cell>
-        </ng-container>
+        </ng-container> -->
         <ng-container matColumnDef="productName">
           <mat-header-cell *matHeaderCellDef>{{
             "Product Name" | translate
@@ -956,11 +989,9 @@
           </mat-cell>
         </ng-container>
         <mat-header-row
-          *matHeaderRowDef="['swidTag', 'productName']; sticky: true"
+          *matHeaderRowDef="['productName']; sticky: true"
         ></mat-header-row>
-        <mat-row
-          *matRowDef="let row; columns: ['swidTag', 'productName']"
-        ></mat-row>
+        <mat-row *matRowDef="let row; columns: ['productName']"></mat-row>
       </mat-table>
     </div>
   </mat-dialog-content>
@@ -980,12 +1011,12 @@
   <mat-dialog-content>
     <div class="mat-elevation-z8">
       <mat-table [dataSource]="productsNotAcquiredInfo">
-        <ng-container matColumnDef="swidTag">
+        <!-- <ng-container matColumnDef="swidTag">
           <mat-header-cell *matHeaderCellDef>{{
             "SWIDtag" | translate
           }}</mat-header-cell>
           <mat-cell *matCellDef="let product">{{ product.swid_tag }} </mat-cell>
-        </ng-container>
+        </ng-container> -->
         <ng-container matColumnDef="productName">
           <mat-header-cell *matHeaderCellDef>{{
             "Product Name" | translate
@@ -995,11 +1026,9 @@
           </mat-cell>
         </ng-container>
         <mat-header-row
-          *matHeaderRowDef="['swidTag', 'productName']; sticky: true"
+          *matHeaderRowDef="['productName']; sticky: true"
         ></mat-header-row>
-        <mat-row
-          *matRowDef="let row; columns: ['swidTag', 'productName']"
-        ></mat-row>
+        <mat-row *matRowDef="let row; columns: ['productName']"></mat-row>
       </mat-table>
     </div>
   </mat-dialog-content>

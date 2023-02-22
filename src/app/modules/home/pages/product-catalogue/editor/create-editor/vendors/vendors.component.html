@@ -1,0 +1,95 @@
+<mat-card>
+  <mat-card-content
+    class="list-vendors"
+    fxLayout="column"
+    fxLayoutAlign="space-between"
+  >
+    <mat-card-title>
+      <h6 class="vendors-heading">{{ "EDITOR.VENDORS" | translate }}</h6>
+    </mat-card-title>
+    <div [formGroup]="fg">
+      <div
+        formArrayName="vendors"
+        *ngFor="let vendor of vendors?.controls; let i = index"
+      >
+        <div class="vendors-item" [formGroupName]="i">
+          <!-- <mat-icon
+            class="close-btn"
+            *ngIf="!view"
+            (click)="removeVendorConfirmation(deleteConfirmationDialog, vendor)"
+            >close</mat-icon
+          > -->
+          <div fxLayout="row" fxLayoutAlign="start">
+            <mat-form-field appearance="outline" class="vendors-section">
+              <mat-label>{{ "EDITOR.VENDORS" | translate }}</mat-label>
+              <input matInput *ngIf="!view" formControlName="name" />
+              <input matInput *ngIf="view" formControlName="name" readonly />
+              <mat-error *ngIf="name.hasError('maxlength')">
+                {{
+                  "ERROR.MAX_LENGTH"
+                    | translate
+                      : {
+                          requiredLength: name.errors?.maxlength?.requiredLength
+                        }
+                }}
+              </mat-error>
+              <mat-error *ngIf="name.hasError('minlength')">
+                {{
+                  "ERROR.MIN_LENGTH"
+                    | translate
+                      : {
+                          requiredLength: name.errors?.minlength?.requiredLength
+                        }
+                }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+      <!-- <button
+        mat-raised-button
+        class="btn-primary add-pm-type-btn"
+        disableRipple
+        *ngIf="!view"
+        (click)="addVendors()"
+      >
+        <div
+          fxLayout="row"
+          fxLayoutAlign="space-between center"
+          fxLayoutGap="5px"
+          class="add-btn-content"
+        >
+          <mat-icon>add</mat-icon>
+          <span>{{ "EDITOR.ADD_VENDOR" | translate }}</span>
+        </div>
+      </button> -->
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<ng-template #deleteConfirmationDialog>
+  <mat-dialog-content>
+    <p>
+      {{ "Are you Sure want to remove this Vendors" | translate }}
+    </p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="center">
+    <button
+      mat-button
+      [mat-dialog-close]="true"
+      class="btn-two"
+      (click)="removeVendors()"
+      cdkFocusInitial
+    >
+      {{ "OK" | translate }}</button
+    >&nbsp;
+    <button
+      mat-button
+      [mat-dialog-close]="true"
+      class="btn-three"
+      cdkFocusInitial
+    >
+      {{ "Cancel" | translate }}
+    </button>
+  </mat-dialog-actions>
+</ng-template>

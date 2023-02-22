@@ -8,7 +8,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { FailedRecordsDetailsComponent } from './failed-records-details/failed-records-details.component';
 import { ActivatedRoute } from '@angular/router';
-import { allowedScopes } from '@core/util/common.functions';
+import { isSpecificScopeType } from '@core/util/common.functions';
 
 @Component({
   selector: 'app-list-data',
@@ -123,6 +123,6 @@ export class ListDataComponent implements OnInit {
   }
 
   get allowedScope(): boolean {
-    return allowedScopes();
+    return isSpecificScopeType();
   }
 }

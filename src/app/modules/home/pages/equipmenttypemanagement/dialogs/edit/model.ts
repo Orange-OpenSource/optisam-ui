@@ -1,5 +1,6 @@
 export class ModifyJSONFormat {
   attributes: Attribute[];
+  updattr: Updattr[];
   scopes: String[];
   parent_id: String;
 }
@@ -12,4 +13,11 @@ export class Attribute {
   searchable: Boolean = false;
   parentI_key: Boolean = false;
   mapped_to: String = '';
+}
+
+export class Updattr {
+  ID: String = '';
+  name: String = '';
+  displayed: Boolean = false;
+  searchable: Boolean = false;
 }

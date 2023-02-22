@@ -10,7 +10,10 @@
 
       <mat-horizontal-stepper [linear]="false" #stepper>
         <!-- contract form -->
-        <mat-step [stepControl]="contractForm" label="{{ 'Contract' }}">
+        <mat-step
+          [stepControl]="contractForm"
+          label="{{ 'Contract' | translate }}"
+        >
           <app-contract-step></app-contract-step>
         </mat-step>
         <!-- /contract form -->

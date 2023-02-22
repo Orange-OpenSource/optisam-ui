@@ -53,7 +53,7 @@ Click on "Submit" when you have selected all the files that you want to upload.
 
 To create a new equipment type, you will have to go to "Equipment Management" :
 
-![select APM](../../img/equipMana/accessu.jpg){: .zoom}
+![select APM](../../img/equipMana/access.jpg){: .zoom}
 
 ## Create the new equipment type
 

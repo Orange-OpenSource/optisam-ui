@@ -1,0 +1,31 @@
+<div class="audits-item" [formGroup]="form">
+  <mat-icon class="close-btn" (click)="deleteAuditConfirmation()"
+    >close</mat-icon
+  >
+  <div fxLayout="row" fxLayoutAlign="space-between">
+    <mat-form-field appearance="outline" class="audits-section">
+      <mat-label>{{ "EDITOR.AUDIT_TEXT" | translate }}</mat-label>
+      <input matInput formControlName="entity" />
+      <mat-error *ngIf="entity?.hasError('maxlength')"
+        >{{
+          "ERROR.MAX_LENGTH"
+            | translate
+              : { requiredLength: entity.errors?.maxlength?.requiredLength }
+        }}
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="audits-section">
+      <mat-label>{{ "Date" | translate }} </mat-label>
+      <mat-select formControlName="date">
+        <mat-option value="">
+          {{ "Select Year" | translate }}
+        </mat-option>
+
+        <mat-option *ngFor="let year of yearList" [value]="year">{{
+          year
+        }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+</div>

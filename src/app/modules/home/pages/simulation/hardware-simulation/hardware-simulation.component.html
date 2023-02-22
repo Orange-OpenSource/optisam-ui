@@ -1,145 +1,286 @@
 <div class="col-md-12 main-section">
-        <div class="col-md-6">
-          <mat-grid-list cols="5" rowHeight="2:1">
-            <mat-grid-tile [colspan]="4">
-              <span class="text-inside-grid page-heading">{{'Environment' | translate}}</span>
-            </mat-grid-tile>
-            <mat-grid-tile>
-              <div  *ngIf="HTTPActivity||_loading" class="spinner-div">
-                <mat-spinner></mat-spinner>
-                <span>{{'Loading'|translate}} ...</span>
-              </div>
-            </mat-grid-tile>
-          </mat-grid-list>
-          <div class="row-flex">
-            <mat-form-field appearance="outline" class="equipmentType">
-                <mat-label>{{'Equipment Type'|translate}}</mat-label>
-                <mat-select [(ngModel)]="simulateObj.equipmentType" [disabled]="HTTPActivity || displayEquipList.length == 0"
-                    (selectionChange)="selectionChanged($event, 'equipment')">
-                    <mat-option value="">-- {{'AGGREGATIONS.TEXTS.SELECT_EQUIPMENT' | translate}} --</mat-option>
-                    <mat-option *ngFor="let equipment of displayEquipList;" [value]="equipment">{{equipment.type}}</mat-option>
-                </mat-select>
-            </mat-form-field>
-            
-            <mat-form-field appearance="outline" class="configurationName">
-              <mat-label>{{'Configuration Name'|translate}}</mat-label>
-              <mat-select [(ngModel)]="simulateObj.configName" [disabled]="HTTPActivity || configurationData.length == 0"
-                  (selectionChange)="selectionChanged($event, 'configuration')">
-                  <mat-option value="">-- {{'AGGREGATIONS.TEXTS.SELECT_CONFIGURATION' | translate}} --</mat-option>
-                  <mat-option *ngFor="let config of configurationData;" [value]="config.config_id">{{config.config_name}}</mat-option>
-              </mat-select>
-          </mat-form-field>            
-          </div>
-          <div class="row-flex">
-            <div class="identifier-input">
-              <mat-form-field appearance="outline" class="forminput">
-                  <mat-label>{{'Identifier'|translate}}</mat-label>
-                  <input matInput  [disabled]="HTTPActivity || !selectedConfigID" placeholder="{{'Identifier'|translate}}" [(ngModel)]="simulateObj.identifier">
-              </mat-form-field>
-              <button mat-flat-button class="process btn-two" [disabled]="!simulateObj.identifier || !simulateObj.equipmentType" (click)="getEquipmentWithIdentifierList(mytemplate)">
-                  {{'Process' | translate}}
-              </button>
-          </div>
-          </div>
-          <ng-template #mytemplate>
-            <mat-dialog-content>
-                <p>{{'NO_DATA_MSG'|translate}}</p>
-            </mat-dialog-content>
-            <mat-dialog-actions align="center">
-                <button mat-button class="btn-two" [mat-dialog-close]="true" cdkFocusInitial>{{'OK'|translate}}</button>
-            </mat-dialog-actions>
-        </ng-template>
-        <div class="row-flex attribute-section">
-          <div *ngFor="let attribute of configurableAttributes" class="inputdiv">
-            <mat-form-field appearance="outline">
-                <mat-label>{{attribute.attribute_name}}</mat-label>
-                <mat-select (selectionChange)="attrSelectionChanged(attribute.attribute_name, $event.value, attrChangeConfirmationMsg)" [(ngModel)]="attribute.tempSelectedAttrVal">
-                  <mat-option>None</mat-option>
-                  <ng-container *ngFor="let option of configurableAttrData">
-                    <mat-option *ngIf="option[attribute.attribute_name]" [value]="option[attribute.attribute_name]">{{option[attribute.attribute_name]}}</mat-option>
-                  </ng-container>
-                </mat-select>
-              </mat-form-field> 
-          </div>
+  <div class="col-md-6">
+    <mat-grid-list cols="5" rowHeight="2:1">
+      <mat-grid-tile [colspan]="4">
+        <span class="text-inside-grid page-heading">{{
+          "Environment" | translate
+        }}</span>
+      </mat-grid-tile>
+      <mat-grid-tile>
+        <div *ngIf="HTTPActivity || _loading" class="spinner-div">
+          <mat-spinner></mat-spinner>
+          <span>{{ "Loading" | translate }} ...</span>
         </div>
-        <mat-divider *ngIf="configurableAttributes.length>0"></mat-divider>
-        <br/>
-        <div class="row-flex attribute-section">
-            <div *ngFor="let attribute of attributeArray" class="inputdiv">
-                <mat-form-field appearance="outline" class="attrinput">
-                    <mat-label>{{attribute.name|translate}} ({{'value'|translate}}: {{attribute.original_val}})</mat-label>
-                    <input matInput [disabled] = "true" *ngIf="attribute.data_type == 'INT'" placeholder="" (keydown)="validateAttributePattern($event, 'INT')" [(ngModel)]="attribute.int_val">
-                    <input matInput [disabled] = "true" *ngIf="attribute.data_type == 'FLOAT'" placeholder="" (keydown)="validateAttributePattern($event, 'FLOAT')" [(ngModel)]="attribute.float_val">
-                </mat-form-field>
-            </div>
-        </div>
-        
-        </div>
-        <div class="col-md-6">
-          <div id="resultLabel" class="page-heading">{{'Results'|translate}}</div>
-      
-          <button id="simulateBtn" class="btn-two" mat-raised-button (click)="simulate()" [disabled]="checkValidSimulation()">
-              {{'Simulate'|translate}}
-          </button>
-          <!-- <div >
+      </mat-grid-tile>
+    </mat-grid-list>
+    <div class="row-flex">
+      <mat-form-field appearance="outline" class="equipmentType">
+        <mat-label>{{ "Equipment Type" | translate }}</mat-label>
+        <mat-select
+          [(ngModel)]="simulateObj.equipmentType"
+          [disabled]="HTTPActivity || displayEquipList.length == 0"
+          (selectionChange)="selectionChanged($event, 'equipment')"
+        >
+          <mat-option value=""
+            >--
+            {{ "AGGREGATIONS.TEXTS.SELECT_EQUIPMENT" | translate }}
+            --</mat-option
+          >
+          <mat-option
+            *ngFor="let equipment of displayEquipList"
+            [value]="equipment"
+            >{{ equipment.type }}</mat-option
+          >
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="configurationName">
+        <mat-label>{{ "Configuration Name" | translate }}</mat-label>
+        <mat-select
+          [(ngModel)]="simulateObj.configName"
+          [disabled]="HTTPActivity || configurationData.length == 0"
+          (selectionChange)="selectionChanged($event, 'configuration')"
+        >
+          <mat-option value=""
+            >--
+            {{ "AGGREGATIONS.TEXTS.SELECT_CONFIGURATION" | translate }}
+            --</mat-option
+          >
+          <mat-option
+            *ngFor="let config of configurationData"
+            [value]="config.config_id"
+            >{{ config.config_name }}</mat-option
+          >
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="row-flex">
+      <div class="identifier-input">
+        <mat-form-field appearance="outline" class="forminput">
+          <mat-label>{{ "Identifier" | translate }}</mat-label>
+          <input
+            matInput
+            list="id-list"
+            [disabled]="HTTPActivity || !selectedConfigID"
+            placeholder="{{ 'Identifier' | translate }}"
+            [(ngModel)]="simulateObj.identifier"
+          />
+          <datalist id="id-list">
+            <option
+              *ngFor="let identifier of identifierList"
+              [value]="identifier"
+            >
+              {{ identifier }}
+            </option>
+          </datalist>
+        </mat-form-field>
+        <button
+          mat-flat-button
+          class="process btn-two"
+          [disabled]="!simulateObj.identifier || !simulateObj.equipmentType"
+          (click)="getEquipmentWithIdentifierList(mytemplate)"
+        >
+          {{ "Process" | translate }}
+        </button>
+      </div>
+    </div>
+    <ng-template #mytemplate>
+      <mat-dialog-content>
+        <p>{{ "NO_DATA_MSG" | translate }}</p>
+      </mat-dialog-content>
+      <mat-dialog-actions align="center">
+        <button
+          mat-button
+          class="btn-two"
+          [mat-dialog-close]="true"
+          cdkFocusInitial
+        >
+          {{ "OK" | translate }}
+        </button>
+      </mat-dialog-actions>
+    </ng-template>
+    <div class="row-flex attribute-section">
+      <div *ngFor="let attribute of configurableAttributes" class="inputdiv">
+        <mat-form-field appearance="outline">
+          <mat-label>{{ attribute.attribute_name }}</mat-label>
+          <mat-select
+            (selectionChange)="
+              attrSelectionChanged(
+                attribute.attribute_name,
+                $event.value,
+                attrChangeConfirmationMsg
+              )
+            "
+            [(ngModel)]="attribute.tempSelectedAttrVal"
+          >
+            <mat-option>None</mat-option>
+            <ng-container *ngFor="let option of configurableAttrData">
+              <mat-option
+                *ngIf="option[attribute.attribute_name]"
+                [value]="option[attribute.attribute_name]"
+                >{{ option[attribute.attribute_name] }}</mat-option
+              >
+            </ng-container>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+    <mat-divider *ngIf="configurableAttributes.length > 0"></mat-divider>
+    <br />
+    <div class="row-flex attribute-section">
+      <div *ngFor="let attribute of attributeArray" class="inputdiv">
+        <mat-form-field appearance="outline" class="attrinput">
+          <mat-label
+            >{{ attribute.name | translate }} ({{ "value" | translate }}:
+            {{ attribute.original_val }})</mat-label
+          >
+          <input
+            matInput
+            [disabled]="true"
+            *ngIf="attribute.data_type == 'INT'"
+            placeholder=""
+            (keydown)="validateAttributePattern($event, 'INT')"
+            [(ngModel)]="attribute.int_val"
+          />
+          <input
+            matInput
+            [disabled]="true"
+            *ngIf="attribute.data_type == 'FLOAT'"
+            placeholder=""
+            (keydown)="validateAttributePattern($event, 'FLOAT')"
+            [(ngModel)]="attribute.float_val"
+          />
+        </mat-form-field>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div id="resultLabel" class="page-heading">{{ "Results" | translate }}</div>
+
+    <button
+      id="simulateBtn"
+      class="btn-two"
+      mat-raised-button
+      (click)="simulate()"
+      [disabled]="checkValidSimulation()"
+    >
+      {{ "Simulate" | translate }}
+    </button>
+    <!-- <div >
             <span class="progress-text">Simulating results</span>
             <mat-progress-bar mode="determinate" value="40"></mat-progress-bar>
           </div> -->
-      
-          <div class="simulate-result" *ngIf="simulatedResults && simulatedResults.length != 0">
-            <!-- Code for filters -->
-              <mat-grid-list cols="8" rowHeight="3rem">
-                <mat-grid-tile [colspan]='2'>
-                  <h6 class="text-inside-grid">Filter by :</h6>
-                </mat-grid-tile>
-                <mat-grid-tile [colspan]='2'>
-                  <mat-form-field>
-                    <mat-label>Editor</mat-label>
-                    <mat-select [(value)]="selectedEditor" (selectionChange)="filterResults($event,'editor')">
-                      <mat-option>None</mat-option>
-                      <mat-option *ngFor="let option of distinctSimulatedEditors" [value]="option">{{option}}</mat-option>
-                    </mat-select>
-                  </mat-form-field> 
-                </mat-grid-tile>
-                <mat-grid-tile></mat-grid-tile>
-                <mat-grid-tile [colspan]='2'>
-                  <mat-form-field>
-                    <mat-label>Product</mat-label>
-                    <mat-select [(value)]="selectedProduct" (selectionChange)="filterResults($event,'product')">
-                      <mat-option>None</mat-option>
-                      <mat-option *ngFor="let option of distinctSimulatedProducts" [value]="option">{{option}}</mat-option>
-                    </mat-select>
-                  </mat-form-field> 
-                </mat-grid-tile>
-                <mat-grid-tile></mat-grid-tile>
-              </mat-grid-list>
-<!-- Replaced 'simulatedResults' with 'filteredSimulatedResults' -->
-            <div class="result-section" *ngFor="let result of filteredSimulatedResults" [ngClass]="{'error': result.sim_failure_reason || ((+result.old_licences) < (+result.new_licenses)), 'success': !result.error && ((+result.old_licences) >= (+result.new_licenses))}">
-              <h6>{{result.metric_name}}</h6>
-              <div class="simulate-body">
-                <div *ngIf="!result.sim_failure_reason">
-                  <p><strong>Product Name :</strong> {{result.product_name||'-'}}</p>
-                  <p><strong>SWID Tag :</strong> {{result.swid_tag || '-'}}</p>
-                  <p><strong>Old nb of Licenses :</strong> {{result.old_licences || '0'}}</p>
-                  <p><strong>New nb of Licenses :</strong> {{result.new_licenses || '0'}}</p>
-                  <p><strong>Delta :</strong> {{result.delta || '0'}}</p>
-                </div>
-                <div class="simulation-failed" *ngIf="result.sim_failure_reason">
-                  {{(result.sim_failure_reason || 'Simulation Failed') | translate}}
-                </div>
-              </div>
-            </div>
-            <div *ngIf="filteredSimulatedResults.length == 0">{{'No results' | translate}}</div>
-          </div>
 
+    <div
+      class="simulate-result"
+      *ngIf="simulatedResults && simulatedResults.length != 0"
+    >
+      <!-- Code for filters -->
+      <mat-grid-list cols="8" rowHeight="3rem">
+        <mat-grid-tile [colspan]="2">
+          <h6 class="text-inside-grid">Filter by :</h6>
+        </mat-grid-tile>
+        <mat-grid-tile [colspan]="2">
+          <mat-form-field>
+            <mat-label>Editor</mat-label>
+            <mat-select
+              [(value)]="selectedEditor"
+              (selectionChange)="filterResults($event, 'editor')"
+            >
+              <mat-option>None</mat-option>
+              <mat-option
+                *ngFor="let option of distinctSimulatedEditors"
+                [value]="option"
+                >{{ option }}</mat-option
+              >
+            </mat-select>
+          </mat-form-field>
+        </mat-grid-tile>
+        <mat-grid-tile></mat-grid-tile>
+        <mat-grid-tile [colspan]="2">
+          <mat-form-field>
+            <mat-label>Product</mat-label>
+            <mat-select
+              [(value)]="selectedProduct"
+              (selectionChange)="filterResults($event, 'product')"
+            >
+              <mat-option>None</mat-option>
+              <mat-option
+                *ngFor="let option of distinctSimulatedProducts"
+                [value]="option"
+                >{{ option }}</mat-option
+              >
+            </mat-select>
+          </mat-form-field>
+        </mat-grid-tile>
+        <mat-grid-tile></mat-grid-tile>
+      </mat-grid-list>
+      <!-- Replaced 'simulatedResults' with 'filteredSimulatedResults' -->
+      <div
+        class="result-section"
+        *ngFor="let result of filteredSimulatedResults"
+        [ngClass]="{
+          error:
+            result.sim_failure_reason ||
+            +result.old_licences < +result.new_licenses,
+          success: !result.error && +result.old_licences >= +result.new_licenses
+        }"
+      >
+        <h6>{{ result.product_name }}</h6>
+        <div class="simulate-body">
+          <div *ngIf="!result.sim_failure_reason">
+            <p>
+              <strong
+                >{{
+                  result.swid_tag.includes(",") ? "SWID Tags" : "SWID Tag"
+                }}
+                :</strong
+              >
+              {{ result.swid_tag || "-" }}
+            </p>
+            <p>
+              <strong>Old nb of Licenses :</strong>
+              {{ result.old_licences || "0" }}
+            </p>
+            <p>
+              <strong>New nb of Licenses :</strong>
+              {{ result.new_licenses || "0" }}
+            </p>
+            <p><strong>Delta :</strong> {{ result.delta || "0" }}</p>
+          </div>
+          <div class="simulation-failed" *ngIf="result.sim_failure_reason">
+            {{ result.sim_failure_reason || "Simulation Failed" | translate }}
+          </div>
         </div>
       </div>
+      <div *ngIf="filteredSimulatedResults.length == 0">
+        {{ "No results" | translate }}
+      </div>
+    </div>
+  </div>
+</div>
 <ng-template #attrChangeConfirmationMsg>
   <mat-dialog-content>
-    <p>{{'ATTR_CHANGE_CONFIRM_MSG' | translate}}</p>
+    <p>{{ "ATTR_CHANGE_CONFIRM_MSG" | translate }}</p>
   </mat-dialog-content>
   <mat-dialog-actions align="center">
-    <button mat-button [mat-dialog-close]="true" class="btn-two" (click)="changeAttrValues()" cdkFocusInitial>{{'OK'|translate}}</button>&nbsp;
-    <button mat-button [mat-dialog-close]="true" class="btn-three" (click)="restoreOldSelection()" cdkFocusInitial>{{'Cancel'|translate}}</button>
+    <button
+      mat-button
+      [mat-dialog-close]="true"
+      class="btn-two"
+      (click)="changeAttrValues()"
+      cdkFocusInitial
+    >
+      {{ "OK" | translate }}</button
+    >&nbsp;
+    <button
+      mat-button
+      [mat-dialog-close]="true"
+      class="btn-three"
+      (click)="restoreOldSelection()"
+      cdkFocusInitial
+    >
+      {{ "Cancel" | translate }}
+    </button>
   </mat-dialog-actions>
-</ng-template>  
+</ng-template>

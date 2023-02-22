@@ -6,7 +6,7 @@ import { EditComponent } from './dialogs/edit/edit.component';
 import { ListComponent } from './dialogs/list/list.component';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
-import { allowedScopes } from 'src/app/core/util/common.functions';
+import { isSpecificScopeType } from 'src/app/core/util/common.functions';
 import { CommonService } from '@core/services/common.service';
 import { LOCAL_KEYS } from '@core/util/constants/constants';
 

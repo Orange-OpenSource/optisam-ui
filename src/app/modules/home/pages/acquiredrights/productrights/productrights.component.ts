@@ -12,6 +12,7 @@ import { CreateAcquiredRightComponent } from '../create-acquired-right/create-ac
 import { CommonService } from '@core/services/common.service';
 import { LOCAL_KEYS } from '@core/util/constants/constants';
 import { AcquiredRightsIndividualParams } from '@core/modals/acquired.rights.modal';
+import { ViewEditorDetailsAccComponent } from '../view-editor-details-acc/view-editor-details-acc.component';
 
 @Component({
   selector: 'app-productrights',
@@ -53,7 +54,6 @@ export class ProductrightsComponent implements OnInit {
     'SKU',
     'corporate_sourcing_contract',
     'ordering_date',
-    'swid_tag',
     'product_name',
     'version',
     'editor',
@@ -79,7 +79,6 @@ export class ProductrightsComponent implements OnInit {
     title: 'Search by Product Name',
     primary: 'productName',
     other: [
-      { key: 'swidTag', label: 'SWIDtag' },
       { key: 'sku', label: 'SKU' },
       { key: 'editorName', label: 'Editor Name' },
       { key: 'productName', label: 'Product Name' },
@@ -90,6 +89,7 @@ export class ProductrightsComponent implements OnInit {
   };
   searchFields: any = {};
   role = localStorage.getItem('role');
+  dialogRef: any;
 
   constructor(
     private productService: ProductService,
@@ -146,6 +146,7 @@ export class ProductrightsComponent implements OnInit {
       .getAcquiredrights(this.pageSize, 1, 'SWID_TAG', 'asc')
       .subscribe(
         (res: any) => {
+          console.log(res)
           this.MyDataSource = new MatTableDataSource(res.acquired_rights);
           this.MyDataSource.sort = this.sort;
           this.length = res.totalRecords;
@@ -155,6 +156,16 @@ export class ProductrightsComponent implements OnInit {
           console.log('There was an error while retrieving Posts !!!' + error);
         }
       );
+  }
+
+  openEditorDialog(data:any){
+    this.dialogRef=this.dialog.open(ViewEditorDetailsAccComponent,{
+      width: '1300px',
+      disableClose: true,
+      data: data
+    });
+
+    this.dialogRef.afterClosed().subscribe((result) => {});
   }
   getPaginatorData(event) {
     const page_num = event.pageIndex;
@@ -315,7 +326,7 @@ export class ProductrightsComponent implements OnInit {
 
   openDialog(value, name): void {
     const dialogRef = this.dialog.open(MoreDetailsComponent, {
-      width: '850px',
+      width: '1300px',
       disableClose: true,
       data: {
         datakey: value,

@@ -1,22 +1,25 @@
 .container-fluid-flex {
-    padding-top: 16px !important;
-    min-height: 90vh;
-  }
-  
-  .nav-item {
-    cursor: pointer;
-  }
-  button {
-      max-width: fit-content !important;
-      padding: 0 32px;
-  }
+  padding-top: 16px !important;
+  min-height: 90vh;
+}
+
+.nav-item {
+  cursor: pointer;
+}
+button {
+  max-width: fit-content !important;
+  padding: 0 32px;
+}
 .content {
-    min-height: inherit;
-    background: linear-gradient(180deg, #FFFFFF 0%, rgba(255, 255, 255, 0) 100%),linear-gradient(0deg, #BABABA, #BABABA); 
-}  
-#overviewSection, #qualitySection, #complianceSection {
-    padding: 16px;
-    padding-bottom: 32px;
+  min-height: inherit;
+  background: linear-gradient(180deg, #ffffff 0%, rgba(255, 255, 255, 0) 100%),
+    linear-gradient(0deg, #bababa, #bababa);
+}
+#overviewSection,
+#qualitySection,
+#complianceSection {
+  padding: 16px;
+  padding-bottom: 32px;
 }
 .inputSection {
   display: flex;
@@ -42,7 +45,7 @@
 ::ng-deep .contentTile.mat-grid-tile .mat-figure {
   padding-top: 32px !important;
 }
-.alert-primary{
+.alert-primary {
   color: rgba(0, 95, 147, 1);
   background-color: rgba(58, 179, 218, 0.24);
   border-color: rgba(204, 229, 255, 1);
@@ -57,29 +60,31 @@
   padding-right: 16px;
 }
 .contentTile {
-    background: white;
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  background: white;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 }
 .parentTile {
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 }
-.internalMatGrid{  min-width:100%;}
+.internalMatGrid {
+  min-width: 100%;
+}
 
 .tileHeader {
-    position: absolute;
-    top:0;
-    padding: 8px;
-    font-size: 15px;
-    font-weight: 600;
+  position: absolute;
+  top: 0;
+  padding: 8px;
+  font-size: 16px;
+  font-weight: 600;
 }
 
 .tileSubHeader {
-    position: absolute;
-    top: 0;
-    margin-top: 20px;
-    padding: 10px;
-    color: #adadad;
-    font-size: 12px;
+  position: absolute;
+  top: 0;
+  margin-top: 20px;
+  padding: 10px;
+  color: #adadad;
+  font-size: 12px;
 }
 
 .tileImage img {
@@ -91,8 +96,8 @@
 }
 
 .errorIcon {
-    justify-content: center;
-    display: flex;
+  justify-content: center;
+  display: flex;
 }
 
 .complianceCanvas {
@@ -100,23 +105,23 @@
 }
 
 .tileLoadingMsg {
-    position: absolute;
-    padding: 8px;
-    font-size: 12px;
-    font-weight: 400;
-    margin-top: 10em;
+  position: absolute;
+  padding: 8px;
+  font-size: 12px;
+  font-weight: 400;
+  margin-top: 10em;
 }
 .top {
-    margin-top: 16px;
+  margin-top: 16px;
 }
 .tileBody {
-    align-items: center;
+  align-items: center;
 }
 .tileText {
-    font-weight: bold;
-    font-size: 25px;
-    text-align: right;
-    color: #005F93;
+  font-weight: bold;
+  font-size: 25px;
+  text-align: right;
+  color: #005f93;
 }
 .noDataImgContainer {
   position: absolute;
@@ -164,7 +169,7 @@
 .loader:after {
   position: absolute;
   top: 0;
-  content: '';
+  content: "";
 }
 .loader:before {
   left: -1.5em;
@@ -210,9 +215,9 @@
   width: 60%;
 }
 ::ng-deep .alertTooltip {
-    background-color: rgb(50, 50, 50);
-    font-size: 11px;
-    white-space: pre-line;
+  background-color: rgb(50, 50, 50);
+  font-size: 11px;
+  white-space: pre-line;
 }
 .productsNo {
   cursor: pointer;
@@ -222,6 +227,21 @@
   font-weight: 700;
 }
 .mat-dialog-actions {
-    display: flex;
-    justify-content: flex-end !important;
+  display: flex;
+  justify-content: flex-end !important;
+}
+
+:ng-deep .product-editor-list {
+  position: relative;
+  mat-option:first-child {
+    position: sticky;
+    top: 0;
+    border: 1px solid #d4d4d4;
+    z-index: 9999999;
+    background: #fff;
+    border-radius: 5px;
+    &:hover {
+      background: #fff;
+    }
+  }
 }

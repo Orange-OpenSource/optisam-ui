@@ -139,7 +139,7 @@ export class MetricSimulationComponent implements OnInit, OnDestroy {
     this.body = {
       // "swid_tag": this.simulateObj.product.swidTag,
       editor: this.simulateObj.editor,
-      metric_details: [],
+      cost_details: [],
       scope: this.selectedScope,
     };
     this._loading = true;
@@ -158,7 +158,7 @@ export class MetricSimulationComponent implements OnInit, OnDestroy {
         });
       } else {
         indexArray.push(idx);
-        this.body.metric_details.push({
+        this.body.cost_details.push({
           sku: this.simulationMetrics[idx].sku,
           swidtag: this.simulationMetrics[idx].swidtag,
           aggregation_name: this.simulationMetrics[idx].aggregation_name,
@@ -170,10 +170,10 @@ export class MetricSimulationComponent implements OnInit, OnDestroy {
 
     this.simulateHttpCount = indexArray.length;
     // call http request for non-existing metrices
-    this.productService.metricSimulation(this.body).subscribe(
+    this.productService.costSimulation(this.body).subscribe(
       (response: any) => {
-        if (response.metric_sim_result) {
-          response.metric_sim_result.map((res) =>
+        if (response.cost_sim_result) {
+          response.cost_sim_result.map((res) =>
             this.simulatedResults.push(res)
           );
         }
@@ -229,7 +229,7 @@ export class MetricSimulationComponent implements OnInit, OnDestroy {
       unit_cost: Number(currentSimulationObj.avg_unit_price) || 0,
     };
 
-    this.productService.metricSimulation(body).subscribe(
+    this.productService.costSimulation(body).subscribe(
       (response: any) => {
         const obj = response;
         obj.success = true;

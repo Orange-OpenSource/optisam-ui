@@ -9,10 +9,9 @@
 ## Access to the page
 
 1. Click on "Administration"
-2. Click on "Data Management" 
-3. Click on "Global Data" 
+2. Click on "Inventory Management" 
 
-![select APM](../../img/configure/import1u.jpg){: .zoom}
+![select APM](../../img/configure/import1.jpg){: .zoom}
 
 ## Possibilities
 
@@ -20,13 +19,13 @@ You can do 2 things from there :
 - <span style="color:red">Delete the data</span> ([here](#delete-the-data))  
 - <span style="color:blue">Check the deletions history and status</span> ([here](#check-the-deletions-history-and-status))  
 
-![select APM](../../img/dataMana/delete/deletepossibu.jpg){: .zoom}
+![select APM](../../img/dataMana/delete/deletepossib.jpg){: .zoom}
 
 ## Delete the data
 
 Click on "Delete Inventory" : 
 
-![select APM](../../img/dataMana/delete/delete1u.jpg){: .zoom}
+![select APM](../../img/dataMana/delete/delete1.jpg){: .zoom}
 
 This window will be shown :
 
@@ -45,7 +44,7 @@ When you have selected what to delete, click on "OK" in order to delete.
 
 Click on this icon :  
 
-![select APM](../../img/dataMana/delete/deleteStatus1u.jpg){: .zoom}
+![select APM](../../img/dataMana/delete/deleteStatus1.jpg){: .zoom}
 
 This window will be shown : 
 

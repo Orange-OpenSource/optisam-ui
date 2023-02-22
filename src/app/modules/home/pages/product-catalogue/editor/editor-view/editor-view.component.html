@@ -1,0 +1,180 @@
+<div mat-dialog-title>
+  {{ "Editor" | translate }} :
+  <span class="nav-path-desc" class="alert_green">{{ data?.name }}</span>
+  <mat-icon class="arrow_icon">arrow_forward_ios</mat-icon>
+  <span class="currentNode">{{ "Details" | translate }}</span>
+</div>
+<mat-dialog-content>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="product-tabs">
+          <table
+            class="key-value-table"
+            summary="Example of a key value table."
+          >
+            <!-- <caption>
+              This is an example table.
+            </caption> -->
+            <tbody>
+              <tr>
+                <th class="width-20">Editor Name</th>
+                <td class="last-child">
+                  {{ data?.name }}
+                </td>
+              </tr>
+
+              <tr class="width-20">
+                <th>General Information</th>
+                <td *ngIf="data.general_information" class="last-child">
+                  {{ data.general_information }}
+                </td>
+                <td *ngIf="!data.general_information" class="last-child">-</td>
+              </tr>
+
+              <tr class="width-20">
+                <th>Products Count</th>
+                <td *ngIf="data?.product_count" class="last-child">
+                  {{ data?.product_count }}
+                </td>
+                <td *ngIf="!data?.product_count" class="last-child">-</td>
+              </tr>
+
+              <tr class="width-20">
+                <th>Scopes</th>
+                <td *ngIf="data?.scopes === null" class="last-child">-</td>
+                <td *ngIf="data?.scopes !== null" class="last-child">
+                  {{ data?.scopes }}
+                </td>
+              </tr>
+
+              <tr class="width-20">
+                <th>vendors</th>
+                <td *ngIf="vendors?.length !== 0" class="last-child">
+                  {{ vendors?.join(" , ") }}
+                </td>
+                <td *ngIf="vendors?.length === 0" class="last-child">-</td>
+              </tr>
+
+              <tr class="last-child">
+                <th>Partner Managers</th>
+                <td class="last-child">
+                  <table summary="Example of a standard data-table.">
+                    <thead>
+                      <tr>
+                        <th class="versionsView">Name</th>
+                        <th class="versionsView">Email</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let x of data?.partner_managers">
+                        <td class="versionsView" *ngIf="x.name">
+                          {{ x.name }}
+                        </td>
+                        <td class="versionsView" *ngIf="!x.name && x.email">
+                          -
+                        </td>
+                        <td class="versionsView" *ngIf="x.email">
+                          {{ x.email }}
+                        </td>
+                        <td class="versionsView" *ngIf="!x.email && x.name">
+                          -
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+              </tr>
+
+              <tr class="last-child">
+                <th>Audits</th>
+                <td
+                  *ngIf="data?.audits?.length !== 0 && data?.audits !== null"
+                  class="last-child"
+                >
+                  <table summary="Example of a standard data-table.">
+                    <thead>
+                      <tr>
+                        <th class="versionsView">Enity</th>
+                        <th class="versionsView">Date</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let x of data?.audits">
+                        <td class="versionsView" *ngIf="x.entity">
+                          {{ x.entity }}
+                        </td>
+                        <td class="versionsView" *ngIf="!x.entity">-</td>
+                        <td class="versionsView" *ngIf="x.date">
+                          {{ x.date | date : "yyyy" }}
+                        </td>
+                        <td class="versionsView" *ngIf="!x.date">-</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+                <td
+                  *ngIf="data?.audits?.length === 0 || data?.audits === null"
+                  class="last-child"
+                >
+                  -
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <!-- <nav mat-tab-nav-bar>
+            <div class="nav nav-tabs" id="nav-tab" role="tablist">
+              <a
+                class="nav-item nav-link active"
+                id="nav-home-tab"
+                data-toggle="tab"
+                href="#nav-home"
+                role="tab"
+                aria-controls="nav-home"
+                aria-selected="true"
+                >{{ "Information" | translate }}</a
+              >
+            </div>
+          </nav>
+
+          <div class="tab-content" id="nav-tabContent">
+            <div
+              class="tab-pane fade show active"
+              id="nav-home"
+              role="tabpanel"
+              aria-labelledby="nav-home-tab"
+            >
+              <div class="tab-content-inner">
+                <app-loading-spinner *ngIf="_loading"></app-loading-spinner>
+                <div *ngIf=" !_loading">
+                  <strong>{{ "Editor Name" | translate }}:</strong>
+                  {{data.name}} <br />
+                  <strong>{{ "Partner Managers" | translate }}:</strong>
+                  {{partnerManagers?.join(" ")}}<br />
+                  <strong>{{ "General Information" | translate }}:</strong>
+                  <span>{{data.general_information}}</span>
+                  <br />
+                  <strong>{{ "Vendors" | translate }}:</strong>
+                  {{vendors?.join(" ")}}<br />
+                  <strong>{{ "Audits" | translate }} :</strong>
+                    {{audits?.join(" ")}}<br/>
+                  <strong
+                    >{{ "No Of Products" | translate }} :</strong
+                  >
+                    {{data.product_count}}
+                  <br />
+                </div>
+              </div>
+            </div>
+          </div> -->
+        </div>
+      </div>
+    </div>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button id="cancelBtn" class="btn-two" mat-raised-button mat-dialog-close>
+    {{ "Close" | translate }}
+  </button>
+</mat-dialog-actions>

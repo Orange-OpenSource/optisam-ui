@@ -3,28 +3,34 @@
     <!-- <strong>SWIDTags :</strong> 
     <span class="margin-left">{{(productDetails.products) ? productDetails.products.join(', ') : '-'}}</span> <br> -->
 
-    <strong>{{'Editor' | translate}} :</strong> 
-    <span class="margin-left">{{productDetails.editor}}</span> <br>
+    <strong>{{ "Editor" | translate }} :</strong>
+    <span class="margin-left">{{ productDetails.editor }}</span> <br />
 
-    <strong>{{'Product names' | translate}} :</strong> 
-    <span class="margin-left">{{productDetails.product_names}}</span> <br>
+    <strong>{{ "Product names" | translate }} :</strong>
+    <span class="margin-left">{{ productDetails.product_names }}</span> <br />
 
-    <strong>{{'Versions' | translate}} :</strong> 
-    <span class="margin-left">{{productDetails.versions}}</span> 
-    <br>
-    
-    <strong>{{'Equipments using the product' | translate}} :</strong> 
-    <span class="margin-left" > {{productDetails.num_equipments || 0}}
-    <span class="error-msg" *ngIf="!productDetails.num_equipments">&nbsp;({{'Product is not deployed'|translate}})</span>
-    </span> <br>
+    <strong>{{ "Versions" | translate }} :</strong>
+    <span class="margin-left">{{ productDetails.versions }}</span>
+    <br />
 
-    <strong>{{'Applications containing the product' | translate}} :</strong>
-    <span class="margin-left">{{productDetails.num_applications || 0}}</span>
-    <br>
+    <strong>{{ "Equipments using the product" | translate }} :</strong>
+    <span class="margin-left">
+      {{ productDetails.num_equipments || 0 }}
+      <span class="error-msg" *ngIf="!productDetails.num_equipments"
+        >&nbsp;({{ "Product is not deployed" | translate }})</span
+      >
+    </span>
+    <br />
 
-    <strong>{{'Defined Metrics' | translate}} :</strong>
-    <span class="margin-left">{{productDetails.defined_metrics?.length > 0
-      ? productDetails.defined_metrics.join(", ")
-      : "-"}}</span>
+    <strong>{{ "Applications containing the product" | translate }} :</strong>
+    <span class="margin-left">{{ productDetails.num_applications || 0 }}</span>
+    <br />
+
+    <strong>{{ "Defined Metrics" | translate }} :</strong>
+    <span class="margin-left">{{
+      productDetails.defined_metrics?.length > 0
+        ? productDetails.defined_metrics.join(", ")
+        : "-"
+    }}</span>
   </p>
 </div>
