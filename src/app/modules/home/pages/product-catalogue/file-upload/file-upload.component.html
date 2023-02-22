@@ -1,0 +1,163 @@
+<mat-card fxLayout="column" fxLayoutAlign="space-between">
+  <mat-card-title
+    >{{ "Product Catalog Reference File" | translate }}
+  </mat-card-title>
+
+  <mat-card-action
+    fxFlex
+    fxLayout="column"
+    fxLayoutAlign="space-between"
+    class="body"
+  >
+    <div class="content-section" fxLayout="column">
+      <mat-hint>{{ "Select the file to upload" | translate }}</mat-hint>
+      <button
+        fxFlex
+        (click)="onBrowseClickHandler()"
+        id="browse-btn"
+        mat-raised-button
+        class="btn-two"
+      >
+        {{ "Browse" | translate }}
+      </button>
+      <input
+        #fileInput
+        (change)="onFileChangeHandler()"
+        type="file"
+        style="display: none"
+        id="file-input"
+      />
+      <div id="downloadTemplateLink">
+        <img id="downloadIcon" src="assets/images/DownloadIcon.svg" />
+        <a
+          id="downloadLinkText"
+          class="mat-button-link"
+          href="https://optisam.pages.gitlab.tech.orange/optisam-it/optisam-ui/excel/genericTempProductCatalog.xlsx"
+        >
+          {{ "Sample Product Catalog File Template" | translate }}
+        </a>
+      </div>
+      <mat-hint class="top"
+        >Note: Upload File Type is xlsx , Maximum Upload Size: 13MB</mat-hint
+      >
+      <div
+        class="show-file-name"
+        *ngIf="selectedFile && !errorMsg"
+        fxLayout="row"
+        fxLayout="space-between start"
+      >
+        <div
+          fxLayoutGap="10px"
+          class="name-icon"
+          fxFlex
+          fxLayout="row"
+          fxLayoutAlign="start start"
+        >
+          <mat-icon>insert_drive_file</mat-icon>
+          <span fxFlex>{{ selectedFile.name }}</span>
+        </div>
+        <!-- <mat-icon>download</mat-icon> -->
+      </div>
+
+      <div *ngIf="uploading" class="upload-bar" fxFlex>
+        <div class="upload-bar-title">{{ "UPLOADING" | translate }}</div>
+        <mat-progress-bar
+          fxFlexAlign="center"
+          mode="indeterminate"
+        ></mat-progress-bar>
+      </div>
+
+      <div
+        class="show-errors"
+        *ngIf="errorMsg"
+        fxLayout="row"
+        fxLayout="space-between start"
+      >
+        <div
+          fxLayoutGap="10px"
+          class="name-icon"
+          fxFlex
+          fxLayout="row"
+          fxLayoutAlign="start start"
+        >
+          <mat-icon>error</mat-icon>
+          <span fxFlex>{{ errorMsg | translate }}</span>
+        </div>
+      </div>
+
+      <div class="header">{{ "Activity Log" | translate }}</div>
+      <div
+        class="activity-log"
+        *ngIf="activityLogVisibility$ | async as activityLogVisibility"
+      >
+        <app-activity-logs></app-activity-logs>
+        <div
+          class="show-errors"
+          *ngIf="activityLogError$ | async as activityLogError"
+          fxLayout="row"
+          fxLayout="space-between start"
+        >
+          <div
+            fxLayoutGap="10px"
+            class="name-icon"
+            fxFlex
+            fxLayout="row"
+            fxLayoutAlign="start start"
+          >
+            <mat-icon>error</mat-icon>
+            <span fxFlex
+              >{{ "ACTIVITY_LOGS_ERROR" | translate
+              }}{{ activityLogError }}</span
+            >
+          </div>
+        </div>
+      </div>
+      <div
+        class="show-file-name"
+        *ngIf="!(activityLogVisibility$ | async)"
+        fxLayout="row"
+        fxLayout="space-between start"
+      >
+        <div
+          fxLayoutGap="10px"
+          class="name-icon"
+          fxFlex
+          fxLayout="row"
+          fxLayoutAlign="start center"
+        >
+          <mat-icon>error</mat-icon>
+          <span fxFlex>{{ "NO_LOGS_FOUND" | translate }}</span>
+        </div>
+      </div>
+    </div>
+
+    <mat-card-footer fxLayout="row" fxLayoutAlign="space-around">
+      <button
+        (click)="cancelHandler()"
+        id="cancel-btn"
+        mat-raised-button
+        class="btn-two"
+      >
+        {{ "Cancel" | translate }}
+      </button>
+      <button
+        id="rest-btn"
+        mat-raised-button
+        class="btn-two"
+        (click)="resetHandler()"
+        [disabled]="!selectedFile"
+      >
+        {{ "Reset" | translate }}
+      </button>
+      <button
+        (click)="submitHandler()"
+        id="submit-btn"
+        mat-raised-button
+        class="btn-two"
+        [disabled]="!selectedFile"
+      >
+        {{ "Submit" | translate }}
+      </button>
+    </mat-card-footer>
+  </mat-card-action>
+</mat-card>

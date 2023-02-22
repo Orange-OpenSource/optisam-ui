@@ -3,6 +3,7 @@ export interface ReportMetaData {
   createdOn: string;
   scope: string;
   reportType: string;
+  editor: string;
 }
 
 export interface ReportByIdResponse {

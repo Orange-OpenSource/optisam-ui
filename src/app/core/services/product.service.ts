@@ -29,6 +29,8 @@ import {
   AggregatedAcquiredRights,
   AggregationGetResponse,
   CreateAggregationPlayload,
+  EditorsListParams,
+  EditorsListResponse,
   ErrorResponse,
   GetAggregationParams,
   SuccessResponse,
@@ -47,8 +49,9 @@ export interface CommonURL {
   AggregationAcquiredRights: string;
   AcquiredRights: string;
   aggregation: string;
-  aggregationEditor: string;
+  aggregationEditors: string;
   aggregatedAcquiredRights: string;
+  acquiredRightsEditors: string;
 }
 
 @Injectable()
@@ -68,7 +71,8 @@ export class ProductService {
     aggregatedAcquiredRights: `${this.apiUrl}/product/aggregatedrights`,
     AcquiredRights: `${this.apiUrl}/product/acqrights`,
     aggregation: `${this.apiUrl}/product/aggregations`,
-    aggregationEditor: `${this.apiUrl}/product/aggregations/editors`,
+    aggregationEditors: `${this.apiUrl}/product/aggregations/editors`,
+    acquiredRightsEditors: `${this.apiUrl}/product/editors`,
   };
 
   constructor(private http: HttpClient, private cs: CommonService) {}
@@ -476,6 +480,21 @@ export class ProductService {
     const url = this.apiUrl + '/product/editors' + query;
     return this.http.get<any>(url);
   }
+
+  getEditorsList(
+    input: EditorsListParams
+  ): Observable<EditorsListResponse | ErrorResponse> {
+    let params = new HttpParams();
+    for (const key in input) params = params.set(key, input[key]);
+    return this.http
+      .get<EditorsListResponse | ErrorResponse>(
+        `${this.URLs.acquiredRightsEditors}`,
+        { params }
+      )
+      .pipe(
+        catchError((e) => (e?.error ? throwError(e.error) : throwError(e)))
+      );
+  }
   getDownloadFile(sku) {
     const url =
       this.apiUrl +
@@ -521,7 +540,7 @@ export class ProductService {
   ): Observable<{ editor: string[] } | ErrorResponse> {
     let params = new HttpParams().set('scope', scope);
     return this.http.get<{ editor: string[] } | ErrorResponse>(
-      this.URLs.aggregationEditor,
+      this.URLs.aggregationEditors,
       {
         headers: this.defaultHeaders,
         params,
@@ -544,6 +563,7 @@ export class ProductService {
   getProductListAggr(params: AggregationProductsParams) {
     const url = this.apiUrl + '/product/aggregations/products';
     let httpParams: HttpParams = this.generateParams(params);
+    console.log(httpParams);
     return this.http.get<any>(url, {
       params: httpParams,
       headers: this.defaultHeaders,

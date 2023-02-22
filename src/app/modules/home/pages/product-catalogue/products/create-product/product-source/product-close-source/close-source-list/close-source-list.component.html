@@ -1,0 +1,26 @@
+<form [formGroup]="form">
+  <div class="section">
+    <mat-form-field appearance="outline">
+      <mat-label>{{
+        "PRODUCT_CATALOG.FORM_FIELD.CLOSE_SOURCE" | translate
+      }}</mat-label>
+      <input
+        [readonly]="crud == crudRead"
+        matInput
+        formControlName="closeSourceName"
+        placeholder="{{
+          'Closed Source' | translate
+        }}"
+      />
+    </mat-form-field>
+    <div
+      *ngIf="crud != crudRead"
+      class="close-btn"
+      fxLayout="row"
+      fxLayoutAlign="center center"
+      (click)="confirmRemove()"
+    >
+      <mat-icon>close</mat-icon>
+    </div>
+  </div>
+</form>

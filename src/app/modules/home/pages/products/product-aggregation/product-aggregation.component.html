@@ -64,6 +64,21 @@
                 </a>
               </div>
 
+              <div *ngSwitchCase="'editor'">
+                
+                  <span *ngIf="product.editor_id==''">{{product.editor}}</span>  
+                  <span *ngIf="product.editor_id!=''">
+                    <a
+                      id="editor_name_{{ i }}"
+                      class="ellipsis mat-button-link"
+                      matTooltip="{{ product.editor }}"
+                      (click)="openEditorDialog(product)"
+                    >
+                      {{ product.editor }}</a>
+                  </span>
+                  
+              </div>
+
               <div *ngSwitchCase="'num_applications'">
                 <span
                   *ngIf="

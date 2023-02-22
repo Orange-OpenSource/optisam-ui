@@ -8,11 +8,11 @@ objects:
   - kind: Service
     apiVersion: v1
     metadata:
-      name: svc-optisam-ui
+      name: svc-optisam-ui-${ENV}
       annotations:
         description: Exposes and load balances the application pods
       labels:
-        run: optisam-ui
+        run: optisam-ui-${ENV}
     spec:
       ports:
         - name: api
@@ -20,68 +20,68 @@ objects:
           targetPort: 8080
           protocol: TCP
       selector:
-          app: optisam-ui
+        app: optisam-ui-${ENV}
   - kind: Route
     apiVersion: v1
     metadata:
-      name: route-svc-optisam-ui
+      name: route-svc-optisam-ui-${ENV}
       labels:
-        run: optisam-ui
+        run: optisam-ui-${ENV}
     spec:
       host: optisam-ui-${ENV}.apps.fr01.paas.tech.orange
       to:
         kind: Service
-        name: svc-optisam-ui
+        name: svc-optisam-ui-${ENV}
       tls:
         termination: edge
   - kind: DeploymentConfig
     apiVersion: v1
     metadata:
-      name: optisam-ui
+      name: optisam-ui-${ENV}
       labels:
-       app: optisam-ui
+        app: optisam-ui-${ENV}
     spec:
       replicas: 1
       selector:
-        app: optisam-ui
+        app: optisam-ui-${ENV}
       strategy:
         type: Rolling
       template:
         metadata:
-         labels:
-           app: optisam-ui
-           internal-elasticsearch: 'true'  
-         name: optisam-ui
+          labels:
+            app: optisam-ui-${ENV}
+            internal-elasticsearch: "true"
+          name: optisam-ui-${ENV}
         spec:
-         containers:
-         - name: optisam-ui
-           image: ${DOCKER_REGISTRY}/optisam-it/ui-service:${TAG}
-           imagePullPolicy: Always
-           env: 
-           - name: "ENV"
-             value: ${ENV}
-           ports:
-           - containerPort: 8080
-             protocol: TCP
-             initialDelaySeconds: 10
-             timeoutSeconds: 10
-             periodSeconds: 10
-             successThreshold: 1
-             failureThreshold: 5
-           resources:
-             requests:
-               cpu: "40m"
-               memory: "64Mi"
-             limits:
-               cpu: "80m"
-               memory: "128Mi"
-           volumeMounts:
-             - name: config-volume
-               mountPath: /usr/share/nginx/html/assets/config
-         volumes:
-         - name: config-volume
-           configMap:
-            name: config-ui-${ENV}               
+          containers:
+            - name: optisam-ui-${ENV}
+              image: ${DOCKER_REGISTRY}/optisam/ui-service-${ENV}:${TAG}
+              imagePullPolicy: Always
+              env:
+                - name: "ENV"
+                  value: ${ENV}
+              ports:
+                - containerPort: 8080
+                  protocol: TCP
+                  initialDelaySeconds: 10
+                  timeoutSeconds: 10
+                  periodSeconds: 10
+                  successThreshold: 1
+                  failureThreshold: 5
+              resources:
+                requests:
+                  cpu: "40m"
+                  memory: "64Mi"
+                limits:
+                  cpu: "80m"
+                  memory: "128Mi"
+              volumeMounts:
+                - name: config-volume-${ENV}
+                  mountPath: /usr/share/nginx/html/assets/config
+          volumes:
+            - name: config-volume-${ENV}
+              configMap:
+                name: config-ui-${ENV}
 parameters:
   - name: TAG
     description: Tag for Docker image
@@ -95,4 +95,3 @@ parameters:
     description: Artifactory URL to download images
     required: true
     value: optisam-it-virt-docker-unstable.repos.tech.orange
-

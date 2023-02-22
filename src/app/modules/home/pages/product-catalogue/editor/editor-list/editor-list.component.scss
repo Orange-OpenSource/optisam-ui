@@ -1,0 +1,27 @@
+.mat-column-Action {
+  flex: 0 0 100px;
+}
+
+.mat-column-editor {
+  flex: -1 0 500px;
+}
+
+.mat-column-ProductManager {
+  flex: 0 0 190px;
+}
+
+.mat-column-vendor {
+  flex: 0 0 150px;
+}
+
+.mat-column-noOfProducts {
+  flex: 0 0 128px;
+}
+
+.mat-column-Audit {
+  flex: 0 0 85px;
+}
+
+mat-cell {
+  word-break: break-word;
+}

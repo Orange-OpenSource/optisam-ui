@@ -1,0 +1,237 @@
+<h1 mat-dialog-title></h1>
+<mat-dialog-content>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-lg-12 nav-path">
+        {{ "Product" | translate }} :
+        <span class="alert_green">{{ data?.name }}</span>
+        <mat-icon class="arrow_icon">arrow_forward_ios</mat-icon>
+        <span class="currentNode">{{ "Details" | translate }}</span>
+      </div>
+      <div class="col-lg-12">
+        <div class="product-tabs">
+          <table
+            class="key-value-table"
+            summary="Example of a key value table."
+          >
+            <!-- <caption>
+      This is an example table.
+    </caption> -->
+            <tbody>
+              <tr>
+                <th class="width-20">Product Name</th>
+                <td class="last-child">
+                  {{ data.name }}
+                </td>
+              </tr>
+              <tr>
+                <th class="width-20">Editor Name</th>
+                <td class="last-child">
+                  {{ data.editorName }}
+                </td>
+              </tr>
+              <tr class="width-20">
+                <th>Product Swid Tag</th>
+                <td *ngIf="data?.productSwidTag" class="last-child">
+                  {{ data?.productSwidTag }}
+                </td>
+                <td *ngIf="!data?.productSwidTag" class="last-child">-</td>
+              </tr>
+              <tr class="width-20">
+                <th>General Information</th>
+                <td *ngIf="data.genearlInformation" class="last-child">
+                  {{ data.genearlInformation }}
+                </td>
+                <td *ngIf="!data.genearlInformation" class="last-child">-</td>
+              </tr>
+              <tr class="width-20">
+                <th>Contract Tip</th>
+                <td *ngIf="data?.contracttTips" class="last-child">
+                  {{ data.contracttTips }}
+                </td>
+                <td *ngIf="!data.contracttTips" class="last-child">-</td>
+              </tr>
+
+              <tr class="width-20">
+                <th>Recommendation</th>
+                <td *ngIf="data?.recommendation" class="last-child">
+                  {{ data?.recommendation }}
+                </td>
+                <td *ngIf="!data?.recommendation" class="last-child">-</td>
+              </tr>
+              <tr class="width-20">
+                <th>Metrics</th>
+                <td *ngIf="data?.metrics" class="last-child">
+                  {{ data?.metrics?.join(", ") }}
+                </td>
+                <td *ngIf="!data?.metrics" class="last-child">-</td>
+              </tr>
+              <tr class="width-20">
+                <th>Support vendors</th>
+                <td
+                  *ngIf="data?.supportVendors?.length !== 0"
+                  class="last-child"
+                >
+                  {{ data?.supportVendors?.join(", ") }}
+                </td>
+                <td
+                  *ngIf="data?.supportVendors?.length === 0"
+                  class="last-child"
+                >
+                  -
+                </td>
+              </tr>
+
+              <!-- location -->
+              <tr class="width-20">
+                <th>Location</th>
+                <td *ngIf="data?.locationType" class="last-child">
+                  {{ data?.locationType }}
+                </td>
+                <td *ngIf="!data?.locationType" class="last-child">-</td>
+              </tr>
+              <!-- Licensing -->
+              <tr class="width-20">
+                <th>Licensing</th>
+                <td
+                  *ngIf="
+                    data?.openSource?.isOpenSource &&
+                    data?.closeSource?.isCloseSource
+                  "
+                  class="last-child"
+                >
+                  Open Source and Closed Source
+                </td>
+                <td
+                  *ngIf="
+                    data?.openSource?.isOpenSource &&
+                    !data?.closeSource?.isCloseSource
+                  "
+                  class="last-child"
+                >
+                  Open Source
+                </td>
+                <td
+                  *ngIf="
+                    !data?.openSource?.isOpenSource &&
+                    data?.closeSource?.isCloseSource
+                  "
+                  class="last-child"
+                >
+                  Closed Source
+                </td>
+                <td
+                  *ngIf="
+                    !data?.openSource?.isOpenSource &&
+                    !data?.closeSource?.isCloseSource
+                  "
+                  class="last-child"
+                >
+                  -
+                </td>
+              </tr>
+              <tr *ngIf="data?.openSource?.isOpenSource" class="width-20">
+                <th>Open Source Type</th>
+                <td class="last-child">
+                  {{ data?.openSource?.openSourceType }}
+                </td>
+              </tr>
+              <tr *ngIf="data?.openSource?.isOpenSource" class="width-20">
+                <th>Open Source Licences</th>
+                <td
+                  *ngIf="data?.openSource?.openLicences !== ''"
+                  class="last-child"
+                >
+                  {{ data?.openSource?.openLicences }}
+                </td>
+                <td
+                  *ngIf="data?.openSource?.openLicences === ''"
+                  class="last-child"
+                >
+                  -
+                </td>
+              </tr>
+              <!-- useful links -->
+              <tr class="width-20">
+                <th>Useful Links</th>
+                <td *ngIf="data?.usefulLinks?.length !== 0" class="last-child">
+                  <a
+                    target="_blank"
+                    href="{{ link | makeLink }}"
+                    *ngFor="let link of data?.usefulLinks; let i = index"
+                    >{{ link
+                    }}{{ i == data?.usefulLinks?.length - 1 ? "" : ", " }}</a
+                  >
+                  <!-- <a (click)="openLink(data?.usefulLinks)">{{ data?.usefulLinks?.join(" , ") }}</a> -->
+                </td>
+                <td *ngIf="data?.usefulLinks?.length === 0" class="last-child">
+                  -
+                </td>
+              </tr>
+
+              <!-- scopes -->
+              <tr class="width-20">
+                <th>Scopes</th>
+                <td *ngIf="data?.scopes !== null" class="last-child">
+                  {{ data?.scopes?.join(", ") }}
+                </td>
+                <td *ngIf="data?.scopes === null" class="last-child">-</td>
+              </tr>
+              <!-- version -->
+              <tr class="last-child">
+                <th>Versions</th>
+                <td class="last-child">
+                  <table summary="Example of a standard data-table.">
+                    <thead>
+                      <tr>
+                        <th class="versionsView">
+                          {{ "PRODUCT.VERSION.NAME" | translate }}
+                        </th>
+                        <th class="versionsView">
+                          {{ "PRODUCT.VERSION.SWIDTAG" | translate }}
+                        </th>
+                        <th class="versionsView">
+                          {{ "PRODUCT.VERSION.EOL" | translate }}
+                        </th>
+                        <th class="versionsView">
+                          {{ "PRODUCT.VERSION.EOS" | translate }}
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let x of data?.version">
+                        <td class="versionsView" *ngIf="x.name">
+                          {{ x.name }}
+                        </td>
+                        <td class="versionsView" *ngIf="!x.name">-</td>
+                        <td class="versionsView" *ngIf="x.swidTagVersion">
+                          {{ x.swidTagVersion }}
+                        </td>
+                        <td class="versionsView" *ngIf="!x.swidTagVersion">
+                          -
+                        </td>
+                        <td class="versionsView" *ngIf="x.endOfLife">
+                          {{ x.endOfLife | date : "yyyy-MM-dd" }}
+                        </td>
+                        <td class="versionsView" *ngIf="!x.endOfLife">-</td>
+                        <td class="versionsView" *ngIf="x.endOfSupport">
+                          {{ x.endOfSupport | date : "yyyy-MM-dd" }}
+                        </td>
+                        <td class="versionsView" *ngIf="!x.endOfSupport">-</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions align="right">
+  <button id="cancelBtn" class="btn-two" mat-raised-button mat-dialog-close>
+    {{ "Close" | translate }}
+  </button>
+</mat-dialog-actions>

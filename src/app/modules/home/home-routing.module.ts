@@ -97,6 +97,20 @@ const routes: Routes = [
           ),
       },
       {
+        path: 'productCatalog',
+        loadChildren: () =>
+          import('../../core/landing-page/landing-page.module').then(
+            (m) => m.LandingPageModule
+          ),
+      },
+      {
+        path: 'pc',
+        loadChildren: () =>
+          import('./pages/product-catalogue/product-catalogue.module').then(
+            (m) => m.ProductCatalogueModule
+          ),
+      },
+      {
         path: 'om',
         loadChildren: () =>
           import(

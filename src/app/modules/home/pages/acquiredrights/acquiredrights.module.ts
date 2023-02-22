@@ -30,6 +30,8 @@ import { EditProductsStepComponent } from './edit-acquired-right-aggregation/for
 import { EditLicenseStepComponent } from './edit-acquired-right-aggregation/form-parts/edit-license-step/edit-license-step.component';
 import { EditMaintenanceStepComponent } from './edit-acquired-right-aggregation/form-parts/edit-maintenance-step/edit-maintenance-step.component';
 import { EditCommentStepComponent } from './edit-acquired-right-aggregation/form-parts/edit-comment-step/edit-comment-step.component';
+import { ViewEditorDetailsAccComponent } from './view-editor-details-acc/view-editor-details-acc.component';
+import { JoinProductVersionPipe } from './join-product-version.pipe';
 
 @NgModule({
   declarations: [
@@ -56,6 +58,8 @@ import { EditCommentStepComponent } from './edit-acquired-right-aggregation/form
     EditLicenseStepComponent,
     EditMaintenanceStepComponent,
     EditCommentStepComponent,
+    ViewEditorDetailsAccComponent,
+    JoinProductVersionPipe,
   ],
   imports: [
     CommonModule,

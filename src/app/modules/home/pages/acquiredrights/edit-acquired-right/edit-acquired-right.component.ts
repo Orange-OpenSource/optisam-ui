@@ -248,7 +248,6 @@ export class EditAcquiredRightComponent implements OnInit, AfterViewInit {
   listMetrics() {
     this.metricService.getMetricList().subscribe(
       (res) => {
-        debugger;
         this.metricsList = res.metrices.sort((a, b) => {
           if (a.name.toLowerCase() > b.name.toLowerCase()) return 1;
           if (a.name.toLowerCase() < b.name.toLowerCase()) return -1;

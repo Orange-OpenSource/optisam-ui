@@ -46,3 +46,10 @@ export interface CommonRegex {
   ONLY_DIGITS: string;
   DIGITS_WITH_NAV: string;
 }
+
+export interface PaginationEvent {
+  previousPageIndex: number;
+  pageIndex: number;
+  pageSize: number;
+  length: number;
+}

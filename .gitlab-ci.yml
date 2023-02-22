@@ -66,6 +66,7 @@ sonarqube-check:
     - merge_requests
     - /^release-.*$/i
     - /^develop-.*$/i
+    - /^product-.*$/i
     - /^performance-.*$/i
     - develop-defectdojo
 
@@ -179,6 +180,15 @@ init-job:
         echo "export OCP_URL=$OCP_URL_DEV;" >> shared-vars.sh
         echo "export OCP_PROJECT=$OCP_PROJECT_DEV;" >> shared-vars.sh
         echo "export OCP_TOKEN=$OCP_TOKEN_DEV;" >> shared-vars.sh
+      elif [[ "$CI_COMMIT_REF_NAME" = product-v* ]]; then
+        touch shared-vars.sh
+        chmod 777 shared-vars.sh
+        echo "export TAG=pc;" >> shared-vars.sh
+        echo "export ENV=pc;" >> shared-vars.sh
+        echo "export DOCKER_REGISTRY=$DOCKER_REGISTRY_UNSTABLE;" >> shared-vars.sh
+        echo "export OCP_URL=$OCP_URL_DEV;" >> shared-vars.sh
+        echo "export OCP_PROJECT=$OCP_PROJECT_DEV;" >> shared-vars.sh
+        echo "export OCP_TOKEN=$OCP_TOKEN_DEV;" >> shared-vars.sh
       elif [[ "$CI_COMMIT_REF_NAME" = release-v* ]]; then
         touch shared-vars.sh
         chmod 777 shared-vars.sh      
@@ -191,12 +201,12 @@ init-job:
       elif [ "$CI_COMMIT_TAG" != "" ]; then
         touch shared-vars.sh
         chmod 777 shared-vars.sh      
-        echo "export ENV=int;" >> shared-vars.sh
+        echo "export ENV=prod;" >> shared-vars.sh
         echo "export TAG=$CI_COMMIT_TAG;" >> shared-vars.sh
         echo "export DOCKER_REGISTRY=$DOCKER_REGISTRY_STABLE;" >> shared-vars.sh
-        echo "export OCP_URL=$OCP_URL_INT;" >> shared-vars.sh
-        echo "export OCP_PROJECT=$OCP_PROJECT_INT;" >> shared-vars.sh
-        echo "export OCP_TOKEN=$OCP_TOKEN_INT;" >> shared-vars.sh
+        echo "export OCP_URL=$OCP_URL_PROD;" >> shared-vars.sh
+        echo "export OCP_PROJECT=$OCP_PROJECT_PROD;" >> shared-vars.sh
+        echo "export OCP_TOKEN=$OCP_TOKEN_PROD;" >> shared-vars.sh
       else
         touch shared-vars.sh
         chmod 777 shared-vars.sh      
@@ -211,6 +221,7 @@ init-job:
 #    - develop
     - /^develop-.*$/i
     - /^release-.*$/i
+    - /^product-.*$/i
     - /^performance-.*$/i
     - tags
     - merge_requests
@@ -233,6 +244,7 @@ ui-install:
   only:
  #   - develop-*
     - /^develop-.*$/i
+    - /^product-.*$/i
     - /^performance-.*$/i
     - /^release-.*$/i
     - tags
@@ -282,6 +294,7 @@ ui-test:
     # - master
     - /^develop-.*$/i
     - /^release-.*$/i
+    - /^product-.*$/i
     - /^performance-.*$/i
     - tags
     - merge_requests
@@ -306,6 +319,7 @@ ui-build:
    # - develop-*
     - /^develop-.*$/i
     - /^release-.*$/i
+    - /^product-.*$/i
     - /^performance-.*$/i
     - tags
     - merge_requests
@@ -322,11 +336,11 @@ ui-package:
   script:
     - mkdir -p /kaniko/.docker
     - echo $DOCKER_AUTH_CONFIG > /kaniko/.docker/config.json
-     #    - echo "{\"auths\":{\"$DOCKER_REGISTRY\":{\"username\":\"$DOCKER_LOGIN\",\"password\":\"$DOCKER_PASSWORD\"}}}" > /kaniko/.docker/config.json
-    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --destination ${DOCKER_REGISTRY}/optisam-it/ui-service:$TAG
+    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --destination ${DOCKER_REGISTRY}/optisam/ui-service-$ENV:$TAG
   only:
  #   - develop-*
     - /^develop-.*$/i
+    - /^product-.*$/i
     - /^performance-.*$/i
     - /^release-.*$/i
     - tags
@@ -342,14 +356,15 @@ ui-deploy-noprod:
     - oc login ${OCP_URL}  --token=${OCP_TOKEN}   --insecure-skip-tls-verify
     - oc project ${OCP_PROJECT}
     - oc create configmap config-ui-$ENV --from-file=src/assets/config/${ENV}/configuration.json -o yaml --dry-run | oc apply -f -
-    - oc delete deploymentconfig optisam-ui
+    - oc delete deploymentconfig optisam-ui-$ENV
     - oc process -f ui-service.yml -p TAG=$TAG -p ENV=$ENV -p DOCKER_REGISTRY=$DOCKER_REGISTRY| oc apply -f -
   only:
  #   - develop-*
     - /^develop-.*$/i
+    - /^product-.*$/i
     - /^performance-.*$/i
     - /^release-.*$/i
-    - tags
+#    - tags
    
 ui-deploy-prod:
   stage: deploy_prod
@@ -362,8 +377,8 @@ ui-deploy-prod:
     - echo "Creating Openshift Resources"
     - oc login ${OCP_URL_PROD}  --token=${OCP_TOKEN_PROD}   --insecure-skip-tls-verify
     - oc project ${OCP_PROJECT_PROD}
-    - oc create configmap config-ui-prod --from-file=src/assets/config/prod/configuration.json -o yaml --dry-run | oc apply -f -
-    - oc process -f ui-service.yml -p TAG=$TAG -p ENV=prod -p DOCKER_REGISTRY=$DOCKER_REGISTRY| oc apply -f -
+    - oc create configmap config-ui-$ENV --from-file=src/assets/config/prod/configuration.json -o yaml --dry-run | oc apply -f -
+    - oc process -f ui-service.yml -p TAG=$TAG -p ENV=$ENV -p DOCKER_REGISTRY=$DOCKER_REGISTRY| oc apply -f -
   only:
     - tags
 

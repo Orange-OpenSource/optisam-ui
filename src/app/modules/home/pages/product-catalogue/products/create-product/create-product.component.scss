@@ -1,0 +1,44 @@
+// $btnPrimaryColor: #008afc;
+
+mat-card-title {
+  margin-bottom: 30px;
+}
+
+.main {
+  .section {
+    border-radius: 5px;
+    padding: 20px;
+
+    .section-title {
+      font-size: 1.1em;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+  }
+  mat-form-field {
+    min-width: 400px;
+    max-width: 40%;
+  }
+}
+
+::ng-deep
+  .product-location-type
+  .mat-checkbox-checked.mat-primary
+  .mat-checkbox-background {
+  background-color: var(--btnPrimaryColor);
+}
+
+::ng-deep .product-editor-list {
+  position: relative;
+  mat-option:first-child {
+    position: sticky;
+    top: 0;
+    border: 1px solid #d4d4d4;
+    z-index: 9999999;
+    background: #fff;
+    border-radius: 5px;
+    &:hover {
+      background: #fff;
+    }
+  }
+}

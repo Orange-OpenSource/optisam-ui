@@ -57,13 +57,13 @@
               <div class="tab-content-inner">
                 <app-loading-spinner *ngIf="_loading"></app-loading-spinner>
                 <div *ngIf="productInfo && !_loading">
-                  <strong>{{ "SWIDtag" | translate }}:</strong>
-                  {{ productInfo.swidTag }} <br />
                   <strong>{{ "Editor" | translate }}:</strong>
                   {{ productInfo.editor }} <br />
                   <strong>{{ "Product Name" | translate }}:</strong>
                   <span>{{ productInfo.product_name }}</span>
                   <br />
+                  <strong>{{ "Product SWIDtag" | translate }}:</strong>
+                  {{ productInfo.product_swid_tag }} <br />
                   <ng-container *ngIf="isCostOptimization">
                     <strong>{{ "Total cost" | translate }}:</strong>
                     <span>{{ totalCostOfCostOptimization }}</span>
@@ -74,6 +74,8 @@
                   </ng-container>
                   <strong>{{ "Version" | translate }}:</strong>
                   {{ productInfo.version }} <br />
+                  <strong>{{ "Version SWIDtag" | translate }}:</strong>
+                  {{ productInfo.version_swid_tag }} <br />
                   <strong
                     >{{ "Equipments using the product" | translate }} :</strong
                   >
@@ -82,8 +84,7 @@
                     <span class="error-msg" *ngIf="!productInfo.num_equipments"
                       >&nbsp;({{
                         "Product is not
-                      deployed"
-                          | translate
+                      deployed" | translate
                       }})</span
                     >
                   </span>
@@ -189,7 +190,7 @@
               </div>
 
               <div class="no-data" *ngIf="!hasCompliance && !agg_name">
-                {{ emptyMsg }}
+                {{ "EMPTY_MESSAGE" | translate }}
               </div>
 
               <div class="tab-content-inner" *ngIf="hasCompliance && !agg_name">
@@ -254,8 +255,7 @@
                                 *ngIf="!productInfo.num_equipments"
                                 >&nbsp;{{
                                   "Product is not
-                                  deployed"
-                                    | translate
+                                  deployed" | translate
                                 }}</span
                               >
                               <span
@@ -458,6 +458,6 @@
 
 <mat-dialog-actions align="right">
   <button id="cancelBtn" class="btn-two" mat-raised-button mat-dialog-close>
-    {{ "Cancel" | translate }}
+    {{ "Close" | translate }}
   </button>
 </mat-dialog-actions>

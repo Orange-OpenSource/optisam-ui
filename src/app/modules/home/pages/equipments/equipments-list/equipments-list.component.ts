@@ -284,6 +284,7 @@ export class EquipmentsListComponent implements OnInit {
   }
 
   openDialog(ele, x): void {
+    console.log("working")
     const dialogRef = this.dialog.open(AttributeDetailComponent, {
       width: '1600px',
       maxHeight: '550px',

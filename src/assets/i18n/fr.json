@@ -102,10 +102,10 @@
   "Acquired Licenses": "Licences acquises",
   "Delta(licenses)": "Delta (licenses)",
   "Detail": "Détail",
-  "Children": "Les enfants",
+  "Children": "Equipements fils",
   "Entity": "Entité",
-  "Acquired licenses number": "Numéro de licence acquis",
-  "Licenses Under maintenance number": "Licences Sous numéro de maintenance",
+  "Acquired licenses number": "Nombre de licences acquis",
+  "Licenses Under maintenance number": "Nombre de licence sous maintenance",
   "AVG License unit price": "Prix unitaire",
   "AVG Maintenance unit price": "Prix ​​unitaire de maintenance",
   "Total purchase cost": "Coût total d'achat",
@@ -162,8 +162,8 @@
   "Modify": "Modifier",
   "Inventory Management": "Gestion de l'inventaire",
   "Instance ID": "ID d'instance",
-  "Infrastructure inventory": "Inventaire des infrastructures",
-  "Log": "Enregistrer",
+  "Infrastructure inventory": "Inventaire d'infrastructure",
+  "Log": "Log",
   "Aggregation Management": "Gestion d'agrégation",
   "Simulation Management": "Gestion de la simulation",
   "DASHBOARD": "TABLEAU DE BORD",
@@ -377,7 +377,7 @@
   "Configuration ID": "ID de configuration",
   "Configuration Files": "Fichiers de configuration",
   "Created By": "Créé par",
-  "Created On": "Créé sur",
+  "Created On": "Créé le",
   "Action": "Action",
   "DELETE_CONFIRM_MSG": "Voulez-vous vraiment supprimer cette configuration?",
   "No Configuration": "Aucune configuration",
@@ -517,8 +517,8 @@
   "Upload File": "Téléverser un fichier",
   "Upload Files": "Télécharger des fichiers",
   "File Name": "Nom de fichier",
-  "Uploaded By": "Telechargé par",
-  "Uploaded On": "Téléchargé sur",
+  "Uploaded By": "Envoyé par",
+  "Uploaded On": "Envoyé le",
   "Total Records": "Total des enregistrements",
   "Records Processed": "Enregistrements traités",
   "Records Failed": "Échec des enregistrements",
@@ -556,9 +556,9 @@
   "Overview": "Aperçu",
   "Quality": "Qualité",
   "Compliance": "Conformité",
-  "Editors": "Rédacteurs",
+  "Editors": "Editeurs",
   "Owned Licenses": "Licences possédées",
-  "Maintenance Licenses": "Licences de maintenance",
+  "Maintenance Licenses": "Licences sous maintenance",
   "Underusage Amount": "Sous-utilisation",
   "Software Licence Composition": "Composition de la licence logicielle",
   "Counterfeiting Amount": "Contrefaçon",
@@ -582,12 +582,12 @@
   "Hurray": "Hourra",
   "Network Error": "Erreur réseau",
   "Licensed Aggregations": "Agrégations sous licence",
-
+  "COMPLETED": "complété",
   "There are no overdeployed products.": "Il n'y a pas de produits surdéployés.",
   "There are no counterfeited products.": "Il n'y a pas de produits contrefaits.",
   "Development Rate Details": "Détails du taux de développement",
   "Not Deployed Products": "Produits non déployés",
-  "Not Licensed Products": "Produits non autorisés",
+  "Not Licensed Products": "Produits non licenciés",
   "Click to view details": "Cliquez pour voir les détails",
   "Last Injection Failures(Last 30 days)": "Échecs de la dernière injection (30 derniers jours)",
   "Injection Errors(Last 30 days)": "Erreurs d'injection (30 derniers jours)",
@@ -607,7 +607,7 @@
   "Green : 0 products in default": "Vert: 0 produits par défaut",
   "Orange : between 10% and 30% of products in default": "Orange: entre 10% et 30% des produits en défaut",
   "Red : more than 30% of products are in default": "Rouge: plus de 30% des produits sont en défaut",
-
+  "Cost": "Coût",
   "Number of different editors for all products deployed.": "Nombre d'éditeurs différents pour tous les produits déployés.",
   "Number of different products deployed.": "Nombre de produits différents déployés.",
   "Cost of all licenses owned.": "Coût de toutes les licences détenues",
@@ -707,13 +707,21 @@
   "ALLOCATED_METRIC_WARN": "La métrique allouée s'appliquera à tous les équipements de la hiérarchie.",
   "ALLOCATED_METRIC": "Métrique allouée",
   "EQUIPMENT_USER": "Utilisateur d'équipement",
-  "ALLOCATED_USER": "Utilisateurs alloués",
+  "ALLOCATED_USER": "Nombre d'utilisateurs alloués",
   "ERROR_TITLE": "Erreur!",
   "CONFIRMATION_TITLE": "Confirmation!",
   "SUCCESS_TITLE": "Succès!",
   "ERRORS": {
     "metric does not exist": "La métrique n'existe pas!",
     "equipment type has children": "Le type d'équipement a des enfants."
+  },
+
+  "PRODUCT_CATALOG_MANAGEMENT": "Gestion du catalogue de produits",
+
+  "SIDEBAR_NAV": {
+    "MENU": {
+      "PRODUCT_CATALOG": "Catalogue de produits"
+    }
   },
 
   "LOGIN": {
@@ -766,7 +774,9 @@
     }
   },
   "ERROR": {
-    "Not Found": "Pas trouvé"
+    "Not Found": "Pas trouvé",
+    "MAX_LENGTH": "Seuls {{requiredLength}} caractères sont autorisés!",
+    "MIN_LENGTH": "{{requiredLength}} caractères minimum sont requis!"
   },
 
   "EQUIPMENT": {
@@ -774,5 +784,135 @@
       "NAME_BLANK": "Le nom est requis!",
       "NAME_OVER_LIMIT": "Le nom ne peut pas comporter plus de {{limit}} caractères!"
     }
-  }
+  },
+  "HEADER": {
+    "MENU_ITEM": {
+      "PRODUCT_CATALOG": "Gestion du catalogue de produits",
+      "ACQUIRED_RIGHTS": "Gestion des droits acquis",
+      "AGGREGATION": "Gestion de l'agrégation",
+      "GROUP": "Gestion de groupe",
+      "INVENTORY": "Gestion de l'inventaire",
+      "METRICS": "Gestion des métriques",
+      "OBSOLESCENCE": "Gestion des Obsolescences",
+      "SCOPES": "Gestion des périmètres",
+      "USERS": "Gestion des utilisateurs",
+      "EQUIPMENTS": "Gestion des équipements",
+      "SIMULATIONS": "Gestion de la simulation"
+    }
+  },
+
+  "PRODUCT_CATALOG": {
+    "TITLE": {
+      "MAIN": "Gestion du catalogue de produits",
+      "CREATE_PRODUCT": "Créer un produit",
+      "VERSIONS": "Versions",
+      "CONFIRMATION": "Confirmation",
+      "RECOMMENDATION": "Recommendation",
+      "SUPPORT_VENDOR": "Fournisseur d'assistance",
+      "GENERAL_INFORMATION": "Informations générales",
+      "CONTRACT_TIPS": "Conseils sur les contrats",
+      "LOCATION": "Emplacement",
+      "SOURCE": "La source",
+      "USEFUL_LINKS": "Liens utiles",
+      "PRODUCT": "Produit"
+    },
+    "PRODUCTS_LIST_COLUMNS": {
+      "NAME": "Nom",
+      "UPDATED_ON": "Mis à jour le",
+      "CLOSE_SOURCE": "Fermer la source",
+      "EDITOR": "Éditeur",
+      "CONTRACT_TIPS": "Conseils sur les contrats",
+      "CREATED_ON": "Créé sur",
+      "GENERAL_INFORMATION": "Informations générales",
+      "LOCATION_TYPE": "Type de lieu",
+      "METRICS": "Métrique",
+      "OPEN_SOURCE": "Open source",
+      "RECOMMENDATION": "Recommandation",
+      "SUPPORT_VENDORS": "Fournisseurs de soutien",
+      "SWID_TAG": "Swid Tag",
+      "USEFUL_LINKS": "Liens utiles",
+      "VERSION": "Version"
+    },
+    "SEARCH_BY_NAME": "Rechercher par nom",
+    "BUTTON": {
+      "CREATE": "Créer",
+      "CANCEL": "Annuler",
+      "ADD_VERSION": "Ajouter une version",
+      "ADD_SUPPORT_VENDOR": "Ajouter un fournisseur de support",
+      "ADD_CLOSE_SOURCE": "Ajouter une source proche",
+      "ADD_LINK": "Ajouter un lien",
+      "SELECT": "Sélectionner"
+    },
+    "FORM_FIELD": {
+      "PRODUCT_NAME": "Nom du produit",
+      "EDITOR": "Éditeur",
+      "METRIC": "Métrique",
+      "VERSION_NAME": "Nom de la version",
+      "RECOMMENDATION": "Recommendation",
+      "END_OF_LIFE": "End of Life",
+      "END_OF_SUPPORT": "End of Support",
+      "SUPPORT_VENDORS_NAME": "Nom du fournisseur d'assistance",
+      "GENERAL_INFORMATION": "General Information",
+      "CONTRACT_TIPS": "Conseils sur les contrats",
+      "LOCATION": "Emplacement",
+      "OPEN_PREMISE": "Open Premise",
+      "SAAS": "SaaS",
+      "OPEN_SOURCE": "Open Source",
+      "CLOSE_SOURCE": "Close Source",
+      "USEFUL_LINK": "Lien",
+      "COMMUNITY": "Communauté",
+      "COMMERCIAL": "Commerciale"
+    },
+    "MESSAGE": {
+      "CONFIRM_DELETION": "Êtes-vous sûr de vouloir désinstaller?",
+      "PRODUCT_ADDED": "Un nouveau produit a été ajouté avec succès!"
+    },
+    "EDITOR": {
+      "EDITOR": "éditeur",
+      "PRODUCT_MANAGERS": "Chefs de produit",
+      "NO_OF_PRODUCTS": "Nombre de produits",
+      "LAST_AUDIT": "Dernier audit",
+      "VENDOR": "Vendeur",
+      "ACTION": "action",
+      "ADD_EDITOR": "Ajouter un éditeur",
+      "EDIT_PRODUCT": "Modifier le produit",
+      "DELETE_PRODUCT": "Supprimer le produit",
+      "CREATE_EDITOR": "Créer un éditeur",
+      "EDITOR_NAME": "Nom de l'éditeur",
+      "GENERAL_INFO": "Informations générales",
+      "GENERAL_INFO_AREA": "Zone de texte Informations générales",
+      "PARTNER_MANAGERS": "Responsables partenaires",
+      "ADD_MANAGERS": "Ajouter des gestionnaires",
+      "AUDITS": "Audits",
+      "ENTITY": "Entité",
+      "AUDIT_TEXT": "Texte d'audit",
+      "ADD_AUDITS": "Ajouter un audit",
+      "VENDORS": "Vendeurs",
+      "ADD_VENDOR": "Ajouter des fournisseurs"
+    },
+    "PLACE_HOLDER": {
+      "EDIT_PRODUCT": "Modifier le produit",
+      "DELETE_PRODUCT": "Supprimer le produit"
+    }
+  },
+  "PRODUCT": {
+    "TITLE": {
+      "SWIDTAG": "Swidtag",
+      "GENERAL_INFORMATION": "Informations générales"
+    },
+    "ERROR": {
+      "REQUIRED": {
+        "PRODUCT_NAME": "Le nom du produit est requis!",
+        "EDITOR": "L'éditeur est requis!",
+        "VERSION_NAME": "Le nom de la version est requis"
+      }
+    },
+    "VERSION": {
+      "SWIDTAG": "Version Swidtag",
+      "NAME": "Nom de la version",
+      "EOL": "Fin de vie",
+      "EOS": "Fin de prise en charge"
+    }
+  },
+  "EMPTY_MESSAGE": "La conformité ne peut pas être calculée car aucun droit n'est défini pour le produit"
 }

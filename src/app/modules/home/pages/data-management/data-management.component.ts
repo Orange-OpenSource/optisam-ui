@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TabMenu } from '@core/modals';
 import { DataManagementService } from 'src/app/core/services/data-management.service';
-import { allowedScopes } from 'src/app/core/util/common.functions';
+import { isSpecificScopeType } from 'src/app/core/util/common.functions';
 import { ListInventoryLogsComponent } from './list-inventory-logs/list-inventory-logs.component';
 
 @Component({
@@ -130,6 +130,6 @@ export class DataManagementComponent implements OnInit, AfterContentChecked {
   }
 
   get allowedScope(): boolean {
-    return allowedScopes();
+    return isSpecificScopeType();
   }
 }

@@ -20,12 +20,12 @@
         matSort
         (matSortChange)="sortData($event)"
       >
-        <ng-container matColumnDef="swidTag">
+        <!-- <ng-container matColumnDef="swidTag">
           <mat-header-cell *matHeaderCellDef mat-sort-header="swidtag"
             >{{ "SWIDtag" | translate }}
           </mat-header-cell>
           <mat-cell *matCellDef="let product"> {{ product.swidTag }} </mat-cell>
-        </ng-container>
+        </ng-container> -->
 
         <ng-container matColumnDef="name">
           <mat-header-cell *matHeaderCellDef mat-sort-header="name"
@@ -47,7 +47,18 @@
           <mat-header-cell *matHeaderCellDef mat-sort-header="editor"
             >{{ "Editor name" | translate }}
           </mat-header-cell>
-          <mat-cell *matCellDef="let product"> {{ product.editor }} </mat-cell>
+          <mat-cell *matCellDef="let product"> 
+          <span *ngIf="product.editor_id==''">{{product.editor}}</span>  
+          <span *ngIf="product.editor_id!=''">
+            <a
+              id="editor_name_{{ i }}"
+              class="ellipsis mat-button-link"
+              matTooltip="{{ product.editor }}"
+              (click)="openEditorDialog(product)"
+            >
+              {{ product.editor }}</a>
+          </span>
+          </mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="version">

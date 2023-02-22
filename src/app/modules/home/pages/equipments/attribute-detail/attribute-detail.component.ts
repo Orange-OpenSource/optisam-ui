@@ -27,6 +27,7 @@ import {
 import { LOCAL_KEYS } from '@core/util/constants/constants';
 import { CommonService } from '@core/services';
 import { AllocatedMetricDeleteErrorComponent } from './allocated-metric-delete-error/allocated-metric-delete-error.component';
+import { ViewEditorDetailsEquipComponent } from '../view-editor-details-equip/view-editor-details-equip.component';
 
 /*  import { DialogData } from './details'; */
 
@@ -101,13 +102,14 @@ export class AttributeDetailComponent implements OnInit {
     title: 'Search by Product Name',
     primary: 'productName',
     other: [
-      { key: 'swidTag', label: 'SWIDtag' },
+      // { key: 'swidTag', label: 'SWIDtag' },
       { key: 'productName', label: 'Product name' },
       { key: 'editorName', label: 'Editor name' },
     ],
   };
   searchFields: any = {};
   detailEq: any = [];
+  dialogRef1: MatDialogRef<ViewEditorDetailsEquipComponent, any>;
 
   /*
      productdetails: DialogData = new DialogData();  */
@@ -387,7 +389,7 @@ export class AttributeDetailComponent implements OnInit {
       .subscribe(
         (res: any) => {
           this.productColumn = [
-            'swidTag',
+            // 'swidTag',
             'name',
             'editor',
             'numofEquipments',
@@ -440,6 +442,17 @@ export class AttributeDetailComponent implements OnInit {
           console.log('There was an error while retrieving Posts !!!' + error);
         }
       );
+  }
+
+  openEditorDialog(data:any){
+    console.log("working")
+    this.dialogRef1=this.dialog.open(ViewEditorDetailsEquipComponent,{
+      width: '1300px',
+      disableClose: true,
+      data: data
+    });
+
+    this.dialogRef1.afterClosed().subscribe((result) => {});
   }
   getProductPaginatorData(event) {
     const page_num = event.pageIndex;

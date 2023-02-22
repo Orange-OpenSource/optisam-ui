@@ -15,6 +15,7 @@ import { SuccessDialogComponent } from './edit-metricAllocated/dialog/success-di
 import { AllocatedMetricDeleteErrorComponent } from './attribute-detail/allocated-metric-delete-error/allocated-metric-delete-error.component';
 import { WarningAllocationChangeComponent } from './edit-metricAllocated/edit-metric-allocated/dialog/warning-allocation-change/warning-allocation-change.component';
 import { GetEquipmentAttributeNamePipe } from './attribute-detail/pipes/get-equipment-attribute-name.pipe';
+import { ViewEditorDetailsEquipComponent } from './view-editor-details-equip/view-editor-details-equip.component';
 
 @NgModule({
   imports: [
@@ -37,6 +38,7 @@ import { GetEquipmentAttributeNamePipe } from './attribute-detail/pipes/get-equi
     AllocatedMetricDeleteErrorComponent,
     WarningAllocationChangeComponent,
     GetEquipmentAttributeNamePipe,
+    ViewEditorDetailsEquipComponent,
   ],
 })
 export class EquipmentsModule {}

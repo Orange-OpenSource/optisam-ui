@@ -1,0 +1,15 @@
+<form [formGroup]="closeSourceGroup">
+  <div
+    class="section product-close-source"
+    fxLayout="column"
+    fxLayoutGap="10px"
+  >
+    <mat-checkbox
+      [disabled]="crud == crudRead"
+      formControlName="isCloseSource"
+      color="primary"
+      disableRipple
+      >{{ "Closed Source" | translate }}</mat-checkbox
+    >
+  </div>
+</form>

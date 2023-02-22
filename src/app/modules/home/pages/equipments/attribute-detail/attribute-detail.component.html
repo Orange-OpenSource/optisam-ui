@@ -336,8 +336,23 @@
                             mat-sort-header="editor"
                             >{{ "Editor name" | translate }}
                           </mat-header-cell>
-                          <mat-cell *matCellDef="let product">
+                          <!-- <mat-cell *matCellDef="let product">
                             {{ product.editor }}
+                          </mat-cell> -->
+                          <mat-cell *matCellDef="let product">
+                            <span *ngIf="product.editor_id == ''">{{
+                              product.editor
+                            }}</span>
+                            <span *ngIf="product.editor_id != ''">
+                              <a
+                                id="editor_name_{{ i }}"
+                                class="ellipsis mat-button-link"
+                                matTooltip="{{ product.editor }}"
+                                (click)="openEditorDialog(product)"
+                              >
+                                {{ product.editor }}</a
+                              >
+                            </span>
                           </mat-cell>
                         </ng-container>
 
@@ -372,7 +387,7 @@
 
                         <ng-container matColumnDef="allocatedMetric">
                           <mat-header-cell *matHeaderCellDef
-                            >{{ "Allocated Metric" | translate }}
+                            >{{ "ALLOCATED_METRIC" | translate }}
                           </mat-header-cell>
                           <mat-cell *matCellDef="let product">
                             {{ product.allocatedMetric }}
@@ -441,6 +456,6 @@
 
 <mat-dialog-actions>
   <button class="btn-two" mat-raised-button mat-dialog-close>
-    {{ "Cancel" | translate }}
+    {{ "Close" | translate }}
   </button>
 </mat-dialog-actions>

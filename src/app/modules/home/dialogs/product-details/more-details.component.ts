@@ -61,8 +61,7 @@ export class MoreDetailsComponent implements OnInit {
   swidTag: any;
   productInfo: DialogData = new DialogData();
   productOptions: DialogData = new DialogData();
-  emptyMsg: string =
-    'The compliance can not be computed because no right has been defined for the product. Please contact your admin to define acquired rights for the product.';
+//  emptyMsg: string ='The compliance can not be computed because no right has been defined for the product. Please contact your admin to define acquired rights for the product.';
 
   @ViewChild(MatSort, { static: false }) sort: MatSort;
   displayedColumns: string[] = [
@@ -141,6 +140,7 @@ export class MoreDetailsComponent implements OnInit {
     this._loading = true;
     this.productsService.getMoreDetails(this.swidTag).subscribe(
       (res: any) => {
+        console.log(res)
         this.productInfo = res;
         this._loading = false;
       },

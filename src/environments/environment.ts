@@ -17,6 +17,7 @@ export const environment = {
   API_EQUIPMENT_URL: 'equipment',
   API_REPORT_URL: 'report',
   API_META_URL: 'meta',
+  API_PRODUCT_CATALOG: 'productCatalog',
 };
 
 /*

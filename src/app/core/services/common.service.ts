@@ -1,12 +1,13 @@
 import { LOCAL_KEYS } from '../util/constants/constants';
 import { Injectable } from '@angular/core';
 import { PROHIBIT_SCOPES } from '../util/constants/constants';
-
+import { v4 as uuidv4 } from 'uuid';
+import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 @Injectable({
   providedIn: 'root',
 })
 export class CommonService {
-  constructor() {}
+  constructor(private dialog: MatDialog) {}
 
   get allowedScopes(): boolean {
     const currentScope: string = this.getLocalData(LOCAL_KEYS.SCOPE_TYPE) || '';
@@ -49,6 +50,25 @@ export class CommonService {
       return array;
     }
     return this.simpleSort(array, order, <string>keys);
+  }
+  openModal(
+    template: any,
+    config?: MatDialogConfig,
+    data?: any
+  ): MatDialogRef<any> {
+    return this.dialog.open(template, {
+      ...{
+        height: '470px',
+        width: '60vw',
+        disableClose: true,
+        ...(data && { data: data }),
+      },
+      ...(config && config),
+    });
+  }
+
+  generateUID(): string {
+    return uuidv4();
   }
 
   private simpleSort(array: any[], order: 'asc' | 'desc', key: string): any[] {

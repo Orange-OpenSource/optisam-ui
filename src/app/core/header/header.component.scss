@@ -6,8 +6,8 @@
 .mat-button {
   margin-right: 5px;
 }
-.optisam-logo { 
-  background-color: #EAEAEA; 
+.optisam-logo {
+  background-color: #eaeaea;
   height: 60px;
 }
 
@@ -21,11 +21,11 @@
 
 #app-logo {
   padding: 6px 10px;
-  width: 11.3rem;
+  width: 10.2em;
 }
 #app-logo-min {
   padding: 5px 10px;
-  width: 4.5rem ;
+  width: 4.5rem;
 }
 
 .flags {
@@ -37,7 +37,7 @@
   padding: unset !important;
   max-height: 60px;
 }
-mat-toolbar{
+mat-toolbar {
   max-height: 60px;
 }
 .mat-toolbar-multiple-rows {
@@ -49,25 +49,32 @@ mat-toolbar{
   max-height: calc(100vh - 98px) !important;
 }
 .mat-menu-item.routeactive {
-  color: #008AFC;
+  color: #008afc;
 }
 .mat-menu-item {
   color: black !important;
 }
-.mat-icon-header {  
-  color: #008AFC !important;
+.mat-icon-header {
+  color: #008afc !important;
 }
-.mat-icon-admin, .mat-icon-menu {
-  color : #000000e3 !important;
+.mat-icon-admin,
+.mat-icon-menu {
+  color: #000000e3 !important;
   height: 20px;
   width: 20px;
 }
 #nav-menu {
-  color:black !important;
+  color: black !important;
 }
 .mat-button {
   cursor: pointer !important;
 }
 #nav-user-guide:hover {
   text-decoration: none;
+}
+
+.menu-item-icon-img {
+  height: 20px;
+  width: 20px;
+  margin-right: 16px;
 }

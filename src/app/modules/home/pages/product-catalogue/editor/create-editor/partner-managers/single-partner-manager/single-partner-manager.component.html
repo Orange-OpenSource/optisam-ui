@@ -1,0 +1,24 @@
+<ng-container [formGroup]="form">
+  <div class="partner-managers-item">
+    <mat-icon class="close-btn" (click)="deleteConfirmation()">close</mat-icon>
+    <div fxLayout="row" fxLayoutAlign="space-between">
+      <mat-form-field appearance="outline" class="partner-managers-section">
+        <mat-label>{{ "Name" | translate }}</mat-label>
+        <input matInput formControlName="name" />
+        <mat-error *ngIf="name?.hasError('maxlength')">{{
+          "ERROR.MAX_LENGTH"
+            | translate
+              : { requiredLength: name.errors.maxlength.requiredLength }
+        }}</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="partner-managers-section">
+        <mat-label>{{ "Email" | translate }} </mat-label>
+        <input matInput formControlName="email" />
+        <mat-error *ngIf="email?.hasError('email')"
+          >Not a valid email!</mat-error
+        >
+      </mat-form-field>
+    </div>
+  </div>
+</ng-container>

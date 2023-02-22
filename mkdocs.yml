@@ -2,7 +2,6 @@ site_name: OpTISAM IT Documentation v1.2.1
 site_url: https://optisam-ui-prod.kermit-noprod-b.itn.intraorange/optisam
 repo_url: https://gitlab.tech.orange/optisam/optisam-it/optisam-guide
 
-
 nav:
   - Introduction : 
     - What is OpTISAM : pages/presentation/whatIs.md
@@ -82,9 +81,9 @@ theme:
     - header.autohide
     - navigation.tabs
     - navigation.instant
-  logo : img/favicon.ico
+  logo: img/favicon.ico
   favicon: img/favicon.ico
-    
+
 markdown_extensions:
   - attr_list
 

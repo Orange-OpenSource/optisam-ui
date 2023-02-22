@@ -1,0 +1,48 @@
+<form [formGroup]="openSourceGroup">
+  <div class="section product-open-source" fxLayout="column" fxLayoutGap="10px">
+    <mat-checkbox
+      [disabled]="crud == crudRead"
+      formControlName="isOpenSource"
+      color="primary"
+      disableRipple
+      >{{ "PRODUCT_CATALOG.FORM_FIELD.OPEN_SOURCE" | translate }}</mat-checkbox
+    >
+    <div
+      class="openSourceTypeRadio"
+      *ngIf="showOpenSourceType"
+      fxLayout="row"
+      fxLayoutGap="5px"
+    >
+      <mat-radio-group
+        formControlName="openSourceType"
+        aria-label="Select an option"
+        color="primary"
+      >
+        <mat-radio-button [value]="community" disableRipple>{{
+          "PRODUCT_CATALOG.FORM_FIELD.COMMUNITY" | translate
+        }}</mat-radio-button>
+        <mat-radio-button [value]="commercial" disableRipple>{{
+          "PRODUCT_CATALOG.FORM_FIELD.COMMERCIAL" | translate
+        }}</mat-radio-button>
+        
+      </mat-radio-group>
+    </div>
+
+    <mat-form-field appearance="outline">
+      <mat-label>{{
+        "PRODUCT_CATALOG.FORM_FIELD.OPEN_SOURCE" | translate
+      }}</mat-label>
+      <input
+        *ngIf="crud == crudRead "
+        readonly
+        matInput
+        formControlName="openLicenses"
+      />
+      <mat-select *ngIf="crud != crudRead" formControlName="openLicenses">
+        <mat-option *ngFor="let os of openSourceList" [value]="os">
+          {{ os }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+</form>

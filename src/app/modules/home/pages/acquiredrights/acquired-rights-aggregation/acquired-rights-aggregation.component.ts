@@ -152,7 +152,7 @@ export class AcquiredRightsAggregationComponent
     metric: 'Metric',
     acquired_licenses_number: 'Acquired licenses',
     licenses_under_maintenance_number: 'Licenses under maintenance number',
-    swidtags: 'Number of Swidtags',
+    swidtags: 'Number of Products',
     aggregation_name: 'Aggregation Name',
     product_editor: 'Editor',
     metric_name: 'Metric(s)',
@@ -254,6 +254,7 @@ export class AcquiredRightsAggregationComponent
       .getAggregationAcquiredRights(query)
       .subscribe(
         (res: AggregatedAcquiredRights) => {
+          console.log(res)
           this.arAggregationData = new MatTableDataSource(res.aggregations);
           // this.arAggregationData.sort = this.sort;
           this.length = res.totalRecords;

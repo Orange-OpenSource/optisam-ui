@@ -599,7 +599,7 @@
   "Green : 0 products in default": "Green : 0 products in default",
   "Orange : between 10% and 30% of products in default": "Orange : between 10% and 30% of products in default",
   "Red : more than 30% of products are in default": "Red : more than 30% of products are in default",
-
+  "Cost": "Cost",
   "Number of different editors for all products deployed.": "Number of different editors for all products deployed.",
   "Number of different products deployed.": "Number of different products deployed.",
   "Cost of all licenses owned.": "Cost of all licenses owned.",
@@ -607,7 +607,7 @@
   "Distribution of the software licenses owned in categories (for example : Perpetual, SaaS and Subscribe)": "Distribution of the software licenses owned in categories (for example : Perpetual, SaaS and Subscribe)",
   "Distribution of the equipments in categories (for example : Partition, Server, Cluster, Vcenter)": "Distribution of the equipments in categories (for example : Partition, Server, Cluster, Vcenter)",
   "Number of products per editor.": "Number of products per editor.",
-
+  "COMPLETED": "Completed",
   "Number of products owned but not installed on any equipment.": "Number of products owned but not installed on any equipment.",
   "Number of products installed for which there is no license at all.": "Number of products installed for which there is no license at all.",
   "Percentage of failure for the last injection. Calculation : The number of lines inserted divided by the total number of read lines. The result is express in % of failures.": "Percentage of failure for the last injection. Calculation : The number of lines inserted divided by the total number of read lines. The result is express in % of failures.",
@@ -707,6 +707,13 @@
     "metric does not exist": "Metric does not exist!",
     "equipment type has children": "Equipment type has children."
   },
+  "PRODUCT_CATALOG_MANAGEMENT": "Product Catalog Management",
+
+  "SIDEBAR_NAV": {
+    "MENU": {
+      "PRODUCT_CATALOG": "Product Catalog"
+    }
+  },
 
   "LOGIN": {
     "LABEL": {
@@ -738,6 +745,8 @@
       "PRODUCT": "Product",
       "SELECT_PRODUCT": "Select Product",
       "SWIDTAGS_ALL": "All SWIDTags",
+      "SWIDVERSIONS": "Product Versions",
+      "SWIDVERSIONS_SELECTED": "Selected Product Versions",
       "SWIDTAGS_SELECTED": "Selected SWIDTags",
       "AGG_NAME": "Aggregation name",
       "NUMBER_OF_SWIDTAGS": "Number of SWIDTags",
@@ -759,7 +768,9 @@
   },
 
   "ERROR": {
-    "Not Found": "Not Found"
+    "Not Found": "Not Found",
+    "MAX_LENGTH": "Only {{requiredLength}} characters are allowed!",
+    "MIN_LENGTH": "Minimum {{requiredLength}} characters are required!"
   },
 
   "EQUIPMENT": {
@@ -767,5 +778,137 @@
       "NAME_BLANK": "*Name is required!",
       "NAME_OVER_LIMIT": "*Name cannot be more the {{limit}} characters!"
     }
-  }
+  },
+  "HEADER": {
+    "MENU_ITEM": {
+      "PRODUCT_CATALOG": "Product Catalog Management",
+      "ACQUIRED_RIGHTS": "Acquired Rights Management",
+      "AGGREGATION": "Aggregation Management",
+      "GROUP": "Group Management",
+      "INVENTORY": "Inventory Management",
+      "METRICS": "Metrics Management",
+      "OBSOLESCENCE": "Obsolescence Management",
+      "SCOPES": "Scopes Management",
+      "USERS": "Users Management",
+      "EQUIPMENTS": "Equipments Management",
+      "SIMULATIONS": "Simulators Management"
+    }
+  },
+
+  "PRODUCT_CATALOG": {
+    "TITLE": {
+      "MAIN": "Product Catalog Management",
+      "CREATE_PRODUCT": "Create Product",
+      "VERSIONS": "Versions",
+      "CONFIRMATION": "Confirmation",
+      "RECOMMENDATION": "Recommendation",
+      "SUPPORT_VENDOR": "Support Vendor",
+      "GENERAL_INFORMATION": "General Information",
+      "CONTRACT_TIPS": "Contract Tips",
+      "LOCATION": "Location",
+      "SOURCE": "Source",
+      "USEFUL_LINKS": "Useful Links",
+      "PRODUCT": "Product"
+    },
+    "PRODUCTS_LIST_COLUMNS": {
+      "NAME": "Name",
+      "UPDATED_ON": "Updated On",
+      "CLOSE_SOURCE": "Closed Source",
+      "EDITOR": "Editor",
+      "CONTRACT_TIPS": "Contract Tips",
+      "CREATED_ON": "Created On",
+      "EDITOR_ID": "Editor Id",
+      "GENERAL_INFORMATION": "General Information",
+      "LOCATION_TYPE": "Location",
+      "METRICS": "Metrics",
+      "OPEN_SOURCE": "Open Source",
+      "RECOMMENDATION": "Recommendation",
+      "SUPPORT_VENDORS": "Support Vendors",
+      "SWID_TAG": "Swid Tag",
+      "USEFUL_LINKS": "Useful Links",
+      "VERSION": "Version"
+    },
+    "SEARCH_BY_NAME": "Search by Name",
+    "BUTTON": {
+      "CREATE": "Create",
+      "CANCEL": "Cancel",
+      "ADD_VERSION": "Add Version",
+      "ADD_SUPPORT_VENDOR": "Add Support Vendor",
+      "ADD_CLOSE_SOURCE": "Add Closed Source",
+      "ADD_LINK": "Add Link",
+      "SELECT": "Select"
+    },
+    "FORM_FIELD": {
+      "PRODUCT_NAME": "Product Name",
+      "EDITOR": "Editor",
+      "METRIC": "Metric",
+      "VERSION_NAME": "Version Name",
+      "RECOMMENDATION": "Recommendation",
+      "END_OF_LIFE": "End of Life",
+      "END_OF_SUPPORT": "End of Support",
+      "SUPPORT_VENDOR_NAME": "Support Vendors Name",
+      "GENERAL_INFORMATION": "General Information",
+      "CONTRACT_TIPS": "Contract Tips",
+      "LOCATION": "Location",
+      "OPEN_PREMISE": "Open Premise",
+      "SAAS": "SaaS",
+      "OPEN_SOURCE": "Open Source",
+      "CLOSE_SOURCE": "Close Source",
+      "USEFUL_LINK": "Link",
+      "COMMUNITY": "Community",
+      "COMMERCIAL": "Commercial"
+    },
+    "MESSAGE": {
+      "CONFIRM_DELETION": "Are you sure you want to remove?",
+      "PRODUCT_ADDED": "Product created successfully."
+    },
+    "PLACE_HOLDER": {
+      "EDIT_PRODUCT": "Edit Product",
+      "DELETE_PRODUCT": "Delete Product"
+    }
+  },
+
+  "EDITOR": {
+    "EDITOR": "Editor",
+    "NO_OF_PRODUCTS": "No. of Products",
+    "LAST_AUDIT": "Past Audits",
+    "VENDOR": "Vendor",
+    "ACTION": "Action",
+    "ADD_EDITOR": "Add Editor",
+    "EDIT_PRODUCT": "Edit Product",
+    "DELETE_PRODUCT": "Delete Product",
+    "CREATE_EDITOR": "Create Editor",
+    "EDITOR_NAME": "Editor Name",
+    "GENERAL_INFO": "General Information",
+    "GENERAL_INFO_AREA": "General Information text Area",
+    "PARTNER_MANAGERS": "Partner Managers",
+    "ADD_MANAGERS": "Add Managers",
+    "AUDITS": "Audits",
+    "ENTITY": "Entity",
+    "AUDIT_TEXT": "Audit text",
+    "ADD_AUDITS": "Add Audit",
+    "VENDORS": "Vendors",
+    "ADD_VENDOR": "Add Vendor"
+  },
+
+  "PRODUCT": {
+    "TITLE": {
+      "SWIDTAG": "Swidtag",
+      "GENERAL_INFORMATION": "General Information"
+    },
+    "ERROR": {
+      "REQUIRED": {
+        "PRODUCT_NAME": "Product name is required!",
+        "EDITOR": "Editor is required!",
+        "VERSION_NAME": "Version name is required!"
+      }
+    },
+    "VERSION": {
+      "SWIDTAG": "Version Swidtag",
+      "NAME": "Version Name",
+      "EOL": "End Of Life",
+      "EOS": "End Of Support"
+    }
+  },
+  "EMPTY_MESSAGE": "The compliance can not be computed because no right has been defined for the product. Please contact your admin to define acquired rights for the product."
 }

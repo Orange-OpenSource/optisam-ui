@@ -1,0 +1,435 @@
+<app-loading-spinner *ngIf="_loading"></app-loading-spinner>
+<ng-container *ngIf="!_loading && productId && product">
+  <h5>{{ "Product Details" | translate }}</h5>
+  <div id="product-details" class="mat-elevation-z8">
+    <div class="prod-table" fxLayout="column">
+      <!-- Editor Name and Product Name -->
+      <div class="item-row" fxLayout="row">
+        <div class="item-column" fxFlex fxLayout="column">
+          <div
+            class="item-label-box"
+            fxLayout="row"
+            fxLayoutAlign="start center"
+            fxLayoutGap="5px"
+          >
+            <div class="item-icon" fxLayout="row" fxLayoutAlign="center">
+              <mat-icon>supervised_user_circle</mat-icon>
+            </div>
+            <div class="item-label" fxFlex>
+              {{ "Product Name" | translate }}
+            </div>
+          </div>
+          <div class="item-content" fxLayout="row">
+            {{ product?.name }}
+          </div>
+        </div>
+        <div class="item-column" fxFlex fxLayout="column">
+          <div
+            class="item-label-box"
+            fxLayout="row"
+            fxLayoutAlign="start center"
+            fxLayoutGap="5px"
+          >
+            <div class="item-icon" fxLayout="row" fxLayoutAlign="center">
+              <mat-icon>work</mat-icon>
+            </div>
+            <div class="item-label" fxFlex>{{ "Editor Name" | translate }}</div>
+          </div>
+          <div class="item-content" fxLayout="row">
+            {{ product?.editorName }}
+          </div>
+        </div>
+      </div>
+      <!-- SWID tags -->
+      <div class="item-row" fxLayout="row">
+        <div class="item-column" fxFlex fxLayout="column">
+          <div
+            class="item-label-box"
+            fxLayout="row"
+            fxLayoutAlign="start center"
+            fxLayoutGap="5px"
+          >
+            <div class="item-icon" fxLayout="row" fxLayoutAlign="center">
+              <mat-icon>loyalty</mat-icon>
+            </div>
+            <div class="item-label" fxFlex>
+              {{ "PRODUCT.TITLE.SWIDTAG" | translate }}
+            </div>
+          </div>
+          <div class="item-content" fxLayout="row">
+            {{ product?.productSwidTag ? product.productSwidTag : "" }}
+          </div>
+        </div>
+      </div>
+      <!-- General Information -->
+      <div class="item-row" fxLayout="row">
+        <div class="item-column" fxFlex fxLayout="column">
+          <div
+            class="item-label-box"
+            fxLayout="row"
+            fxLayoutAlign="start center"
+            fxLayoutGap="5px"
+          >
+            <div class="item-icon" fxLayout="row" fxLayoutAlign="center">
+              <mat-icon>info</mat-icon>
+            </div>
+            <div class="item-label" fxFlex>
+              {{ "PRODUCT.TITLE.GENERAL_INFORMATION" | translate }}
+            </div>
+          </div>
+          <div class="item-content" fxLayout="row">
+            {{ product?.genearlInformation ? product.genearlInformation : "" }}
+          </div>
+        </div>
+      </div>
+      <!-- Contract Tips -->
+      <div class="item-row" fxLayout="row">
+        <div class="item-column" fxFlex fxLayout="column">
+          <div
+            class="item-label-box"
+            fxLayout="row"
+            fxLayoutAlign="start center"
+            fxLayoutGap="5px"
+          >
+            <div class="item-icon" fxLayout="row" fxLayoutAlign="center">
+              <mat-icon>poll</mat-icon>
+            </div>
+            <div class="item-label" fxFlex>
+              {{ "Contract Tips" | translate }}
+            </div>
+          </div>
+          <div class="item-content" fxLayout="row">
+            {{ product?.contracttTips ? product.contracttTips : "" }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Recommendation -->
+      <div fxLayout="row" class="item-row">
+        <div class="item-column" fxFlex fxLayout="column">
+          <div
+            class="item-label-box"
+            fxLayout="row"
+            fxLayoutAlign="start center"
+            fxLayoutGap="5px"
+          >
+            <div class="item-icon" fxLayout="row" fxLayoutAlign="center">
+              <mat-icon>thumb_up</mat-icon>
+            </div>
+            <div class="item-label" fxFlex>
+              {{ "Recommendation" | translate }}
+            </div>
+          </div>
+          <div class="item-content" fxLayout="row">
+            {{ product?.recommendation ? product.recommendation : "" }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Metric -->
+      <div fxLayout="row" class="item-row">
+        <div class="item-column" fxFlex fxLayout="column">
+          <div
+            class="item-label-box"
+            fxLayout="row"
+            fxLayoutAlign="start center"
+            fxLayoutGap="5px"
+          >
+            <div class="item-icon" fxLayout="row" fxLayoutAlign="center">
+              <mat-icon>brightness_low</mat-icon>
+            </div>
+            <div class="item-label" fxFlex>
+              {{ "Metrics" | translate }}
+            </div>
+          </div>
+          <div
+            class="item-content"
+            fxLayout="row wrap"
+            fxLayoutAlign="start center"
+            fxLayoutGap="8px"
+            *ngIf="product?.metrics?.length"
+          >
+            <ng-container *ngFor="let metrics of product?.metrics">
+              <ng-container *ngIf="metrics">
+                <span
+                  class="scope-item"
+                  *ngFor="let metric of metrics?.split(',')"
+                  >{{ metric }}</span
+                >
+              </ng-container>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+
+      <!-- Vendor -->
+      <div fxLayout="row" class="item-row">
+        <div class="item-column" fxFlex fxLayout="column">
+          <div
+            class="item-label-box"
+            fxLayout="row"
+            fxLayoutAlign="start center"
+            fxLayoutGap="5px"
+          >
+            <div class="item-icon" fxLayout="row" fxLayoutAlign="center">
+              <mat-icon>store</mat-icon>
+            </div>
+            <div class="item-label" fxFlex>
+              {{ "Vendors" | translate }}
+            </div>
+          </div>
+          <div
+            class="item-content"
+            fxLayout="row wrap"
+            fxLayoutAlign="start center"
+            fxLayoutGap="8px"
+            *ngIf="product?.supportVendors?.length"
+          >
+            <ng-container *ngFor="let vendors of product?.supportVendors">
+              <ng-container *ngIf="vendors">
+                <span
+                  *ngFor="let vendor of vendors?.split(',')"
+                  class="vendor-item"
+                  >{{ vendor }}</span
+                >
+              </ng-container>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+
+      <!-- Location -->
+      <div fxLayout="row" class="item-row">
+        <div class="item-column" fxFlex fxLayout="column">
+          <div
+            class="item-label-box"
+            fxLayout="row"
+            fxLayoutAlign="start center"
+            fxLayoutGap="5px"
+          >
+            <div class="item-icon" fxLayout="row" fxLayoutAlign="center">
+              <mat-icon>my_location</mat-icon>
+            </div>
+            <div class="item-label" fxFlex>
+              {{ "Location" | translate }}
+            </div>
+          </div>
+          <div class="item-content" fxLayout="row">
+            {{ product?.locationType ? product.locationType : "" }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Licensing -->
+      <div class="item-row" fxLayout="row">
+        <div class="item-column" fxFlex fxLayout="column">
+          <div
+            class="item-label-box"
+            fxLayout="row"
+            fxLayoutAlign="start center"
+            fxLayoutGap="5px"
+          >
+            <div class="item-icon" fxLayout="row" fxLayoutAlign="center">
+              <mat-icon>flag</mat-icon>
+            </div>
+            <div class="item-label" fxFlex>
+              {{ "Licensing" | translate }}
+            </div>
+          </div>
+          <div class="item-content normal-font" fxLayout="column">
+            <!-- Open source value -->
+            <div fxLayout="row" fxFlex>
+              <div class="item-content normal-font" fxFlex>
+                <div
+                  class="item-label-box"
+                  fxLayout="row"
+                  fxLayoutAlign="start center"
+                  fxLayoutGap="5px"
+                >
+                  <div class="item-icon" fxLayout="row" fxLayoutAlign="center">
+                    <mat-icon
+                      class="license-checkbox"
+                      [ngClass]="{ checked: product?.openSource?.isOpenSource }"
+                      >{{
+                        product?.openSource?.isOpenSource
+                          ? "check_box"
+                          : "check_box_outline_blank"
+                      }}</mat-icon
+                    >
+                  </div>
+                  <div class="item-label" fxFlex>
+                    {{ "Open Source" | translate }}
+                  </div>
+                </div>
+              </div>
+              <div
+                *ngIf="product?.openSource?.openLicences"
+                class="item-content normal-font"
+                fxFlex
+              >
+                {{ product?.openSource.openLicences }}
+              </div>
+            </div>
+            <!-- Close source value -->
+            <div fxLayout="row" fxFlex>
+              <div class="item-content normal-font" fxFlex>
+                <div
+                  class="item-label-box"
+                  fxLayout="row"
+                  fxLayoutAlign="start center"
+                  fxLayoutGap="5px"
+                >
+                  <div class="item-icon" fxLayout="row" fxLayoutAlign="center">
+                    <mat-icon
+                      class="license-checkbox"
+                      [ngClass]="{
+                        checked: product?.closeSource?.isCloseSource
+                      }"
+                      >{{
+                        product?.closeSource?.isCloseSource
+                          ? "check_box"
+                          : "check_box_outline_blank"
+                      }}</mat-icon
+                    >
+                  </div>
+                  <div class="item-label" fxFlex>
+                    {{ "Closed Source" | translate }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Useful links -->
+      <div fxLayout="row" class="item-row">
+        <div class="item-column" fxFlex fxLayout="column">
+          <div
+            class="item-label-box"
+            fxLayout="row"
+            fxLayoutAlign="start center"
+            fxLayoutGap="5px"
+          >
+            <div class="item-icon" fxLayout="row" fxLayoutAlign="center">
+              <mat-icon>language</mat-icon>
+            </div>
+            <div class="item-label" fxFlex>
+              {{ "Useful Links" | translate }}
+            </div>
+          </div>
+          <div
+            class="item-content"
+            fxLayout="column"
+            *ngIf="product?.usefulLinks?.length"
+          >
+            <a
+              target="_blank"
+              href="{{ link | makeLink }}"
+              *ngFor="let link of product?.usefulLinks"
+              >{{ link }}</a
+            >
+          </div>
+        </div>
+      </div>
+      <!-- Scopes -->
+      <div fxLayout="row" class="item-row">
+        <div class="item-column" fxFlex fxLayout="column">
+          <div
+            class="item-label-box"
+            fxLayout="row"
+            fxLayoutAlign="start center"
+            fxLayoutGap="5px"
+          >
+            <div class="item-icon" fxLayout="row" fxLayoutAlign="center">
+              <mat-icon>person_pin_circle</mat-icon>
+            </div>
+            <div class="item-label" fxFlex>
+              {{ "Scopes" | translate }}
+            </div>
+          </div>
+          <div
+            class="item-content"
+            fxLayout="row wrap"
+            fxLayoutAlign="start center"
+            fxLayoutGap="8px"
+            *ngIf="product?.scopes?.length"
+          >
+            <ng-container *ngFor="let scope of product?.scopes">
+              <span class="scope-item">{{ scope }}</span>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+
+      <!-- versions -->
+      <div fxLayout="row" class="item-row">
+        <div class="item-column" fxFlex fxLayout="column">
+          <div
+            class="item-label-box"
+            fxLayout="row"
+            fxLayoutAlign="start center"
+            fxLayoutGap="5px"
+          >
+            <div class="item-icon" fxLayout="row" fxLayoutAlign="center">
+              <mat-icon>drag_indicator</mat-icon>
+            </div>
+            <div class="item-label" fxFlex>
+              {{ "Versions" | translate }}
+            </div>
+          </div>
+
+          <!-- versions table -->
+          <div class="version-table" fxLayout="row">
+            <mat-table [dataSource]="product?.version">
+              <ng-container *ngFor="let header of versionHeaders">
+                <div [ngSwitch]="header.key">
+                  <div *ngSwitchCase="'endOfLife'">
+                    <ng-container matColumnDef="{{ header.key }}">
+                      <mat-header-cell *matHeaderCellDef>
+                        {{ header.translation | translate }}
+                      </mat-header-cell>
+                      <mat-cell *matCellDef="let element">
+                        {{ element[header.key] | date : "yyyy-MM-dd" }}
+                      </mat-cell>
+                    </ng-container>
+                  </div>
+                  <div *ngSwitchCase="'endOfSupport'">
+                    <ng-container matColumnDef="{{ header.key }}">
+                      <mat-header-cell *matHeaderCellDef>
+                        {{ header.translation | translate }}
+                      </mat-header-cell>
+                      <mat-cell *matCellDef="let element">
+                        {{ element[header.key] | date : "yyyy-MM-dd" }}
+                      </mat-cell>
+                    </ng-container>
+                  </div>
+                  <div *ngSwitchDefault>
+                    <ng-container matColumnDef="{{ header.key }}">
+                      <mat-header-cell *matHeaderCellDef>
+                        {{ header.translation | translate }}
+                      </mat-header-cell>
+                      <mat-cell *matCellDef="let element">
+                        {{ element[header.key] }}
+                      </mat-cell>
+                    </ng-container>
+                  </div>
+                </div>
+              </ng-container>
+
+              <mat-header-row
+                *matHeaderRowDef="versionTableHeaders"
+              ></mat-header-row>
+              <mat-row
+                *matRowDef="let row; columns: versionTableHeaders"
+              ></mat-row>
+            </mat-table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-container>
+<div *ngIf="!productId && !_loading && !product" class="no-data">
+  {{ "No data available" | translate }}
+</div>

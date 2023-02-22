@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import * as Chart from 'chart.js';
 import 'chartjs-plugin-labels';
@@ -11,6 +11,7 @@ import { ProductService } from 'src/app/core/services/product.service';
 import { SharedService } from 'src/app/shared/shared.service';
 import { MatDialog } from '@angular/material/dialog';
 import { FloorPipe } from '../acquiredrights/pipes/floor.pipe';
+import { MatSelect } from '@angular/material/select';
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -91,6 +92,11 @@ export class DashboardComponent implements OnInit {
   productsNotDeployedInfo: any;
   productsNotAcquiredInfo: any;
   hideStatus: boolean = false;
+  filteredEditor: string[] = [];
+  searchLoading: boolean = false;
+  delayLoader: any = null;
+  searchText: string = '';
+  loadingEditor: boolean = false;
 
   constructor(
     private productService: ProductService,
@@ -98,7 +104,8 @@ export class DashboardComponent implements OnInit {
     private sharedService: SharedService,
     private router: Router,
     private dialog: MatDialog,
-    private equipmentService: EquipmentsService
+    private equipmentService: EquipmentsService,
+    private cd: ChangeDetectorRef
   ) {
     this.sharedService._emitScopeChange
       .pipe(takeUntil(this.unsubscribeScope.asObservable()))
@@ -853,19 +860,61 @@ export class DashboardComponent implements OnInit {
 
   getEditors() {
     const query = '?scope=' + this.currentScope;
+    this.loadingEditor = true;
     this.productService.getEditorList(query).subscribe(
       (response: any) => {
+        this.loadingEditor = false;
         this.editorsList = response.editor || [];
         this.editorsList.sort();
-        this.selectedEditor = this.editorsList[0];
+        this.filteredEditor = [...this.editorsList];
+        this.selectedEditor = this.filteredEditor[0];
         this.editorSelected();
       },
       (error) => {
+        this.loadingEditor = false;
         this.editorSelected();
         console.log('Error fetching editors');
       }
     );
   }
+  searchEditor(e: Event): void {
+    e.stopImmediatePropagation();
+    e.preventDefault();
+  }
+
+  searchKeydown(e: Event): void {
+    e.stopPropagation();
+  }
+
+  searchInputEvent(e: KeyboardEvent): void {
+    this.searchLoading = true;
+    if (this.delayLoader !== null) clearTimeout(this.delayLoader);
+    this.delayLoader = setTimeout(() => {
+      this.searchText = (e.target as HTMLInputElement).value
+        .trim()
+        .toLowerCase();
+      if (this.searchText == '') {
+        this.filteredEditor = [...this.editorsList];
+        this.searchLoading = false;
+        this.cd.detectChanges();
+        return;
+      }
+      this.filteredEditor = [
+        ...this.editorsList.filter((editor: string) =>
+          editor.toLowerCase().includes(this.searchText)
+        ),
+      ];
+      this.delayLoader = null;
+      this.searchLoading = false;
+      this.cd.detectChanges();
+    }, 500);
+  }
+
+  searchInputOpenChange(change: boolean, target: MatSelect): void {
+    this.searchText = '';
+    // this.searchInput. as HTMLInputElement));
+  }
+
   editorSelected() {
     this.refreshCanvasOdFV();
     this.refreshCanvasOdNL();

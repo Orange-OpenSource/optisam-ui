@@ -12,9 +12,9 @@
       matTooltipClass="search-label-tooltip"
       #labelHTML
       matTooltip="{{
-        label.type === 'text'
-          ? filterFields[label.key]
-          : (filterFields[label.key] | date: 'M/d/y')
+        label.type === 'date'
+          ? (filterFields[label.key] | date : 'M/d/y')
+          : filterFields[label.key]
       }}"
     >
       <span *ngIf="model.translate" class="text">{{

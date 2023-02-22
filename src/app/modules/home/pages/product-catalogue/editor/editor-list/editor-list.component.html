@@ -1,0 +1,217 @@
+<mat-card>
+  <div class="container-fluid page-content-header">
+    <app-header-product-catalog
+      [currentTab]="currentTab"
+    ></app-header-product-catalog>
+  </div>
+  <mat-card-content>
+    <div class="action-bar" fxLayout="row" fxLayoutAlign="end end">
+      <button
+        id="createProdBtn"
+        mat-raised-button
+        class="btn-two"
+        (click)="createNewProducts()"
+      >
+        <mat-icon>add</mat-icon>
+        {{ "Create New" }}
+      </button>
+    </div>
+
+    <app-advance-search
+      [advanceSearchModel]="advanceSearchModel"
+      (advFilterEvent)="advanceSearchFilter($event)"
+    ></app-advance-search>
+    <div id="products" class="mat-elevation-z8">
+      <mat-table
+        matSort
+        (matSortChange)="sortData($event)"
+        #listTable
+        [dataSource]="dataSource"
+        class="mat-elevation-z8"
+      >
+        <ng-container matColumnDef="editor">
+          <mat-header-cell *matHeaderCellDef mat-sort-header="name" disableClear
+            >Editor</mat-header-cell
+          >
+          <mat-cell *matCellDef="let element">
+            <a class="link" (click)="openDetails(element)">
+              {{ element.name }}
+            </a>
+          </mat-cell>
+        </ng-container>
+
+        <!-- Name Column -->
+        <ng-container matColumnDef="ProductManager">
+          <mat-header-cell *matHeaderCellDef>{{
+            "EDITOR.PARTNER_MANAGERS" | translate
+          }}</mat-header-cell>
+          <mat-cell *matCellDef="let element">
+            {{ element.partner_managers | partnerManagerName }}
+          </mat-cell>
+        </ng-container>
+
+        <!-- No Of Products Column -->
+        <ng-container matColumnDef="noOfProducts">
+          <mat-header-cell
+            *matHeaderCellDef
+            mat-sort-header="productsCount"
+            disableClear
+            >{{ "EDITOR.NO_OF_PRODUCTS" | translate }}</mat-header-cell
+          >
+          <mat-cell *matCellDef="let element">
+            <a
+              [ngClass]="{ link: !!element?.product_count }"
+              (click)="openProductComponent(element)"
+            >
+              {{ element.product_count }}
+            </a>
+          </mat-cell>
+        </ng-container>
+
+        <!-- Audits Column -->
+        <ng-container matColumnDef="Audit">
+          <mat-header-cell *matHeaderCellDef>{{
+            "EDITOR.LAST_AUDIT" | translate
+          }}</mat-header-cell>
+          <mat-cell *matCellDef="let element">
+            <span
+              *ngIf="
+                element.audits?.length &&
+                element.audits !== null &&
+                element.audits[element.audits?.length - 1].date !==
+                  '0001-01-01T00:00:00Z' &&
+                element.audits[element.audits.length - 1].date !==
+                  '1970-01-01T00:00:00Z'
+              "
+              >{{
+                element.audits[element.audits?.length - 1].date | date : "yyyy"
+              }}</span
+            >
+          </mat-cell>
+        </ng-container>
+
+        <!--Vendor Column-->
+        <ng-container matColumnDef="vendor">
+          <mat-header-cell *matHeaderCellDef>{{
+            "EDITOR.VENDOR" | translate
+          }}</mat-header-cell>
+          <mat-cell *matCellDef="let element">
+            {{ element.vendors | getVendors }}
+          </mat-cell>
+        </ng-container>
+
+        <!--Action Column-->
+        <ng-container matColumnDef="Action">
+          <mat-header-cell *matHeaderCellDef>{{
+            "EDITOR.ACTION" | translate
+          }}</mat-header-cell>
+          <mat-cell *matCellDef="let element; let i = index">
+            <span
+              id="editBtn_{{ i }}"
+              class="action-icon"
+              matTooltip="{{ 'EDITOR.EDIT_PRODUCT' | translate }}"
+              (click)="editEditor(element.id)"
+            >
+              <mat-icon>edit</mat-icon>
+            </span>
+            <span
+              id="deleteBtn_{{ i }}"
+              class="action-icon"
+              matTooltip="{{ 'EDITOR.DELETE_PRODUCT' | translate }}"
+              (click)="
+                deleteEditorsConfirmation(element, deleteConfirmationDialog)
+              "
+            >
+              <mat-icon>delete</mat-icon>
+            </span>
+          </mat-cell>
+        </ng-container>
+
+        <mat-header-row
+          *matHeaderRowDef="displayedColumns; sticky: true"
+        ></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+      </mat-table>
+      <app-loading-spinner *ngIf="_loading"></app-loading-spinner>
+      <div
+        class="no-data"
+        *ngIf="
+          !_loading &&
+          dataSource?.filteredData &&
+          dataSource?.filteredData?.length == 0
+        "
+      >
+        {{ "No data available" | translate }}
+      </div>
+      <mat-paginator
+        [length]="length"
+        [pageSize]="pageSize"
+        [pageSizeOptions]="pageSizeOptions"
+        (page)="pageEvent = getPaginatorData($event)"
+        showFirstLastButtons
+      >
+      </mat-paginator>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<ng-template #successDialog>
+  <h1 mat-dialog-title>Success !</h1>
+  <mat-dialog-content>
+    <p>{{ "Editor Deleted Successfully" | translate }}</p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="center">
+    <button
+      mat-button
+      [mat-dialog-close]="true"
+      class="btn-two"
+      cdkFocusInitial
+    >
+      {{ "OK" | translate }}
+    </button>
+  </mat-dialog-actions>
+</ng-template>
+
+<ng-template #errorDialog>
+  <mat-dialog-content>
+    <p>{{ "DELETE_AGGR_ERROR" | translate }}</p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="center">
+    <button
+      mat-button
+      [mat-dialog-close]="true"
+      class="btn-two"
+      cdkFocusInitial
+    >
+      {{ "OK" | translate }}
+    </button>
+  </mat-dialog-actions>
+</ng-template>
+
+<ng-template #deleteConfirmationDialog>
+  <h2 mat-dialog-title>{{ "Confirmation" | translate }}</h2>
+  <mat-dialog-content>
+    <p>
+      <strong> {{ "Are you Sure want to delete Editor" | translate }}? </strong>
+    </p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="center">
+    <button
+      mat-button
+      [mat-dialog-close]="true"
+      class="btn-two"
+      (click)="deleteEditor(successDialog, errorDialog)"
+      cdkFocusInitial
+    >
+      {{ "OK" | translate }}</button
+    >&nbsp;
+    <button
+      mat-button
+      [mat-dialog-close]="true"
+      class="btn-three"
+      cdkFocusInitial
+    >
+      {{ "Cancel" | translate }}
+    </button>
+  </mat-dialog-actions>
+</ng-template>

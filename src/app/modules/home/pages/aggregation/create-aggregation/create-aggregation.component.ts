@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import {
   FormGroup,
   FormBuilder,
@@ -14,9 +14,12 @@ import { ProductService } from 'src/app/core/services/product.service';
 import { MetricService } from 'src/app/core/services/metric.service';
 import {
   CreateAggregationPlayload,
+  EditorName,
   ErrorResponse,
   ProductDetails,
   SuccessResponse,
+  EditorsListParams,
+  EditorsListResponse,
 } from '@core/modals';
 
 function validateAggregationName(c: FormControl) {
@@ -36,15 +39,20 @@ function validateAggregationName(c: FormControl) {
 export class CreateAggregationComponent implements OnInit, OnDestroy {
   createForm: FormGroup;
   productList: ProductDetails[] = [];
-  editorList: Editor[] = [];
+  editorList: string[] = [];
   metricesList: Metrics[] = [];
-  swidList: ProductDetails[] = [];
+  swidList: any = [];
+  swidVersions: any = [];
   selectedSwidList: ProductDetails[] = [];
   selectedScope: any = '';
   errorMessage: string;
   loadingSubscription: Subscription;
   HTTPActivity: Boolean;
   acqrights_products: any[] = [];
+  searchLoading: boolean = false;
+  delayLoader: any = null;
+  searchText: string = '';
+  filteredEditor: string[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -52,7 +60,8 @@ export class CreateAggregationComponent implements OnInit, OnDestroy {
     protected metricService: MetricService,
     private router: Router,
     private sharedService: SharedService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private cd: ChangeDetectorRef
   ) {
     this.loadingSubscription = this.sharedService
       .httpLoading()
@@ -87,12 +96,15 @@ export class CreateAggregationComponent implements OnInit, OnDestroy {
 
   // Get All Editors
   getEditorsList() {
-    this.productService.getEditorListAggr(this.selectedScope).subscribe(
-      (response: any) => {
-        this.editorList = response.editor || [];
-        this.editorList.sort();
+    const params: EditorsListParams = {
+      scopes: this.selectedScope,
+    };
+    this.productService.getEditorsList(params).subscribe(
+      ({ editors }: EditorsListResponse) => {
+        this.editorList = (editors || []).sort();
+        this.filteredEditor = this.editorList;
       },
-      (error) => {
+      (error: ErrorResponse) => {
         console.log('Error fetching editors');
       }
     );
@@ -121,6 +133,7 @@ export class CreateAggregationComponent implements OnInit, OnDestroy {
     this.productService.getProductListAggr(query).subscribe(
       (response: any) => {
         this.acqrights_products = response.aggrights_products;
+
         this.productList = this.acqrights_products.filter((v, i, s) => {
           return s.findIndex((pr) => pr.product_name === v.product_name) === i;
         });
@@ -163,6 +176,15 @@ export class CreateAggregationComponent implements OnInit, OnDestroy {
               this.createForm.value.product_names.includes(ap.product_name) &&
               !selectedSwidtags.includes(ap.swidtag)
           ) || [];
+        this.swidList = this.swidList?.map((x) => {
+          return {
+            ...x,
+            swidVersion: x.product_name + ' ' + x.product_version,
+          };
+        });
+
+        console.log(this.swidList);
+
         this.selectedSwidList = this.selectedSwidList.filter((s) =>
           (this.createForm.value.product_names || []).includes(s.product_name)
         );
@@ -201,7 +223,9 @@ export class CreateAggregationComponent implements OnInit, OnDestroy {
   }
 
   addSwidTag(swid: any, index: number) {
+    console.log(swid);
     this.swidList.splice(index, 1);
+    console.log(this.swidList);
     this.selectedSwidList.push(swid);
   }
 
@@ -233,6 +257,37 @@ export class CreateAggregationComponent implements OnInit, OnDestroy {
       this.selectedSwidList = [...this.selectedSwidList, ...this.swidList];
       this.swidList = [];
     }
+  }
+
+  searchEditor(e: Event): void {
+    e.stopImmediatePropagation();
+    e.preventDefault();
+  }
+
+  searchKeydown(e: Event): void {
+    e.stopPropagation();
+  }
+
+  searchInputEvent(e: KeyboardEvent): void {
+    this.searchLoading = true;
+    if (this.delayLoader !== null) clearTimeout(this.delayLoader);
+    this.delayLoader = setTimeout(() => {
+      this.searchText = (e.target as HTMLInputElement).value
+        .trim()
+        .toLowerCase();
+      if (this.searchText == '') {
+        this.filteredEditor = this.editorList;
+        this.searchLoading = false;
+        this.cd.detectChanges();
+        return;
+      }
+      this.filteredEditor = this.editorList.filter((editor: string) =>
+        editor.toLowerCase().includes(this.searchText.toLowerCase())
+      );
+      this.delayLoader = null;
+      this.searchLoading = false;
+      this.cd.detectChanges();
+    }, 500);
   }
 
   ngOnDestroy() {

@@ -7,12 +7,13 @@
   overflow: hidden;
   white-space: nowrap;
 }
-.mat-column-swidtags{
+.mat-column-swidtags {
   min-width: 160px;
 }
 .mat-cell {
   display: unset !important;
   padding-top: 10px;
+  word-break: break-word;
 }
 .mat-table {
   overflow: auto;
@@ -62,4 +63,9 @@
 
 .action-bar {
   padding-bottom: 10px;
+}
+
+::ng-deep .unset-max-width {
+  max-width: unset !important;
+  white-space: pre-wrap !important;
 }

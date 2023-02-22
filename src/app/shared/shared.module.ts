@@ -15,6 +15,9 @@ import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { PERFECT_SCROLLBAR_CONFIG } from 'ngx-perfect-scrollbar';
 import { FloorPipe } from '@home/pages/acquiredrights/pipes/floor.pipe';
 import { PerfectScrollbarConfigInterface } from 'ngx-perfect-scrollbar';
+import { SuccessDialogComponent } from './success-dialog/success-dialog.component';
+import { ErrorDialogComponent } from './error-dialog/error-dialog.component';
+import { AuditLastYearOnlyPipe } from './common-pipes/audit-last-year-only.pipe';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true,
@@ -29,6 +32,9 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     FormatCostPipe,
     FormatShortdatePipe,
     FloorPipe,
+    SuccessDialogComponent,
+    ErrorDialogComponent,
+    AuditLastYearOnlyPipe,
   ],
   exports: [
     FilterItemDirective,
@@ -39,6 +45,12 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     FloorPipe,
     FlexLayoutModule,
     PerfectScrollbarModule,
+    TranslateModule,
+    ReactiveFormsModule,
+    CustomMaterialModule,
+    SuccessDialogComponent,
+    ErrorDialogComponent,
+    AuditLastYearOnlyPipe,
   ],
   imports: [
     CommonModule,

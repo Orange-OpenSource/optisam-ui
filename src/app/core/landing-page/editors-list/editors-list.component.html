@@ -1,0 +1,78 @@
+<div>
+  <app-advance-search
+    [advanceSearchModel]="advanceSearchModel"
+    (advFilterEvent)="advanceSearchFilter($event)"
+  >
+  </app-advance-search>
+</div>
+
+<ng-container>
+  <div id="editors" class="mat-elevation-z8">
+    <mat-table
+      matSort
+      #listTable
+      (matSortChange)="sortData($event)"
+      [dataSource]="dataSource"
+      class="mat-elevation-z8"
+    >
+      <ng-container matColumnDef="editor">
+        <mat-header-cell *matHeaderCellDef mat-sort-header="name" disableClear
+          >Editor</mat-header-cell
+        >
+        <mat-cell *matCellDef="let element">
+          <a class="link" (click)="openDetails(element.id)">
+            {{ element.name }}
+          </a>
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="NoofProducts">
+        <mat-header-cell
+          *matHeaderCellDef
+          mat-sort-header="productsCount"
+          disableClear
+        >
+          {{ "No of Products" | translate }}
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          <a
+            [ngClass]="{ link: !!element.product_count }"
+            (click)="!!element.product_count && goToEditorProducts(element)"
+          >
+            {{ element.product_count }}
+          </a>
+        </mat-cell>
+      </ng-container>
+      <mat-header-row
+        *matHeaderRowDef="displayedColumns; sticky: true"
+      ></mat-header-row>
+      <mat-row
+        *matRowDef="let row; columns: displayedColumns"
+        [ngClass]="{ active: currentId == row.id }"
+      ></mat-row>
+    </mat-table>
+
+    <div class="no-data" *ngIf="_loading">
+      <app-loading-spinner></app-loading-spinner>
+    </div>
+
+    <div
+      class="no-data"
+      *ngIf="
+        !_loading &&
+        dataSource?.filteredData &&
+        dataSource?.filteredData?.length == 0
+      "
+    >
+      {{ "No data available" | translate }}
+    </div>
+
+    <mat-paginator
+      [length]="length"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="pageSizeOptions"
+      (page)="pageEvent = getPaginatorData($event)"
+      showFirstLastButtons
+    >
+    </mat-paginator>
+  </div>
+</ng-container>

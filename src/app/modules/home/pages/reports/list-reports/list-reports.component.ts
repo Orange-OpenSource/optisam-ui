@@ -102,13 +102,21 @@ export class ListReportsComponent implements OnInit {
     this.reportService.getReportById(this.selectedReportID).subscribe(
       (res: ReportByIdResponse) => {
         let decodedReportData: any = atob(res.report_data);
+        let editor: string = '';
+        const excludeData = ['swidtags', 'editor', 'swidtag'];
+        const dataInJSONFormat = JSON.parse(decodedReportData).map((d) => {
+          if (d?.editor) editor = d.editor;
+          for (const exclude of excludeData)
+            if (exclude in d) delete d[exclude];
+          return d;
+        });
         const metaData: ReportMetaData = {
           reportType: res.report_type,
           scope: res.scope,
+          editor,
           createdOn: format(new Date(res.created_on), 'yyyy-MM-dd'),
           createdBy: res.created_by,
         };
-        const dataInJSONFormat = JSON.parse(decodedReportData);
         let reportContents = [];
         reportContents = dataInJSONFormat;
         var headerList = [];

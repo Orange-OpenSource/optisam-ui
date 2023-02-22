@@ -30,7 +30,7 @@ export class AdvanceSearchComponent
   @ViewChild('advanceSearch', { static: false })
   advanceSeachElement: ElementRef;
   @Input('advanceSearchModel') model: AdvanceSearchModel;
-  @Input('existingFilterFields') existingFilterFields: any;
+  @Input('existingFilterFields') existingFilterFields: any = null;
   @Input() hideAdvanceToggle: boolean;
   @Output() advFilterEvent = new EventEmitter();
   filterFields: any = {};
@@ -45,20 +45,20 @@ export class AdvanceSearchComponent
   constructor(
     public sharedService: SharedService,
     private cd: ChangeDetectorRef
-  ) {
+  ) {}
+
+  ngOnInit() {
     this.searchSubscription = this.sharedService
       .clearSearch()
       .subscribe((data) => {
-        this.filterFields = {};
+        this.filterFields = { ...this.existingFilterFields };
         this.getlabels();
       });
-  }
-
-  ngOnInit() {
     this.initForm();
   }
 
   ngAfterViewChecked() {
+    // console.log(this.model)
     this.model.other.map((model) => {
       model.type = model?.type || 'text';
       return model;
@@ -69,11 +69,13 @@ export class AdvanceSearchComponent
   }
 
   initForm() {
-    this.filterFields[this.model.primary] = this.existingFilterFields
+    this.filterFields[this.model.primary] = this.existingFilterFields?.[
+      this.model.primary
+    ]
       ? this.existingFilterFields[this.model.primary]
       : this.filterFields[this.model.primary];
     this.model.other.forEach((element) => {
-      this.filterFields[element.key] = this.existingFilterFields
+      this.filterFields[element.key] = this.existingFilterFields?.[element.key]
         ? this.existingFilterFields[element.key]
         : this.filterFields[element.key];
     });

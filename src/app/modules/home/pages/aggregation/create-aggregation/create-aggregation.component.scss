@@ -6,7 +6,6 @@
 }
 .swidtabs {
   display: flex;
-  align-items: center;
   .left .body .action-checkbox {
     padding-left: 3px;
   }
@@ -15,6 +14,8 @@
 .right {
   width: 46%;
   border: 1px solid;
+  height: 206px;
+  overflow-y: auto;
   border-radius: 5px 5px 0px 0px;
 }
 .transtitle {
@@ -36,8 +37,8 @@
 }
 .right .body,
 .left .body {
-  height: 200px;
-  overflow-y: auto;
+  height: 165px;
+  // overflow-y: auto;
 }
 .trans-icon {
   width: 8%;
@@ -89,4 +90,19 @@ span {
 ::ng-deep .mat-primary .mat-pseudo-checkbox-checked,
 ::ng-deep .mat-primary .mat-pseudo-checkbox-indeterminate {
   background: #008afc;
+}
+
+::ng-deep .aggrEditor {
+  position: relative;
+  mat-option:first-child {
+    position: sticky;
+    top: 0;
+    border: 1px solid #d4d4d4;
+    z-index: 9999999;
+    background: #fff;
+    border-radius: 5px;
+    &:hover {
+      background: #fff;
+    }
+  }
 }

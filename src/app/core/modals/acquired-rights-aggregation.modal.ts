@@ -1,3 +1,4 @@
+import { ProductVersionMapping } from './product-catalog.modal';
 export interface AcquiredRightsAggregation {
   aggregations: Aggregation[];
 }
@@ -143,4 +144,5 @@ export interface AggregationSingle {
   product_names: string[];
   swidtags: string[];
   scope: string;
+  mapping: ProductVersionMapping[];
 }

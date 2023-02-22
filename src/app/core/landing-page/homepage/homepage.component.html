@@ -1,0 +1,171 @@
+<div *ngIf="!loginStatus">
+  <mat-toolbar color="ThemePalette" class="main-nav-bar">
+    <mat-toolbar-row>
+      <span
+        id="app-logo"
+        class="optisam-logo"
+        matTooltip="{{ 'Dashboard' | translate }}"
+        routerLink="/optisam/dashboard"
+      >
+        <img src="assets/images/OpTISAM-Logo.svg" />
+      </span>
+      <span class="example-spacer"></span>
+      <div fxShow="true" fxHide.lt-md="true">
+        <button class="btn-two file" (click)="login()" mat-raised-button>
+          Login
+        </button>
+        <!-- <a id="nav-admin-menu" mat-button [routerLink]="'/'">
+                <mat-icon class="mat-icon-header" matsuffix>face</mat-icon>
+            </a> -->
+
+        <a
+          id="nav-language-menu"
+          mat-button
+          [matMenuTriggerFor]="menu1"
+          (click)="checkLanguage()"
+        >
+          <mat-icon class="mat-icon-header" matsuffix>language</mat-icon>
+          {{ "language" | translate }}
+          <mat-icon>arrow_drop_down</mat-icon>
+        </a>
+        <mat-menu #menu1="matMenu">
+          <button
+            id="nav-language-en"
+            mat-menu-item
+            *ngIf="currLang == 'fr'"
+            (click)="updateUserLanguage('en')"
+          >
+            <img class="flags" src="assets/images/en.png" />English
+          </button>
+          <button
+            id="nav-language-fr"
+            mat-menu-item
+            *ngIf="currLang == 'en'"
+            (click)="updateUserLanguage('fr')"
+          >
+            <img class="flags" src="assets/images/fr.png" />French
+          </button>
+        </mat-menu>
+
+        <a id="nav-help" mat-button [matMenuTriggerFor]="menu3">
+          <mat-icon class="mat-icon-header" matsuffix>help_outline</mat-icon>
+        </a>
+        <mat-menu #menu3="matMenu">
+          <a
+            id="nav-user-guide"
+            mat-menu-item
+            href="https://optisam.pages.gitlab.tech.orange/optisam-it/optisam-ui/"
+            target="_blank"
+          >
+            <mat-icon class="mat-icon-menu">help_outline</mat-icon
+            >{{ "User Guide" | translate }}
+          </a>
+          <button id="nav-about" mat-menu-item (click)="openAboutUs()">
+            <mat-icon class="mat-icon-menu">info_outline</mat-icon
+            >{{ "About" | translate }}
+          </button>
+        </mat-menu>
+      </div>
+    </mat-toolbar-row>
+  </mat-toolbar>
+</div>
+
+<ng-template #warningDialog>
+  <mat-dialog-content>
+    <p>
+      {{ "Changing scope to " | translate }}
+      <strong>{{ newScope.scope_code }}</strong
+      >.
+    </p>
+    <p>
+      {{ "You will be taken to the dashboard after clicking OK." | translate }}
+    </p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="center">
+    <button
+      mat-button
+      [mat-dialog-close]="true"
+      class="btn-two"
+      (click)="backToHome(); changeScope()"
+      cdkFocusInitial
+    >
+      {{ "OK" | translate }}
+    </button>
+    <button
+      mat-button
+      [mat-dialog-close]="true"
+      class="btn-three"
+      cdkFocusInitial
+    >
+      {{ "Cancel" | translate }}
+    </button>
+  </mat-dialog-actions>
+</ng-template>
+<ng-template #warningDashboardDialog>
+  <mat-dialog-content>
+    <p>
+      {{ "Changing scope to " | translate }}
+      <strong>{{ newScope.scope_code }}</strong
+      >.
+    </p>
+    <p>{{ "You will see the new data after clicking OK." | translate }}</p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="center">
+    <button
+      mat-button
+      [mat-dialog-close]="true"
+      class="btn-two"
+      (click)="changeScope()"
+      cdkFocusInitial
+    >
+      {{ "OK" | translate }}
+    </button>
+    <button
+      mat-button
+      [mat-dialog-close]="true"
+      class="btn-three"
+      cdkFocusInitial
+    >
+      {{ "Cancel" | translate }}
+    </button>
+  </mat-dialog-actions>
+</ng-template>
+
+<div fxFlexFill fxLayout="row" class="main">
+  <div class="left-menu" fxFlex="{{ isEditor ? 45 : 55 }}">
+    <div class="tabs">
+      <nav mat-tab-nav-bar>
+        <a
+          mat-tab-link
+          class="tab-anchor"
+          *ngFor="let tab of productCatalogTabs"
+          [active]="selectedTab == tab"
+          (click)="selectedTab = tab"
+        >
+          {{ tab | translate }}
+        </a>
+      </nav>
+    </div>
+    <app-editors-list
+      (editorSelected)="selectedEditorId = $event"
+      (showEditorProducts)="navigateToProduct($event)"
+      *ngIf="isEditor"
+    ></app-editors-list>
+    <app-products-list
+      (productSelected)="selectedProductId = $event"
+      (resetEditor)="resetEditor($event)"
+      [editor]="editorData"
+      *ngIf="isProduct"
+    ></app-products-list>
+  </div>
+  <div fxFlex="{{ isEditor ? 55 : 45 }}" class="content" fxLayout="column">
+    <app-editor-details
+      [editorId]="selectedEditorId"
+      *ngIf="isEditor"
+    ></app-editor-details>
+    <app-product-details
+      [productId]="selectedProductId"
+      *ngIf="isProduct"
+    ></app-product-details>
+  </div>
+</div>

@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ProductService } from 'src/app/core/services/product.service';
 import { ReportService } from 'src/app/core/services/report.service';
 import { EquipmentTypeManagementService } from 'src/app/core/services/equipmenttypemanagement.service';
+import { MatSelect } from '@angular/material/select';
 
 @Component({
   selector: 'app-create-report',
@@ -20,12 +21,17 @@ export class CreateReportComponent implements OnInit {
   reportForm: FormGroup;
   _loading: Boolean = true;
   reqInProgress: Boolean;
+  filteredEditor: string[] = [];
+  searchLoading: boolean = false;
+  delayLoader: any = null;
+  searchText: string = '';
 
   constructor(
     private productService: ProductService,
     private reportService: ReportService,
     private equipmentService: EquipmentTypeManagementService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private cd: ChangeDetectorRef
   ) {
     this.selectedScope = localStorage.getItem('scope');
   }
@@ -105,6 +111,7 @@ export class CreateReportComponent implements OnInit {
       (response: any) => {
         this.editorsList = response.editor || [];
         this.editorsList.sort();
+        this.filteredEditor = [...this.editorsList];
         this._loading = false;
       },
       (error) => {
@@ -112,6 +119,45 @@ export class CreateReportComponent implements OnInit {
         console.log('Error fetching editors');
       }
     );
+  }
+
+  searchEditor(e: Event): void {
+    e.stopImmediatePropagation();
+    e.preventDefault();
+  }
+
+  searchKeydown(e: Event): void {
+    e.stopPropagation();
+  }
+
+  searchInputEvent(e: KeyboardEvent): void {
+    this.searchLoading = true;
+    if (this.delayLoader !== null) clearTimeout(this.delayLoader);
+    this.delayLoader = setTimeout(() => {
+      this.searchText = (e.target as HTMLInputElement).value
+        .trim()
+        .toLowerCase();
+      if (this.searchText == '') {
+        this.filteredEditor = [...this.editorsList];
+        this.searchLoading = false;
+        this.cd.detectChanges();
+        return;
+      }
+      this.filteredEditor = [
+        ...this.editorsList.filter((editor: string) =>
+          editor.toLowerCase().includes(this.searchText)
+        ),
+      ];
+      this.delayLoader = null;
+      this.searchLoading = false;
+      this.cd.detectChanges();
+    }, 500);
+  }
+
+  searchInputOpenChange(change: boolean, target: MatSelect): void {
+    this.searchText = '';
+    this.cd.detectChanges();
+    // this.searchInput. as HTMLInputElement));
   }
 
   // editorSelected() {

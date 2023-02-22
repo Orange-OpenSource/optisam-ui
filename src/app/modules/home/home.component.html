@@ -27,6 +27,24 @@
           </div>
         </div>
         <mat-list-item
+          id="nav-product-catalog"
+          [ngClass]="sidebarOpenFlag ? '' : 'wide-space'"
+          mat-list-item
+          routerLink="/optisam/productCatalog"
+          routerLinkActive="active"
+        >
+          <img
+            matTooltip="{{ 'Product Catalog' | translate }}"
+            [ngClass]="sidebarOpenFlag ? 'img-min' : 'img-max'"
+            src="\assets\images\product-catalogs.png"
+          />
+          <div *ngIf="sidebarWidth > 6" class="sidenav-item">
+            &nbsp;&nbsp;&nbsp;<span>{{
+              "SIDEBAR_NAV.MENU.PRODUCT_CATALOG" | translate | uppercase
+            }}</span>
+          </div>
+        </mat-list-item>
+        <mat-list-item
           id="nav-dashboard"
           [ngClass]="sidebarOpenFlag ? '' : 'wide-space'"
           routerLink="/optisam/dashboard"
@@ -89,6 +107,7 @@
             &nbsp;&nbsp;&nbsp;<span>{{ "EQUIPMENTS" | translate }}</span>
           </div>
         </mat-list-item>
+
         <mat-list-item
           id="nav-acquired-rights"
           [ngClass]="sidebarOpenFlag ? '' : 'wide-space'"
@@ -105,6 +124,7 @@
             &nbsp;&nbsp;&nbsp;<span>{{ "ACQUIRED RIGHTS" | translate }}</span>
           </div>
         </mat-list-item>
+
         <mat-list-item
           id="nav-simulation"
           [ngClass]="sidebarOpenFlag ? '' : 'wide-space'"

@@ -82,7 +82,7 @@ export class CreateAcquiredRightComponent implements OnInit {
     this.product_editor.valueChanges
       .pipe(map((value) => this._filter('editor', value)))
       .subscribe((res) => {
-        this.filteredEditorsList = res;
+        this.filteredEditorsList = res.sort();
         this.filteredProductsList = [];
       });
     // Filter autocomplete options for 'Product'
@@ -115,7 +115,7 @@ export class CreateAcquiredRightComponent implements OnInit {
     this.productService.getDashboardEditorList(query).subscribe(
       (res) => {
         this.editorsList = res.editors || [];
-        this.filteredEditorsList = this.editorsList;
+        this.filteredEditorsList = this.editorsList.sort();
       },
       (err) => {
         console.log('Some error occured! Could not fetch editors list.');
@@ -508,7 +508,7 @@ export class CreateAcquiredRightComponent implements OnInit {
     this.selectedFile = null;
     this.checkFile = false;
     // resest list used for autocomplete
-    this.filteredEditorsList = this.editorsList;
+    this.filteredEditorsList = this.editorsList.sort();
     this.filteredProductsList = [];
     this.filteredVersionsList = [];
   }

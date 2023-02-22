@@ -10,9 +10,10 @@ import { AplComponent } from './apl/apl.component';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { ProductsModule } from '../products/products.module';
 import { AplProductDetailsComponent } from './apl-product-details/apl-product-details.component';
+import { ViewEditorDetailsApplComponent } from './view-editor-details-appl/view-editor-details-appl.component';
 
 @NgModule({
-  declarations: [AplComponent, AplDetailsComponent, ApplicationsComponent, AplProductDetailsComponent ],
+  declarations: [AplComponent, AplDetailsComponent, ApplicationsComponent, AplProductDetailsComponent, ViewEditorDetailsApplComponent ],
   imports: [
     ApplicationsRoutingModule,
     TranslateModule,

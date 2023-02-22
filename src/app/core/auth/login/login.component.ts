@@ -106,6 +106,8 @@ export class LoginComponent implements OnInit {
       this.loading = true;
       this.authservice.login(email, val.password).subscribe(
         (res) => {
+          console.log(res);
+
           token = res.access_token;
           const decodedToken = jwt_decode(token);
           if (decodedToken['Socpes'] != null) {
@@ -122,6 +124,11 @@ export class LoginComponent implements OnInit {
         () => {
           if (token) {
             localStorage.setItem('access_token', token);
+            if (localStorage.getItem('access_token')) {
+              this.authservice.sendMessage(true);
+            } else {
+              this.authservice.sendMessage(false);
+            }
             localStorage.setItem('email', email);
             this.accountservice.getUserInfo(email).subscribe(
               (res: any) => {
@@ -145,7 +152,7 @@ export class LoginComponent implements OnInit {
                 ) {
                   this.router.navigate(['/optisam/sm']);
                 } else {
-                  this.router.navigate(['/optisam/dashboard']);
+                  this.router.navigate(['/optisam/productCatalog']);
                 }
                 this.loading = false;
               },
