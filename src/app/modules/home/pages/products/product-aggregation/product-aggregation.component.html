@@ -41,7 +41,9 @@
 
               <div *ngSwitchCase="'aggregation_name'">
                 <mat-icon
-                  *ngIf="expandedRow !== product && product.individual_product_exists"
+                  *ngIf="
+                    expandedRow !== product && product.individual_product_exists
+                  "
                   class="expand-icon"
                   (click)="expandAggregation(product)"
                   >add_box</mat-icon
@@ -65,18 +67,19 @@
               </div>
 
               <div *ngSwitchCase="'editor'">
-                
-                  <span *ngIf="product.editor_id==''">{{product.editor}}</span>  
-                  <span *ngIf="product.editor_id!=''">
-                    <a
-                      id="editor_name_{{ i }}"
-                      class="ellipsis mat-button-link"
-                      matTooltip="{{ product.editor }}"
-                      (click)="openEditorDialog(product)"
-                    >
-                      {{ product.editor }}</a>
-                  </span>
-                  
+                <span *ngIf="product.editor_id == ''">{{
+                  product.editor
+                }}</span>
+                <span *ngIf="product.editor_id != ''">
+                  <a
+                    id="editor_name_{{ i }}"
+                    class="ellipsis mat-button-link"
+                    matTooltip="{{ product.editor }}"
+                    (click)="openEditorDialog(product)"
+                  >
+                    {{ product.editor }}</a
+                  >
+                </span>
               </div>
 
               <div *ngSwitchCase="'num_applications'">
@@ -112,6 +115,20 @@
                   }}"
                 >
                   {{ product.num_equipments }}
+                </a>
+              </div>
+              <div *ngSwitchCase="'users_count'">
+                <span
+                  *ngIf="!!!product.users_count || product?.location !== 'SAAS'"
+                  >{{ product.users_count }}</span
+                >
+                <a
+                  *ngIf="!!product.users_count && product?.location === 'SAAS'"
+                  class="align-left mat-button-link"
+                  matTooltip="{{ product.users_count }}"
+                  (click)="userDetails(product)"
+                >
+                  {{ product.users_count || 0 }}
                 </a>
               </div>
 

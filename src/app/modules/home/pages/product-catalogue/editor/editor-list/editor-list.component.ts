@@ -38,9 +38,20 @@ export class EditorListComponent implements OnInit {
   pm: any;
   currentTab: PRODUCT_CATALOG_TABS = PRODUCT_CATALOG_TABS.EDITOR;
   advanceSearchModel: any = {
-    title: 'Search by Editor Name',
+    title: 'PRODUCT_CATALOG.SEARCH_BY_NAME',
     primary: 'editor',
-    other: [{ key: 'editor', label: 'Editor' }],
+    other: [
+      { key: 'editor', label: 'Editor' },
+      {
+        key: 'groupContract',
+        label: 'Group Contract',
+        type: 'select',
+        selection: [
+          { key: 'Yes', value: 'YES' },
+          { key: 'NO', value: 'NO' },
+        ],
+      },
+    ],
   };
   constructor(
     private dialog: MatDialog,
@@ -55,6 +66,7 @@ export class EditorListComponent implements OnInit {
       'noOfProducts',
       'Audit',
       'vendor',
+      'groupContract',
       'Action',
     ];
     this.getEditors();
@@ -95,6 +107,10 @@ export class EditorListComponent implements OnInit {
       sortOrder: this.sortOrder,
       ...(this.searchFields.editor?.trim() && {
         'search_params.name.filteringkey': this.searchFields.editor?.trim(),
+      }),
+      ...(this.searchFields.groupContract?.trim() && {
+        'search_params.group_contract.filteringkey':
+          this.searchFields.groupContract === 'YES' ? true : false,
       }),
     };
   }

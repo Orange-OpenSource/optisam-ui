@@ -4,7 +4,7 @@
 
 Go to "Products" :
 
-![select APM](../../img/exploring/checkCompForOneProd11u.jpg){: .zoom}
+![select APM](../../img/exploring/checkCompForOneProd11.jpg){: .zoom}
 
 Click on aggregation :
 
@@ -25,8 +25,9 @@ In the details of the aggregation, click on "Compliance" :
 You are now able to check :  
 - The "SKU" : Identifier of the rights you have acquired  
 - The "metrics" : Identifier of the metric(s) used for this aggregation  
-- The number of "Computed licenses" : Number of licenses required for your total product installations in the aggregation (computed by OpTISAM)  
-- The number of "Acquired licenses" : Number of licenses acquired (information you provided to OpTISAM)  
+- The "Computed licenses" : Number of licenses required for your total product installations in the aggregation (computed by OpTISAM) 
+- Computation details : The details of the computation 
+- Available Licenses : Number of licenses available to be shared
 - The "delta" in number of licenses or euros : Difference between "Acquired" and "Computed" licenses (<span style="color:green">positive = underusage</span> / <span style="color:red">negative = counterfeiting</span>)  
 - The "total cost" : Total cost of your "Acquired licenses" (including the maintenance cost)  
 

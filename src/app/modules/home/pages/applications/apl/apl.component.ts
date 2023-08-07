@@ -89,7 +89,7 @@ export class AplComponent implements OnInit, OnDestroy {
     }
   }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
   RenderDataTable() {
     this.applicationservice.getApplications(this.pageSize, 1).subscribe(
@@ -211,6 +211,7 @@ export class AplComponent implements OnInit, OnDestroy {
 
   advSearchTrigger(event) {
     this.searchFields = event;
+    this.current_page_num = 1;
     this.applyFilter();
   }
 

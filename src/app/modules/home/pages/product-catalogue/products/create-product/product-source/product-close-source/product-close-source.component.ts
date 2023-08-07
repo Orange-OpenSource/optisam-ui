@@ -28,9 +28,9 @@ export class ProductCloseSourceComponent implements OnInit {
     console.log('data', this.data);
     if (this.crud != this.crudRead) this.addCloseSource();
     if (this.data) {
-      this.data.closeSource.closeLicences.forEach((closeLicense: string) => {
-        this.addCloseSource(closeLicense);
-      });
+      // this.data.closeSource.closeLicences.forEach((closeLicense: string) => {
+      //   this.addCloseSource(closeLicense);
+      // });
     }
   }
 

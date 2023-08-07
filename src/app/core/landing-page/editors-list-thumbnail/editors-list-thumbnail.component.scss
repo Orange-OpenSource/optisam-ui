@@ -1,0 +1,73 @@
+::ng-deep {
+  app-homepage .main-editor-list-container {
+    @media only screen and (min-width: 0px) {
+      --space-margin: 2.2em;
+    }
+    @media only screen and (min-width: 1135px) {
+      --space-margin: -2em;
+    }
+  }
+  mat-sidenav-content {
+    &.content-min app-homepage .main-editor-list-container {
+      @media only screen and (min-width: 0px) {
+        --space-margin: 4.3em;
+      }
+      @media only screen and (min-width: 1339px) {
+        --space-margin: 0.1em;
+      }
+    }
+    &.content-max app-homepage .main-editor-list-container {
+      @media only screen and (min-width: 0px) {
+        --space-margin: 4.3em;
+      }
+      @media only screen and (min-width: 1207px) {
+        --space-margin: 0.1em;
+      }
+    }
+  }
+}
+
+.main-editor-list-container {
+  .list-items {
+    overflow-y: auto;
+    height: calc(100vh - 258px - var(--space-margin));
+    padding-bottom: 8px;
+  }
+}
+
+.loading-box {
+  max-height: 200px;
+  width: 100%;
+  padding-top: 10px;
+}
+
+::ng-deep .narrow-form-fields {
+  .mat-form-field-suffix {
+    mat-icon {
+      transform: translateY(0.3rem);
+    }
+  }
+  .mat-form-field-infix {
+    border-top: 0;
+  }
+  .mat-form-field-appearance-outline .mat-select-arrow-wrapper {
+    transform: translateY(8%);
+  }
+
+  .mat-form-field-label:not(.mat-form-field-empty) {
+    transform: translateY(-1.09375em) scale(0.75) !important;
+  }
+  .mat-form-field-label.mat-form-field-empty {
+    transform: translateY(0.3em);
+  }
+}
+
+.mat-paginator {
+  bottom: -10px;
+  position: sticky;
+  z-index: 10;
+  color: #6a6a6a;
+  width: 100%;
+  margin-top: 5px;
+  height: 35px;
+}

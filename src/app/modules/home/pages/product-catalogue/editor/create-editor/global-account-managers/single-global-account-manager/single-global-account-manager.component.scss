@@ -1,0 +1,56 @@
+.list-partner-managers {
+    //border: 1px solid rgb(193, 193, 193);
+    border-radius: 6px;
+    padding: 10px;
+  }
+  
+  .partner-manager-heading {
+    margin: 5px 10px 5px 5px;
+    font-weight: bold;
+  }
+  
+  .global-account-managers-item {
+    border: 1px solid rgb(193, 193, 193);
+    padding: 20px 10px 5px 5px;
+    border-radius: 6px;
+    position: relative;
+    margin: 10px 10px 10px 0px;
+    width: 50%;
+  }
+  
+  .global-account-managers-item mat-icon.close-btn {
+    position: absolute;
+    right: -10px;
+    top: -10px;
+    display: none;
+    border: 1px solid black;
+    background-color: white;
+    font-size: 12px;
+    font-weight: bold;
+    color: black;
+    border-radius: 100%;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+  }
+  
+  .global-account-managers-item:hover mat-icon.close-btn {
+    display: flex;
+  }
+  
+  .global-account-managers-item mat-form-field {
+    margin-right: 5px;
+    margin-left: 5px;
+  }
+  
+  .add-pm-type-btn {
+    margin: 5px 5px 5px 10px;
+    background-color: #007bff;
+    color: white;
+  }
+  
+  .global-account-managers-section {
+    max-width: 400px;
+    margin: 5px;
+  }
+  

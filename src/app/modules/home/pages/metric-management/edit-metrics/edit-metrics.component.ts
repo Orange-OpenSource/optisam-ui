@@ -51,6 +51,7 @@ import {
   InstanceNumberStandardParams,
   StaticStandardParams,
   MetricEquipmentAttributes,
+  UserStandardParams,
 } from '@core/modals';
 import { Observable } from 'rxjs';
 import { tap, map, filter, pluck } from 'rxjs/operators';
@@ -84,6 +85,11 @@ export class EditMetricsComponent implements OnInit, AfterViewChecked {
     METRIC_TYPES.ATTRIBUTE_SUM_STANDARD,
     METRIC_TYPES.EQUIPMENT_ATTRIBUTE_STANDARD,
   ];
+  concurrentORNominativeUserTypes: string[] = [
+    METRIC_TYPES.SAAS_CONCURRENT,
+    METRIC_TYPES.SAAS_NOMINATIVE,
+  ];
+
   metricDetails: any;
   _loading: boolean = false;
   dependencyTypes: MetricDependencyTypes = METRIC_DEPENDENCY_TYPES;
@@ -114,7 +120,7 @@ export class EditMetricsComponent implements OnInit, AfterViewChecked {
     private sharedService: SharedService,
     public dialog: MatDialog,
     private cd: ChangeDetectorRef
-  ) {}
+  ) { }
   ngAfterViewChecked(): void {
     this.updateTransformProcessorValidator();
   }
@@ -162,6 +168,10 @@ export class EditMetricsComponent implements OnInit, AfterViewChecked {
 
   get isSagOrIbm(): boolean {
     return this.sagOrIbmTypes.includes(this.metricType);
+  }
+
+  get isConcurrentOrNominativeUser(): boolean {
+    return this.concurrentORNominativeUserTypes.includes(this.metricType);
   }
 
   get isAttributeCounterOrAttributeSumOrEquipemntAttribute(): boolean {
@@ -324,6 +334,27 @@ export class EditMetricsComponent implements OnInit, AfterViewChecked {
     return controls;
   }
 
+  get getConcurrentUserGroup(): FormControlObject[] {
+    const control: FormControlObject[] = [
+      {
+        name: 'concurrentProfile',
+        value: null,
+        validation: [Validators.pattern(/^(\s+\S+\s*)*(?!\s).*$/)],
+      },
+    ];
+    return control;
+  }
+
+  get getNominativeUserGroup(): FormControlObject[] {
+    return [
+      {
+        name: 'nominativeProfile',
+        value: null,
+        validation: [Validators.pattern(/^(\s+\S+\s*)*(?!\s).*$/)],
+      },
+    ];
+  }
+
   get isValid(): boolean {
     return (
       this.metricEditForm.valid &&
@@ -367,6 +398,14 @@ export class EditMetricsComponent implements OnInit, AfterViewChecked {
   }
   get referenceValue(): FormControl {
     return this.metricEditForm.get('referenceValue') as FormControl;
+  }
+
+  get concurrentProfileControl(): FormControl {
+    return this.metricEditForm.get('concurrentProfile') as FormControl;
+  }
+
+  get nominativeProfileControl(): FormControl {
+    return this.metricEditForm.get('nominativeProfile') as FormControl;
   }
 
   get environmentValue(): FormControl {
@@ -413,6 +452,7 @@ export class EditMetricsComponent implements OnInit, AfterViewChecked {
 
   private fetchMetricDetails(): void {
     this._loading = true;
+
     const params: MetricDetailsParams = {
       'metric_info.type': this.data.metric.type,
       'metric_info.name': this.data.metric.name,
@@ -476,7 +516,13 @@ export class EditMetricsComponent implements OnInit, AfterViewChecked {
         this.getDependency(this.dependencyTypes.STATIC_STANDARD);
         break;
 
-      default:
+      case this.metricTypes.SAAS_CONCURRENT:
+        this.addControls(this.getConcurrentUserGroup);
+        this.getDependency(this.dependencyTypes.SAAS_CONCURRENT);
+        break;
+      case this.metricTypes.SAAS_NOMINATIVE:
+        this.addControls(this.getNominativeUserGroup);
+        this.getDependency(this.dependencyTypes.SAAS_NOMINATIVE);
         break;
     }
   }
@@ -590,7 +636,7 @@ export class EditMetricsComponent implements OnInit, AfterViewChecked {
                 attributeName: tempAttributeNameId,
                 ...(this.metricType ===
                   this.metricTypes.ATTRIBUTE_COUNTER_STANDARD ||
-                this.metricType ===
+                  this.metricType ===
                   this.metricTypes.EQUIPMENT_ATTRIBUTE_STANDARD
                   ? { value: this.metricDetails.Value }
                   : { referenceValue: this.metricDetails.ReferenceValue }),
@@ -599,6 +645,7 @@ export class EditMetricsComponent implements OnInit, AfterViewChecked {
           );
 
         break;
+
       case this.dependencyTypes.INSTANCE_NUMBER:
         this.metricEditForm.patchValue({
           noOfDeployments: this.metricDetails.Coefficient,
@@ -611,6 +658,16 @@ export class EditMetricsComponent implements OnInit, AfterViewChecked {
           referenceValue: this.metricDetails.ReferenceValue,
         });
 
+      case this.dependencyTypes.SAAS_CONCURRENT:
+        this.metricEditForm.patchValue({
+          concurrentProfile: this.metricDetails?.Profile,
+        });
+        break;
+
+      case this.dependencyTypes.SAAS_NOMINATIVE:
+        this.metricEditForm.patchValue({
+          nominativeProfile: this.metricDetails?.Profile,
+        });
         break;
 
       default:
@@ -856,6 +913,14 @@ export class EditMetricsComponent implements OnInit, AfterViewChecked {
         this.updateStaticStandard();
         break;
 
+      case this.metricTypes.SAAS_CONCURRENT:
+        this.updateConcurrentUserStandard();
+        break;
+
+      case this.metricTypes.SAAS_NOMINATIVE:
+        this.updateNominativeUserStandard();
+        break;
+
       default:
         break;
     }
@@ -1076,6 +1141,44 @@ export class EditMetricsComponent implements OnInit, AfterViewChecked {
     };
 
     this.metricService.updateStaticStandard(params).subscribe(
+      (res: MetricUpdateSuccess) => {
+        this.openModal(this.successDialog);
+      },
+      (error: MetricUpdateError) => {
+        this.openModal(this.errorDialog);
+        this.errorMsg = error.message;
+      }
+    );
+  }
+
+  private updateConcurrentUserStandard(): void {
+    const params: UserStandardParams = {
+      ID: this.metricDetails.ID,
+      Name: this.metricDetails.Name,
+      profile: this.concurrentProfileControl.value.trim(),
+      scopes: [this.cs.getLocalData(LOCAL_KEYS.SCOPE)],
+    };
+
+    this.metricService.updateConcurrentUserStandard(params).subscribe(
+      (res: MetricUpdateSuccess) => {
+        this.openModal(this.successDialog);
+      },
+      (error: MetricUpdateError) => {
+        this.openModal(this.errorDialog);
+        this.errorMsg = error.message;
+      }
+    );
+  }
+
+  private updateNominativeUserStandard(): void {
+    const params: UserStandardParams = {
+      ID: this.metricDetails.ID,
+      Name: this.metricDetails.Name,
+      profile: this.nominativeProfileControl.value.trim(),
+      scopes: [this.cs.getLocalData(LOCAL_KEYS.SCOPE)],
+    };
+
+    this.metricService.updateNominativeUserStandard(params).subscribe(
       (res: MetricUpdateSuccess) => {
         this.openModal(this.successDialog);
       },

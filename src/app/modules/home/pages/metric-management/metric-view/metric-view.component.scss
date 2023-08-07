@@ -34,3 +34,13 @@
     font-size: 20px;
     color: #008AFC !important;
   }
+
+.disable:hover{
+    cursor: not-allowed;
+}
+.disable:active{
+    pointer-events: none;
+}
+mat-icon.disable {
+    filter:opacity(0.5);
+}

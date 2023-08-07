@@ -1,0 +1,113 @@
+.upload-button-box {
+  margin-top: -16px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+.mat-table {
+  max-height: 70vh;
+  overflow-y: auto;
+}
+#noData {
+  display: flex;
+  justify-content: center;
+  // margin-top: 10px;
+}
+#refreshButton {
+  margin-right: 5px;
+  min-width: fit-content;
+}
+.errorIcon {
+  color: #f30000;
+  font-size: 20px;
+  height: 20px;
+  width: 20px;
+  cursor: pointer;
+}
+
+.mat-column-action {
+  flex: 0 0 70px;
+  &:not(.mat-header-cell) {
+    justify-content: center;
+  }
+}
+
+.mat-column-name {
+  flex: 1 0 200px;
+}
+
+.mat-column-product_version {
+  flex: 0 0 70px;
+}
+
+.mat-column-status {
+  flex: 0 0 200px;
+}
+
+.mat-column-uploaded_at {
+  flex: 0 0 180px;
+}
+
+.mat-column-uploaded_by {
+  flex: 1 0 180px;
+}
+
+.mat-column-type {
+  flex: 0 0 100px;
+}
+
+.mat-column-file_status {
+  flex: 0 0 100px;
+}
+
+.mat-column-product_editor {
+  flex: 1 0 150px;
+}
+
+.mat-column-file_name {
+  flex: 1 0 200px;
+}
+
+::ng-deep mat-spinner.file-download-spinner {
+  width: 1.5em !important;
+  height: 1.5em !important;
+  svg {
+    width: inherit !important;
+    height: inherit !important;
+  }
+}
+
+::ng-deep mat-spinner.error-file-download-spinner {
+  width: 1.3em !important;
+  height: 1.3em !important;
+  svg {
+    width: inherit !important;
+    height: inherit !important;
+  }
+}
+
+.file-status {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 3px;
+  mat-icon {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    height: 1em;
+    width: 1em;
+    font-size: 1.3em;
+    color: var(--danger);
+    cursor: pointer;
+  }
+}
+
+mat-row,
+mat-header-row {
+  min-width: 100%;
+  display: inline-flex !important;
+  flex-wrap: nowrap !important;
+}

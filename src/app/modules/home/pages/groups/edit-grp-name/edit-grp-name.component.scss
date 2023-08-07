@@ -1,5 +1,6 @@
-
-#cancelButton,#resetButton,#saveButton {
+#cancelButton,
+#resetButton,
+#saveButton {
   margin: 10px;
 }
 .mat-card {
@@ -7,4 +8,13 @@
 }
 .mat-card-actions {
   margin-top: -32px;
+}
+
+::ng-deep .name-form-control {
+  input {
+    padding: 5px;
+  }
+  .mat-form-field-subscript-wrapper {
+    position: absolute !important;
+  }
 }

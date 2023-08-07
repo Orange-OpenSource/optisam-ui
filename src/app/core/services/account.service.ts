@@ -1,9 +1,24 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import {
+  HttpClient,
+  HttpErrorResponse,
+  HttpHeaders,
+} from '@angular/common/http';
+import { Observable, of, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { map } from 'rxjs/operators';
+import { catchError, delay, map } from 'rxjs/operators';
+import {
+  ErrorResponse,
+  ExpenseBodyParams,
+  ScopeExpenseResponse,
+} from '@core/modals';
+import { GroupCompliance } from './group-compliance';
+import { fixErrorResponse } from '@core/util/common.functions';
 
+interface URL {
+  expenses: string;
+  groups: string;
+}
 @Injectable({
   providedIn: 'root',
 })
@@ -20,6 +35,11 @@ export class AccountService {
   });
 
   constructor(private http: HttpClient) {}
+
+  URLs: URL = {
+    expenses: `${this.apiAccount}/account/scopes/expenses`,
+    groups: `${this.apiAccount}/account/complience/groups`,
+  };
 
   updateLang(res: any) {
     this.token = localStorage.getItem('access_token');
@@ -64,5 +84,56 @@ export class AccountService {
   getAbout(): Observable<any> {
     const url = this.apiMeta + '/about.json';
     return this.http.get(url, { headers: this.defaultHeaders });
+  }
+
+  updateExpenditure(
+    expenseBody: ExpenseBodyParams
+  ): Observable<ErrorResponse | { success: boolean }> {
+    if (isNaN(Number(expenseBody.expenses))) {
+      return throwError('Not a valid number');
+    }
+    return this.http
+      .post<ErrorResponse | { success: boolean }>(
+        this.URLs.expenses,
+        expenseBody,
+        { headers: this.defaultHeaders }
+      )
+      .pipe(
+        catchError((e) => (e?.error ? throwError(e.error) : throwError(e)))
+      );
+  }
+
+  getScopeExpense(
+    scope: string
+  ): Observable<ErrorResponse | ScopeExpenseResponse> {
+    return this.http
+      .get<ErrorResponse | ScopeExpenseResponse>(
+        `${this.URLs.expenses}/${scope}`
+      )
+      .pipe(
+        catchError((e) => (e?.error ? throwError(e.error) : throwError(e)))
+      );
+  }
+
+  getGroups(): Observable<ErrorResponse | GroupCompliance> {
+    // return of<GroupCompliance>({
+    //   complience_groups: [
+    //     {
+    //       group_id: '12',
+    //       name: 'test',
+    //       scope_code: ['AAK','OFR','BUG'],
+    //       scope_name: ['AAKName','OFRName','BUGName']
+    //     },
+    //     {
+    //       group_id: '34',
+    //       name: 'test2',
+    //       scope_code: ['BAK','OJO'],
+    //       scope_name: ['BAKName','OJOName']
+    //     }
+    //   ]
+    // });
+    return this.http
+      .get<ErrorResponse | GroupCompliance>(this.URLs.groups)
+      .pipe(catchError(fixErrorResponse));
   }
 }

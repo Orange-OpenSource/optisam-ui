@@ -4,11 +4,32 @@
 
 <span style="color:red">First, make sure that you are an admin and that you are working on the good scope :</span>
 
-![select APM](../../img/goodScopeu.jpg){: .zoom}
+![select APM](../../img/goodScope.jpg){: .zoom}
 
 ## What is a metric ?
 
 A metric is a unit of measurement used to count the number of licenses necessary for a given use for a given product.
+
+In OpTISAM, we have two famillies of metrics : metrics for on premise products and metrics for Saas products.
+
+
+
+The table below show you metrics in each familly:
+
+| On Premise                      | Saas                                 |
+| :---------------------- | :------------------------------------ |
+|attribute.counter.standard|saas.concurrent.standard|
+|attribute.sum.standard|saas.nominative.standard|
+|equipment.attribute.standard||
+|ibm.pvu.standard||
+|instance.number.standard||
+|oracle.nup.standard||
+|oracle.processor.standard||
+|sag.processor.standard||
+|static.standard||
+|user.sum.standard||
+|microsoft.sql.enterprise||
+|windows.server.datacenter||
 
 ## Access
 
@@ -32,7 +53,7 @@ You have to click on Add Metric :
 
 ![select APM](../../img/metricsMana/first.jpg){: .zoom}
 
-This window will be shown :
+This window will be displayed :
 
 ![select APM](../../img/metricsMana/addNew.jpg){: .zoom}
 
@@ -68,11 +89,11 @@ You can see on this screen :
 
 ## Delete an existing metric
 
-You have to click on the little trash icon next to the metric that you want to delete as shown below.
+You have to click on the little trash icon next to the metric that you want to delete as displayed below.
 
 ![select APM](../../img/metricsMana/delete.png){: .zoom}
 
-After clicking on the trash icon, the frame below will be shown. If you are sure to delete the metric click on "OK" 
+After clicking on the trash icon, the frame below will be displayed. If you are sure to delete the metric click on "OK" 
 
 ![select APM](../../img/metricsMana/delete2.jpg){: .zoom}
 
@@ -80,11 +101,11 @@ After clicking on the trash icon, the frame below will be shown. If you are sure
 
 ## Edit an existing metric
 
-You have to click on the little pencil icon next to the metric that you want to edit as shown below.
+You have to click on the little pencil icon next to the metric that you want to edit as displayed below.
 
 ![select APM](../../img/metricsMana/edit.png){: .zoom}
 
-After clicking on the pencil icon, the frame below will be shown. 
+After clicking on the pencil icon, the frame below will be displayed. 
 
 ![select APM](../../img/metricsMana/edit2.png){: .zoom}
 
@@ -98,7 +119,7 @@ Once the changes done, click on update to save the news parameters.
 
 During the creation or updatation, it is possible to translate NUP to processor metric.
 
-To do that, after fill all the field required to create the metric, check the box named "Transform to prossor" as shown below. The NUP metric will be translate to processor metric.
+To do that, after fill all the field required to create the metric, check the box named "Transform to prossor" as displayed below. The NUP metric will be translate to processor metric.
 
 ![select APM](../../img/metricsMana/translateNUP.jpg){: .zoom}
 
@@ -121,7 +142,7 @@ To allocate a metric to a product and an equipment, go first to equipment.
 
 ![select APM](../../img/metricsMana/allocate.jpg){: .zoom}
 
-This page will be shown:
+This page will be displayed:
 
 ![select APM](../../img/metricsMana/allocate2.jpg){: .zoom}
 
@@ -137,7 +158,7 @@ Once on product page, you will have to chose the product on which do the allocat
 
 ![select APM](../../img/metricsMana/allocate5.jpg){: .zoom}
 
-This page will be shown:
+This page will be displayed:
 
 ![select APM](../../img/metricsMana/allocate6.jpg){: .zoom}
 

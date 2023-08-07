@@ -30,6 +30,14 @@ import { EditProductsStepComponent } from './edit-acquired-right-aggregation/for
 import { EditLicenseStepComponent } from './edit-acquired-right-aggregation/form-parts/edit-license-step/edit-license-step.component';
 import { EditMaintenanceStepComponent } from './edit-acquired-right-aggregation/form-parts/edit-maintenance-step/edit-maintenance-step.component';
 import { EditCommentStepComponent } from './edit-acquired-right-aggregation/form-parts/edit-comment-step/edit-comment-step.component';
+import { ShareAccquiredRightComponent } from './share-accquired-right/share-accquired-right.component';
+import { SharedLicencesComponent } from './share-accquired-right/shared-licences/shared-licences.component';
+import { DeleteConfirmationComponent } from './share-accquired-right/delete-confirmation/delete-confirmation.component';
+import { SuccessDialogComponent } from './share-accquired-right/success-dialog/success-dialog.component';
+import { ErrorDialogComponent } from './share-accquired-right/error-dialog/error-dialog.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { ShareAggregationComponent } from './share-aggregation/share-aggregation.component';
+import { SharedAggregationsLicencesComponent } from './share-aggregation/shared-aggregations-licences/shared-aggregations-licences.component';
 import { ViewEditorDetailsAccComponent } from './view-editor-details-acc/view-editor-details-acc.component';
 import { JoinProductVersionPipe } from './join-product-version.pipe';
 
@@ -58,6 +66,13 @@ import { JoinProductVersionPipe } from './join-product-version.pipe';
     EditLicenseStepComponent,
     EditMaintenanceStepComponent,
     EditCommentStepComponent,
+    ShareAccquiredRightComponent,
+    SharedLicencesComponent,
+    DeleteConfirmationComponent,
+    SuccessDialogComponent,
+    ErrorDialogComponent,
+    ShareAggregationComponent,
+    SharedAggregationsLicencesComponent,
     ViewEditorDetailsAccComponent,
     JoinProductVersionPipe,
   ],
@@ -70,6 +85,7 @@ import { JoinProductVersionPipe } from './join-product-version.pipe';
     CustomMaterialModule,
     SharedModule,
     FlexLayoutModule,
+    MatTooltipModule,
   ],
   providers: [
     {

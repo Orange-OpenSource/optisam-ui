@@ -1,4 +1,3 @@
-
 <mat-card>
   <div class="container-fluid page-content-header">
     <div class="page-heading">
@@ -17,7 +16,7 @@
         (matSortChange)="sortData($event)"
       >
         <!-- <ng-container matColumnDef="swid_tag">
-          <mat-header-cell *matHeaderCellDef mat-sort-header="SWID_TAG"
+          <mat-header-cell *matHeaderCellDef disableClear="true" mat-sort-header="SWID_TAG"
             >{{ "SWIDtag" | translate }}
           </mat-header-cell>
           <mat-cell *matCellDef="let acquired_rights">
@@ -26,7 +25,10 @@
         </ng-container> -->
 
         <ng-container matColumnDef="product_name">
-          <mat-header-cell *matHeaderCellDef mat-sort-header="PRODUCT_NAME"
+          <mat-header-cell
+            *matHeaderCellDef
+            disableClear="true"
+            mat-sort-header="PRODUCT_NAME"
             >{{ "Product name" | translate }}
           </mat-header-cell>
           <mat-cell
@@ -38,7 +40,8 @@
               (click)="
                 openDialog(
                   acquired_rights.swid_tag,
-                  acquired_rights.product_name
+                  acquired_rights.product_name,
+                  acquired_rights.SKU
                 )
               "
             >
@@ -52,56 +55,73 @@
             >{{ "Version" | translate }}
           </mat-header-cell>
           <mat-cell *matCellDef="let acquired_rights"
-            >{{ acquired_rights.version || "-" }}
+            >{{ acquired_rights.version || " " }}
           </mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="editor">
-          <mat-header-cell *matHeaderCellDef mat-sort-header="EDITOR"
+          <mat-header-cell
+            *matHeaderCellDef
+            disableClear="true"
+            mat-sort-header="EDITOR"
             >{{ "Editor" | translate }}
           </mat-header-cell>
           <!-- <mat-cell *matCellDef="let acquired_rights"
             >{{ acquired_rights.editor || 0 }}
           </mat-cell> -->
-          <mat-cell *matCellDef="let acquired_rights"> 
-            <span *ngIf="acquired_rights.editor_id==''">{{acquired_rights.editor}}</span>  
-            <span *ngIf="acquired_rights.editor_id!=''">
+          <mat-cell *matCellDef="let acquired_rights">
+            <span *ngIf="acquired_rights.editor_id == ''">{{
+              acquired_rights.editor
+            }}</span>
+            <span *ngIf="acquired_rights.editor_id != ''">
               <a
                 id="editor_name_{{ i }}"
                 class="ellipsis mat-button-link"
                 matTooltip="{{ acquired_rights.editor }}"
                 (click)="openEditorDialog(acquired_rights)"
               >
-                {{ acquired_rights.editor }}</a>
+                {{ acquired_rights.editor }}</a
+              >
             </span>
-            </mat-cell>
+          </mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="SKU">
-          <mat-header-cell *matHeaderCellDef mat-sort-header="SKU">{{
-            "SKU" | translate
-          }}</mat-header-cell>
+          <mat-header-cell
+            *matHeaderCellDef
+            disableClear="true"
+            mat-sort-header="SKU"
+            >{{ "SKU" | translate }}</mat-header-cell
+          >
           <!-- <mat-cell *matCellDef="let acquired_rights">
             {{ acquired_rights.SKU || 0 }}
           </mat-cell> -->
           <mat-cell *matCellDef="let acquired_rights">
-            <div *ngIf="acquired_rights.file_name"  matTooltip="{{ 'Click here to download the file' }}">
-             <a  class="ellipsis mat-button-link" (click)="
-             downloadFile(
-                   acquired_rights.SKU,acquired_rights.file_name
-                 )
-               ">
-               {{ acquired_rights.SKU }}
-             </a>
-           </div>
-           <div *ngIf="!acquired_rights.file_name">
-           {{ acquired_rights.SKU }}
-         </div>
-           </mat-cell>
+            <div
+              *ngIf="acquired_rights.file_name"
+              matTooltip="{{ 'Click here to download the file' }}"
+            >
+              <a
+                class="ellipsis mat-button-link"
+                (click)="
+                  downloadFile(acquired_rights.SKU, acquired_rights.file_name)
+                "
+              >
+                {{ acquired_rights.SKU }}
+              </a>
+            </div>
+            <div *ngIf="!acquired_rights.file_name">
+              {{ acquired_rights.SKU }}
+            </div>
+          </mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="metric">
-          <mat-header-cell *matHeaderCellDef mat-sort-header="METRIC">
+          <mat-header-cell
+            *matHeaderCellDef
+            disableClear="true"
+            mat-sort-header="METRIC"
+          >
             {{ "Metric" | translate }}</mat-header-cell
           >
           <mat-cell *matCellDef="let acquired_rights">
@@ -112,12 +132,52 @@
         <ng-container matColumnDef="acquired_licenses_number">
           <mat-header-cell
             *matHeaderCellDef
+            disableClear="true"
             mat-sort-header="ACQUIRED_LICENSES_NUMBER"
           >
             {{ "Acquired licenses number" | translate }}</mat-header-cell
           >
           <mat-cell *matCellDef="let acquired_rights">
             {{ acquired_rights.acquired_licenses_number || 0 }}</mat-cell
+          >
+        </ng-container>
+
+        <ng-container matColumnDef="available_licenses">
+          <mat-header-cell *matHeaderCellDef>
+            {{ "Available Licenses" | translate }}</mat-header-cell
+          >
+          <mat-cell
+            *matCellDef="let acquired_rights"
+            [matTooltip]="getToolTipDataAcc(acquired_rights)"
+            [matTooltipClass]="'custom-tooltip'"
+          >
+            {{ acquired_rights.available_licenses || 0 }}</mat-cell
+          >
+        </ng-container>
+
+        <ng-container matColumnDef="shared_licenses">
+          <mat-header-cell *matHeaderCellDef>
+            {{ "Shared Licenses" | translate }}</mat-header-cell
+          >
+          <mat-cell
+            *matCellDef="let acquired_rights"
+            [matTooltip]="getToolTipSharedDataAcc(acquired_rights)"
+            [matTooltipClass]="'custom-tooltip'"
+          >
+            {{ acquired_rights.shared_licenses || 0 }}</mat-cell
+          >
+        </ng-container>
+
+        <ng-container matColumnDef="recieved_licenses">
+          <mat-header-cell *matHeaderCellDef>
+            {{ "Received Licenses" | translate }}</mat-header-cell
+          >
+          <mat-cell
+            *matCellDef="let acquired_rights"
+            [matTooltip]="getToolTipReceivedDataAcc(acquired_rights)"
+            [matTooltipClass]="'custom-tooltip'"
+          >
+            {{ acquired_rights.recieved_licenses || 0 }}</mat-cell
           >
         </ng-container>
 
@@ -133,6 +193,7 @@
         <ng-container matColumnDef="licenses_under_maintenance_number">
           <mat-header-cell
             *matHeaderCellDef
+            disableClear="true"
             mat-sort-header="LICENSES_UNDER_MAINTENANCE_NUMBER"
           >
             {{ "Licenses Under maintenance number" | translate }}
@@ -145,6 +206,7 @@
         <ng-container matColumnDef="start_of_maintenance">
           <mat-header-cell
             *matHeaderCellDef
+            disableClear="true"
             mat-sort-header="START_OF_MAINTENANCE"
           >
             {{ "Start of Maintenance" | translate }}</mat-header-cell
@@ -159,6 +221,7 @@
         <ng-container matColumnDef="end_of_maintenance">
           <mat-header-cell
             *matHeaderCellDef
+            disableClear="true"
             mat-sort-header="END_OF_MAINTENANCE"
           >
             {{ "End of Maintenance" | translate }}
@@ -171,6 +234,7 @@
         <ng-container matColumnDef="avg_licenes_unit_price">
           <mat-header-cell
             *matHeaderCellDef
+            disableClear="true"
             mat-sort-header="AVG_LICENSE_UNIT_PRICE"
           >
             {{ "AVG License unit price" | translate }}</mat-header-cell
@@ -185,6 +249,7 @@
         <ng-container matColumnDef="avg_maintenance_unit_price">
           <mat-header-cell
             *matHeaderCellDef
+            disableClear="true"
             mat-sort-header="AVG_MAINTENANCE_UNIT_PRICE"
           >
             {{ "AVG Maintenance unit price" | translate }}</mat-header-cell
@@ -197,6 +262,7 @@
         <ng-container matColumnDef="total_purchase_cost">
           <mat-header-cell
             *matHeaderCellDef
+            disableClear="true"
             mat-sort-header="TOTAL_PURCHASE_COST"
           >
             {{ "Total purchase cost" | translate }}</mat-header-cell
@@ -211,6 +277,7 @@
         <ng-container matColumnDef="total_maintenance_cost">
           <mat-header-cell
             *matHeaderCellDef
+            disableClear="true"
             mat-sort-header="TOTAL_MAINTENANCE_COST"
           >
             {{ "Total maintenance cost" | translate }}</mat-header-cell
@@ -233,7 +300,8 @@
 
         <ng-container matColumnDef="corporate_sourcing_contract">
           <mat-header-cell *matHeaderCellDef>
-            {{ "CSC" | translate }}</mat-header-cell>
+            {{ "CSC" | translate }}</mat-header-cell
+          >
           <mat-cell *matCellDef="let acquired_rights">
             {{ acquired_rights.corporate_sourcing_contract || "-" }}</mat-cell
           >
@@ -241,9 +309,11 @@
 
         <ng-container matColumnDef="software_provider">
           <mat-header-cell *matHeaderCellDef>
-            {{ "Software provider" | translate }}</mat-header-cell>
+            {{ "Software provider" | translate }}</mat-header-cell
+          >
           <mat-cell *matCellDef="let acquired_rights">
-            {{ acquired_rights.software_provider || "-" }}</mat-cell>
+            {{ acquired_rights.software_provider || "-" }}</mat-cell
+          >
         </ng-container>
 
         <ng-container matColumnDef="last_purchased_order">
@@ -274,7 +344,11 @@
         </ng-container>
 
         <ng-container matColumnDef="total_cost">
-          <mat-header-cell *matHeaderCellDef mat-sort-header="TOTAL_COST">
+          <mat-header-cell
+            *matHeaderCellDef
+            disableClear="true"
+            mat-sort-header="TOTAL_COST"
+          >
             {{ "Total cost" | translate }}
           </mat-header-cell>
           <mat-cell *matCellDef="let acquired_rights">
@@ -292,6 +366,36 @@
             matTooltipClass="multilineTooltip"
           >
             {{ acquired_rights.comment }}
+          </mat-cell>
+        </ng-container>
+        <!-- Delta cost -->
+        <ng-container matColumnDef="delta_cost">
+          <mat-header-cell
+            *matHeaderCellDef
+            disableClear="true"
+            mat-sort-header="DELTA_COST"
+            >{{ "DELTA_COST" | translate }}</mat-header-cell
+          >
+          <mat-cell
+            *matCellDef="let acquired_rights"
+            matTooltip="{{ acquired_rights?.delta_cost }}"
+          >
+            {{ acquired_rights?.delta_cost }}
+          </mat-cell>
+        </ng-container>
+        <!-- Delta licenses -->
+        <ng-container matColumnDef="delta_licenses">
+          <mat-header-cell
+            *matHeaderCellDef
+            disableClear="true"
+            mat-sort-header="DELTA_LICENSES"
+            >{{ "DELTA_LICENSES" | translate }}</mat-header-cell
+          >
+          <mat-cell
+            *matCellDef="let acquired_rights"
+            matTooltip="{{ acquired_rights?.delta_licenses }}"
+          >
+            {{ acquired_rights?.delta_licenses }}
           </mat-cell>
         </ng-container>
         <mat-header-row

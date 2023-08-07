@@ -1,68 +1,16 @@
 .editor{
-  // border: 1px solid rgb(193, 193, 193);;
-  border-radius: 6px;
+  margin: 20px;
 }
-  .editor-picking-section{
-    border: 1px solid rgb(193, 193, 193);
-    // margin: 15px;
-  }
 
-  .mat-card{
-    padding: 16px 16px 0px 16px;
-  }
+.editorName{
+  font-weight: bold;
+  margin: 20px 10px 10px 0px
+}
 
-  .editor-heading{
-    font-weight: bold
-  }
+.general{
+  margin-top: 20px;
+}
 
-  .editor-section {
-    max-width: 400px;
-    margin: 10px 10px 10px 20px;
-  }
-
-  .editor-picking-section{
-    border: 1px solid rgb(193, 193, 193);
-    border-radius: 6px;
-    margin: 25px;
-  }
-
-  .editor-heading{
-    margin: 10px;
-    font-weight: bold
-  }
-
-  .general-info{
-    // border: 1px solid rgb(193, 193, 193);
-    border-radius: 6px;
-  }
-
-  .general-info-heading{
-    margin: 10px;
-    font-weight: bold
-  }
-
-  // .general-info-section{
-  //   border: 1px solid rgb(193, 193, 193);
-  //   border-radius: 6px;
-  //   margin: 25px;
-  // }
-
-  .general-info-text{
-    //margin: 20px;
-    padding: 0px 20px 10px 10px;;
-  }
-
-  .general-info-text textarea{
-    height: 100px;
-  }
-  #submitForm{
-    margin: 10px;
-    
-    
-  }
-
-  #cancelEditor{
-    margin: 10px;
-    background-color: #80E1FF;
-    color: white;
-  }
+.contract{
+  margin-top: 4px;
+}

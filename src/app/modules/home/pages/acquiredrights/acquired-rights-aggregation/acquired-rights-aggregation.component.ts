@@ -17,6 +17,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Route } from '@angular/compiler/src/core';
 import {
   AcquiredRightAggregationQuery,
+  AcquiredRightsAggregationParams,
   AggregatedAcquiredRights,
   ErrorResponse,
 } from '@core/modals';
@@ -43,8 +44,7 @@ export interface StateData {
   ],
 })
 export class AcquiredRightsAggregationComponent
-  implements OnInit, AfterViewInit
-{
+  implements OnInit, AfterViewInit {
   @ViewChild(AdvanceSearchComponent) advanceSearch: AdvanceSearchComponent;
   private getAggregationSub: Subscription;
   public searchValue: any = {};
@@ -73,18 +73,21 @@ export class AcquiredRightsAggregationComponent
     'software_provider',
     'metric_name',
     'num_licenses_acquired',
-    'num_licences_maintenance',
-    'start_of_maintenance',
-    'end_of_maintenance',
+    'available_licenses',
+    'shared_licenses',
+    'recieved_licenses',
+    // 'num_licences_maintenance',
+    // 'start_of_maintenance',
+    // 'end_of_maintenance',
     'licence_under_maintenance',
     'avg_unit_price',
-    'avg_maintenance_unit_price',
+    // 'avg_maintenance_unit_price',
     'total_purchase_cost',
-    'total_maintenance_cost',
+    // 'total_maintenance_cost',
     'total_cost',
     'last_purchased_order',
-    'support_number',
-    'maintenance_provider',
+    // 'support_number',
+    // 'maintenance_provider',
     'comment',
   ];
   expandDisplayedColumns: string[] = [
@@ -101,6 +104,7 @@ export class AcquiredRightsAggregationComponent
     'licenses_under_maintenance_number',
     'start_of_maintenance',
     'end_of_maintenance',
+    'available_licenses',
     'licenses_under_maintenance',
     'avg_licenes_unit_price',
     'avg_maintenance_unit_price',
@@ -151,6 +155,9 @@ export class AcquiredRightsAggregationComponent
     editor: 'Editor',
     metric: 'Metric',
     acquired_licenses_number: 'Acquired licenses',
+    available_licenses: 'Available Licenses',
+    shared_licenses: 'Shared Licenses',
+    recieved_licenses: 'Received Licenses',
     licenses_under_maintenance_number: 'Licenses under maintenance number',
     swidtags: 'Number of Products',
     aggregation_name: 'Aggregation Name',
@@ -242,8 +249,8 @@ export class AcquiredRightsAggregationComponent
     this.searchQuery = Object.keys(this.searchQuery).length
       ? this.searchQuery
       : { sort_by: 'AGG_NAME' };
-    let query: AcquiredRightAggregationQuery = {
-      page_num: this.current_page_num,
+    let query: AcquiredRightsAggregationParams = {
+      page_num: Number(this.current_page_num),
       page_size: this.page_size,
       scope: [this.cs.getLocalData(LOCAL_KEYS.SCOPE)],
       ...this.sortQuery,
@@ -254,9 +261,7 @@ export class AcquiredRightsAggregationComponent
       .getAggregationAcquiredRights(query)
       .subscribe(
         (res: AggregatedAcquiredRights) => {
-          console.log(res)
           this.arAggregationData = new MatTableDataSource(res.aggregations);
-          // this.arAggregationData.sort = this.sort;
           this.length = res.totalRecords;
           this._loading = false;
         },
@@ -364,8 +369,34 @@ export class AcquiredRightsAggregationComponent
     this.getAcqiredRightsAggregationData();
   }
 
+  getToolTipDataAcc(data) {
+    let tooltipContent = `Available Licenses Left:${data?.available_licenses},\n Received Licenses in Current Scope:${data?.recieved_licenses},\n Shared Licenses in Current Scope:${data?.shared_licenses},\n`;
+    data?.shared_data?.forEach((sl) => {
+      tooltipContent += `Shared Licences in Scope ${sl?.scope} : ${sl?.shared_licenses},\nReceived Licences from Scope ${sl?.scope}:${sl?.recieved_licenses}\n`;
+    });
+    return tooltipContent;
+  }
+
+  getToolTipSharedDataAcc(data) {
+    let tooltipContentData = `Shared Licenses in Current Scope:${data?.shared_licenses}\n`;
+    data?.shared_data?.forEach((sl) => {
+      tooltipContentData += `Shared Licenses in Scope ${sl?.scope} : ${sl?.shared_licenses}`;
+    });
+
+    return tooltipContentData;
+  }
+
+  getToolTipReceivedDataAcc(data) {
+    let tooltipContentData = `Received Licenses in Current Scope:${data?.recieved_licenses}\n`;
+    data?.shared_data?.forEach((sl) => {
+      tooltipContentData += `Received Licenses from Scope ${sl?.scope}:${sl?.recieved_licenses}`;
+    });
+    return tooltipContentData;
+  }
+
   advSearchTrigger(event) {
     this.searchFields = event;
+    this.current_page_num = 1;
     this.applyFilter();
   }
 
@@ -394,10 +425,11 @@ export class AcquiredRightsAggregationComponent
         productName: aggregation.product_names,
         aggregationName: aggregation.aggregation_name,
         aggregationID: aggregation.ID,
+        aggregationSKU: aggregation.sku,
       },
     });
 
-    dialogRef.afterClosed().subscribe((result) => {});
+    dialogRef.afterClosed().subscribe((result) => { });
   }
   downloadFile(sku, fileName) {
     // const filePath = file.error_file_api.slice(8);
@@ -433,7 +465,7 @@ export class AcquiredRightsAggregationComponent
       },
     });
 
-    dialogRef.afterClosed().subscribe((result) => {});
+    dialogRef.afterClosed().subscribe((result) => { });
   }
 
   ngOnDestroy(): void {

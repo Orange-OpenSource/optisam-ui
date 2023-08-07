@@ -1,0 +1,15 @@
+.mat-column-action {
+  flex: 0 1 100px;
+}
+
+.mat-column-number_of_users {
+  flex: 0 1 150px;
+}
+
+.mat-column-product_version {
+  flex: 0 1 200px;
+}
+
+mat-cell {
+  word-break: break-word;
+}

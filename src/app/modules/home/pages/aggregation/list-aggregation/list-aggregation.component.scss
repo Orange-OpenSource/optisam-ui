@@ -34,3 +34,15 @@
   max-width: unset !important;
   white-space: pre-wrap !important;
 }
+
+.mat-column-action {
+  flex: 0 0 100px;
+}
+
+.mat-column-numofSwidTags {
+  flex: 0 0 150px;
+}
+
+.mat-column-editor {
+  flex: 0 0 150px;
+}

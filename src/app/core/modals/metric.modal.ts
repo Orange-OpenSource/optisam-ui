@@ -6,6 +6,7 @@ export interface Metric {
   name: string;
   description: string;
   type: string;
+  default:boolean;
 }
 
 export interface MetricTypes {
@@ -18,6 +19,8 @@ export interface MetricTypes {
   EQUIPMENT_ATTRIBUTE_STANDARD: string;
   INSTANCE_NUMBER_STANDARD: string;
   STATIC_STANDARD: string;
+  SAAS_CONCURRENT: string;
+  SAAS_NOMINATIVE: string;
 }
 
 export interface MetricDetailsParams {
@@ -34,6 +37,8 @@ export interface MetricDependencyTypes {
   ATTRIBUTE_COUNTER_OR_ATTRIBUTE_SUM_OR_EQUIPMENT_ATTRIBUTE: string;
   INSTANCE_NUMBER: string;
   STATIC_STANDARD: string;
+  SAAS_CONCURRENT: string;
+  SAAS_NOMINATIVE: string;
 }
 
 export interface MetricEquipmentTypes {
@@ -156,6 +161,13 @@ export interface StaticStandardParams {
   ID: string;
   Name: string;
   reference_value: number;
+  scopes: string[];
+}
+
+export interface UserStandardParams {
+  ID: string;
+  Name: string;
+  profile: string;
   scopes: string[];
 }
 

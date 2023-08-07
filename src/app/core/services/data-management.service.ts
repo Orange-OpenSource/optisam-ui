@@ -1,3 +1,4 @@
+import { fixErrorResponse } from '@core/util/common.functions';
 import { Injectable } from '@angular/core';
 import {
   HttpClient,
@@ -8,14 +9,57 @@ import {
   HttpEventType,
 } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, of, Subject, throwError } from 'rxjs';
+import { catchError, delay, map } from 'rxjs/operators';
+import { NominativeUserDownloadParams } from '@core/modals';
+
+type URL = {
+  nominativeUser: string;
+  importUrl: string;
+  nominativeUserImport: string;
+  nominativeUserDownload: string;
+};
 
 @Injectable({
   providedIn: 'root',
 })
 export class DataManagementService {
-  constructor(private http: HttpClient) {}
+  URLs: URL = {
+    nominativeUser: `${environment.API_PRODUCT_URL}/product/nominative/users`,
+    importUrl: `${environment.API_IMPORT_URL}/import/upload`,
+    nominativeUserImport: `${environment.API_IMPORT_URL}/import/nominative/user`,
+    nominativeUserDownload: `${environment.API_IMPORT_URL}/import/download/nominative`,
+  };
+  private removeUser: Subject<number> = new Subject<number>();
+  private triggerUpdateUserDetails: Subject<boolean> = new Subject<boolean>();
+  private navigateToLog: Subject<boolean> = new Subject<boolean>();
+
+  constructor(private http: HttpClient) { }
+
+  triggerRemoveUser(index: number): void {
+    this.removeUser.next(index);
+  }
+
+  isRemoveUserTriggered(): Observable<number> {
+    return this.removeUser.asObservable();
+  }
+
+  updateUserDetailsValidity(): void {
+    this.triggerUpdateUserDetails.next(true);
+  }
+
+  isUserDetailsUpdated(): Observable<boolean> {
+    return this.triggerUpdateUserDetails.asObservable();
+  }
+
+  triggerNavToLog(value: boolean): void {
+    this.navigateToLog.next(value);
+  }
+
+  isTriggeredNavToLog(): Observable<boolean> {
+    return this.navigateToLog.asObservable();
+  }
+
   // Data Management
   getUploadedData(query, filteringkey): Observable<any> {
     let url =
@@ -63,6 +107,13 @@ export class DataManagementService {
 
       case HttpEventType.Response:
         return this.apiResponse(event);
+
+      case HttpEventType.Sent:
+        return {
+          status: 'sent',
+          description: `Resquest Sent`,
+        };
+        break;
 
       default:
         // throw new Error(
@@ -153,11 +204,15 @@ export class DataManagementService {
   }
 
   getGlobalDataPastInjection(upload_id): Observable<any> {
-    const url = environment.API_IMPORT_URL + '/'  + 'import/download'
-    +'?scope='  +
-    localStorage.getItem('scope')+
-    '&uploadId='+ upload_id +
-    '&downloadType=source';
+    const url =
+      environment.API_IMPORT_URL +
+      '/' +
+      'import/download' +
+      '?scope=' +
+      localStorage.getItem('scope') +
+      '&uploadId=' +
+      upload_id +
+      '&downloadType=source';
     return this.http.get(url, { responseType: 'blob' });
   }
 
@@ -188,5 +243,27 @@ export class DataManagementService {
       '/dps/dashboard/quality/failurereasonsratio?scope=' +
       scope;
     return this.http.get<any>(url);
+  }
+
+  uploadNominativeUserData(data: FormData): Observable<any> {
+    return this.http
+      .post(this.URLs.nominativeUserImport, data, {
+        reportProgress: true,
+        observe: 'events',
+      })
+      .pipe(
+        catchError(fixErrorResponse),
+        map((event) => this.getEventMessage(event, data))
+      );
+  }
+
+  getNominativeUserFileData(
+    inputs: NominativeUserDownloadParams
+  ): Observable<any> {
+    let formData = new FormData();
+    for (let key in inputs) formData.append(key, inputs[key]);
+    return this.http.post(this.URLs.nominativeUserDownload, formData, {
+      responseType: 'blob',
+    });
   }
 }

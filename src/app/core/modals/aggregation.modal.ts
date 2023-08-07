@@ -1,5 +1,5 @@
 import { ProductDetails } from './acquired-rights-aggregation.modal';
-import { AcquiredRightsIndividualParams } from './acquired.rights.modal';
+import { AcquiredRightsIndividualParams } from './acquired-rights.modal';
 
 export interface AggregationProductRes {
   aggrights_products: ProductDetails[];
@@ -9,7 +9,7 @@ export interface AggregationProductRes {
 export interface AcquiredRightsAggregationParams {
   page_num: number;
   page_size: number;
-  sort_by: string;
+  sort_by?: string;
   sort_order: string;
   scope: string;
   'search_params.name.filteringkey'?: string;

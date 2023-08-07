@@ -131,41 +131,49 @@
   </mat-dialog-actions>
 </ng-template>
 
-<div fxFlexFill fxLayout="row" class="main">
-  <div class="left-menu" fxFlex="{{ isEditor ? 45 : 55 }}">
+<div fxFlexFill fxLayout="column" class="main">
+  <mat-card>
     <div class="tabs">
       <nav mat-tab-nav-bar>
         <a
           mat-tab-link
           class="tab-anchor"
-          *ngFor="let tab of productCatalogTabs"
-          [active]="selectedTab == tab"
-          (click)="selectedTab = tab"
+          *ngFor="let tab of productCatalogTabs; let i = index"
+          [active]="selectedTab == tab.title"
+          (click)="changeTab(tab.title)"
         >
-          {{ tab | translate }}
+          {{ tab?.alias || tab?.title | translate }}
+          {{ tab?.alias && "(" + (tab?.title | translate) + ")" }}
+          <div class="close-tab" *ngIf="i > 1" (click)="closeTab(i)">
+            <mat-icon>close</mat-icon>
+          </div>
         </a>
       </nav>
     </div>
-    <app-editors-list
-      (editorSelected)="selectedEditorId = $event"
-      (showEditorProducts)="navigateToProduct($event)"
-      *ngIf="isEditor"
-    ></app-editors-list>
-    <app-products-list
-      (productSelected)="selectedProductId = $event"
-      (resetEditor)="resetEditor($event)"
-      [editor]="editorData"
-      *ngIf="isProduct"
-    ></app-products-list>
-  </div>
-  <div fxFlex="{{ isEditor ? 55 : 45 }}" class="content" fxLayout="column">
-    <app-editor-details
-      [editorId]="selectedEditorId"
-      *ngIf="isEditor"
-    ></app-editor-details>
-    <app-product-details
-      [productId]="selectedProductId"
-      *ngIf="isProduct"
-    ></app-product-details>
+  </mat-card>
+
+  <div class="content">
+    <app-editors-list-thumbnail
+      (editorInfo)="editorInfo = $event"
+      [ngStyle]="{ display: isEditor ? 'initial' : 'none' }"
+    ></app-editors-list-thumbnail>
+    <app-editor-detail
+      [data]="editorInfo"
+      [ngStyle]="{ display: isEditorDetail ? 'initial' : 'none' }"
+      class="editor-details"
+    ></app-editor-detail>
+
+    <app-products-list-thumbnail
+      *ngIf="isInProductSet"
+      (productDetail)="productInfo = $event"
+      [ngStyle]="{ display: isProduct ? 'initial' : 'none' }"
+    ></app-products-list-thumbnail>
+    <app-product-detail
+      class="product-details"
+      [data]="productInfo"
+      [ngStyle]="{
+        display: isProductDetail ? 'initial' : 'none'
+      }"
+    ></app-product-detail>
   </div>
 </div>

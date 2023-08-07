@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
+<svg width="800px" height="800px" viewBox="0 0 64 64" version="1.1" xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <title>gen-flag-6</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+
+    </defs>
+    <g id="General" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="SLICES-64px" transform="translate(-360.000000, 0.000000)">
+
+        </g>
+        <g id="ICONS" transform="translate(-355.000000, 5.000000)">
+            <g id="gen-flag-6" transform="translate(368.000000, 0.000000)">
+                <polygon id="Fill-43" fill="#ccc" points="18.0001 30 22.0001 26 18.0001 26">
+
+                </polygon>
+                <polygon id="Fill-44" fill="#ccc"
+                    points="18.0001 30 38.0001 30 28.0001 17 38.0001 4 22.0001 4 22.0001 26">
+
+                </polygon>
+                <polygon id="Fill-45" fill="#ccc" points="0 26 22 26 22 0 0 0">
+
+                </polygon>
+                <polyline id="Stroke-46" stroke="#aaa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    points="22.0001 4 38.0001 4 28.0001 17 38.0001 30 18.0001 30 22.0001 26">
+
+                </polyline>
+                <path d="M18.0001,26 L18.0001,30" id="Stroke-47" stroke="#aaa" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+
+                </path>
+                <polygon id="Stroke-48" stroke="#aaa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    points="0 26 22 26 22 0 0 0">
+
+                </polygon>
+                <path d="M0.0001,54 L0.0001,26" id="Stroke-49" stroke="#aaa" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+
+                </path>
+            </g>
+        </g>
+    </g>
+</svg>

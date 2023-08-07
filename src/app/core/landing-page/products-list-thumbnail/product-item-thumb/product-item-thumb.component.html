@@ -1,0 +1,135 @@
+<div class="main" fxLayout="column" fxLayoutAlign="space-between" fxFill>
+  <div fxLayout="row" class="icon-head-quarter" fxLayoutAlign="space-between">
+    <div
+      class="icon-header"
+      fxLayout="row"
+      fxLayoutGap="10px"
+      fxLayoutAlign="start start"
+      fxFlex="100"
+      matTooltip="{{ product?.name }}"
+    >
+      <img
+        alt="{{ product?.name }}"
+        class="company-icon"
+        src="{{
+          'https://pr-diod-ocp-fr01-dev-optisam-dev-optisam.oss.eu-west-0.prod-cloud-ocb.orange-business.com/optisam-dev/'
+        }}{{ product?.editorName.toLowerCase() }}.svg 
+            "
+        (error)="backupImage($event)"
+      />
+      <header>
+        {{ product?.name | trimTextRange : trimRangeHeader }}
+      </header>
+    </div>
+  </div>
+
+  <div fxLayout="row" class="recommendation" fxLayoutAlign="start start" fxFlex>
+    <div
+      *ngIf="product?.recommendation && product.recommendation != 'NONE'"
+      class="recommendation-label"
+      [ngClass]="{
+        authorized: isAuthorized,
+        blacklisted: isBlacklisted,
+        recommended: isRecommended
+      }"
+    >
+      {{
+        (product?.recommendation
+          ? "RECOMMENDATIONS." + product?.recommendation
+          : ""
+        ) | translate
+      }}
+    </div>
+  </div>
+
+  <div fxLayout="row" class="info" fxFlex>
+    <span
+      [ngClass]="{ 'no-available': !product?.genearlInformation }"
+      matTooltip="{{ product?.genearlInformation }}"
+    >
+      {{
+        (product?.genearlInformation | trimTextRange : trimRangeInfo) ||
+          ("NO_AVAILABLE" | translate)
+      }}
+    </span>
+  </div>
+
+  <div fxLayout="row" class="license" fxLayoutGap="3px">
+    <div class="license-icon">
+      <mat-icon
+        *ngIf="(product?.licensing | productLicense) === 'CLOSED_SOURCE'"
+        >remove_circle</mat-icon
+      >
+      <img
+        *ngIf="(product?.licensing | productLicense) === 'OPEN_SOURCE'"
+        class="license-img"
+        src="assets/images/open-source-icon.png"
+      />
+    </div>
+    <div class="license-label">
+      {{ product?.licensing | productLicense | translate }}
+    </div>
+  </div>
+
+  <div
+    class="entity"
+    fxLayout="row"
+    fxLayoutAlign="start center"
+    fxLayoutGap="3px"
+  >
+    <ng-container
+      *ngIf="
+        product?.scopes | takeFirst : firstContainerWidth : true as entityData
+      "
+    >
+      <span
+        *ngFor="let entity of entityData?.visibleScopes"
+        class="entity-label"
+        >{{ entity.trim() }}
+      </span>
+    </ng-container>
+  </div>
+  <div class="entities" fxLayout="row" fxLayoutAlign="start center">
+    <ng-container
+      *ngIf="
+        product?.scopes | takeFirst : firstContainerWidth : true as entityData
+      "
+    >
+      <div class="entity-count" *ngIf="entityData?.restScopeCount">
+        <a
+          class="link strong"
+          matTooltip="{{
+            product?.scopes
+              | remainingEntities
+                : (product?.scopes?.length || 0) - entityData.restScopeCount
+          }}"
+          matTooltipClass="multiline-tooltip"
+        >
+          +{{ entityData.restScopeCount }}
+          {{
+            (entityData.restScopeCount > 1 ? "ENTITIES" : "ENTITY") | translate
+          }}
+        </a>
+      </div>
+    </ng-container>
+  </div>
+</div>
+
+<ng-template #defaultImage>
+  <img
+    class="company-icon"
+    src="assets/images/default-company-icon.svg"
+    alt="Icon not available"
+  />
+</ng-template>
+
+<ng-template #defaultFlag>
+  <img
+    matTooltip="{{ 'HEAD_QUARTER' | translate }}: {{
+      'NOT_DEFINED' | translate
+    }}"
+    class="company-icon"
+    src="assets/images/default-flag-icon.svg"
+    alt="Country not defined"
+  />
+</ng-template>

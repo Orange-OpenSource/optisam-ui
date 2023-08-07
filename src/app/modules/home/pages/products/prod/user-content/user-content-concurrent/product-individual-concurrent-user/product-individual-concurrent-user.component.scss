@@ -1,0 +1,17 @@
+.graph {
+  .date-selection {
+    mat-form-field {
+      max-width: 150px;
+    }
+  }
+  .graph-section {
+    padding: 5em;
+  }
+}
+
+::ng-deep mat-form-field.month-datepicker {
+  .mat-form-field-infix {
+    display: flex;
+    padding: 0;
+  }
+}

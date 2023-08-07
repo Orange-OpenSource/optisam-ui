@@ -1,3 +1,4 @@
+import { CommonService } from '@core/services';
 import { ProductService } from 'src/app/core/services/product.service';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MoreDetailsComponent } from '../../../dialogs/product-details/more-details.component';
@@ -6,8 +7,21 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import {
+  AdvanceSearchModel,
+  ConcurrentUserListResponse,
+  ConcurrentUsersExportParams,
+  ErrorResponse,
+  NominativeUsersExportParams,
+  Product,
+  ProductLocation,
+  ProductType,
+  Products,
+} from '@core/modals';
+import { UserDetailsComponent } from './user-details/user-details.component';
 import { ViewProductCatalogProductDialogComponent } from '@home/pages/product-catalogue/products/product-list/view-product-catalog-product-dialog/view-product-catalog-product-dialog.component';
 import { ViewProductsComponent } from './view-products/view-products.component';
+import { ProductUserType, LOCAL_KEYS } from '@core/util/constants/constants';
 
 @Component({
   selector: 'app-prod',
@@ -35,19 +49,30 @@ export class ProdComponent implements OnInit {
     'name',
     'version',
     'editor',
+    'location',
     'category',
     'totalCost',
+    'numofUsers',
     'numOfApplications',
     'numofEquipments',
   ];
   _loading: Boolean;
 
-  advanceSearchModel: any = {
+  advanceSearchModel: AdvanceSearchModel = {
     title: 'Search by Product Name',
     primary: 'name',
     other: [
       { key: 'name', label: 'Product name' },
       { key: 'editor', label: 'Editor name' },
+      {
+        key: 'location',
+        label: 'Location',
+        type: 'select',
+        selection: [
+          { key: 'On Premise', value: ProductLocation.ON_PREMISE },
+          { key: 'SAAS', value: ProductLocation.SAAS },
+        ],
+      },
     ],
   };
   searchFields: any = {};
@@ -55,9 +80,10 @@ export class ProdComponent implements OnInit {
   @ViewChild(MatSort, { static: false }) sort: MatSort;
 
   constructor(
-    private productservice: ProductService,
+    private productService: ProductService,
     public dialog: MatDialog,
-    private router: Router
+    private router: Router,
+    private cd: CommonService
   ) {
     this._loading = true;
     this.current_page_num = 1;
@@ -73,10 +99,22 @@ export class ProdComponent implements OnInit {
       this.RenderDataTable();
     }
   }
-  ngOnInit() {}
+  ngOnInit() { }
+
+  get productUserType(): string[] {
+    return Object.values(ProductUserType);
+  }
+
+  get onPremise(): ProductLocation {
+    return ProductLocation.ON_PREMISE;
+  }
+
+  get saas(): ProductLocation {
+    return ProductLocation.SAAS;
+  }
 
   openDialog(value, name): void {
-    console.log(value ,name)
+    console.log(value, name);
     this.dialogRef = this.dialog.open(MoreDetailsComponent, {
       width: '1300px',
       disableClose: true,
@@ -86,21 +124,28 @@ export class ProdComponent implements OnInit {
       },
     });
 
-    this.dialogRef.afterClosed().subscribe((result) => {});
+    this.dialogRef.afterClosed().subscribe((result) => { });
   }
 
-  openEditorDialog(data:any){
-    this.dialogRef=this.dialog.open(ViewProductsComponent,{
+  openUserDetails(product: Product): void {
+    this.dialog.open(UserDetailsComponent, {
+      disableClose: true,
+      width: '95vw',
+      panelClass: 'full-width-dialog',
+      data: { productType: ProductType.INDIVIDUAL, product },
+    });
+  }
+  openEditorDialog(data: any) {
+    this.dialogRef = this.dialog.open(ViewProductsComponent, {
       width: '1300px',
       disableClose: true,
-      data: data
+      data: data,
     });
-
-    this.dialogRef.afterClosed().subscribe((result) => {});
+    this.dialogRef.afterClosed().subscribe((result) => { });
   }
 
   RenderDataTable() {
-    this.productservice.getProducts(this.pageSize, 1).subscribe(
+    this.productService.getProducts(this.pageSize, 1).subscribe(
       (res: any) => {
         this.MyDataSource = new MatTableDataSource(res.products);
         this.MyDataSource.sort = this.sort;
@@ -128,7 +173,7 @@ export class ProdComponent implements OnInit {
     if (this.sort_order === '' || this.sort_order === null) {
       this.sort_order = 'asc';
     }
-    this.productservice
+    this.productService
       .filteredData(
         page_num + 1,
         this.pageSize,
@@ -136,7 +181,8 @@ export class ProdComponent implements OnInit {
         this.sort_order,
         this.searchFields.swidTag?.trim(),
         this.searchFields.name?.trim(),
-        this.searchFields.editor?.trim()
+        this.searchFields.editor?.trim(),
+        this.searchFields.location?.trim()
       )
       .subscribe((res: any) => {
         this.MyDataSource = new MatTableDataSource(res.products);
@@ -145,12 +191,12 @@ export class ProdComponent implements OnInit {
       });
   }
   sortData(sort) {
-    console.log(sort)
+    console.log(sort);
     this._loading = true;
     this.MyDataSource = null;
     localStorage.setItem('product_direction', sort.direction);
     localStorage.setItem('product_active', sort.active);
-    this.productservice
+    this.productService
       .filteredData(
         this.current_page_num,
         this.pageSize,
@@ -158,7 +204,8 @@ export class ProdComponent implements OnInit {
         sort.direction,
         this.searchFields.swidTag?.trim(),
         this.searchFields.name?.trim(),
-        this.searchFields.editor?.trim()
+        this.searchFields.editor?.trim(),
+        this.searchFields.location?.trim()
       )
       .subscribe(
         (res: any) => {
@@ -184,7 +231,7 @@ export class ProdComponent implements OnInit {
     if (this.sort_order === '' || this.sort_order === null) {
       this.sort_order = 'asc';
     }
-    this.productservice
+    this.productService
       .filteredData(
         this.current_page_num,
         this.pageSize,
@@ -192,7 +239,8 @@ export class ProdComponent implements OnInit {
         this.sort_order,
         this.searchFields.swidTag?.trim(),
         this.searchFields.name?.trim(),
-        this.searchFields.editor?.trim()
+        this.searchFields.editor?.trim(),
+        this.searchFields.location?.trim()
       )
       .subscribe((res: any) => {
         this.MyDataSource = new MatTableDataSource(res.products);
@@ -217,6 +265,7 @@ export class ProdComponent implements OnInit {
 
   advSearchTrigger(event) {
     this.searchFields = event;
+    this.current_page_num = 1;
     this.applyFilter();
   }
 }

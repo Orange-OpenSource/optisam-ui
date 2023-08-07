@@ -5,7 +5,7 @@
 }
 
 .audits-heading {
-  margin: 5px 10px 5px 5px;
+  margin: 10px 10px 10px 10px;
   font-weight: bold;
 }
 
@@ -14,7 +14,8 @@
   padding: 20px 10px 5px 10px;
   border-radius: 6px;
   position: relative;
-  margin: 10px;
+  margin: 10px 10px 10px 0px;
+  width: 50%;
 }
 
 .audits-item mat-icon.close-btn {

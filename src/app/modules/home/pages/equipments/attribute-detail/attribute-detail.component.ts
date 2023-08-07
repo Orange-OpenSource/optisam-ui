@@ -160,6 +160,7 @@ export class AttributeDetailComponent implements OnInit {
       .subscribe(
         (res: any) => {
           this.equiObj = JSON.parse(res.equipment);
+          console.log('this.equiObj', this.equiObj);
           // getting all the attributes of the selected tab (equipment)
           const equipmentAttributes =
             this.type.find((t) => t.ID === this.equimId)?.attributes || [];
@@ -224,7 +225,7 @@ export class AttributeDetailComponent implements OnInit {
         }
       );
   }
-  tabClick(tab) {}
+  tabClick(tab) { }
   getFilterData(testData: any): string {
     return testData.filteredData;
   }
@@ -444,15 +445,15 @@ export class AttributeDetailComponent implements OnInit {
       );
   }
 
-  openEditorDialog(data:any){
+  openEditorDialog(data: any) {
     console.log("working")
-    this.dialogRef1=this.dialog.open(ViewEditorDetailsEquipComponent,{
+    this.dialogRef1 = this.dialog.open(ViewEditorDetailsEquipComponent, {
       width: '1300px',
       disableClose: true,
       data: data
     });
 
-    this.dialogRef1.afterClosed().subscribe((result) => {});
+    this.dialogRef1.afterClosed().subscribe((result) => { });
   }
   getProductPaginatorData(event) {
     const page_num = event.pageIndex;
@@ -629,8 +630,8 @@ export class AttributeDetailComponent implements OnInit {
   }
 
   advSearchTrigger(event) {
-    // console.log('trigger event => ', event);
     this.searchFields = event;
+    this.current_page_num = 1;
     this.applyFilter();
   }
   openDialog(value, name): void {
@@ -643,7 +644,9 @@ export class AttributeDetailComponent implements OnInit {
       },
     });
 
-    dialogRef.afterClosed().subscribe((result) => {});
+    dialogRef.afterClosed().subscribe((result) => {
+      this.dialogRef.close(true);
+    });
   }
 
   deleteConfirm(product): void {

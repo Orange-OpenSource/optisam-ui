@@ -1,0 +1,21 @@
+<nav mat-tab-nav-bar cdkFocusInitial>
+  <ng-container *ngFor="let menu of tabMenus">
+    <a
+      mat-tab-link
+      class="tab-anchor"
+      (click)="activeTitle = menu.title"
+      [active]="activeTitle == menu.title"
+    >
+      {{ menu.title | translate }}
+    </a>
+  </ng-container>
+</nav>
+
+<div class="main-content">
+  <app-user-content-nominative
+    *ngIf="activeTitle === tabMenus[0].title"
+  ></app-user-content-nominative>
+  <app-user-content-concurrent
+    *ngIf="activeTitle === tabMenus[1].title"
+  ></app-user-content-concurrent>
+</div>

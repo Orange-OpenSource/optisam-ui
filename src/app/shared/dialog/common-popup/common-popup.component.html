@@ -1,0 +1,26 @@
+<h2 mat-dialog-title>
+  {{ title | translate }}
+</h2>
+<mat-dialog-content>
+  <p>
+    <strong>{{ message | translate : messageVariable }}</strong>
+  </p>
+</mat-dialog-content>
+<mat-dialog-actions
+  fxLayout="row"
+  fxLayoutAlign="center center"
+  fxLayoutGap="10px"
+>
+  <button
+    (click)="confirmStatus(false)"
+    mat-raised-button
+    class="btn-four"
+    mat-dialog-close
+    *ngIf="!singleButton"
+  >
+    {{ "SHARED.BUTTON.CANCEL" | translate }}
+  </button>
+  <button (click)="confirmStatus(true)" mat-raised-button class="btn-two">
+    {{ buttonText | translate }}
+  </button>
+</mat-dialog-actions>

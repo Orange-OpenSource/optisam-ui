@@ -17,6 +17,14 @@ import { ProductTabsComponent } from './product-tabs/product-tabs.component';
 import { ProductAggregationEquipmentsComponent } from './product-aggregation-equipments/product-aggregation-equipments.component';
 import { ProductAggregationApplicationsComponent } from './product-aggregation-applications/product-aggregation-applications.component';
 import { AttributeDetailComponent } from '../equipments/attribute-detail/attribute-detail.component';
+import { UserDetailsComponent } from './prod/user-details/user-details.component';
+import { UserContentComponent } from './prod/user-content/user-content.component';
+import { UserContentNominativeComponent } from './prod/user-content/user-content-nominative/user-content-nominative.component';
+import { UserContentConcurrentComponent } from './prod/user-content/user-content-concurrent/user-content-concurrent.component';
+import { IndividualNominativeUserComponent } from './prod/user-content/user-content-nominative/individual-nominative-user/individual-nominative-user.component';
+import { AggregationNominativeUserComponent } from './prod/user-content/user-content-nominative/aggregation-nominative-user/aggregation-nominative-user.component';
+import { ProductIndividualConcurrentUserComponent } from './prod/user-content/user-content-concurrent/product-individual-concurrent-user/product-individual-concurrent-user.component';
+import { ProductAggregationConcurrentUserComponent } from './prod/user-content/user-content-concurrent/product-aggregation-concurrent-user/product-aggregation-concurrent-user.component';
 import { ViewProductsComponent } from './prod/view-products/view-products.component';
 import { AuditLastYearPipe } from './prod/view-products/audit-last-year.pipe';
 
@@ -28,21 +36,38 @@ import { AuditLastYearPipe } from './prod/view-products/audit-last-year.pipe';
     FormsModule,
     CustomMaterialModule,
     ReactiveFormsModule,
-    SharedModule
+    SharedModule,
   ],
-  entryComponents: [
-    AttributeDetailComponent
-  ],
+  entryComponents: [AttributeDetailComponent],
   declarations: [
-    ProductsComponent, 
-    ProdAplComponent, 
-    AplInstanceComponent, 
-    ProdComponent, 
-    ProdEquiComponent, 
-    ProductAggregationComponent, 
-    ProductTabsComponent, 
-    ProductAggregationEquipmentsComponent, 
-    ProductAggregationApplicationsComponent, ViewProductsComponent, AuditLastYearPipe
+    ProductsComponent,
+    ProdAplComponent,
+    AplInstanceComponent,
+    ProdComponent,
+    ProdEquiComponent,
+    ProductAggregationComponent,
+    ProductTabsComponent,
+    ProductAggregationEquipmentsComponent,
+    ProductAggregationApplicationsComponent,
+    UserDetailsComponent,
+    UserContentComponent,
+    UserContentNominativeComponent,
+    UserContentConcurrentComponent,
+    IndividualNominativeUserComponent,
+    AggregationNominativeUserComponent,
+    ProductIndividualConcurrentUserComponent,
+    ProductAggregationConcurrentUserComponent,
+    ProductsComponent,
+    ProdAplComponent,
+    AplInstanceComponent,
+    ProdComponent,
+    ProdEquiComponent,
+    ProductAggregationComponent,
+    ProductTabsComponent,
+    ProductAggregationEquipmentsComponent,
+    ProductAggregationApplicationsComponent,
+    ViewProductsComponent,
+    AuditLastYearPipe,
   ],
 })
-export class ProductsModule { }
+export class ProductsModule {}

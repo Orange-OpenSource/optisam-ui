@@ -23,10 +23,9 @@ import { bytesToMB } from '@core/util/common.functions';
 function fileErrorCheck(control: AbstractControl): ValidationErrors | null {
   return this.fileValidationError
     ? {
-        fileError: `There are some error in the given ${
-          control?.value && control.value.length > 1 ? 'files' : 'file'
+      fileError: `There are some error in the given ${control?.value && control.value.length > 1 ? 'files' : 'file'
         }`,
-      }
+    }
     : null;
 }
 
@@ -226,8 +225,8 @@ export class UploadDataComponent implements OnInit {
       .uploadDataManagementFilesNew(formData)
       .subscribe(
         (data) => {
-          if (data?.status && data?.status === 'progress') {
-            this.analysisProgress = data.message;
+          if (data?.status && ['progress', 'sent'].includes(data.status)) {
+            this.analysisProgress = data.status === 'progress' ? data.message : 0;
           } else {
             this.onGettingResponse(data);
           }

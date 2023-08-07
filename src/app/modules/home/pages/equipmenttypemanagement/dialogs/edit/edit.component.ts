@@ -39,7 +39,8 @@ export class EditComponent implements OnInit {
   parentId: String;
   scope: any = '';
   parent: any;
-  attribute: AttributeData[] = [];
+  attribute: any[] = [];
+  attribute1:any[]=[]
   updattrs: any[] = [];
 
   displayedColumns = [
@@ -77,7 +78,8 @@ export class EditComponent implements OnInit {
     this.scope = this.data['scope'];
     this.parent_type = this.data['parent_type'];
     this.attribute = JSON.parse(JSON.stringify(this.data?.attributes || []));
-
+    this.attribute1=this.attribute.filter((ar)=>ar.name!=='parent_id')
+    console.log(this.attribute1)
     this.getTypes();
     this.getMappedSource();
     this.initForm();

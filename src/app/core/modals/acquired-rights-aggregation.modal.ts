@@ -64,10 +64,10 @@ export interface AcquiredRightAggregationUpdateParams {
 }
 
 export interface AcquiredRightAggregationQuery {
-  page_num: string;
+  page_num: string | number;
   page_size: string;
   sort_order: string;
-  sort_by: string;
+  sort_by?: string;
   scope: string[] | string;
   'search_params.name.filteringkey'?: string;
   'search_params.name.filteringOrder'?: number;

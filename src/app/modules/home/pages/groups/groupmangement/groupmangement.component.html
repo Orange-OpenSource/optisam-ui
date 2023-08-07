@@ -49,7 +49,7 @@
           "
           mat-menu-item
         >
-          0 {{ "scope" | translate }}
+          0 {{ "Scope" | translate }}
         </div>
         <div
           id="groupScopes"
@@ -58,11 +58,8 @@
           matTooltip="{{ formatScopes(node.item.scopes) }}"
         >
           {{ node.item.scopes.length }}
-          <span *ngIf="node.item.scopes.length === 1">{{
-            "scope" | translate
-          }}</span>
-          <span *ngIf="node.item.scopes.length > 1">{{
-            "scopes" | translate
+          <span>{{
+            (node.item.scopes.length === 1 ? "ENTITY" : "ENTITIES") | translate
           }}</span>
         </div>
         <div

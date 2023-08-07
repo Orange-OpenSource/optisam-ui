@@ -6,10 +6,12 @@
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
     "declaration": false,
+    "resolveJsonModule": true,
     "module": "es2020",
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
     "allowJs": true,
     "importHelpers": true,
     "target": "es2015",
@@ -17,7 +19,8 @@
     "paths": {
       "@core/*": ["src/app/core/*"],
       "@shared/*": ["src/app/shared/*"],
-      "@home/*": ["src/app/modules/home/*"]
+      "@home/*": ["src/app/modules/home/*"],
+      "@assets/*": ["src/assets/*"],
     },
     "lib": ["es2018", "dom"]
   }

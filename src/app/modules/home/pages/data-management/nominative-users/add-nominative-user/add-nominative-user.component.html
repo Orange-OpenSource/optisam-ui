@@ -1,0 +1,183 @@
+<mat-card>
+  <mat-card-content fxLayout="column" fxLayoutGap="10px">
+    <form [formGroup]="nominativeUserForm">
+      <div fxLayout="row" class="hidden">
+        <mat-radio-group
+          formControlName="type"
+          aria-label="Select an option"
+          fxLayoutGap="30px"
+          color="primary"
+        >
+          <mat-radio-button
+            [disableRipple]="true"
+            *ngFor="let userType of nominativeUserTypeList"
+            [checked]="userType.value === type.value"
+            [value]="userType.value"
+            >{{ userType.name | translate }}</mat-radio-button
+          >
+        </mat-radio-group>
+      </div>
+      <ng-container *ngIf="type.value === productType" [formGroup]="product">
+        <div fxLayout="row" fxLayoutGap="10px">
+          <mat-form-field appearance="outline">
+            <mat-label
+              >{{
+                "NOMINATIVE_USER.FIELD.PRODUCT_EDITOR" | translate
+              }}*</mat-label
+            >
+            <input
+              type="text"
+              formControlName="productEditor"
+              matInput
+              [matAutocomplete]="editorAuto"
+            />
+
+            <mat-autocomplete
+              autoActiveFirstOption
+              #editorAuto="matAutocomplete"
+            >
+              <mat-option
+                *ngFor="
+                  let editor of productEditors$
+                    | async
+                    | filterEditor : productEditor?.value
+                "
+                [value]="editor"
+              >
+                {{ editor }}
+              </mat-option>
+            </mat-autocomplete>
+            <mat-error *ngIf="productEditor?.hasError('required')">{{
+              "NOMINATIVE_USER.ERROR.REQUIRED.PRODUCT_EDITOR" | translate
+            }}</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label
+              >{{ "NOMINATIVE_USER.FIELD.PRODUCT" | translate }}*</mat-label
+            >
+            <input
+              type="text"
+              formControlName="productName"
+              matInput
+              [matAutocomplete]="latestProductsAuto"
+            />
+
+            <mat-autocomplete
+              autoActiveFirstOption
+              #latestProductsAuto="matAutocomplete"
+            >
+              <mat-option
+                *ngFor="
+                  let product of latestProducts$
+                    | async
+                    | filterProduct : productName?.value
+                "
+                [value]="product"
+              >
+                {{ product }}
+              </mat-option>
+            </mat-autocomplete>
+            <mat-error *ngIf="productName?.hasError('required')">{{
+              "NOMINATIVE_USER.ERROR.REQUIRED.PRODUCT" | translate
+            }}</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>{{
+              "NOMINATIVE_USER.FIELD.VERSION" | translate
+            }}</mat-label>
+            <input formControlName="productVersion" matInput />
+          </mat-form-field>
+        </div>
+        <ng-container formArrayName="userDetails">
+          <app-single-nominative-user
+            *ngFor="let item of userDetails.controls; let i = index"
+            [index]="i"
+          >
+          </app-single-nominative-user>
+        </ng-container>
+      </ng-container>
+
+      <ng-container
+        *ngIf="type.value === aggregationType"
+        [formGroup]="aggregation"
+      >
+        <div fxLayout="row" fxLayoutGap="10px">
+          <!-- <mat-form-field appearance="outline">
+            <mat-label
+              >{{
+                "NOMINATIVE_USER.FIELD.PRODUCT_EDITOR" | translate
+              }}*</mat-label
+            >
+            <input
+              type="text"
+              formControlName="productEditor"
+              matInput
+              [matAutocomplete]="editorAuto"
+            />
+
+            <mat-autocomplete
+              autoActiveFirstOption
+              #editorAuto="matAutocomplete"
+            >
+              <mat-option
+                *ngFor="
+                  let editor of productEditors$
+                    | async
+                    | filterEditor : productEditor?.value
+                "
+                [value]="editor"
+              >
+                {{ editor }}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field> -->
+
+          <mat-form-field appearance="outline" fxFlex="33">
+            <mat-label
+              >{{ "NOMINATIVE_USER.FIELD.AGGREGATION" | translate }}*</mat-label
+            >
+            <mat-select formControlName="aggregationName">
+              <mat-option
+                *ngFor="let aggregation of aggregationList$ | async"
+                [value]="aggregation.ID"
+              >
+                {{ aggregation?.aggregation_name }}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="aggregationName?.hasError('required')">{{
+              "NOMINATIVE_USER.ERROR.REQUIRED.AGGREGATION" | translate
+            }}</mat-error>
+          </mat-form-field>
+        </div>
+        <ng-container formArrayName="userDetails">
+          <app-single-nominative-user
+            *ngFor="let item of userDetails.controls; let i = index"
+            [index]="i"
+            (onRemove)="removeUserSection($event)"
+          >
+          </app-single-nominative-user>
+        </ng-container>
+      </ng-container>
+
+      <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="10px">
+        <button
+          [disabled]="userDetails.length !== 0 || !isGeneralInfoValid"
+          mat-raised-button
+          class="btn-two"
+          (click)="browseFileUpload()"
+        >
+          {{ "NOMINATIVE_USER.BUTTON.IMPORT_USERS" | translate }}
+        </button>
+        <button
+          mat-raised-button
+          class="btn-two"
+          (click)="addNewNominativeUser()"
+        >
+          {{ "NOMINATIVE_USER.BUTTON.ADD_NEW_USER" | translate }}
+        </button>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>

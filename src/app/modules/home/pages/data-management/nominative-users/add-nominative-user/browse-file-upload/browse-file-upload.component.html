@@ -1,0 +1,109 @@
+<div fxLayout="row" fxLayoutAlign="center">
+  <h2 mat-dialog-title>{{ "NOMINATIVE_USER_IMPORT" | translate }}</h2>
+</div>
+<mat-dialog-content>
+  <mat-card>
+    <div fxLayout="column" fxLayoutGap="10px">
+      <div class="browse-title">{{ "SELECT_FILE_TO_UPLOAD" | translate }}</div>
+      <div fxLayout="row wrap" fxFill fxLayoutAlign="center center">
+        <button
+          fxFill
+          mat-raised-button
+          (click)="triggerClick()"
+          class="btn btn-two btn-round browse-btn"
+        >
+          {{ "BROWSE" | translate }}
+        </button>
+        <input
+          #hiddenInput
+          (change)="fileInserted($event?.target?.files)"
+          type="file"
+          class="hidden"
+          accept=".xlsx, .xls"
+        />
+        <div class="hint" fxFill>
+          <p>{{ "NOTE_FILE_ACCEPT_XLS" | translate }}</p>
+        </div>
+      </div>
+
+      <div class="file-loading" *ngIf="processing">
+        <ng-container *ngIf="progressPercent > 0 && progressPercent !== 100">
+          <div class="upload-meta">
+            <div>Uploading...</div>
+            <div>{{ progressPercent }}%</div>
+          </div>
+          <mat-progress-bar
+            mode="determinate"
+            [value]="progressPercent"
+          ></mat-progress-bar>
+        </ng-container>
+        <ng-container *ngIf="[0, 100].includes(progressPercent)">
+          <div class="upload-meta">
+            <div *ngIf="progressPercent == 0">
+              {{ "PREPARING" | translate }}...
+            </div>
+            <div *ngIf="progressPercent == 100">
+              {{ "PROCESSING" | translate }}...
+            </div>
+          </div>
+          <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+        </ng-container>
+      </div>
+
+      <div class="error-message" *ngIf="errorMessage">
+        <mat-icon>error</mat-icon>
+        <span>{{ errorMessage | translate }}</span>
+      </div>
+
+      <div
+        class="file-name"
+        *ngIf="selectedFile?.name"
+        matTooltip="{{ selectedFile?.name }}"
+        fxLayout="row"
+        fxLayoutAlign="start start"
+      >
+        <mat-icon>insert_drive_file</mat-icon>
+        <div class="file-name-text">
+          {{ selectedFile?.name }}
+        </div>
+      </div>
+
+      <a
+        class="template-row"
+        fxLayout="row"
+        fxLayoutAlign="start center"
+        fxLayoutGap="5px"
+        href="assets/files/NominativeUsersTemplate.xlsx"
+        download
+      >
+        <mat-icon>save_alt</mat-icon
+        ><span class="template-name">{{
+          "NOMINATIVE_USER_TEMPLATE" | translate
+        }}</span>
+      </a>
+    </div>
+  </mat-card>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <div fxLayout="row" fxLayoutAlign="center" fxLayoutGap="10px" fxFill>
+    <button
+      mat-raised-button
+      class="btn btn-two"
+      [disabled]="(processing && selectedFile) || !selectedFile"
+      (click)="uploadFile()"
+    >
+      {{ "UPLOAD" | translate }}
+    </button>
+    <button
+      mat-raised-button
+      class="btn btn-two"
+      [disabled]="!selectedFile"
+      (click)="reset()"
+    >
+      {{ "RESET" | translate }}
+    </button>
+    <button mat-raised-button class="btn btn-four" (click)="cancelAll()">
+      {{ "CANCEL" | translate }}
+    </button>
+  </div>
+</mat-dialog-actions>

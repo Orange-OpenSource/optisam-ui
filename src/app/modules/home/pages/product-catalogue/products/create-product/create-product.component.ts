@@ -24,6 +24,7 @@ import {
   EditorNamesResponse,
   ErrorResponse,
   OpenSourceType,
+  LicenseType,
   ProductCatalogEditor,
   ProductCatalogEditorListParams,
   ProductCatalogEditorListResponse,
@@ -38,12 +39,14 @@ import { CRUD } from '@core/util/constants/constants';
 import { ErrorDialogComponent } from '@shared/error-dialog/error-dialog.component';
 import { SharedService } from '@shared/shared.service';
 import { SuccessDialogComponent } from '@shared/success-dialog/success-dialog.component';
-import { CloseSourceListComponent } from './product-source/product-close-source/close-source-list/close-source-list.component';
-import { ProductCloseSourceComponent } from './product-source/product-close-source/product-close-source.component';
+// import { CloseSourceListComponent } from './product-source/product-close-source/close-source-list/close-source-list.component';
+// import { ProductCloseSourceComponent } from './product-source/product-close-source/product-close-source.component';
 import { ProductSupportVendorComponent } from './product-support-vendor/product-support-vendor.component';
 import { ProductUsefulLinksComponent } from './product-useful-links/product-useful-links.component';
 import { ProductVersionComponent } from './product-version/product-version.component';
 import { MatSelect } from '@angular/material/select';
+import { PRODUCT_RECOMMENDATION } from '@core/util/constants/constants';
+import { MatCheckboxChange } from '@angular/material/checkbox';
 
 interface SelectArray {
   key: string;
@@ -60,7 +63,7 @@ export class CreateProductComponent implements OnInit {
   @Input('data') data: ProductCatalogProduct = null;
   @Input('crud') crud: CRUD = CRUD.CREATE;
   @ViewChild('searchInput') searchInput: HTMLInputElement;
-
+  productRecommendationList: string[] = PRODUCT_RECOMMENDATION.sort();
   productForm: FormGroup;
   httpLoading: boolean = true;
   editorList: EditorName[] = [];
@@ -110,22 +113,32 @@ export class CreateProductComponent implements OnInit {
       swidTag: this.fb.control(''),
       productVersions: this.fb.array([]),
       productSupportVendor: this.fb.array([]),
-      productGeneralInformation: this.fb.control('', Validators.maxLength(200)),
+      productGeneralInformation: this.fb.control(
+        '',
+        Validators.maxLength(1000)
+      ),
       productContractTips: this.fb.control('', Validators.maxLength(200)),
-      productRecommendation: this.fb.control('', Validators.maxLength(200)),
+      productRecommendation: this.fb.control('NONE'),
       productLocation: this.fb.group({
-        onPremise: this.fb.control(false),
-        saas: this.fb.control(false),
+        locationType: ['NONE'],
       }),
-      productOpenSource: this.fb.group({
-        isOpenSource: this.fb.control(false),
-        openSourceType: this.fb.control(OpenSourceType.none),
-        openLicenses: this.fb.control(''),
+      licensing: [LicenseType.NONE],
+      opensources: this.fb.control(''),
+      closesource: this.fb.control(''),
+      OpenSource: this.fb.group({
+        openLicenses: [''],
+        openLicensesType: [OpenSourceType.none],
       }),
-      productCloseSource: this.fb.group({
-        isCloseSource: this.fb.control(false),
-        closeLicenses: this.fb.array([]),
-      }),
+
+      // productOpenSource: this.fb.group({
+      //   isOpenSource: this.fb.control(false),
+      //   openSourceType: this.fb.control(OpenSourceType.none),
+      //   openLicenses: this.fb.control(''),
+      // }),
+      // productCloseSource: this.fb.group({
+      //   isCloseSource: this.fb.control(false),
+      //   closeLicenses: this.fb.array([]),
+      // }),
       productUsefulLinks: this.fb.array([]),
     });
     //if id is present in url, then update
@@ -146,9 +159,9 @@ export class CreateProductComponent implements OnInit {
           while (this.productUsefulLinks.length) {
             this.productUsefulLinks.removeAt(0);
           }
-          while (this.closeLicenses.length) {
-            this.closeLicenses.removeAt(0);
-          }
+          // while (this.closeLicenses.length) {
+          //   this.closeLicenses.removeAt(0);
+          // }
           this.patchData(this.data1);
         });
     }
@@ -169,9 +182,9 @@ export class CreateProductComponent implements OnInit {
       while (this.productUsefulLinks.length) {
         this.productUsefulLinks.removeAt(0);
       }
-      while (this.closeLicenses.length) {
-        this.closeLicenses.removeAt(0);
-      }
+      // while (this.closeLicenses.length) {
+      //   this.closeLicenses.removeAt(0);
+      // }
       this.patchData(this.updatedData);
     }
   }
@@ -215,69 +228,74 @@ export class CreateProductComponent implements OnInit {
   get productLocation(): FormGroup {
     return this.productForm.get('productLocation') as FormGroup;
   }
-  get onPremise(): FormControl {
-    return this.productLocation.get('onPremise') as FormControl;
+  // get onPremise(): FormControl {
+  //   return this.productLocation.get('onPremise') as FormControl;
+  // }
+  // get saas(): FormControl {
+  //   return this.productLocation.get('saas') as FormControl;
+  // }
+
+  get licensingControl(): FormControl {
+    return this.productForm.get('licensing') as FormControl;
   }
-  get saas(): FormControl {
-    return this.productLocation.get('saas') as FormControl;
-  }
-  get productOpenSource(): FormGroup {
-    return this.productForm.get('productOpenSource') as FormGroup;
-  }
-  get isOpenSource(): FormControl {
-    return this.productOpenSource.get('isOpenSource') as FormControl;
-  }
-  get openLicenses(): FormControl {
-    return this.productOpenSource.get('openLicenses') as FormControl;
-  }
+  // get productOpenSource(): FormGroup {
+  //   return this.productForm.get('productOpenSource') as FormGroup;
+  // }
+  // get isOpenSource(): FormControl {
+  //   return this.productOpenSource.get('isOpenSource') as FormControl;
+  // }
+  // get openLicenses(): FormControl {
+  //   return this.productOpenSource.get('openLicenses') as FormControl;
+  // }
   get productUsefulLinks(): FormArray {
     return this.productForm.get('productUsefulLinks') as FormArray;
   }
 
-  get productCloseSource(): FormGroup {
-    return this.productForm.get('productCloseSource') as FormGroup;
-  }
-  get isCloseSource(): FormControl {
-    return this.productCloseSource.get('isCloseSource') as FormControl;
-  }
-  get closeLicenses(): FormArray {
-    return this.productCloseSource.get('closeLicenses') as FormArray;
-  }
+  // get productCloseSource(): FormGroup {
+  //   return this.productForm.get('productCloseSource') as FormGroup;
+  // }
+  // get isCloseSource(): FormControl {
+  //   return this.productCloseSource.get('isCloseSource') as FormControl;
+  // }
+  // get closeLicenses(): FormArray {
+  //   return this.productCloseSource.get('closeLicenses') as FormArray;
+  // }
 
-  get currentLocationType(): string {
-    if (!this.onPremise) return '';
-    return this.onPremise.value && this.saas.value
-      ? 'Both'
-      : this.onPremise.value
-      ? 'On Premise'
-      : 'SAAS';
-  }
+  // get currentLocationType(): string {
+  //   if (
+  //     this.onPremise !== undefined &&
+  //     this.saas !== undefined &&
+  //     !this.onPremise.value &&
+  //     !this.saas.value
+  //   ) {
+  //     return 'NONE';
+  //   }
+  //   return this.onPremise.value && this.saas.value
+  //     ? 'Both'
+  //     : this.onPremise.value
+  //     ? 'On Premise'
+  //     : 'SAAS';
+  // }
 
   private patchData(data: any): void {
+    console.log(data);
     if (!data) return;
-
     data = this.removeEmptyFromData(data);
     this.productForm.patchValue({
       productName: data?.name,
       productEditor: data?.editorID,
       productMetric: data?.metrics?.length ? data?.metrics[0] : [],
       swidTag: data?.productSwidTag,
+      licensing: data?.licensing,
       productGeneralInformation: data.genearlInformation,
-      productContractTips: data.contracttTips,
-      productRecommendation: data.recommendation,
-      productLocation: {
-        onPremise: ['On Premise', 'Both'].includes(data.locationType),
-        saas: ['SAAS', 'Both'].includes(data.locationType),
-      },
-      productOpenSource: {
-        isOpenSource: data?.openSource?.isOpenSource,
-        openSourceType: data?.openSource?.openSourceType,
+      OpenSource: {
         openLicenses: data?.openSource?.openLicences,
+        openLicensesType: data?.openSource?.openSourceType,
       },
-      productCloseSource: {
-        isCloseSource: data?.closeSource?.isCloseSource,
-        closeLicenses: data?.closeSource?.closeLicences,
-      },
+      productLocation: { locationType: data?.locationType },
+      productContractTips: data.contracttTips,
+      productRecommendation:
+        data?.recommendation === '' ? 'NONE' : data?.recommendation,
     });
 
     (data?.version || []).forEach((version: ProductCatalogVersion) => {
@@ -289,9 +307,12 @@ export class CreateProductComponent implements OnInit {
     (data?.supportVendors || []).forEach((vendor: string) =>
       this.addSupportVendor(vendor)
     );
-    (data?.closeSource?.closeLicences || []).forEach((data: any) => {
-      this.addCloseLicenses(data);
-    });
+
+    console.log(this.productForm.value);
+
+    // (data?.closeSource?.closeLicences || []).forEach((data: any) => {
+    //   this.addCloseLicenses(data);
+    // });
   }
 
   addVersion(data: ProductCatalogVersion = null): void {
@@ -310,9 +331,9 @@ export class CreateProductComponent implements OnInit {
     );
   }
 
-  addCloseLicenses(data: any) {
-    this.closeLicenses.push(CloseSourceListComponent.addNewCloseSource(data));
-  }
+  // addCloseLicenses(data: any) {
+  //   this.closeLicenses.push(CloseSourceListComponent.addNewCloseSource(data));
+  // }
 
   removeProductVersion(index: number): void {
     this.productVersions.removeAt(index);
@@ -334,12 +355,13 @@ export class CreateProductComponent implements OnInit {
 
   createProduct(): void {
     if (this.productForm.invalid && this.crud !== CRUD.CREATE) return;
-
+    console.log(this.productForm.value);
     const postData: ProductCatalogProduct = createPostData.call(
       this,
       this.productForm.value
     );
 
+    console.log(postData);
     this.productCatalogService.addProduct(postData).subscribe(
       (res: ProductCatalogProduct) => {
         this.dialog

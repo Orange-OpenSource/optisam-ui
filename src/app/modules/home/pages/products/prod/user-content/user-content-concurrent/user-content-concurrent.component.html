@@ -1,0 +1,7 @@
+<app-product-individual-concurrent-user
+  *ngIf="(productType$ | async) === productIndividual"
+></app-product-individual-concurrent-user>
+
+<app-product-aggregation-concurrent-user
+  *ngIf="(productType$ | async) === productAggregation"
+></app-product-aggregation-concurrent-user>

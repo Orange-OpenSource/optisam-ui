@@ -13,7 +13,7 @@ import {
 } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { PartnerDeletionConfirmationComponent } from './partner-deletion-confirmation/partner-deletion-confirmation.component';
-import { ProductCatalogPartnerManager } from '@core/modals';
+import { NameEmail } from '@core/modals';
 
 @Component({
   selector: 'app-single-partner-manager',
@@ -32,9 +32,7 @@ export class SinglePartnerManagerComponent implements OnInit {
     this.form = this.partnerManagers?.controls[this.index] as FormGroup;
   }
 
-  static addPartnerManager(
-    data: ProductCatalogPartnerManager = null
-  ): FormGroup {
+  static addPartnerManager(data: NameEmail = null): FormGroup {
     return new FormGroup({
       name: new FormControl(data?.name || '', Validators.maxLength(200)),
       email: new FormControl(data?.email || '', Validators.email),

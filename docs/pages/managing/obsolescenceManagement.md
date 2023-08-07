@@ -2,7 +2,7 @@
 
 <span style="color:red">First, make sure that you are an admin and that you are working on the good scope :</span>
 
-![select APM](../../img/goodScopeu.jpg){: .zoom}
+![select APM](../../img/goodScope.jpg){: .zoom}
 
 ## What is the obsolescence ?
 

@@ -1,0 +1,37 @@
+<ng-container [formGroup]="globalAccountManagerGroup">
+  <div>
+    <div
+      class="list-global-account-managers"
+      fxLayout="column"
+      fxLayoutAlign="space-between"
+    >
+      <div>
+        <h6 class="partner-manager-heading">
+          {{ "EDITOR.GLOBAL_ACCOUNT_MANAGERS" | translate }}
+        </h6>
+      </div>
+      <ng-container formArrayName="globalAccountManager">
+        <app-single-global-account-manager
+          *ngFor="let item of AccountManager?.controls; let i = index"
+          [index]="i"
+        ></app-single-global-account-manager>
+      </ng-container>
+      <button
+        mat-raised-button
+        class="btn-primary add-pm-type-btn"
+        disableRipple
+        (click)="addNewGlobalAccountManager()"
+      >
+        <div
+          fxLayout="row"
+          fxLayoutAlign="space-between center"
+          fxLayoutGap="5px"
+          class="add-btn-content"
+        >
+          <mat-icon>add</mat-icon>
+          <span>{{ "EDITOR.ADD_MANAGERS" | translate }}</span>
+        </div>
+      </button>
+    </div>
+  </div>
+</ng-container>

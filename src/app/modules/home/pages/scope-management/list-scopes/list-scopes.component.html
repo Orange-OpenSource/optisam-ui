@@ -1,14 +1,19 @@
-<mat-card class="example-card" style="z-index: 0;">
-
+<mat-card class="example-card" style="z-index: 0">
   <div class="container-fluid page-content-header">
     <div class="row">
       <div class="page-heading">
-        {{'Scope Management' | translate}}
+        {{ "Scope Management" | translate }}
       </div>
       <div class="col-md-2 add-btn">
-        <button id="createScopeButton" mat-raised-button class="btn-two" (click)="createNew()" *ngIf="(role === 'ADMIN') || ((role === 'SUPER_ADMIN'))">
+        <button
+          id="createScopeButton"
+          mat-raised-button
+          class="btn-two"
+          (click)="createNew()"
+          *ngIf="[superAdminRole].includes(role)"
+        >
           <mat-icon>add</mat-icon>
-          {{'Create Scope' | translate}}
+          {{ "Create Scope" | translate }}
         </button>
       </div>
     </div>
@@ -16,91 +21,208 @@
 
   <mat-card-content>
     <div class="mat-elevation-z8">
-
       <mat-table [dataSource]="scopeData">
         <ng-container matColumnDef="scope_code">
-          <mat-header-cell *matHeaderCellDef > {{'Scope Code'| translate}}
+          <mat-header-cell *matHeaderCellDef>
+            {{ "Scope Code" | translate }}
           </mat-header-cell>
-          <mat-cell *matCellDef="let scope"> {{scope.scope_code}} </mat-cell>
+          <mat-cell *matCellDef="let scope"> {{ scope.scope_code }} </mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="scope_name">
-          <mat-header-cell *matHeaderCellDef > {{'Scope Name'| translate}}
+          <mat-header-cell *matHeaderCellDef>
+            {{ "Scope Name" | translate }}
           </mat-header-cell>
-          <mat-cell *matCellDef="let scope"> {{scope.scope_name}} </mat-cell>
+          <mat-cell *matCellDef="let scope"> {{ scope.scope_name }} </mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="scope_type">
-          <mat-header-cell *matHeaderCellDef > {{'Scope Type'| translate}}
+          <mat-header-cell *matHeaderCellDef>
+            {{ "Scope Type" | translate }}
           </mat-header-cell>
-          <mat-cell *matCellDef="let scope"> {{scope.scope_type}} </mat-cell>
+          <mat-cell *matCellDef="let scope"> {{ scope.scope_type }} </mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="created_by">
-          <mat-header-cell *matHeaderCellDef > {{'Created By'| translate}}
+          <mat-header-cell *matHeaderCellDef>
+            {{ "Created By" | translate }}
           </mat-header-cell>
-          <mat-cell *matCellDef="let scope"> {{scope.created_by}} </mat-cell>
+          <mat-cell *matCellDef="let scope"> {{ scope.created_by }} </mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="created_on">
-          <mat-header-cell *matHeaderCellDef > {{'Created On'| translate}}
+          <mat-header-cell *matHeaderCellDef>
+            {{ "Created On" | translate }}
           </mat-header-cell>
-          <mat-cell *matCellDef="let scope"> {{scope.created_on}} </mat-cell>
+          <mat-cell *matCellDef="let scope"> {{ scope.created_on }} </mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="groups">
-          <mat-header-cell *matHeaderCellDef > {{'Groups'| translate}}
+          <mat-header-cell *matHeaderCellDef>
+            {{ "Groups" | translate }}
           </mat-header-cell>
           <mat-cell *matCellDef="let scope">
-            <span class="mat-button-link"  matTooltip="{{scope.group_names}}">
-              {{scope.group_names.length}} 
+            <span
+              class="mat-button-link"
+              matTooltip="{{ scope.group_names | toSeparateLine }}"
+              matTooltipClass="tooltip-next-line"
+            >
+              {{ scope.group_names.length }}
             </span>
           </mat-cell>
         </ng-container>
 
-        <ng-container matColumnDef="action">
-          <mat-header-cell *matHeaderCellDef >{{'Action' | translate}}</mat-header-cell>
+        <ng-container matColumnDef="expenditure">
+          <mat-header-cell *matHeaderCellDef>
+            {{ "Expenditure" | translate }}
+          </mat-header-cell>
           <mat-cell *matCellDef="let scope">
-            <mat-icon id="deleteBtn_{{i}}" class="action-icon" matTooltip="{{'Delete Scope'|translate}}" 
-            (click)="deleteScopeConfirmation(scope, deleteConfirmationDialog)">delete</mat-icon>
+            <div
+              class="expenditure-block"
+              fxLayout="row"
+              fxLayoutAlign="start"
+              #editBox
+              (mouseenter)="expMouseEnter(editBox)"
+              (mouseleave)="expMouseLeave(editBox)"
+            >
+              <input
+                readonly
+                type="text"
+                [value]="scope?.expenditure || 0"
+                #inputExp
+                (blur)="onBlur(inputExp, scope)"
+                (click)="editExp(editBox)"
+                (keydown.enter)="enterExp(inputExp, scope, editBox)"
+                (keydown)="restrictNonDigit($event)"
+              />
+              <div class="edit-exp-box edit-btn" (click)="editExp(editBox)">
+                <mat-icon>edit</mat-icon>
+              </div>
+
+              <div class="edit-exp-box loading-btn">
+                <img src="/assets/images/loading-gif.gif" alt="loading" />
+              </div>
+              <div
+                class="action-block"
+                fxLayout="row"
+                fxLayoutAlign="end"
+                fxLayoutGap="3px"
+              >
+                <div
+                  class="action-item accept"
+                  (click)="addExp(inputExp, scope)"
+                >
+                  <mat-icon>check</mat-icon>
+                </div>
+                <div
+                  class="action-item cancel"
+                  (click)="cancelChange(inputExp, scope)"
+                >
+                  <mat-icon>close</mat-icon>
+                </div>
+              </div>
+            </div>
           </mat-cell>
         </ng-container>
 
-        <mat-header-row *matHeaderRowDef="displayedColumns; sticky:true"></mat-header-row>
-        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        <ng-container matColumnDef="action">
+          <mat-header-cell *matHeaderCellDef>{{
+            "Action" | translate
+          }}</mat-header-cell>
+          <mat-cell *matCellDef="let scope">
+            <mat-icon
+              id="deleteBtn_{{ i }}"
+              class="action-icon"
+              matTooltip="{{ 'Delete Scope' | translate }}"
+              (click)="deleteScopeConfirmation(scope, deleteConfirmationDialog)"
+              >delete</mat-icon
+            >
+          </mat-cell>
+        </ng-container>
+
+        <mat-header-row
+          *matHeaderRowDef="displayedColumns; sticky: true"
+        ></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
       </mat-table>
       <app-loading-spinner *ngIf="_loading"></app-loading-spinner>
-      <div class="no-data" *ngIf="!_loading && scopeData && scopeData.length === 0">{{'No data available' | translate}}</div>
+      <div
+        class="no-data"
+        *ngIf="!_loading && scopeData && scopeData.length === 0"
+      >
+        {{ "No data available" | translate }}
+      </div>
     </div>
   </mat-card-content>
 </mat-card>
 <ng-template #deleteConfirmationDialog>
   <mat-dialog-content>
-      <p>{{'DELETE_SCOPE_CONFIRM_MSG' | translate}}: <strong>{{scopeToDelete}}</strong>?</p>
-      <p>{{'This action is irreversible and all related data will be erased.'|translate}}</p>
+    <p>
+      {{ "DELETE_SCOPE_CONFIRM_MSG" | translate }}:
+      <strong>{{ scopeToDelete }}</strong
+      >?
+    </p>
+    <p>
+      {{
+        "This action is irreversible and all related data will be erased."
+          | translate
+      }}
+    </p>
   </mat-dialog-content>
   <mat-dialog-actions align="center">
-      <button mat-button class="btn-two" (click)="deleteScope(successDialog,errorDialog)" cdkFocusInitial>
-        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" *ngIf="_deleteLoading"></span>  
-        {{'OK'|translate}}
-      </button>
-      <button mat-button [mat-dialog-close]="true" class="btn-three" cdkFocusInitial>{{'Cancel'|translate}}</button>
-    </mat-dialog-actions>
-</ng-template>  
+    <button
+      mat-button
+      class="btn-two"
+      (click)="deleteScope(successDialog, errorDialog)"
+      cdkFocusInitial
+    >
+      <span
+        class="spinner-border spinner-border-sm"
+        role="status"
+        aria-hidden="true"
+        *ngIf="_deleteLoading"
+      ></span>
+      {{ "OK" | translate }}
+    </button>
+    <button
+      mat-button
+      [mat-dialog-close]="true"
+      class="btn-three"
+      cdkFocusInitial
+    >
+      {{ "Cancel" | translate }}
+    </button>
+  </mat-dialog-actions>
+</ng-template>
 <ng-template #successDialog>
   <mat-dialog-content>
-    <p>{{'DELETE_SCOPE_SUCCESS'|translate}}</p>
-    <p>{{'RELOGIN_MSG'|translate}}</p>
+    <p>{{ "DELETE_SCOPE_SUCCESS" | translate }}</p>
+    <p>{{ "RELOGIN_MSG" | translate }}</p>
   </mat-dialog-content>
   <mat-dialog-actions align="center">
-    <button mat-button [mat-dialog-close]="true" class="btn-two" (click)="getScopesList()" cdkFocusInitial>{{'OK'|translate}}</button>
+    <button
+      mat-button
+      [mat-dialog-close]="true"
+      class="btn-two"
+      (click)="getScopesList()"
+      cdkFocusInitial
+    >
+      {{ "OK" | translate }}
+    </button>
   </mat-dialog-actions>
 </ng-template>
 <ng-template #errorDialog>
   <mat-dialog-content>
-    <p>{{'Error'|translate}}: {{errorMessage}}</p>
+    <p>{{ "Error" | translate }}: {{ errorMessage }}</p>
   </mat-dialog-content>
   <mat-dialog-actions align="center">
-    <button mat-button [mat-dialog-close]="true" class="btn-two" cdkFocusInitial>{{'OK'|translate}}</button>
+    <button
+      mat-button
+      [mat-dialog-close]="true"
+      class="btn-two"
+      cdkFocusInitial
+    >
+      {{ "OK" | translate }}
+    </button>
   </mat-dialog-actions>
 </ng-template>

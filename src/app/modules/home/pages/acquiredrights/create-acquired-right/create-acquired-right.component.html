@@ -27,24 +27,6 @@
               {{ "SKU is required in ^[a-zA-Z0-9_.]*$ format" | translate }}
             </mat-error>
           </mat-form-field>
-          <div
-            fxFlex="49"
-            fxLayout="row"
-            fxLayoutAlign="start center"
-            style="height: 47.6px"
-          >
-            <mat-checkbox
-              fxLayout="row"
-              fxLayoutAlign="start center"
-              id="repartition"
-              formControlName="repartition"
-              matTooltip="{{
-                'Allow OpTISAM to compute the allocation of licenses for the product in order to have the least expensive total cost'
-                  | translate
-              }}"
-              >{{ "COST OPTIMIZATION" | translate }}</mat-checkbox
-            >
-          </div>
         </div>
 
         <mat-horizontal-stepper [linear]="false" #stepper>
@@ -306,6 +288,23 @@
                     {{ "Metric is mandatory" | translate }}
                   </mat-error>
                 </mat-form-field>
+              </div>
+
+              <div class="horizontal">
+                <mat-checkbox
+                  *ngIf="isCostOptimizationVisible"
+                  fxLayout="row"
+                  color="primary"
+                  [disableRipple]="true"
+                  fxLayoutAlign="start center"
+                  id="repartition"
+                  formControlName="repartition"
+                  matTooltip="{{
+                    'Allow OpTISAM to compute the allocation of licenses for the product in order to have the least expensive total cost'
+                      | translate
+                  }}"
+                  >{{ "COST OPTIMIZATION" | translate }}</mat-checkbox
+                >
               </div>
               <div class="stepperContainer">
                 <button class="stepperBtn" mat-button matStepperPrevious>

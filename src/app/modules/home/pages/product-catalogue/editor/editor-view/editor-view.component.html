@@ -17,48 +17,60 @@
               This is an example table.
             </caption> -->
             <tbody>
+              <!-- name -->
               <tr>
-                <th class="width-20">Editor Name</th>
+                <th class="width-20">{{ "EDITOR.EDITOR_NAME" | translate }}</th>
                 <td class="last-child">
                   {{ data?.name }}
                 </td>
               </tr>
-
+              <!-- general info -->
               <tr class="width-20">
-                <th>General Information</th>
+                <th>{{ "EDITOR.GENERAL_INFO" | translate }}</th>
                 <td *ngIf="data.general_information" class="last-child">
                   {{ data.general_information }}
                 </td>
                 <td *ngIf="!data.general_information" class="last-child">-</td>
               </tr>
-
+              <!-- group contract -->
               <tr class="width-20">
-                <th>Products Count</th>
+                <th>Group Contract</th>
+                <td *ngIf="data?.groupContract" class="last-child">
+                  {{ data?.groupContract ? "Yes" : "No" }}
+                </td>
+                <td *ngIf="!data?.groupContract" class="last-child">-</td>
+              </tr>
+              <!-- products count -->
+              <tr class="width-20">
+                <th>{{ "EDITOR.NO_OF_PRODUCTS" | translate }}</th>
                 <td *ngIf="data?.product_count" class="last-child">
                   {{ data?.product_count }}
                 </td>
                 <td *ngIf="!data?.product_count" class="last-child">-</td>
               </tr>
-
+              <!-- scopes -->
               <tr class="width-20">
-                <th>Scopes</th>
+                <th>{{ "ENTITIES" | translate }}</th>
                 <td *ngIf="data?.scopes === null" class="last-child">-</td>
                 <td *ngIf="data?.scopes !== null" class="last-child">
                   {{ data?.scopes }}
                 </td>
               </tr>
-
+              <!-- vendors -->
               <tr class="width-20">
-                <th>vendors</th>
+                <th>{{ "EDITOR.VENDORS" | translate }}</th>
                 <td *ngIf="vendors?.length !== 0" class="last-child">
                   {{ vendors?.join(" , ") }}
                 </td>
                 <td *ngIf="vendors?.length === 0" class="last-child">-</td>
               </tr>
-
+              <!-- partner manager -->
               <tr class="last-child">
-                <th>Partner Managers</th>
-                <td class="last-child">
+                <th>{{ "EDITOR.PARTNER_MANAGERS" | translate }}</th>
+                <td
+                  *ngIf="data?.partner_managers?.length !== 0"
+                  class="last-child"
+                >
                   <table summary="Example of a standard data-table.">
                     <thead>
                       <tr>
@@ -84,10 +96,87 @@
                     </tbody>
                   </table>
                 </td>
+                <td
+                  *ngIf="data?.partner_managers?.length === 0"
+                  class="last-child"
+                >
+                  -
+                </td>
               </tr>
-
+              <!-- global account managers -->
               <tr class="last-child">
-                <th>Audits</th>
+                <th>{{ "EDITOR.GLOBAL_ACCOUNT_MANAGERS" | translate }}</th>
+                <td
+                  *ngIf="data?.global_account_manager?.length !== 0"
+                  class="last-child"
+                >
+                  <table summary="Example of a standard data-table.">
+                    <thead>
+                      <tr>
+                        <th class="versionsView">Name</th>
+                        <th class="versionsView">Email</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let x of data?.global_account_manager">
+                        <td class="versionsView" *ngIf="x.name">
+                          {{ x.name }}
+                        </td>
+                        <td class="versionsView" *ngIf="!x.name && x.email">
+                          -
+                        </td>
+                        <td class="versionsView" *ngIf="x.email">
+                          {{ x.email }}
+                        </td>
+                        <td class="versionsView" *ngIf="!x.email && x.name">
+                          -
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+                <td
+                  *ngIf="data?.global_account_manager?.length === 0"
+                  class="last-child"
+                >
+                  -
+                </td>
+              </tr>
+              <!-- sourcers -->
+              <tr class="last-child">
+                <th>{{ "EDITOR.SOURCERS" | translate }}</th>
+                <td *ngIf="data?.sourcers?.length !== 0" class="last-child">
+                  <table summary="Example of a standard data-table.">
+                    <thead>
+                      <tr>
+                        <th class="versionsView">Name</th>
+                        <th class="versionsView">Email</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let x of data?.sourcers">
+                        <td class="versionsView" *ngIf="x.name">
+                          {{ x.name }}
+                        </td>
+                        <td class="versionsView" *ngIf="!x.name && x.email">
+                          -
+                        </td>
+                        <td class="versionsView" *ngIf="x.email">
+                          {{ x.email }}
+                        </td>
+                        <td class="versionsView" *ngIf="!x.email && x.name">
+                          -
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+
+                <td *ngIf="data?.sourcers?.length === 0">-</td>
+              </tr>
+              <!-- audits -->
+              <tr class="last-child">
+                <th>{{ "EDITOR.AUDITS" | translate }}</th>
                 <td
                   *ngIf="data?.audits?.length !== 0 && data?.audits !== null"
                   class="last-child"
@@ -100,16 +189,18 @@
                       </tr>
                     </thead>
                     <tbody>
-                      <tr *ngFor="let x of data?.audits">
-                        <td class="versionsView" *ngIf="x.entity">
-                          {{ x.entity }}
-                        </td>
-                        <td class="versionsView" *ngIf="!x.entity">-</td>
-                        <td class="versionsView" *ngIf="x.date">
-                          {{ x.date | date : "yyyy" }}
-                        </td>
-                        <td class="versionsView" *ngIf="!x.date">-</td>
-                      </tr>
+                      <ng-container *ngFor="let x of data?.audits">
+                        <tr *ngIf="x.entity || x.date">
+                          <td class="versionsView" *ngIf="x.entity">
+                            {{ x.entity }}
+                          </td>
+                          <td class="versionsView" *ngIf="!x.entity">-</td>
+                          <td class="versionsView" *ngIf="x.date">
+                            {{ x.date | date : "yyyy" }}
+                          </td>
+                          <td class="versionsView" *ngIf="!x.date">-</td>
+                        </tr>
+                      </ng-container>
                     </tbody>
                   </table>
                 </td>
@@ -119,6 +210,23 @@
                 >
                   -
                 </td>
+              </tr>
+              <!-- headquarter country -->
+              <tr class="width-20">
+                <th>{{ "EDITOR.HEAD_QUARTER_COUNTRY" | translate }}</th>
+                <td *ngIf="data?.country_code" class="last-child">
+                  {{ country }}
+                </td>
+                <td *ngIf="!data?.country_code" class="last-child">-</td>
+              </tr>
+
+              <!-- address -->
+              <tr class="width-20">
+                <th>{{ "EDITOR.ADDRESS" | translate }}</th>
+                <td *ngIf="data?.address" class="last-child">
+                  {{ data?.address }}
+                </td>
+                <td *ngIf="!data?.address" class="last-child">-</td>
               </tr>
             </tbody>
           </table>

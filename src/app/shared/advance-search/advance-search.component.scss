@@ -57,3 +57,18 @@ button {
 ::ng-deep .cdk-overlay-container .search-label-tooltip {
   margin-bottom: 5px;
 }
+
+::ng-deep
+  .mat-form-field-appearance-fill.advance-search-select
+  .mat-form-field-flex {
+  padding: 0;
+  background-color: initial;
+}
+
+::ng-deep app-advance-search .mat-icon-button {
+  height: 40px !important;
+}
+
+.operator-selection {
+  padding-bottom: 0.35em !important;
+}

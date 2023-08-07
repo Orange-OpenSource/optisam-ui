@@ -1,5 +1,8 @@
 import { Injectable } from '@angular/core';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { CommonPopupSetting } from '@core/modals';
 import { Subject, Observable, BehaviorSubject } from 'rxjs';
+import { CommonPopupComponent } from './dialog/common-popup/common-popup.component';
 
 @Injectable({
   providedIn: 'root',
@@ -11,7 +14,7 @@ export class SharedService {
   private _emitProfileChange: Subject<any>;
   public _emitScopeChange: Subject<any>;
 
-  constructor() {
+  constructor(private dialog: MatDialog) {
     this._navigationLoading = new Subject<Boolean>();
     this._httpLoading = new BehaviorSubject<Boolean>(true);
     this._clearAdvSearch = new BehaviorSubject<any>('1');
@@ -61,5 +64,15 @@ export class SharedService {
 
   emitScopeChange(scope) {
     this._emitScopeChange.next(scope);
+  }
+
+  commonPopup(data: CommonPopupSetting): MatDialogRef<CommonPopupComponent> {
+    return this.dialog.open(CommonPopupComponent, {
+      disableClose: true,
+      minWidth: '300px',
+      maxWidth: '70vw',
+      width: 'max-content',
+      data,
+    });
   }
 }

@@ -1,0 +1,96 @@
+<div *ngIf="!_productLoading">
+  <div class="mat-elevation-z3">
+    <div class="basic" fxLayout="column">
+      <div fxLayout="row" class="productLine" fxLayoutAlign="end center">
+        <div fxFlex="40%">
+          <p class="productHeader">
+            {{ "PRODUCT_CATALOG.TITLE.PRODUCT" | translate }} ({{ length }})
+          </p>
+        </div>
+        <div fxFlex="60%" class="search-container">
+          <input
+            type="text"
+            [formControl]="productSearchControl"
+            placeholder="{{
+              'PRODUCT_CATALOG.TITLE.SEARCH_PRODUCT' | translate
+            }}"
+            class="search-input"
+            (keyup.enter)="updateSearchField()"
+          />
+          <span
+            class="search-suffix-icon"
+            matSuffix
+            fxLayout="row"
+            fxLayoutAlign="end center"
+          >
+            <button
+              mat-icon-button
+              (click)="clearSearch()"
+              *ngIf="productSearchControl?.value"
+            >
+              <mat-icon class="clear-search">close</mat-icon>
+            </button>
+            <button mat-icon-button (click)="updateSearchField()">
+              <mat-icon>search</mat-icon>
+            </button>
+          </span>
+        </div>
+      </div>
+      <div fxFlex>
+        <div
+          #productsDiv
+          class="products"
+          optisamScrollPagination
+          [scrolledToLastMargin]="200"
+          [isLoading]="isLoading"
+          [scrollTarget]="productsDiv"
+          (scrolledToLast)="onScrolledToLast()"
+          *ngIf="productsListArray?.length !== 0"
+        >
+          <div
+            fxLayout="row"
+            class="productListSpace"
+            *ngFor="let item of productsListArray"
+          >
+            <div class="image-section">
+              <img
+                class="image-box"
+                src="{{
+                  'https://pr-diod-ocp-fr01-dev-optisam-dev-optisam.oss.eu-west-0.prod-cloud-ocb.orange-business.com/optisam-dev/'
+                }}{{ editorName?.toLowerCase() }}.svg 
+          "
+                (error)="onImgError($event)"
+                alt="logo"
+              />
+            </div>
+            <p class="productName" #productsList (click)="productDetail(item)">
+              {{ item?.name }}
+            </p>
+          </div>
+        </div>
+        <app-loading-spinner
+          *ngIf="isLoading"
+          class="custom-spinner"
+        ></app-loading-spinner>
+        <div
+          *ngIf="productsListArray?.length === 0"
+          class="products"
+          fxLayout="column"
+        >
+          <img
+            src="../../../../../../../../assets/images/NoDataFound.PNG"
+            alt="logo"
+            class="center"
+          />
+          <p class="text-center font-weight-bold mt-3">
+            No Products Found for this Editor
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="no-data" *ngIf="_productLoading">
+  <app-loading-spinner></app-loading-spinner>
+</div>

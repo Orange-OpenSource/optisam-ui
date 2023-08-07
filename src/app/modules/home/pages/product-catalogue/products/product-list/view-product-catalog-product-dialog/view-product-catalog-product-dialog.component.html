@@ -19,33 +19,39 @@
     </caption> -->
             <tbody>
               <tr>
-                <th class="width-20">Product Name</th>
+                <th class="width-20">
+                  {{ "PRODUCT_CATALOG.FORM_FIELD.PRODUCT_NAME" | translate }}
+                </th>
                 <td class="last-child">
                   {{ data.name }}
                 </td>
               </tr>
               <tr>
-                <th class="width-20">Editor Name</th>
+                <th class="width-20">
+                  {{ "PRODUCT_CATALOG.FORM_FIELD.EDITOR" | translate }}
+                </th>
                 <td class="last-child">
                   {{ data.editorName }}
                 </td>
               </tr>
               <tr class="width-20">
-                <th>Product Swid Tag</th>
+                <th>{{ "SwidTag" | translate }}</th>
                 <td *ngIf="data?.productSwidTag" class="last-child">
                   {{ data?.productSwidTag }}
                 </td>
                 <td *ngIf="!data?.productSwidTag" class="last-child">-</td>
               </tr>
               <tr class="width-20">
-                <th>General Information</th>
+                <th>
+                  {{ "PRODUCT_CATALOG.TITLE.GENERAL_INFORMATION" | translate }}
+                </th>
                 <td *ngIf="data.genearlInformation" class="last-child">
                   {{ data.genearlInformation }}
                 </td>
                 <td *ngIf="!data.genearlInformation" class="last-child">-</td>
               </tr>
               <tr class="width-20">
-                <th>Contract Tip</th>
+                <th>{{ "PRODUCT_CATALOG.TITLE.CONTRACT_TIPS" | translate }}</th>
                 <td *ngIf="data?.contracttTips" class="last-child">
                   {{ data.contracttTips }}
                 </td>
@@ -53,21 +59,25 @@
               </tr>
 
               <tr class="width-20">
-                <th>Recommendation</th>
+                <th>
+                  {{ "PRODUCT_CATALOG.TITLE.RECOMMENDATION" | translate }}
+                </th>
                 <td *ngIf="data?.recommendation" class="last-child">
                   {{ data?.recommendation }}
                 </td>
                 <td *ngIf="!data?.recommendation" class="last-child">-</td>
               </tr>
               <tr class="width-20">
-                <th>Metrics</th>
+                <th>{{ "PRODUCT_CATALOG.FORM_FIELD.METRIC" | translate }}</th>
                 <td *ngIf="data?.metrics" class="last-child">
                   {{ data?.metrics?.join(", ") }}
                 </td>
                 <td *ngIf="!data?.metrics" class="last-child">-</td>
               </tr>
               <tr class="width-20">
-                <th>Support vendors</th>
+                <th>
+                  {{ "PRODUCT_CATALOG.TITLE.SUPPORT_VENDOR" | translate }}
+                </th>
                 <td
                   *ngIf="data?.supportVendors?.length !== 0"
                   class="last-child"
@@ -84,9 +94,14 @@
 
               <!-- location -->
               <tr class="width-20">
-                <th>Location</th>
+                <th>
+                  {{
+                    "PRODUCT_CATALOG.PRODUCTS_LIST_COLUMNS.LOCATION_TYPE"
+                      | translate
+                  }}
+                </th>
                 <td *ngIf="data?.locationType" class="last-child">
-                  {{ data?.locationType }}
+                  {{ data?.locationType === "NONE" ? "-" : data?.locationType }}
                 </td>
                 <td *ngIf="!data?.locationType" class="last-child">-</td>
               </tr>
@@ -94,49 +109,28 @@
               <tr class="width-20">
                 <th>Licensing</th>
                 <td
-                  *ngIf="
-                    data?.openSource?.isOpenSource &&
-                    data?.closeSource?.isCloseSource
-                  "
-                  class="last-child"
-                >
-                  Open Source and Closed Source
-                </td>
-                <td
-                  *ngIf="
-                    data?.openSource?.isOpenSource &&
-                    !data?.closeSource?.isCloseSource
-                  "
-                  class="last-child"
-                >
-                  Open Source
-                </td>
-                <td
-                  *ngIf="
-                    !data?.openSource?.isOpenSource &&
-                    data?.closeSource?.isCloseSource
-                  "
+                  *ngIf="data?.licensing === 'CLOSEDSOURCE'"
                   class="last-child"
                 >
                   Closed Source
                 </td>
-                <td
-                  *ngIf="
-                    !data?.openSource?.isOpenSource &&
-                    !data?.closeSource?.isCloseSource
-                  "
-                  class="last-child"
-                >
-                  -
+                <td *ngIf="data?.licensing === 'OPENSOURCE'" class="last-child">
+                  Open Source
                 </td>
+                <td *ngIf="data?.licensing === 'NONE'" class="last-child">-</td>
+                <td *ngIf="!data?.licensing" class="last-child">-</td>
               </tr>
-              <tr *ngIf="data?.openSource?.isOpenSource" class="width-20">
+              <tr *ngIf="data?.openSource?.openSourceType" class="width-20">
                 <th>Open Source Type</th>
                 <td class="last-child">
-                  {{ data?.openSource?.openSourceType }}
+                  {{
+                    data?.openSource?.openSourceType === "NONE"
+                      ? "-"
+                      : data?.openSource?.openSourceType
+                  }}
                 </td>
               </tr>
-              <tr *ngIf="data?.openSource?.isOpenSource" class="width-20">
+              <tr *ngIf="data?.openSource?.openLicences" class="width-20">
                 <th>Open Source Licences</th>
                 <td
                   *ngIf="data?.openSource?.openLicences !== ''"
@@ -153,7 +147,7 @@
               </tr>
               <!-- useful links -->
               <tr class="width-20">
-                <th>Useful Links</th>
+                <th>{{ "PRODUCT_CATALOG.TITLE.USEFUL_LINKS" | translate }}</th>
                 <td *ngIf="data?.usefulLinks?.length !== 0" class="last-child">
                   <a
                     target="_blank"
@@ -171,15 +165,16 @@
 
               <!-- scopes -->
               <tr class="width-20">
-                <th>Scopes</th>
-                <td *ngIf="data?.scopes !== null" class="last-child">
+                <th>{{ "Entities" | translate }}</th>
+                <td *ngIf="data?.scopes?.length !== 0" class="last-child">
                   {{ data?.scopes?.join(", ") }}
                 </td>
                 <td *ngIf="data?.scopes === null" class="last-child">-</td>
+                <td *ngIf="data?.scopes?.length === 0" class="last-child">-</td>
               </tr>
               <!-- version -->
               <tr class="last-child">
-                <th>Versions</th>
+                <th>{{ "PRODUCT_CATALOG.TITLE.VERSIONS" | translate }}</th>
                 <td class="last-child">
                   <table summary="Example of a standard data-table.">
                     <thead>

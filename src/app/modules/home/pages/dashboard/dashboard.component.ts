@@ -1,16 +1,18 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { LOCAL_KEYS } from '@core/util/constants/constants';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
 import * as Chart from 'chart.js';
-import 'chartjs-plugin-labels';
 import * as d3 from 'd3';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { Observable, Subject, throwError } from 'rxjs';
+import { map, pluck, takeUntil, catchError, tap } from 'rxjs/operators';
 import { DataManagementService } from 'src/app/core/services/data-management.service';
 import { EquipmentsService } from 'src/app/core/services/equipments.service';
 import { ProductService } from 'src/app/core/services/product.service';
 import { SharedService } from 'src/app/shared/shared.service';
 import { MatDialog } from '@angular/material/dialog';
 import { FloorPipe } from '../acquiredrights/pipes/floor.pipe';
+import { ErrorResponse, SharedAmount, SharedAmountParams } from '@core/modals';
+import { AccountService, CommonService } from '@core/services';
 import { MatSelect } from '@angular/material/select';
 @Component({
   selector: 'app-dashboard',
@@ -92,11 +94,14 @@ export class DashboardComponent implements OnInit {
   productsNotDeployedInfo: any;
   productsNotAcquiredInfo: any;
   hideStatus: boolean = false;
+  totalReceivedAmount: number;
+  totalSharedAmount: number;
+  scopeExpense$: Observable<number>;
+  scopeErrorMsg: string = null;
   filteredEditor: string[] = [];
   searchLoading: boolean = false;
   delayLoader: any = null;
   searchText: string = '';
-  loadingEditor: boolean = false;
 
   constructor(
     private productService: ProductService,
@@ -105,6 +110,8 @@ export class DashboardComponent implements OnInit {
     private router: Router,
     private dialog: MatDialog,
     private equipmentService: EquipmentsService,
+    private cs: CommonService,
+    private accountService: AccountService,
     private cd: ChangeDetectorRef
   ) {
     this.sharedService._emitScopeChange
@@ -114,9 +121,7 @@ export class DashboardComponent implements OnInit {
           this.currentScope = scope;
           const currentRoute = this.router.url;
           if (currentRoute === '/optisam/dashboard') {
-            this.getProductsQualityInfo();
-            this.getDashboardUpdateInfo();
-            this.generateCharts();
+            this.getAllApis();
           }
         }
       });
@@ -125,9 +130,38 @@ export class DashboardComponent implements OnInit {
   ngOnInit() {
     this.currentTab = 'Overview';
     this.currentScope = localStorage.getItem('scope');
+    this.getAllApis();
+    // this.sharedAmount();
+  }
+
+  private getAllApis(): void {
     this.getProductsQualityInfo();
     this.getDashboardUpdateInfo();
     this.generateCharts();
+  }
+
+  getScopeExpenses(): void {
+    this.scopeExpense$ = this.accountService
+      .getScopeExpense(this.cs.getLocalData(LOCAL_KEYS.SCOPE))
+      .pipe(
+        tap(() => {
+          this.scopeErrorMsg = null;
+        }),
+        pluck('expenses'),
+        map((expenses: number) => Math.abs(expenses)),
+        catchError((e: any) => {
+          console.log(e);
+          switch (e.code) {
+            case 5:
+              this.scopeErrorMsg = null; //`DASHBOARDS.ERROR.NO_EXPENSES_EXIST`;
+              break;
+            default:
+              this.scopeErrorMsg = `DASHBOARDS.ERROR.SERVER_ERROR`;
+              break;
+          }
+          return throwError(e);
+        })
+      );
   }
 
   getDashboardUpdateInfo() {
@@ -148,10 +182,24 @@ export class DashboardComponent implements OnInit {
       );
   }
 
+  sharedAmount(): void {
+    const obj: SharedAmountParams = { scope: this.currentScope };
+    this.productService.getSharedAmount(obj).subscribe(
+      (res: SharedAmount) => {
+        this.totalSharedAmount = res.total_shared_amount;
+        this.totalReceivedAmount = res.total_recieved_amount;
+      },
+      (err) => {
+        console.log('Some error occured! Could not get Details');
+      }
+    );
+  }
+
   generateCharts() {
     localStorage.setItem('dashboardTab', this.currentTab);
     this.canvas = null;
     this.ctx = null;
+    this.scopeErrorMsg = null;
     if (this.currentTab === 'Overview') {
       this.generateChartsForOverview();
     } else if (this.currentTab === 'Quality') {
@@ -168,9 +216,11 @@ export class DashboardComponent implements OnInit {
     this.complianceRibbonColor = '';
     this.getComplianceAlert();
     this.getProductsInfo();
+    this.sharedAmount();
     this.getProductsPerEditor();
     this.getSoftwareLicenceComposition();
     this.getEquipmentDetails();
+    this.getScopeExpenses();
   }
 
   getComplianceAlert() {
@@ -214,8 +264,6 @@ export class DashboardComponent implements OnInit {
   }
 
   getProductsInfo() {
-    console.log('working');
-
     this.noOfProducts = null;
     this.noOfManagedEditors = null;
     this.valuationOfOwnedLicense = null;
@@ -367,9 +415,12 @@ export class DashboardComponent implements OnInit {
               fontColor: 'white',
               precision: 2,
             },
+            datalabels: {
+              display: false
+            }
           },
           responsive: false,
-          display: true,
+          // display: true,
         },
       });
     }
@@ -397,9 +448,12 @@ export class DashboardComponent implements OnInit {
         options: {
           legend: { display: false },
           responsive: false,
-          display: true,
+          // display: true,
           plugins: {
             labels: false,
+            datalabels: {
+              display: false
+            }
           },
           scales: {
             yAxes: [
@@ -448,9 +502,12 @@ export class DashboardComponent implements OnInit {
               precision: 2,
               position: 'border',
             },
+            datalabels: {
+              display: false
+            }
           },
           responsive: false,
-          display: true,
+          // display: true,
         },
       });
     }
@@ -466,7 +523,7 @@ export class DashboardComponent implements OnInit {
       canvas.setAttribute('width', '380');
       canvas.setAttribute('height', '260');
       document
-        .querySelector('#noOfProdsPerEditorContainer .mat-figure')
+        .querySelector('#noOfProdsPerEditorContainer')
         .appendChild(canvas);
     }
   }
@@ -480,9 +537,7 @@ export class DashboardComponent implements OnInit {
       canvas.setAttribute('id', 'swLicComChart');
       canvas.setAttribute('width', '380');
       canvas.setAttribute('height', '260');
-      document
-        .querySelector('#swLicComChartContainer .mat-figure')
-        .appendChild(canvas);
+      document.querySelector('#swLicComChartContainer').appendChild(canvas);
     }
   }
 
@@ -495,9 +550,7 @@ export class DashboardComponent implements OnInit {
       canvas.setAttribute('id', 'equipmentDetails');
       canvas.setAttribute('width', '380');
       canvas.setAttribute('height', '260');
-      document
-        .querySelector('#equipmentDetailsContainer .mat-figure')
-        .appendChild(canvas);
+      document.querySelector('#equipmentDetailsContainer ').appendChild(canvas);
     }
   }
 
@@ -669,9 +722,12 @@ export class DashboardComponent implements OnInit {
               precision: 2,
               position: 'border',
             },
+            datalabels: {
+              display: false
+            }
           },
           responsive: false,
-          display: true,
+          // display: true,
         },
       });
     }
@@ -824,9 +880,12 @@ export class DashboardComponent implements OnInit {
             align: 'start',
           },
           responsive: false,
-          display: true,
+          // display: true,
           plugins: {
             labels: true,
+            datalabels: {
+              display: false
+            }
           },
         },
       });
@@ -860,10 +919,8 @@ export class DashboardComponent implements OnInit {
 
   getEditors() {
     const query = '?scope=' + this.currentScope;
-    this.loadingEditor = true;
     this.productService.getEditorList(query).subscribe(
       (response: any) => {
-        this.loadingEditor = false;
         this.editorsList = response.editor || [];
         this.editorsList.sort();
         this.filteredEditor = [...this.editorsList];
@@ -871,7 +928,6 @@ export class DashboardComponent implements OnInit {
         this.editorSelected();
       },
       (error) => {
-        this.loadingEditor = false;
         this.editorSelected();
         console.log('Error fetching editors');
       }
@@ -1079,9 +1135,12 @@ export class DashboardComponent implements OnInit {
             ],
           },
           responsive: false,
-          display: true,
+          // display: true,
           plugins: {
             labels: false,
+            datalabels: {
+              display: false
+            }
           },
         },
       });
@@ -1146,9 +1205,12 @@ export class DashboardComponent implements OnInit {
             ],
           },
           responsive: false,
-          display: true,
+          // display: true,
           plugins: {
             labels: false,
+            datalabels: {
+              display: false
+            }
           },
         },
       });
@@ -1319,9 +1381,11 @@ export class DashboardComponent implements OnInit {
             ],
           },
           responsive: false,
-          display: true,
           plugins: {
             labels: false,
+            datalabels: {
+              display: false
+            }
           },
         },
       });
@@ -1385,11 +1449,14 @@ export class DashboardComponent implements OnInit {
           },
 
           responsive: false,
-          display: true,
+          // display: true,
           plugins: {
             labels: false,
+            datalabels: {
+              display: false
+            }
           },
-        },
+        }
       });
     }
   }

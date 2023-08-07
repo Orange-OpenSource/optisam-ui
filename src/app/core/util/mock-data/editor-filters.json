@@ -1,0 +1,38 @@
+{
+  "groupContract": {
+    "total_count": 0,
+    "filter": [
+      {
+        "name": "string",
+        "count": 0
+      }
+    ]
+  },
+  "year": {
+    "total_count": 0,
+    "filter": [
+      {
+        "name": "string",
+        "count": 0
+      }
+    ]
+  },
+  "countryCode": {
+    "total_count": 0,
+    "filter": [
+      {
+        "name": "string",
+        "count": 0
+      }
+    ]
+  },
+  "entities": {
+    "total_count": 0,
+    "filter": [
+      {
+        "name": "string",
+        "count": 0
+      }
+    ]
+  }
+}

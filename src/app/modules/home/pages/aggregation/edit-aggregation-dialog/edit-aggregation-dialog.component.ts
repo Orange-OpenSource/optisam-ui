@@ -127,7 +127,7 @@ export class EditAggregationDialogComponent implements OnInit {
     });
     if (this.data.products) {
       this.selectedSwidList = this.data.swidtags;
-      console.log(this.data.swidtags)
+      console.log(this.data.swidtags);
     }
   }
 
@@ -149,12 +149,12 @@ export class EditAggregationDialogComponent implements OnInit {
       'asc',
       'swidtag'
     );
-    this.swidList=this.swidList?.map((x)=>{return{
-      ...x,
-      swidVersion:x.product_name+" " +x.product_version
-    }})
-    console.log(this.swidList)
-    console.log(this.selectedSwidList)
+    this.swidList = this.swidList?.map((x) => {
+      return {
+        ...x,
+        swidVersion: x.product_name + ' ' + x.product_version,
+      };
+    });
     this.selectedSwidList = this.cs.customSort(
       this.selectedSwidList.filter((s) =>
         productNames.includes(s.product_name)
@@ -162,11 +162,13 @@ export class EditAggregationDialogComponent implements OnInit {
       'asc',
       'swidtag'
     );
-    this.selectedSwidList=this.selectedSwidList?.map((x)=>{return{
-      ...x,
-      swidVersion:x.product_name+" " +x.product_version
-    }})
-    console.log(this.selectedSwidList)
+    this.selectedSwidList = this.selectedSwidList?.map((x) => {
+      return {
+        ...x,
+        swidVersion: x.product_name + ' ' + x.product_version,
+      };
+    });
+    console.log(this.selectedSwidList);
   }
 
   getProductsList() {
@@ -178,7 +180,7 @@ export class EditAggregationDialogComponent implements OnInit {
     };
     this.productService.getProductListAggr(query).subscribe(
       (response: any) => {
-        console.log(response)
+        console.log(response);
         this.productListResponse = response;
         this.productList = [];
         const sameEditor: boolean = response.selected_products.some(
@@ -221,7 +223,7 @@ export class EditAggregationDialogComponent implements OnInit {
     };
     this.productService.getProductListAggr(query).subscribe(
       (response: AggregationProductRes) => {
-        console.log(response)
+        console.log(response);
         this.initProductListResponse = response;
         this.setSwidtags(response);
       },
@@ -283,7 +285,7 @@ export class EditAggregationDialogComponent implements OnInit {
   addSwidTag(swid: any, index: number) {
     this.noChangesMadeFlag = false;
     this.swidList.splice(index, 1);
-    console.log(this.swidList)
+    console.log(this.swidList);
     this.selectedSwidList.push(swid);
     this.swidList = this.cs.customSort(this.swidList, 'asc', 'swidtag');
     this.selectedSwidList = this.cs.customSort(
@@ -315,6 +317,7 @@ export class EditAggregationDialogComponent implements OnInit {
 
   selectAllSwid(checked: boolean): void {
     if (!checked) return;
+    this.noChangesMadeFlag = false;
     this.selectedSwidList = [...this.selectedSwidList, ...this.swidList];
     this.swidList = [];
   }
@@ -341,7 +344,7 @@ export class EditAggregationDialogComponent implements OnInit {
       'product_name'
     );
 
-    console.log(this.productList)
+    console.log(this.productList);
     const collator = new Intl.Collator(undefined, {
       numeric: true,
       sensitivity: 'base',
@@ -358,23 +361,27 @@ export class EditAggregationDialogComponent implements OnInit {
       'asc',
       'swidtag'
     );
-    
-      this.selectedSwidList=this.selectedSwidList?.map((x)=>{return{
+
+    this.selectedSwidList = this.selectedSwidList?.map((x) => {
+      return {
         ...x,
-        swidVersion:x.product_name+" " +x.product_version
-      }})
-      console.log(this.selectedSwidList)
+        swidVersion: x.product_name + ' ' + x.product_version,
+      };
+    });
+    console.log(this.selectedSwidList);
 
     // Fetch all swidtags with products
     this.swidList = (this.acqrights_products || []).filter((v) =>
       this.data.product_names.includes(v.product_name)
     );
     this.swidList = this.cs.customSort(this.swidList, 'asc', 'swidtag');
-    this.swidList=this.swidList?.map((x)=>{return{
-      ...x,
-      swidVersion:x.product_name+" " +x.product_version
-    }})
-    console.log(this.swidList)
+    this.swidList = this.swidList?.map((x) => {
+      return {
+        ...x,
+        swidVersion: x.product_name + ' ' + x.product_version,
+      };
+    });
+    console.log(this.swidList);
 
     this.prodLoading = false;
   }

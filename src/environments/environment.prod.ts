@@ -15,3 +15,5 @@ export const environment = {
   API_META_URL: 'meta',
   API_PRODUCT_CATALOG: 'productCatalog',
 };
+
+export const BLOCKED_USERS: string[] = ['admin@test.com'];

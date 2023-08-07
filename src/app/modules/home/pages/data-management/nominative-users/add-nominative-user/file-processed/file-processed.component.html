@@ -1,0 +1,14 @@
+<h2 mat-dialog-title>{{ "CONFIRMATION_TITLE" | translate }}</h2>
+<mat-dialog-content>
+  <p>{{ "NOMINATIVE_USER_FILE_PROCESSED" | translate }}</p>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="3px" fxFill>
+    <button mat-raised-button class="btn btn-two" [mat-dialog-close]="false">
+      {{ "OK" | translate }}
+    </button>
+    <button mat-raised-button class="btn btn-two" [mat-dialog-close]="true">
+      {{ "CHECK_STATUS" | translate }}
+    </button>
+  </div>
+</mat-dialog-actions>

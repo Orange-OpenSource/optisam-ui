@@ -49,7 +49,7 @@ export class ListAggregationComponent implements OnInit, AfterViewInit {
     private productService: ProductService,
     public dialog: MatDialog,
     private cs: CommonService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.role = this.cs.getLocalData(LOCAL_KEYS.ROLE);
@@ -95,6 +95,7 @@ export class ListAggregationComponent implements OnInit, AfterViewInit {
   }
 
   advSearchTrigger(ev: any) {
+    this.currentPageNum = 1;
     console.log('trigger =>', ev);
   }
 
@@ -177,7 +178,7 @@ export class ListAggregationComponent implements OnInit, AfterViewInit {
       data: data,
     });
 
-    this.dialogRef.afterClosed().subscribe((result) => {});
+    this.dialogRef.afterClosed().subscribe((result) => { });
   }
 
   addNew() {

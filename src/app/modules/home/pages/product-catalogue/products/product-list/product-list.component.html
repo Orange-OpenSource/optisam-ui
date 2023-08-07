@@ -14,7 +14,7 @@
         (click)="createProduct()"
       >
         <mat-icon>add</mat-icon>
-        {{ "Create New" }}
+        {{ "Create New" | translate }}
       </button>
     </div>
     <ng-container>
@@ -99,27 +99,13 @@
                 {{ col.label | translate }}
               </mat-header-cell>
               <mat-cell *matCellDef="let element">
-                <span
-                  *ngIf="
-                    element?.openSource?.isOpenSource &&
-                    element?.closeSource?.isCloseSource
-                  "
-                  >{{ "Open Source and Closed Source" }}</span
+                <span *ngIf="element?.licensing === 'CLOSEDSOURCE'"
+                  >Closed Source</span
                 >
-                <span
-                  *ngIf="
-                    element?.openSource?.isOpenSource &&
-                    !element.closeSource?.isCloseSource
-                  "
-                  >{{ "Open Source" }}</span
+                <span *ngIf="element?.licensing === 'OPENSOURCE'"
+                  >Open Source</span
                 >
-                <span
-                  *ngIf="
-                    !element?.openSource?.isOpenSource &&
-                    element.closeSource?.isCloseSource
-                  "
-                  >{{ "Closed Source" }}</span
-                >
+                <span *ngIf="element?.licensing === 'NONE'"></span>
               </mat-cell>
             </ng-container>
 

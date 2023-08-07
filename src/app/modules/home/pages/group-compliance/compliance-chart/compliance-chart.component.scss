@@ -1,0 +1,42 @@
+.inline {
+  display: inline-block !important;
+}
+
+.block {
+  margin-bottom: 20px;
+  width: 49%;
+  height: 620px;
+}
+
+.field {
+  margin: 2vh 0vh 2vh 0;
+}
+
+.right {
+  float: right;
+}
+
+.size {
+  width: 410px !important;
+  height: 215px !important;
+  margin: 15px auto auto auto;
+  display: flex !important;
+}
+
+.title {
+  font-size: 16px !important;
+  font-weight: bold;
+}
+
+.title-inner {
+  font-size: 1.4em !important;
+  font-weight: bold;
+  margin-left: 1em;
+}
+
+.title-inners {
+  padding: 10px 0 10px 10px;
+  display: inline-block;
+  font-size: 1.4em !important;
+  font-weight: bold;
+}

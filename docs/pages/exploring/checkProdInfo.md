@@ -6,13 +6,13 @@
 
 "Go to the product" :
 
-![select APM](../../img/exploring/checkCompForOneProd11u.jpg){: .zoom}
+![select APM](../../img/exploring/checkCompForOneProd11.jpg){: .zoom}
 
 ## Select a product 
 
 Click on the product name : 
 
-![select APM](../../img/exploring/checkCompForOneProd12u.jpg){: .zoom}
+![select APM](../../img/exploring/checkCompForOneProd12.jpg){: .zoom}
 
 ## check the informations
 
@@ -20,11 +20,11 @@ In the details of the product, click on "Information" :
 
 ![select APM](../../img/exploring/checkProdInfo1.jpg){: .zoom}
 
-You are now able to check :  
-- The "SWIDTAG" : SWIDtag of the product    
+You are now able to check :    
 - The "Editor" : the Editor of the product        
 - The "Product Name" : The name of the product    
 - The "Version" : The version of the product  
+- The "Version SWIDtag : The version of the product identifier
 - The "Equipments using the product" : The number of equipment which uses the product  
 - The "Applications containing the product" : The number of application which contains the product     
 - The "Defined the Metrics" : The names of metrics defined for compliance computing.   

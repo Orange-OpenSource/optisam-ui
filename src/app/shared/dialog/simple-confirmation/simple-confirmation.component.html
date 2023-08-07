@@ -1,0 +1,23 @@
+<h2 mat-dialog-title>
+  {{ "SHARED.TITLE.CONFIRMATION" | translate }}
+</h2>
+<mat-dialog-content>
+  <p>
+    <strong>{{ "SHARED.MESSAGE.CONFIRMATION_REMOVE" | translate }}</strong>
+  </p>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="10px" fxFill>
+    <button
+      (click)="confirmStatus(false)"
+      mat-raised-button
+      class="btn-four"
+      mat-dialog-close
+    >
+      {{ "SHARED.BUTTON.CANCEL" | translate }}
+    </button>
+    <button (click)="confirmStatus(true)" mat-raised-button class="btn-two">
+      {{ "SHARED.BUTTON.YES" | translate }}
+    </button>
+  </div>
+</mat-dialog-actions>

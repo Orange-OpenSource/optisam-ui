@@ -8,6 +8,7 @@ import jwt_decode from 'jwt-decode';
 import { AboutData } from '@core/modals';
 import { CommonService } from '@core/services';
 import { LOCAL_KEYS } from '@core/util/constants/constants';
+import { BLOCKED_USERS } from 'src/environments/environment';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -98,10 +99,14 @@ export class LoginComponent implements OnInit {
     this.currLang = language;
     this.translate.use(language);
   }
-  onSubmit() {
+  onSubmit(): void {
     const val = this.loginForm.value;
     let token;
     const email = val.email.trim();
+    if (BLOCKED_USERS.includes(email)) {
+      this.displayErrorMessage({ error_code: 1 });
+      return;
+    }
     if (val.email && val.password) {
       this.loading = true;
       this.authservice.login(email, val.password).subscribe(

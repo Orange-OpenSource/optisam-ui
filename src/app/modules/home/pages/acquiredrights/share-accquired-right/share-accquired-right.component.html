@@ -1,0 +1,56 @@
+<mat-card-header>
+  <mat-card-title class="page-heading">{{
+    "Share Acquired Right" | translate
+  }}</mat-card-title>
+</mat-card-header>
+<h6 [ngClass]="{ errorClass: (availableLicenses$ | async) < 0 }">
+  Available Licenses:{{ availableLicenses$ | async }}
+</h6>
+
+<form [formGroup]="sharedAccquiredRights">
+  <div class="section" fxLayout="column">
+    <!-- <ng-container formArrayName="shared_licences"> -->
+    <app-shared-licences
+      *ngFor="let link of shared_licences?.controls; let i = index"
+      [index]="i"
+      [sharedData]="sharedLicencesData"
+      [data]="data"
+      (scopeChange)="doActionWhenChangeinScope($event)"
+      (updateLicense)="updateSharedLicensesNumber()"
+      (removeShared)="removeSharedLicence($event)"
+    ></app-shared-licences>
+    <!-- </ng-container> -->
+    <div fxLayout="row" fxLayoutAlign="end">
+      <button
+        mat-raised-button
+        class="btn-two"
+        fxLayout="row"
+        fxLayoutAlign="center center"
+        (click)="addNewSharedAcc()"
+      >
+        <mat-icon>add</mat-icon>
+        <span>{{ "Add More" | translate }}</span>
+      </button>
+    </div>
+  </div>
+</form>
+
+<mat-card-actions align="center">
+  <button mat-raised-button class="btn-four" mat-dialog-close="1">
+    {{ "Cancel" | translate }}
+  </button>
+
+  <button
+    (click)="createShare()"
+    mat-raised-button
+    class="btn-two"
+    [disabled]="
+      sharedAccquiredRights.invalid ||
+      sharedAccquiredRights.controls?.pristine ||
+      (availableLicenses$ | async) < 0 ||
+      _createLoading
+    "
+  >
+    {{ "Share" | translate }}
+  </button>
+</mat-card-actions>

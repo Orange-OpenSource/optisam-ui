@@ -3,11 +3,15 @@
 }
 
 .mat-column-editor {
-  flex: -1 0 500px;
+  flex: 1 0 500px;
 }
 
 .mat-column-ProductManager {
   flex: 0 0 190px;
+}
+
+.mat-column-groupContract {
+  flex: 0 0 130px;
 }
 
 .mat-column-vendor {
@@ -22,6 +26,71 @@
   flex: 0 0 85px;
 }
 
+.action-icon {
+  font-size: 1.2em;
+}
+
 mat-cell {
   word-break: break-word;
+}
+
+.mat-header-row,
+.mat-row {
+  flex-wrap: nowrap;
+}
+
+mat-table {
+  overflow-x: auto;
+}
+
+@media only screen and (min-width: 1720px) {
+  .mat-column-ProductManager {
+    flex-grow: 1;
+  }
+
+  .mat-column-vendor {
+    flex-grow: 1;
+  }
+}
+
+@media only screen and (min-width: 440px) {
+  .mat-header-row,
+  .mat-row {
+    width: 250%;
+  }
+}
+
+@media only screen and (min-width: 769px) {
+  .mat-header-row,
+  .mat-row {
+    width: 235%;
+  }
+}
+
+@media only screen and (min-width: 801px) {
+  .mat-header-row,
+  .mat-row {
+    width: 125%;
+  }
+}
+
+@media only screen and (min-width: 897px) {
+  .mat-header-row,
+  .mat-row {
+    width: 125%;
+  }
+}
+
+@media only screen and (min-width: 1281px) {
+  .mat-header-row,
+  .mat-row {
+    width: 116%;
+  }
+}
+
+@media only screen and (min-width: 1367px) {
+  .mat-header-row,
+  .mat-row {
+    width: 100%;
+  }
 }

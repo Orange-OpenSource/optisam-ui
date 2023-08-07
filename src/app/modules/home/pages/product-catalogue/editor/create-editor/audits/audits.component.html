@@ -1,13 +1,9 @@
 <ng-container [formGroup]="editorGroup">
-  <mat-card>
-    <mat-card-content
-      class="list-audits"
-      fxLayout="column"
-      fxLayoutAlign="space-between"
-    >
-      <mat-card-title>
+  <div>
+    <div class="list-audits" fxLayout="column" fxLayoutAlign="space-between">
+      <div>
         <h6 class="audits-heading">{{ "EDITOR.AUDITS" | translate }}</h6>
-      </mat-card-title>
+      </div>
       <ng-container formArrayName="audits">
         <app-single-audit
           *ngFor="let audit of audits?.controls; let i = index"
@@ -30,6 +26,6 @@
           <span>{{ "EDITOR.ADD_AUDITS" | translate }}</span>
         </div>
       </button>
-    </mat-card-content>
-  </mat-card>
+    </div>
+  </div>
 </ng-container>

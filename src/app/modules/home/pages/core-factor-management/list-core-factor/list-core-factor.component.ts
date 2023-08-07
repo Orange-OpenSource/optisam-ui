@@ -63,7 +63,7 @@ export class ListCoreFactorComponent implements OnInit, AfterViewInit {
 
   getCoreFactorList(): void {
     const param: CoreFactorListGetParam = {
-      pageNo: 1,
+      pageNo: this.currentPage,
       pageSize: this.pageSize,
     };
     this.coreFactorService.getCoreFactorList(param).subscribe(

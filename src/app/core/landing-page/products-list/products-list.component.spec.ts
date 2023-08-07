@@ -1,6 +1,7 @@
 import { HttpClientModule } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { ProductsListComponent } from './products-list.component';
 
@@ -10,10 +11,13 @@ describe('ProductsListComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ProductsListComponent ],
-      imports:[HttpClientTestingModule,HttpClientModule]
-    })
-    .compileComponents();
+      declarations: [ProductsListComponent],
+      imports: [
+        HttpClientTestingModule,
+        HttpClientModule,
+        TranslateModule.forRoot(),
+      ],
+    }).compileComponents();
   });
 
   beforeEach(() => {

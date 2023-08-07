@@ -1,0 +1,28 @@
+<div [formGroup]="openSourceForm" fxLayout="column" class="openSource">
+  <div>
+    <mat-radio-group formControlName="openLicensesType" color="primary">
+      <div fxLayout="column">
+        <mat-radio-button [value]="'COMMUNITY'">Community</mat-radio-button>
+        <mat-radio-button [value]="'COMMERCIAL'">Commercial</mat-radio-button>
+      </div>
+    </mat-radio-group>
+  </div>
+
+  <div fxLayout="row">
+    <div fxFlex="50%">
+      <mat-form-field appearance="outline" fxFill>
+        <mat-label>{{
+          "PRODUCT_CATALOG.FORM_FIELD.OPEN_SOURCE" | translate
+        }}</mat-label>
+        <mat-select formControlName="openLicenses">
+          <mat-option value="">{{
+            "Choose Open Source Licenses List" | translate
+          }}</mat-option>
+          <mat-option *ngFor="let os of openSourceList" [value]="os">
+            {{ os }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+</div>

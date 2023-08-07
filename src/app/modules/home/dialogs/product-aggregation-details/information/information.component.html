@@ -16,7 +16,7 @@
     <strong>{{ "Equipments using the product" | translate }} :</strong>
     <span class="margin-left">
       {{ productDetails.num_equipments || 0 }}
-      <span class="error-msg" *ngIf="!productDetails.num_equipments"
+      <span class="error-msg" *ngIf="productDetails.not_deployed"
         >&nbsp;({{ "Product is not deployed" | translate }})</span
       >
     </span>

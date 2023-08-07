@@ -1,0 +1,94 @@
+<form [formGroup]="form">
+  <div
+    fxLayout="row"
+    fxLayoutAlign="end center"
+    fxLayoutGap="1em"
+    class="filter-container"
+    *ngIf="loadingFilter"
+  >
+    <!-- Group contract -->
+    <mat-form-field appearance="outline">
+      <mat-label>{{ "GROUP_CONTRACT" | translate }} </mat-label>
+      <mat-select
+        multiple
+        #groupContractSelect
+        [disableOptionCentering]="true"
+        panelClass="pc-filter-select"
+        formControlName="groupContract"
+        (selectionChange)="
+          selectionChange($event, groupContractAll, groupContract)
+        "
+      >
+        <mat-option #groupContractAll [value]="allSelection">
+          {{ "All" | translate }} ({{ totalGroupContract }})</mat-option
+        >
+        <mat-option *ngFor="let select of groupContract" [value]="select.name"
+          >{{
+            "PRODUCT_CATALOG_FILTER_GROUP_CONTRACT." + select.name | translate
+          }}
+          ({{ select?.count }})</mat-option
+        >
+      </mat-select>
+    </mat-form-field>
+    <!-- Entities -->
+    <mat-form-field appearance="outline">
+      <mat-label>{{ "ENTITIES" | translate }}</mat-label>
+      <mat-select
+        multiple
+        #entitiesSelect
+        [disableOptionCentering]="true"
+        formControlName="entities"
+        panelClass="pc-filter-select"
+        (selectionChange)="selectionChange($event, entitiesAll, entities)"
+      >
+        <mat-option #entitiesAll [value]="allSelection">
+          {{ "All" | translate }} ({{ totalEntities }})</mat-option
+        >
+        <mat-option
+          *ngFor="let select of entities"
+          [value]="select.name"
+          matTooltip="{{ select?.name }}"
+          >{{ select?.name }} ({{ select?.count }})</mat-option
+        >
+      </mat-select>
+    </mat-form-field>
+    <!-- Audit year -->
+    <mat-form-field appearance="outline">
+      <mat-label>{{ "AUDIT_YEAR" | translate }} </mat-label>
+      <mat-select
+        multiple
+        [disableOptionCentering]="true"
+        formControlName="audit"
+        panelClass="pc-filter-select"
+        (selectionChange)="selectionChange($event, auditYearAll, auditYear)"
+      >
+        <mat-option [value]="allSelection" #auditYearAll>
+          {{ "All" | translate }} ({{ totalAuditYear }})</mat-option
+        >
+        <mat-option *ngFor="let select of auditYear" [value]="select?.name"
+          >{{ select?.name }} ({{ select?.count }})</mat-option
+        >
+      </mat-select>
+    </mat-form-field>
+    <!-- Country code -->
+    <mat-form-field appearance="outline">
+      <mat-label> {{ "COUNTRY" | translate }}</mat-label>
+      <mat-select
+        multiple
+        [disableOptionCentering]="true"
+        formControlName="country"
+        panelClass="pc-filter-select"
+        (selectionChange)="selectionChange($event, countryCodeAll, countryCode)"
+      >
+        <mat-option [value]="allSelection" #countryCodeAll>
+          {{ "All" | translate }} ({{ totalCountryCode }})</mat-option
+        >
+        <mat-option
+          *ngFor="let select of countryCode"
+          [value]="select?.name?.countryCode"
+          >{{ select?.name?.countryName }} ({{ select?.count }})</mat-option
+        >
+      </mat-select>
+    </mat-form-field>
+  </div>
+</form>

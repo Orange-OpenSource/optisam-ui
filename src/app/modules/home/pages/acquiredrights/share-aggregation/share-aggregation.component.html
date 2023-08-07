@@ -1,0 +1,54 @@
+<mat-card-header>
+  <mat-card-title class="page-heading">{{
+    "Share Acquired Right" | translate
+  }}</mat-card-title>
+</mat-card-header>
+<h6 [ngClass]="{ errorClass: (availableLicenses$ | async) < 0 }">
+  Available Licenses:{{ availableLicenses$ | async }}
+</h6>
+
+<form [formGroup]="sharedAggregations">
+  <div class="section" fxLayout="column">
+    <app-shared-aggregations-licences
+      *ngFor="let link of sharedAggregationsArray?.controls; let i = index"
+      [index]="i"
+      [data]="data"
+      [sharedData]="sharedLicencesData"
+      (updateLicense)="updateSharedLicensesNumber()"
+      (removeShared)="removeSharedAggregations($event)"
+    ></app-shared-aggregations-licences>
+
+    <div fxLayout="row" fxLayoutAlign="end">
+      <button
+        mat-raised-button
+        class="btn-two"
+        fxLayout="row"
+        fxLayoutAlign="center center"
+        (click)="addNewSharedAgg()"
+      >
+        <mat-icon>add</mat-icon>
+        <span>{{ "Add More" | translate }}</span>
+      </button>
+    </div>
+  </div>
+</form>
+
+<mat-card-actions align="center">
+  <button mat-raised-button class="btn-four" mat-dialog-close="1">
+    {{ "Cancel" | translate }}
+  </button>
+
+  <button
+    (click)="createShareAgg()"
+    mat-raised-button
+    class="btn-two"
+    [disabled]="
+      sharedAggregations.invalid ||
+      sharedAggregations.controls?.pristine ||
+      (availableLicenses$ | async) < 0 ||
+      _createLoading
+    "
+  >
+    {{ "Share" | translate }}
+  </button>
+</mat-card-actions>

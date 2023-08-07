@@ -4,7 +4,7 @@
 
 <span style="color:red">First, make sure that you are an admin and that you are working on the good scope :</span>
 
-![select APM](../../img/goodScopeu.jpg){: .zoom}
+![select APM](../../img/goodScope.jpg){: .zoom}
 
 **You can click [here](#access-to-the-page) if you already have your file completed.**
 
@@ -109,7 +109,7 @@ In this tab, you will find (in red the mandatory attributes) :
 
 - <span style="color:orange">host_id</span> : The id of the host on which is installed the product (must reference a capped or uncappedResource)    
 
-- allocated_metric:
+- allocated_metric: metric dedicated to the product
 
 - alocated_users: number of users who have access to the product
 <!--
@@ -207,7 +207,7 @@ First, it creates files that refer to the products / applications / acquired rig
 - products.csv : Products data as well as linking (child of relation) of products with other products  
 
 Then, it creates files that refer to the equipment (1 by equipment type) :  
-- equipment_datacenter.csv : All the datacenters   
+
 - equipment_vcenter.csv : All the vcenters and the linking to their parent  
 - equipment_cluster.csv : All the clusters and the linking to their parent  
 - equipment_server.csv : All the servers and the linking to their parent  

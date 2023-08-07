@@ -4,7 +4,7 @@
 
 <span style="color:red">First, make sure that you are an admin and that you are working on the good scope :</span>
 
-![select APM](../../img/goodScopeu.jpg){: .zoom}
+![select APM](../../img/goodScope.jpg){: .zoom}
 
 ## What is an aggregation ? 
 
@@ -46,7 +46,7 @@ When many switags of the aggregation reference the same product, this product is
 
 ## Add a new aggregation
 
-You have to click on "Add aggregation" : 
+You have to click on "Create New" : 
 
 ![select APM](../../img/aggrMana/addAggr1.jpg){: .zoom}
 

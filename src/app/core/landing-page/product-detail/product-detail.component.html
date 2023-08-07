@@ -1,0 +1,15 @@
+<div fxLayout="column" class="product">
+  <!-- <app-header-info></app-header-info> -->
+  <div fxLayout="row" fxLayoutAlign="end center" class="back">
+    <!-- <button class="backButton" mat-button>
+      <div fxLayout="row">
+        <mat-icon>arrow_back</mat-icon>
+        <p class="backText">{{ "Back" }}</p>
+      </div>
+    </button> -->
+  </div>
+  <app-product-content
+    [separate]="separate"
+    [product]="productData"
+  ></app-product-content>
+</div>

@@ -10,6 +10,7 @@ const routes: Routes = [
     component: HomepageComponent,
     // canActivate: [AuthGuard],
   },
+  
 ];
 
 @NgModule({

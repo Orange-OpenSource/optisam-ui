@@ -1,63 +1,126 @@
 <div fxLayout="row" fxLayoutAlign="center center" class="login-main">
-
   <mat-card class="card">
     <mat-card-header>
-      <mat-card-title class="page-heading">{{data.fully_qualified_name}}: {{'Create Group'|translate}}
+      <mat-card-title class="page-heading"
+        >{{ data.fully_qualified_name }}: {{ "Create Group" | translate }}
       </mat-card-title>
     </mat-card-header>
     <mat-card-content fxLayout="column">
       <form [formGroup]="groupForm">
         <mat-form-field appearance="outline">
-          <mat-label>{{'Name'|translate}}</mat-label>
-          <input matInput placeholder="{{'Name'|translate}}" formControlName="name">
-          <mat-error *ngIf="name.invalid && !name.pristine">
-            {{'Name is required in ^[a-zA-Z0-9_]*$ format.'|translate}}
+          <mat-label>{{ "Name" | translate }}</mat-label>
+          <input
+            matInput
+            placeholder="{{ 'Name' | translate }}"
+            formControlName="name"
+          />
+          <mat-error
+            *ngIf="name?.hasError('required') || name?.hasError('pattern')"
+          >
+            {{ "NAME_REQUIRED_ALPHA_NUMERIC" | translate }}
+          </mat-error>
+          <mat-error *ngIf="name?.hasError('minLength')">
+            {{ "Group name should have at least 1 character" | translate }}
           </mat-error>
         </mat-form-field>
         <mat-form-field appearance="outline">
-          <mat-label>{{'Parent Name'|translate}}</mat-label>
-          <input matInput [disabled]='true' formControlName="groupName">
+          <mat-label>{{ "Parent Name" | translate }}</mat-label>
+          <input matInput [disabled]="true" formControlName="groupName" />
         </mat-form-field>
         <mat-form-field appearance="outline">
-          <mat-select id="scope" placeholder="{{'Scope'|translate}}" [formControl]="scopes" multiple>
+          <mat-select
+            id="scope"
+            placeholder="{{ 'Scope' | translate }}"
+            [formControl]="scopes"
+            multiple
+          >
             <mat-select-trigger>
-              {{scopes.value ? scopes.value[0] : ''}}
-              <span *ngIf="scopes.value?.length > 1" class="example-additional-selection">
-                (+{{scopes.value.length - 1}} {{scopes.value?.length === 2 ? 'other' : 'others'}})
+              {{ scopes.value ? scopes.value[0] : "" }}
+              <span
+                *ngIf="scopes.value?.length > 1"
+                class="example-additional-selection"
+              >
+                (+{{ scopes.value.length - 1 }}
+                {{ scopes.value?.length === 2 ? "other" : "others" }})
               </span>
             </mat-select-trigger>
-            <mat-option *ngFor="let scope of data.scopes" [value]="scope">{{scope}}</mat-option>
+            <mat-option *ngFor="let scope of data.scopes" [value]="scope">{{
+              scope
+            }}</mat-option>
           </mat-select>
-          <mat-error *ngIf="scopes.invalid && !scopes.pristine && scopes.touched">
-            {{'Scopes field is mandatory'|translate}}
+          <mat-error *ngIf="scopes?.hasError('required')">
+            {{ "Scopes field is mandatory" | translate }}
           </mat-error>
         </mat-form-field>
+        <div fxLayout="row" *ngIf="isSuperAdmin">
+          <mat-checkbox
+            class="example-margin"
+            color="primary"
+            disableRipple
+            formControlName="groupCompliance"
+            >{{ "GROUP_COMPLIANCE" | translate }}</mat-checkbox
+          >
+        </div>
       </form>
     </mat-card-content>
     <mat-card-actions align="center">
-      <button id="cancelButton" class="btn-four" mat-raised-button
-        [mat-dialog-close]="true">{{'Cancel'|translate}}</button>
-      <button id="resetButton" class="btn-three" [disabled]="groupForm.pristine" mat-raised-button
-        (click)="resetForm()">{{'Reset'|translate}}</button>
-      <button id="createButton" class="btn-two" mat-raised-button [disabled]="!groupForm.valid || groupForm.pristine"
-        (click)="createGroup(succesGroupCreateDialog, errorGroupCreateDialog)">{{'Create'|translate}}</button>
+      <button
+        id="cancelButton"
+        class="btn-four"
+        mat-raised-button
+        [mat-dialog-close]="true"
+      >
+        {{ "Cancel" | translate }}
+      </button>
+      <button
+        id="resetButton"
+        class="btn-three"
+        [disabled]="groupForm.pristine"
+        mat-raised-button
+        (click)="resetForm()"
+      >
+        {{ "Reset" | translate }}
+      </button>
+      <button
+        id="createButton"
+        class="btn-two"
+        mat-raised-button
+        [disabled]="!groupForm.valid || groupForm.pristine"
+        (click)="createGroup(succesGroupCreateDialog, errorGroupCreateDialog)"
+      >
+        {{ "Create" | translate }}
+      </button>
     </mat-card-actions>
   </mat-card>
 </div>
 
 <ng-template #succesGroupCreateDialog>
   <mat-dialog-content>
-    <p>{{'CREATE_GROUP_SUCCESS'|translate}}</p>
+    <p>{{ "CREATE_GROUP_SUCCESS" | translate }}</p>
   </mat-dialog-content>
   <mat-dialog-actions align="center">
-    <button [mat-dialog-close]="true" class="btn-two" mat-button cdkFocusInitial>{{'OK'|translate}}</button>
+    <button
+      [mat-dialog-close]="true"
+      class="btn-two"
+      mat-button
+      cdkFocusInitial
+    >
+      {{ "OK" | translate }}
+    </button>
   </mat-dialog-actions>
 </ng-template>
 <ng-template #errorGroupCreateDialog>
   <mat-dialog-content>
-    <p>{{'CREATE_GROUP_ERROR'|translate}}</p>
+    <p>{{ "CREATE_GROUP_ERROR" | translate }}</p>
   </mat-dialog-content>
   <mat-dialog-actions align="center">
-    <button [mat-dialog-close]="true" class="btn-two" mat-button cdkFocusInitial>{{'OK'|translate}}</button>
+    <button
+      [mat-dialog-close]="true"
+      class="btn-two"
+      mat-button
+      cdkFocusInitial
+    >
+      {{ "OK" | translate }}
+    </button>
   </mat-dialog-actions>
 </ng-template>

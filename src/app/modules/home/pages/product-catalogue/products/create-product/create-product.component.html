@@ -246,21 +246,43 @@
           </div>
         </div>
         <!-- Product Recommendation -->
-        <div class="section" fxLayout="column">
-          <div class="section-title">
-            {{ "PRODUCT_CATALOG.TITLE.RECOMMENDATION" | translate }}
-          </div>
-          <div fxLayout="row">
-            <mat-form-field appearance="outline" fxFill>
-              <mat-label>{{
-                "PRODUCT_CATALOG.FORM_FIELD.RECOMMENDATION" | translate
-              }}</mat-label>
-              <textarea
-                [readonly]="crud == crudRead"
-                matInput
-                formControlName="productRecommendation"
-              ></textarea>
-              <mat-error *ngIf="productRecommendation.hasError('maxlength')">
+        <div fxLayout="row">
+          <div fxFlex="50%" class="section" fxLayout="column">
+            <div class="section-title">
+              {{ "PRODUCT_CATALOG.TITLE.RECOMMENDATION" | translate }}
+            </div>
+            <div fxLayout="row">
+              <mat-form-field
+                class=".section-recommendation-title"
+                appearance="outline"
+                fxFill
+              >
+                <mat-label>{{
+                  "PRODUCT_CATALOG.FORM_FIELD.RECOMMENDATION" | translate
+                }}</mat-label>
+                <input
+                  *ngIf="crud == crudRead"
+                  readonly
+                  matInput
+                  formControlName="productRecommendation"
+                />
+                <mat-select
+                  *ngIf="crud != crudRead"
+                  formControlName="productRecommendation"
+                >
+                  <mat-option value="NONE">{{
+                    "Choose Recommendation" | translate
+                  }}</mat-option>
+                  <mat-option
+                    *ngFor="let pr of productRecommendationList"
+                    [value]="pr"
+                  >
+                    {{
+                      "PRODUCT_CATALOG_FILTER_RECOMMENDATION." + pr | translate
+                    }}
+                  </mat-option>
+                </mat-select>
+                <!-- <mat-error *ngIf="productRecommendation.hasError('maxlength')">
                 {{
                   "ERROR.MAX_LENGTH"
                     | translate
@@ -270,14 +292,17 @@
                               ?.requiredLength
                         }
                 }}
-              </mat-error>
-            </mat-form-field>
+              </mat-error> -->
+              </mat-form-field>
+            </div>
           </div>
         </div>
         <!-- Product Location Type -->
-        <div class="section" fxLayout="column">
+        <!-- <div class="section" fxLayout="column">
           <div class="section-title">
-            {{ "PRODUCT_CATALOG.TITLE.LOCATION" | translate }}
+            {{
+              "PRODUCT_CATALOG.PRODUCTS_LIST_COLUMNS.LOCATION_TYPE" | translate
+            }}
           </div>
           <form
             [formGroup]="productLocation"
@@ -308,9 +333,65 @@
               >
             </div>
           </form>
+        </div> -->
+        <div class="section" fxLayout="column">
+          <div class="section-title">
+            {{
+              "PRODUCT_CATALOG.PRODUCTS_LIST_COLUMNS.LOCATION_TYPE" | translate
+            }}
+          </div>
+          <form [formGroup]="productLocation" fxFlex="50%">
+            <mat-radio-group formControlName="locationType">
+              <div fxLayout="row " fxLayoutGap="100px">
+                <mat-radio-button
+                  [disabled]="crud == crudRead"
+                  value="On Premise"
+                  color="primary"
+                  disableRipple
+                >
+                  {{
+                    "PRODUCT_CATALOG.FORM_FIELD.OPEN_PREMISE" | translate
+                  }}</mat-radio-button
+                >
+                <mat-radio-button
+                  [disabled]="crud == crudRead"
+                  value="SAAS"
+                  color="primary"
+                  disableRipple
+                >
+                  {{
+                    "PRODUCT_CATALOG.FORM_FIELD.SAAS" | translate
+                  }}</mat-radio-button
+                >
+              </div>
+            </mat-radio-group>
+          </form>
         </div>
         <!-- Product Source -->
-        <app-product-source [data]="data" [crud]="crud"></app-product-source>
+        <!-- <app-product-source [data]="data" [crud]="crud"></app-product-source> -->
+        <div class="section" fxLayout="column">
+          <div class="section-title">
+            {{ "Licenses" | translate }}
+          </div>
+          <div fxFlex="50%">
+            <mat-radio-group formControlName="licensing" color="primary">
+              <div fxLayout="row" fxLayoutGap="100px">
+                <mat-radio-button value="OPENSOURCE" disableRipple>
+                  Open Source
+                </mat-radio-button>
+                <mat-radio-button value="CLOSEDSOURCE" disableRipple>
+                  Closed Source
+                </mat-radio-button>
+              </div>
+            </mat-radio-group>
+          </div>
+
+          <div *ngIf="productForm.get('licensing').value === 'OPENSOURCE'">
+            <app-open-source
+              [openSourceFormGroup]="productForm.get('OpenSource').value"
+            ></app-open-source>
+          </div>
+        </div>
 
         <!-- Product Useful Links -->
         <div class="section" fxLayout="column">

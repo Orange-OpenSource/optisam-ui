@@ -47,7 +47,7 @@ export class EditMetricAllocatedComponent implements OnInit {
   ngOnInit(): void {
     this.groupForm = new FormGroup({
       allocatedUser: new FormControl('', [
-        Validators.pattern(new RegExp(COMMON_REGEX.ONLY_DIGITS)),
+        Validators.pattern(COMMON_REGEX.ONLY_DIGITS),
       ]),
       allocatedMetric: new FormControl(''),
     });
@@ -152,7 +152,7 @@ export class EditMetricAllocatedComponent implements OnInit {
   }
 
   restrictNonDigitAndNegative(event: KeyboardEvent): void {
-    const digitOnly: RegExp = new RegExp(COMMON_REGEX.DIGITS_WITH_NAV);
+    const digitOnly: RegExp = COMMON_REGEX.DIGITS_WITH_NAV;
     const isBlock: boolean = event.key.match(digitOnly) === null;
     if (isBlock) {
       event.preventDefault();

@@ -1,0 +1,61 @@
+<mat-card class="example-card">
+  <div class="container-fluid page-content-header">
+    <div
+      class="action-section"
+      fxLayout="row"
+      fxLayoutAlign="end"
+      fxLayoutGap="5px"
+    >
+      <!-- <button
+        id="exportConcurrentUser"
+        [disabled]="inProcess"
+        mat-raised-button
+        class="btn-two"
+        (click)="exportConcurrentUser()"
+        [disabled]="!isDataAvailable"
+      >
+        <span>
+          <mat-spinner *ngIf="inProcess"></mat-spinner>
+        </span>
+        <mat-icon *ngIf="!inProcess">play_arrow</mat-icon>
+        <span>
+          {{ "CONCURRENT_USER.BUTTON.EXPORT_CONCURRENT_USERS" | translate }}
+        </span>
+      </button> -->
+
+      <button
+        id="addConcurrentUser"
+        mat-raised-button
+        class="btn-two"
+        (click)="addConcurrentUser()"
+      >
+        <mat-icon>add</mat-icon>
+        {{ "CONCURRENT_USER.BUTTON.ADD_CONCURRENT_USERS" | translate }}
+      </button>
+    </div>
+
+    <nav mat-tab-nav-bar cdkFocusInitial>
+      <ng-container *ngFor="let menu of tabMenus">
+        <a
+          mat-tab-link
+          class="tab-anchor"
+          (click)="activeTitle = menu.title"
+          [active]="activeTitle == menu.title"
+        >
+          {{ menu.title | translate }}
+        </a>
+      </ng-container>
+    </nav>
+  </div>
+
+  <mat-card-content>
+    <app-individual-concurrent-user
+      [activeTitle]="activeTitle"
+      *ngIf="activeTitle === tabMenus[0].title"
+    ></app-individual-concurrent-user>
+    <app-aggregation-concurrent-user
+      [activeTitle]="activeTitle"
+      *ngIf="activeTitle === tabMenus[1].title"
+    ></app-aggregation-concurrent-user>
+  </mat-card-content>
+</mat-card>

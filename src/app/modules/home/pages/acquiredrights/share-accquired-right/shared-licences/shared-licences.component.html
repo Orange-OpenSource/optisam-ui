@@ -1,0 +1,60 @@
+<div class="section" fxLayout="column">
+  <form [formGroup]="form">
+    <app-loading-spinner *ngIf="_loading"></app-loading-spinner>
+    <div fxLayout="row wrap" fxLayoutAlign="space-between" *ngIf="!_loading">
+      <mat-form-field appearance="outline" class="shared-licences-section">
+        <mat-label>{{ "Scope" | translate }}</mat-label>
+        <!-- <input matInput formControlName="scope" /> -->
+        <mat-select
+          id="accqScope"
+          formControlName="scope"
+          [disabled]="HTTPActivity || scopesList?.length === 0"
+        >
+          <mat-option
+            *ngFor="let scopes of scopesList; let idx = index"
+            [value]="scopes"
+            >{{ scopes }}</mat-option
+          >
+        </mat-select>
+        <mat-error *ngIf="form.get('scope').hasError('required')"
+          >This is a Required Field</mat-error
+        >
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="shared-licences-section">
+        <mat-label>{{ "Acquired License Number" | translate }} </mat-label>
+        <input
+          matInput
+          formControlName="sharedLicencesNum"
+          (blur)="triggerUpdate()"
+          type="number"
+        />
+        <mat-error *ngIf="form.get('sharedLicencesNum').hasError('required')"
+          >This is a Required Field</mat-error
+        >
+        <mat-error *ngIf="form.get('sharedLicencesNum').hasError('pattern')"
+          >Please Enter Numeric Values Only</mat-error
+        >
+        <mat-error *ngIf="form.get('sharedLicencesNum').hasError('min')">
+          <ng-template [ngIf]="form.get('sharedLicencesNum').hasError('min')">
+            Newly Entered Shared licenses must be at least 0
+          </ng-template>
+        </mat-error>
+        <mat-error
+          *ngIf="
+            form.get('sharedLicencesNum').hasError('totalLessThanAvailLic')
+          "
+          >Value Exceeding the Available Number of Licences</mat-error
+        >
+      </mat-form-field>
+    </div>
+  </form>
+  <div
+    class="close-btn"
+    fxLayout="row"
+    fxLayoutAlign="center center"
+    (click)="confirmRemove()"
+  >
+    <mat-icon>close</mat-icon>
+  </div>
+</div>

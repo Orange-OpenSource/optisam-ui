@@ -1,0 +1,165 @@
+<mat-card class="example-card">
+  <div class="container-fluid page-content-header">
+    <app-advance-search
+      [advanceSearchModel]="advanceSearchModel"
+      (advFilterEvent)="advSearchTrigger($event)"
+    ></app-advance-search>
+  </div>
+
+  <mat-card-content>
+    <div class="mat-elevation-z8">
+      <mat-table
+        [dataSource]="concurrentUsersList"
+        matSort
+        (matSortChange)="sortData($event)"
+      >
+        <ng-container *ngFor="let col of columns" matColumnDef="{{ col.key }}">
+          <ng-container [ngSwitch]="col.key">
+            <!-- editor start -->
+            <ng-container *ngSwitchCase="'product_editor'">
+              <mat-header-cell *matHeaderCellDef
+                >{{ col.label | translate }}
+              </mat-header-cell>
+              <mat-cell *matCellDef="let concurrentUser">
+                {{ concurrentUser[col.key] }}
+              </mat-cell>
+            </ng-container>
+
+            <!-- editor end -->
+
+            <!-- product verion start -->
+            <ng-container *ngSwitchCase="'product_version'">
+              <mat-header-cell *matHeaderCellDef
+                >{{ col.label | translate }}
+              </mat-header-cell>
+              <mat-cell *matCellDef="let concurrentUser">
+                {{ concurrentUser[col.key] }}
+              </mat-cell>
+            </ng-container>
+            <!-- product verion end -->
+
+            <!-- Product name or product name start -->
+            <ng-container *ngSwitchCase="'product_name'">
+              <mat-header-cell *matHeaderCellDef
+                >{{ col.label | translate }}
+              </mat-header-cell>
+              <mat-cell *matCellDef="let concurrentUser">
+                {{ concurrentUser[col.key] }}
+              </mat-cell>
+            </ng-container>
+            <!-- Product name or product name end -->
+
+            <!-- number of users -->
+            <ng-container *ngSwitchCase="'number_of_users'">
+              <mat-header-cell
+                *matHeaderCellDef
+                mat-sort-header="{{ col.key }}"
+                disableClear="true"
+                >{{ col.label | translate }}
+              </mat-header-cell>
+              <mat-cell *matCellDef="let concurrentUser">
+                {{ concurrentUser[col.key] }}
+              </mat-cell>
+            </ng-container>
+            <!-- number of users end -->
+
+            <!-- purchase date Date start -->
+            <ng-container *ngSwitchCase="'purchase_date'">
+              <mat-header-cell
+                *matHeaderCellDef
+                mat-sort-header="{{ col.key }}"
+                disableClear="true"
+                >{{ col.label | translate }}
+              </mat-header-cell>
+              <mat-cell *matCellDef="let concurrentUser">
+                {{ concurrentUser[col.key] | formatShortdate }}
+              </mat-cell>
+            </ng-container>
+            <!-- purchase date Date end -->
+
+            <!-- Default switch case start -->
+            <ng-container *ngSwitchDefault>
+              <mat-header-cell
+                *matHeaderCellDef
+                mat-sort-header="{{ col.key }}"
+                disableClear="true"
+                >{{ col.label | translate }}
+              </mat-header-cell>
+              <mat-cell *matCellDef="let concurrentUser">
+                {{ concurrentUser[col.key] }}
+              </mat-cell>
+            </ng-container>
+            <!-- Default switch case end -->
+          </ng-container>
+        </ng-container>
+
+        <mat-header-row
+          *matHeaderRowDef="displayedColumns; sticky: true"
+        ></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+      </mat-table>
+      <app-loading-spinner *ngIf="listLoading"></app-loading-spinner>
+      <ng-container
+        *ngIf="!listLoading && !concurrentUsersList?.filteredData?.length"
+      >
+        <div id="noData" fxLayout="row" fxLayoutAlign="center center">
+          <mat-icon>error</mat-icon
+          >{{ "No Data details available" | translate }}
+        </div>
+      </ng-container>
+
+      <mat-paginator
+        [length]="length"
+        [pageSize]="pageSize"
+        [pageSizeOptions]="pageSizeOption"
+        (page)="getPaginatorData($event)"
+        showFirstLastButtons
+      >
+      </mat-paginator>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<mat-card class="graph" *ngIf="concurrentUsersList?.filteredData?.length">
+  <h3>
+    {{ "CONCURRENT_USER.TITLE.CONCURRENT_GRAPH" | translate }}
+  </h3>
+  <mat-card-header> </mat-card-header>
+  <div fxLayout="row" class="date-selection" fxLayoutGap="10px">
+    <mat-form-field appearance="outline">
+      <mat-label>{{
+        "CONCURRENT_USER.LABEL.STARTING_MONTH" | translate
+      }}</mat-label>
+      <input matInput [readonly]="true" [value]="startDate | date : 'MM/y'" />
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="month-datepicker">
+      <mat-label>{{
+        "CONCURRENT_USER.LABEL.ENDING_MONTH" | translate
+      }}</mat-label>
+      <input
+        matInput
+        [matDatepicker]="dp"
+        [formControl]="date"
+        (dateChange)="detectEndMonthChange($event)"
+        (dateInput)="detectEndMonthChange($event)"
+        (stateChanges)="detectEndMonthChange($event)"
+      />
+      <mat-hint>MM/YYYY</mat-hint>
+      <mat-datepicker-toggle
+        [disableRipple]="true"
+        matIconSuffix
+        [for]="dp"
+      ></mat-datepicker-toggle>
+      <mat-datepicker
+        #dp
+        startView="multi-year"
+        (monthSelected)="setMonthAndYear($event, dp)"
+      >
+      </mat-datepicker>
+    </mat-form-field>
+  </div>
+
+  <div id="graph-section">
+    <canvas [attr.id]="canvasId" [height]="canvasHeight"></canvas>
+  </div>
+</mat-card>

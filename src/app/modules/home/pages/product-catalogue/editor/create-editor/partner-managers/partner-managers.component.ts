@@ -19,7 +19,7 @@ import {
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { CommonService } from '@core/services';
 import { SinglePartnerManagerComponent } from './single-partner-manager/single-partner-manager.component';
-import { ProductCatalogPartnerManager } from '@core/modals';
+import { NameEmail } from '@core/modals';
 
 @Component({
   selector: 'app-partner-managers',
@@ -28,7 +28,7 @@ import { ProductCatalogPartnerManager } from '@core/modals';
 })
 export class PartnerManagersComponent implements OnInit {
   @Input() view: boolean;
-  @Input() partnerData: ProductCatalogPartnerManager[] = null;
+  @Input() partnerData: NameEmail[] = null;
   editorGroup: FormGroup;
   toDeleteItems: any;
   partnerManagers: FormArray;
@@ -44,7 +44,7 @@ export class PartnerManagersComponent implements OnInit {
     for (let data of this.partnerData || []) this.addNewPartnerManager(data);
   }
 
-  addNewPartnerManager(data: ProductCatalogPartnerManager = null): void {
+  addNewPartnerManager(data: NameEmail = null): void {
     this.partnerManagers.push(
       SinglePartnerManagerComponent.addPartnerManager(data)
     );

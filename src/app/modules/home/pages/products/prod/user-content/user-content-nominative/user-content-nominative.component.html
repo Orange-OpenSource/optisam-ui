@@ -1,0 +1,7 @@
+<app-individual-nominative-user
+  *ngIf="(productType$ | async) === individualProduct"
+></app-individual-nominative-user>
+
+<app-aggregation-nominative-user
+  *ngIf="(productType$ | async) === aggregationProduct"
+></app-aggregation-nominative-user>

@@ -53,10 +53,14 @@ describe('DataManagementComponent', () => {
     if (component.allowedScope) {
       expect(allNavTabs[0].innerText).toContain('Metadata');
       expect(allNavTabs[1].innerText).toContain('Infrastructure inventory');
-      expect(allNavTabs[2].innerText).toContain('Log');
+      expect(allNavTabs[2].innerText).toContain('Nominative Users');
+      expect(allNavTabs[3].innerText).toContain('Concurrent Users');
+      expect(allNavTabs[4].innerText).toContain('Log');
       return;
     }
     expect(allNavTabs[0].innerText).toContain('Infrastructure inventory');
-    expect(allNavTabs[1].innerText).toContain('Log');
+    expect(allNavTabs[1].innerText).toContain('Nominative Users');
+    expect(allNavTabs[1].innerText).toContain('Concurrent Users');
+    expect(allNavTabs[2].innerText).toContain('Log');
   });
 });

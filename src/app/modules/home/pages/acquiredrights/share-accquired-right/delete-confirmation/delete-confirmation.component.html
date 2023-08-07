@@ -1,0 +1,15 @@
+<div mat-dialog-title fxLayout="row" fxLayoutAlign="start center">
+    {{ "Confirmation" | translate }}
+  </div>
+  <mat-dialog-content>
+    <p class="message">
+      {{ "Are you sure you want to remove?" | translate }}
+    </p>
+  </mat-dialog-content>
+  <mat-dialog-actions fxLayout="row" fxLayoutAlign="center center">
+    <button mat-raised-button class="btn-two" (click)="remove(true)">Yes</button>
+    <button mat-raised-button class="btn-four" (click)="remove(false)">
+      Cancel
+    </button>
+  </mat-dialog-actions>
+  

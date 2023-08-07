@@ -14,6 +14,8 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
+import { ProductAggregation, ProductType, Products } from '@core/modals';
+import { UserDetailsComponent } from '../prod/user-details/user-details.component';
 import { ViewProductsComponent } from '../prod/view-products/view-products.component';
 
 @Component({
@@ -45,15 +47,14 @@ export class ProductAggregationComponent implements OnInit {
   filteringOrder: any;
 
   displayedColumns: string[] = [
-    
     'aggregation_name',
     'editor',
     'total_cost',
+    'users_count',
     'num_applications',
     'num_equipments',
   ];
   expandDisplayedColumns: string[] = [
-    
     'Name',
     'version',
     'editor',
@@ -81,6 +82,7 @@ export class ProductAggregationComponent implements OnInit {
     num_applications: 'Application Count',
     num_equipments: 'Equipment Count',
     aggregation_name: 'Aggregation Name',
+    users_count: 'CONCURRENT_USER.TABLE_HEADER.USERS_COUNT',
   };
   _loading: Boolean;
 
@@ -121,7 +123,7 @@ export class ProductAggregationComponent implements OnInit {
     }
   }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
   getProductAggregationData() {
     this._loading = true;
@@ -151,15 +153,15 @@ export class ProductAggregationComponent implements OnInit {
     this.getProductAggregationData();
   }
 
-  openEditorDialog(data:any){
-    console.log("working")
-    this.dialogRef=this.dialog.open(ViewProductsComponent,{
+  openEditorDialog(data: any) {
+    console.log('working');
+    this.dialogRef = this.dialog.open(ViewProductsComponent, {
       width: '1300px',
       disableClose: true,
-      data: data
+      data: data,
     });
 
-    this.dialogRef.afterClosed().subscribe((result) => {});
+    this.dialogRef.afterClosed().subscribe((result) => { });
   }
 
   sortData(ev) {
@@ -200,7 +202,7 @@ export class ProductAggregationComponent implements OnInit {
       },
     });
 
-    dialogRef.afterClosed().subscribe((result) => {});
+    dialogRef.afterClosed().subscribe((result) => { });
   }
 
   openAggregationDetailsDialog(aggregation: any): void {
@@ -215,7 +217,7 @@ export class ProductAggregationComponent implements OnInit {
       },
     });
 
-    dialogRef.afterClosed().subscribe((result) => {});
+    dialogRef.afterClosed().subscribe((result) => { });
   }
 
   aggrAplDetails(swidtags) {
@@ -275,6 +277,7 @@ export class ProductAggregationComponent implements OnInit {
 
   advSearchTrigger(event) {
     this.searchFields = event;
+    this.current_page_num = 1;
     this.applyFilter();
   }
 
@@ -300,5 +303,15 @@ export class ProductAggregationComponent implements OnInit {
 
   closeAggregation() {
     this.expandedRow = null;
+  }
+
+  userDetails(product: ProductAggregation): void {
+    if (!product.users_count) return;
+    this.dialog.open(UserDetailsComponent, {
+      disableClose: true,
+      width: '95vw',
+      panelClass: 'full-width-dialog',
+      data: { productType: ProductType.AGGREGATION, product },
+    });
   }
 }

@@ -41,8 +41,8 @@
                 role="tab"
                 aria-controls="nav-profile"
                 aria-selected="false"
-                (click)="getProductOptions()"
-                >{{ "Options" | translate }}</a
+                (click)="getProductMaintenance()"
+                >{{ "Maintenance" | translate }}</a
               >
             </div>
           </nav>
@@ -81,7 +81,7 @@
                   >
                   <span class="margin-left">
                     {{ productInfo.num_equipments || 0 }}
-                    <span class="error-msg" *ngIf="!productInfo.num_equipments"
+                    <span class="error-msg" *ngIf="productInfo.not_deployed"
                       >&nbsp;({{
                         "Product is not
                       deployed" | translate
@@ -125,47 +125,53 @@
             >
               <div class="tab-content-inner">
                 <app-loading-spinner *ngIf="_loading"></app-loading-spinner>
-                <div *ngIf="productOptions && !_loading">
-                  <p>
-                    <strong>{{ "Options list" | translate }}</strong>
-                    <br />
-                    <strong>{{ "Number of options" | translate }} :</strong
-                    >{{ productOptions.numOfOptions || 0 }}
-                    <br />
-                  </p>
-                  <div class="table-responsive">
-                    <table
-                      *ngIf="
-                        productOptions.optioninfo &&
-                        productOptions.optioninfo.length > 0
-                      "
-                      class="table table-bordered table-striped"
-                    >
-                      <thead>
-                        <tr>
-                          <th>{{ "SWIDTag" | translate }}</th>
-                          <th>{{ "Product name" | translate }}</th>
-                          <th>{{ "Editor" | translate }}</th>
-                          <th>{{ "Edition" | translate }}</th>
-                          <th>{{ "Release" | translate }}</th>
-                          <th>{{ "Total Cost" | translate }}</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr *ngFor="let item of productOptions.optioninfo">
-                          <td>{{ item.swidTag || 0 }}</td>
-                          <td>
-                            <a>{{ item.Name }}</a>
-                          </td>
-                          <td>{{ item.editor }}</td>
-                          <td>{{ item.edition }}</td>
-                          <td>{{ item.version || 0 }}</td>
-                          <td>{{ 0 | formatCost }}</td>
-                        </tr>
-                        <tr></tr>
-                      </tbody>
-                    </table>
+                <div *ngIf="!_loading">
+                  <div>
+                    <strong>{{ "Licenses-maintenance" | translate }} : </strong
+                    >{{
+                      maintenanceInfo?.licenses_under_maintenance_number || 0
+                    }}
                   </div>
+                  <div>
+                    <strong
+                      >{{ "Maintenance unit price" | translate }} : </strong
+                    >{{ maintenanceInfo?.avg_maintenance_unit_price || 0 }}
+                  </div>
+                  <div>
+                    <strong>{{ "Maintenance provider" | translate }} : </strong
+                    >{{ maintenanceInfo?.maintenance_provider || " - " }}
+                  </div>
+                  <div>
+                    <strong>{{ "Start of maintenance" | translate }} : </strong
+                    >{{
+                      maintenanceInfo?.start_of_maintenance
+                        ? (maintenanceInfo?.start_of_maintenance
+                          | date : "d/M/y")
+                        : " - "
+                    }}
+                  </div>
+                  <div>
+                    <strong>{{ "End of maintenance" | translate }} : </strong
+                    >{{
+                      maintenanceInfo?.end_of_maintenance
+                        ? (maintenanceInfo?.end_of_maintenance | date : "d/M/y")
+                        : " - "
+                    }}
+                  </div>
+                  <div>
+                    <strong>{{ "Support number" | translate }} : </strong
+                    >{{ maintenanceInfo?.support_number || 0 }}
+                  </div>
+                  <div>
+                    <strong>{{ "Total maintenance" | translate }} : </strong
+                    >{{ maintenanceInfo?.total_maintenance_cost || 0 }}
+                  </div>
+                </div>
+                <div
+                  class="no-data"
+                  *ngIf="!_loading && !maintenanceInfo && false"
+                >
+                  {{ "No data available" | translate }}
                 </div>
               </div>
             </div>
@@ -182,7 +188,7 @@
                   <a
                     [routerLink]="['/optisam/ar/prights/aggregations']"
                     [state]="{ aggregationName: agg_name }"
-                    mat-dialog-close
+                    [mat-dialog-close]="true"
                   >
                     {{ agg_name }}
                   </a>
@@ -252,24 +258,22 @@
                               >
                               <span
                                 class="error-msg"
-                                *ngIf="!productInfo.num_equipments"
+                                *ngIf="product.notDeployed"
                                 >&nbsp;{{
                                   "Product is not
                                   deployed" | translate
-                                }}</span
-                              >
-                              <span
-                                *ngIf="
-                                  !product.metricNotDefined &&
-                                  productInfo.num_equipments
-                                "
-                              >
+                                }}
+                              </span>
+                              <span *ngIf="!product.notDeployed">
                                 {{ product.computedDetails || "-" }}
                               </span>
                             </div>
 
                             <div *ngSwitchCase="'numCptLicences'">
                               {{ product.numCptLicences || 0 }}
+                            </div>
+                            <div *ngSwitchCase="'availableLicences'">
+                              {{ product.availableLicences || 0 }}
                             </div>
 
                             <div *ngSwitchCase="'deltaNumber'">
@@ -304,6 +308,9 @@
                                 matTooltipClass="errorTooltip"
                                 >{{ product.deltaCost | formatCost }}</span
                               >
+                            </div>
+                            <div *ngSwitchCase="'totalCost'">
+                              {{ product.totalCost || 0 | formatCost }}
                             </div>
 
                             <span *ngSwitchDefault>{{

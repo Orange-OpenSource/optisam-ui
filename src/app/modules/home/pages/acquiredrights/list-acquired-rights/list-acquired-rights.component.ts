@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { AcquiredRightsResponse } from './../../../../../core/modals/acquired.rights.modal';
+import { AcquiredRightsResponse } from '../../../../../core/modals/acquired-rights.modal';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
@@ -25,7 +25,9 @@ import {
   LOCAL_KEYS,
   PAGINATION_DEFAULTS,
 } from '@core/util/constants/constants';
-import { AcquiredRightsIndividualParams } from '@core/modals/acquired.rights.modal';
+import { AcquiredRightsIndividualParams } from '@core/modals/acquired-rights.modal';
+import { ShareAccquiredRightComponent } from '../share-accquired-right/share-accquired-right.component';
+import { ShareAggregationComponent } from '../share-aggregation/share-aggregation.component';
 import { ViewEditorDetailsAccComponent } from '../view-editor-details-acc/view-editor-details-acc.component';
 // import { MatTabChangeEvent } from '@angular/material/tabs';
 export interface NotLicensedProduct {
@@ -101,7 +103,7 @@ export class ListAcquiredRightsComponent implements OnInit, AfterViewInit {
     public dialog: MatDialog,
     private router: Router,
     private cs: CommonService
-  ) {}
+  ) { }
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: false }) sort: MatSort;
 
@@ -115,6 +117,7 @@ export class ListAcquiredRightsComponent implements OnInit, AfterViewInit {
 
   getAcquiredRights() {
     this._loading = true;
+    this.myLicensedDataSource = new MatTableDataSource([]);
     this.productService
       .getAcquiredrights(
         this.pageSize,
@@ -124,11 +127,11 @@ export class ListAcquiredRightsComponent implements OnInit, AfterViewInit {
       )
       .subscribe(
         (res: any) => {
+          this._loading = false;
           this.myLicensedDataSource = new MatTableDataSource(
             res.acquired_rights
           );
           this.length = res.totalRecords;
-          this._loading = false;
         },
         (error) => {
           this._loading = false;
@@ -173,8 +176,11 @@ export class ListAcquiredRightsComponent implements OnInit, AfterViewInit {
           'editor',
           'metric',
           'acquired_licenses_number',
+          'available_licenses',
+          'recieved_licenses',
+          'shared_licenses',
           'avg_licenes_unit_price',
-          'action',
+          'actions',
         ];
         this.getAcquiredRights();
         break;
@@ -192,6 +198,9 @@ export class ListAcquiredRightsComponent implements OnInit, AfterViewInit {
           'metric_name',
           'swidtags',
           'num_licenses_acquired',
+          'available_licenses',
+          'shared_licenses',
+          'recieved_licenses',
           'avg_unit_price',
           'action',
         ];
@@ -202,6 +211,32 @@ export class ListAcquiredRightsComponent implements OnInit, AfterViewInit {
         break;
     }
   }
+
+  getToolTipDataAcc(data) {
+    let tooltipContent = `Available Licenses Left:${data?.available_licenses},\n Received Licenses in Current Entity:${data?.recieved_licenses},\n Shared Licenses in Current Entity:${data?.shared_licenses},\n`;
+    data?.shared_data?.forEach((sl) => {
+      tooltipContent += `Shared Licenses in Entity ${sl?.scope} : ${sl?.shared_licenses},\nReceived Licences from Entity ${sl?.scope}:${sl?.recieved_licenses}\n`;
+    });
+    return tooltipContent;
+  }
+
+  getToolTipSharedDataAcc(data) {
+    let tooltipContentData = `Shared Licenses in Current Entity:${data?.shared_licenses}\n`;
+    data?.shared_data?.forEach((sl) => {
+      tooltipContentData += `Shared Licenses in Entity ${sl?.scope} : ${sl?.shared_licenses}\n`;
+    });
+
+    return tooltipContentData;
+  }
+
+  getToolTipReceivedDataAcc(data) {
+    let tooltipContentData = `Received Licenses in Current Entity:${data?.recieved_licenses}\n`;
+    data?.shared_data?.forEach((sl) => {
+      tooltipContentData += `Received Licenses from Entity ${sl?.scope}:${sl?.recieved_licenses}\n`;
+    });
+    return tooltipContentData;
+  }
+
   getPaginatorData(event) {
     const page_num = event.pageIndex;
     this.currentPageNum = page_num + 1;
@@ -216,7 +251,7 @@ export class ListAcquiredRightsComponent implements OnInit, AfterViewInit {
       data: data,
     });
 
-    this.dialogRef.afterClosed().subscribe((result) => {});
+    this.dialogRef.afterClosed().subscribe((result) => { });
   }
 
   sortData(sort) {
@@ -261,6 +296,41 @@ export class ListAcquiredRightsComponent implements OnInit, AfterViewInit {
       const successEvent = dialogRef.componentInstance.actionSuccessful;
       if (successEvent) {
         this.getTableData();
+      }
+    });
+  }
+
+  shareAccquiredRight(acquired_rights) {
+    console.log(acquired_rights);
+    const dialogRef = this.dialog.open(ShareAccquiredRightComponent, {
+      data: acquired_rights,
+      width: '650px',
+      maxHeight: '90vh',
+      autoFocus: false,
+      disableClose: true,
+    });
+
+    dialogRef.afterClosed().subscribe((res: boolean) => {
+      const successEvent = dialogRef.componentInstance.actionSuccessful;
+      if (successEvent) {
+        this.getTableData();
+      }
+    });
+  }
+
+  shareAggregationRight(data) {
+    const dialogRef = this.dialog.open(ShareAggregationComponent, {
+      data: data,
+      width: '650px',
+      maxHeight: '90vh',
+      autoFocus: false,
+      disableClose: true,
+    });
+
+    dialogRef.afterClosed().subscribe((res: boolean) => {
+      const successEvent = dialogRef.componentInstance.actionSuccessful;
+      if (successEvent) {
+        this.getAggregation();
       }
     });
   }
@@ -351,20 +421,21 @@ export class ListAcquiredRightsComponent implements OnInit, AfterViewInit {
       );
   }
 
-  openDialog(value, name): void {
+  openDialog(value, name, SKU): void {
     const dialogRef = this.dialog.open(MoreDetailsComponent, {
       width: '850px',
       disableClose: true,
       data: {
         datakey: value,
         dataName: name,
+        dataSKU: SKU,
       },
     });
   }
 
   getAggregation(data?: AcquiredRightsAggregationParams): void {
     this._loading = true;
-
+    this.aggregationDataSource = new MatTableDataSource([]);
     const paramObj: AcquiredRightsAggregationParams = data || {
       scope: this.cs.getLocalData(LOCAL_KEYS.SCOPE),
       page_num: this.currentPageNum,
@@ -441,13 +512,14 @@ export class ListAcquiredRightsComponent implements OnInit, AfterViewInit {
   }
 
   advSearchTrigger(event) {
-    console.log(event);
     this.searchFields = event;
+    this.currentPageNum = 1;
     this.applyFilter();
   }
 
   aggregationAdvSearchTrigger(event) {
     this.searchFields = event;
+    this.currentPageNum = 1;
     this.applyAggFilter();
   }
 

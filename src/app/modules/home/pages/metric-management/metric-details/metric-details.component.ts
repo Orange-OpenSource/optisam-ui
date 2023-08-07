@@ -23,7 +23,7 @@ export class MetricDetailsComponent implements OnInit {
 
   constructor(
     private sharedService: SharedService,
-    private commonService: CommonService,
+    private cs: CommonService,
     private metricService: MetricService,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
@@ -35,6 +35,7 @@ export class MetricDetailsComponent implements OnInit {
     this.metricName = this.data.name;
     this.metricType = this.data.type;
     this.metricDescription = this.data.description;
+
   }
 
   ngOnInit() {
@@ -46,7 +47,7 @@ export class MetricDetailsComponent implements OnInit {
     const params: MetricDetailsParams = {
       'metric_info.type': this.metricType,
       'metric_info.name': this.metricName,
-      scopes: this.commonService.getLocalData(LOCAL_KEYS.SCOPE),
+      scopes: this.cs.getLocalData(LOCAL_KEYS.SCOPE),
     };
     this.metricService.getMetricDetails(params).subscribe(
       (res) => {

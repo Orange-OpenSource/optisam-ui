@@ -18,6 +18,9 @@ import {
   AggregationProductListResponse,
   AggregationProductObject,
   AggregationProductsParams,
+  ErrorResponse,
+  ListProductQueryParams,
+  ProductListResponse,
 } from '@core/modals';
 import { CommonService } from '@core/services/common.service';
 import { MetricService } from '@core/services/metric.service';
@@ -404,17 +407,19 @@ export class EditProductsStepComponent implements OnInit, OnDestroy {
 
   // Get products list
   listProducts() {
-    const query =
-      '?scopes=' + this.currentScope + '&editor=' + this.productsEditor.value;
+    const query: ListProductQueryParams = {
+      scopes: this.currentScope,
+      editor: this.productsEditor.value,
+    };
     this.productService.getProductList(query).subscribe(
-      (res) => {
+      (res: ProductListResponse) => {
         this.productsList = res.products || [];
         this.displayProductsList = [
           ...new Set(this.productsList.map((prod) => prod.name)),
         ];
         this.filteredProductsList = this.displayProductsList;
       },
-      (err) => {
+      (err: ErrorResponse) => {
         console.log('Some error occured! Could not fetch products list.');
       }
     );

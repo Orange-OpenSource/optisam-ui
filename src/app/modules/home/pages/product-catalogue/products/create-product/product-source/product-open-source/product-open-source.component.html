@@ -24,16 +24,15 @@
         <mat-radio-button [value]="commercial" disableRipple>{{
           "PRODUCT_CATALOG.FORM_FIELD.COMMERCIAL" | translate
         }}</mat-radio-button>
-        
       </mat-radio-group>
     </div>
 
-    <mat-form-field appearance="outline">
+    <mat-form-field appearance="outline" class="opensource">
       <mat-label>{{
         "PRODUCT_CATALOG.FORM_FIELD.OPEN_SOURCE" | translate
       }}</mat-label>
       <input
-        *ngIf="crud == crudRead "
+        *ngIf="crud == crudRead"
         readonly
         matInput
         formControlName="openLicenses"

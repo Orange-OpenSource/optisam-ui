@@ -1,26 +1,24 @@
 <div fxLayOut="row" fxLayoutAlign="space-between center">
-<div class="page-heading">
-  {{ "PRODUCT_CATALOG.TITLE.MAIN" | translate }}
-</div>
+  <div class="page-heading">
+    {{ "PRODUCT_CATALOG.TITLE.MAIN" | translate }}
+  </div>
 
-<button
-        mat-raised-button
-        class="btn-two file"
-        (click)="uploadFile()"
-      >
-        <mat-icon>add</mat-icon>
-        {{ "Upload File" }}
-      </button>
-    </div>
-      <!-- <input
+  <button
+    *ngIf="userRole === 'SUPER_ADMIN'"
+    mat-raised-button
+    class="btn-two file"
+    (click)="uploadFile()"
+  >
+    <mat-icon>add</mat-icon>
+    {{ "Upload File" | translate }}
+  </button>
+</div>
+<!-- <input
           #FileUpload
           type="file"
           style="visibility: hidden;"
           (change)="fileUpload($event)"
         /> -->
-
-    
-
 
 <div class="tabs">
   <nav mat-tab-nav-bar>
@@ -35,4 +33,3 @@
     </a>
   </nav>
 </div>
-

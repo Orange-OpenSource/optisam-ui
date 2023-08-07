@@ -1,0 +1,94 @@
+:host {
+  font-size: 1em;
+  font-family: Roboto, sans-serif;
+}
+
+.browse-title {
+  padding: 3px;
+  margin-bottom: 5px !important;
+}
+
+.browse-btn:focus {
+  outline-color: transparent;
+  box-shadow: none;
+}
+mat-dialog-content {
+  padding-bottom: 10px;
+  mat-card {
+    padding-top: 0;
+  }
+}
+
+.template-row {
+  color: var(--primary);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+::ng-deep {
+  .file-loading {
+    .upload-meta {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 600;
+      color: var(--primary);
+    }
+    .mat-progress-bar-fill:after {
+      background-color: var(--primary);
+    }
+  }
+}
+
+.hidden {
+  display: none;
+}
+
+.file-name {
+  padding: 10px;
+  border: 1px solid #000;
+  mat-icon {
+    font-size: 0.9rem;
+    height: 16px;
+    width: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+  }
+  .file-name-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.template-row {
+  text-decoration: none;
+}
+
+.error-message {
+  display: flex;
+  justify-content: start;
+  align-items: start;
+  flex-direction: row;
+  gap: 3px;
+  color: var(--danger);
+  padding: 10px;
+  border: 1px solid var(--danger);
+  mat-icon {
+    font-size: 1.3em;
+    height: 1em;
+    width: 1em;
+    margin-top: 0.15em;
+  }
+}
+
+.hint {
+  p {
+    font-size: 0.9em;
+    font-weight: bold;
+    margin-top: 0.5em;
+    padding: 3px;
+    color: #727272;
+    margin-bottom: 0;
+  }
+}

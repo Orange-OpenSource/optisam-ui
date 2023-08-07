@@ -1,0 +1,166 @@
+.basic {
+  height: 100%;
+}
+
+.productName {
+  height: 50px;
+  // white-space: nowrap;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.image-section{
+  display: flex;
+  flex: 0 0 100px;
+}
+
+
+
+
+.heading {
+  font-weight: bold;
+  font-size: 16px;
+  padding: 10px 5px 5px 10px;
+}
+
+.text {
+  word-break: break-word;
+  padding: 10px 5px 5px 10px;
+}
+
+.recommendation {
+  border: 1.5px solid #ccc;
+  color: #008afc;
+  font-weight: bold;
+  padding: 4px;
+  border-radius: 20px;
+  display: inline-block;
+  margin: 10px 5px 5px 5px;
+  padding: 2px 8px;
+  &.blacklisted {
+    color: var(--danger);
+    border-color: var(--danger);
+  }
+
+  &.authorized {
+    color: var(--green);
+    border-color: var(--green);
+  }
+  &.recommended {
+    color: var(--primary);
+    border-color: var(--primary);
+  }
+  &.none{
+    color: #ccc;
+    border-color: #ccc;
+  }
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th,
+td {
+  padding: 10px;
+  border: 1.5px solid #ddd;
+  text-align: left;
+}
+
+th {
+  background-color: #ccc;
+  color: black;
+}
+
+.versionTable {
+  margin-right: 10px;
+  margin-left: 10px;
+  padding-bottom: 10px;
+}
+
+.link {
+  margin: 10px 5px 5px 10px;
+}
+
+.licenseIconOpen {
+  color: aquamarine;
+  margin-top: 5px;
+  font-weight: bold;
+  margin-left: 7px;
+}
+
+.licenseIconClosed {
+  color: red;
+  margin-top: 5px;
+  font-weight: bold;
+  margin-left: 7px;
+}
+
+.licenseText {
+  margin-top: 9px;
+  font-weight: bold;
+}
+
+.licenseTypeText {
+  margin-left: 10px;
+}
+
+.box {
+  border: 1px solid #ccc;
+  font-weight: bold;
+  padding: 1px;
+}
+
+.entityBox {
+  align-items: center;
+  margin-left: 10px;
+}
+
+.deployment {
+  margin: 12px 10px 10px 10px;
+}
+
+mat-tooltip {
+  background-color: #ffffff;
+  border: 1px solid #cccccc;
+  padding: 10px;
+  max-width: 500px;
+}
+
+.linkEntities {
+  color: var(--primary);
+  text-decoration: underline;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.image-box {
+  // border: 1px solid #ccc;
+  font-size: 1em;
+  width: 70px;
+  height: auto;
+  max-height: 46px;
+  aspect-ratio: 16 / 9;
+  padding: 6px;
+  img {
+    width: 100%;
+    height: 100%;
+  }
+}	
+
+
+.title-section {
+  display: flex;
+  gap: 10px;
+  flex: 0 0 90px;
+}
+
+.detail-content {
+  display: flex;
+  justify-content: flex-start;
+  padding: 10px;
+  font-size: 20px;
+  font-weight: bold;
+
+  }

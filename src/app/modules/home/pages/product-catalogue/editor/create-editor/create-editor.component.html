@@ -1,202 +1,292 @@
-<div class="body-container">
-  <form [formGroup]="createEditor">
-    <div *ngIf="!_loading">
-      <mat-card>
-        <mat-card-title>
-          <div class="page-heading" *ngIf="isCreateMode && !isViewMode">
-            {{ "EDITOR.CREATE_EDITOR" | translate }}
+<form [formGroup]="createEditor">
+  <div *ngIf="!_loading">
+    <div fxLayout="column" class="editor">
+      <div fxFlex="10%">
+        <div class="page-heading" *ngIf="isCreateMode && !isViewMode">
+          {{ "EDITOR.CREATE_EDITOR" | translate }}
+        </div>
+        <div class="page-heading" *ngIf="!isCreateMode && !isViewMode">
+          {{ "PRODUCT_CATALOG.TITLE.UPDATE_EDITOR" | translate }}
+        </div>
+        <div class="page-heading" *ngIf="isViewMode">
+          {{ "View Editor" | translate }}
+        </div>
+      </div>
+      <div fxFlex="90%">
+        <div fxLayout="column">
+          <div fxLayout="row" fxLayoutGap="30px">
+            <div fxFlex="50%">
+              <div fxLayout="column" class="editorName" fxLayoutAlign="start">
+                <div>
+                  <h6 class="editor-heading">
+                    {{ "EDITOR.EDITOR_NAME" | translate }}
+                  </h6>
+                </div>
+                <mat-form-field
+                  appearance="outline"
+                  class="editor-section"
+                  *ngIf="!isViewMode"
+                  (click)="openDetails(createEditor)"
+                >
+                  <mat-label>{{ "EDITOR.EDITOR" | translate }}*</mat-label>
+                  <input matInput formControlName="name" />
+                  <mat-error *ngIf="editorName.hasError('maxlength')"
+                    >Only
+                    {{ editorName.errors?.maxlength?.requiredLength }}
+                    characters are allowed!</mat-error
+                  >
+                  <mat-error
+                    *ngIf="
+                      editorName.touched && editorName.hasError('required')
+                    "
+                    >Editor name is required!</mat-error
+                  >
+                </mat-form-field>
+
+                <mat-form-field
+                  appearance="outline"
+                  class="editor-section"
+                  *ngIf="isViewMode"
+                >
+                  <mat-label>{{ "EDITOR.EDITOR" | translate }}</mat-label>
+                  <input matInput formControlName="name" readonly />
+                  <mat-error *ngIf="name?.true">Name is Required</mat-error>
+                </mat-form-field>
+              </div>
+            </div>
+            <div fxFlex="50%">
+              <div fxLayout="column" class="general">
+                <h6>
+                  {{ "PRODUCT_CATALOG.TITLE.GROUP_CONTRACT" | translate }}
+                </h6>
+                <div fxFlex class="contract">
+                  <mat-checkbox
+                    [disabled]="isViewMode"
+                    formControlName="groupContract"
+                    color="primary"
+                    disableRipple
+                    >{{
+                      "PRODUCT_CATALOG.FORM_FIELD.GROUP_CONTRACT" | translate
+                    }}</mat-checkbox
+                  >
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="page-heading" *ngIf="!isCreateMode && !isViewMode">
-            {{ "Update Editor" | translate }}
+
+          <div class="general">
+            <div fxLayout="column" fxLayoutAlign="start">
+              <div>
+                <h6>
+                  {{ "EDITOR.GENERAL_INFO" | translate }}
+                </h6>
+              </div>
+              <mat-form-field appearance="outline" *ngIf="!isViewMode">
+                <mat-label>{{ "EDITOR.GENERAL_INFO" | translate }}</mat-label>
+                <textarea
+                  matInput
+                  formControlName="genearlInformation"
+                  placeholder="{{ 'EDITOR.GENERAL_INFO_AREA' | translate }}"
+                ></textarea>
+
+                <mat-error *ngIf="generalInfo.hasError('maxlength')"
+                  >Only
+                  {{ generalInfo.errors?.maxlength?.requiredLength }}
+                  characters are allowed!</mat-error
+                >
+              </mat-form-field>
+
+              <mat-form-field
+                appearance="outline"
+                class="general-info-text"
+                *ngIf="isViewMode"
+              >
+                <mat-label>{{ "EDITOR.GENERAL_INFO" | translate }}</mat-label>
+                <textarea
+                  matInput
+                  formControlName="genearlInformation"
+                  placeholder="{{ 'EDITOR.GENERAL_INFO_AREA' | translate }}"
+                  readonly
+                ></textarea>
+              </mat-form-field>
+            </div>
           </div>
-          <div class="page-heading" *ngIf="isViewMode">
-            {{ "View Editor" | translate }}
+
+          <div fxLayout="column">
+            <div fxFlex="50" class="general">
+              <app-partner-managers
+                [partnerData]="editorData?.partner_managers"
+                [view]="isViewMode"
+              ></app-partner-managers>
+            </div>
+            <div fxFlex="50" class="general">
+              <app-global-account-managers
+                [accountManagerData]="editorData?.global_account_manager"
+              ></app-global-account-managers>
+            </div>
           </div>
-        </mat-card-title>
-        <mat-card-content class="editor">
-          <div fxLayout="column" fxLayoutAlign="start">
-            <mat-card-title>
-              <h6 class="editor-heading">
-                {{ "EDITOR.EDITOR_NAME" | translate }}
+
+          <div fxLayout="row">
+            <div fxFlex="50" class="general">
+              <app-vendors
+                [fg]="createEditor"
+                [view]="isViewMode"
+              ></app-vendors>
+            </div>
+          </div>
+
+          <div fxLayout="column">
+            <div fxFlex="50" class="general">
+              <app-sourcers [sourcerData]="editorData?.sourcers"></app-sourcers>
+            </div>
+            <div fxFlex="50" class="general">
+              <app-audits [auditData]="editorData?.audits"></app-audits>
+            </div>
+          </div>
+
+          <div fxLayout="row" fxLayout="row" fxLayoutGap="10px">
+            <div fxFlex="50" class="general">
+              <h6>
+                {{ "EDITOR.HEAD_QUARTER_COUNTRY" | translate }}
               </h6>
-            </mat-card-title>
-            <mat-form-field
-              appearance="outline"
-              class="editor-section"
-              *ngIf="!isViewMode"
-              (click)="openDetails(createEditor)"
-            >
-              <mat-label>{{ "EDITOR.EDITOR" | translate }}*</mat-label>
-              <input matInput formControlName="name" />
-              <mat-error *ngIf="editorName.hasError('maxlength')"
-                >Only
-                {{ editorName.errors?.maxlength?.requiredLength }} characters
-                are allowed!</mat-error
-              >
-              <mat-error
-                *ngIf="editorName.touched && editorName.hasError('required')"
-                >Editor name is required!</mat-error
-              >
-            </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>{{
+                  "EDITOR.HEAD_QUARTER_COUNTRY" | translate
+                }}</mat-label>
+                <mat-select formControlName="countryCode">
+                  <mat-option value="">{{
+                    "CHOOSE_HEAD_QUARTER" | translate
+                  }}</mat-option>
+                  <mat-option
+                    *ngFor="let country of countries"
+                    [value]="country.code"
+                    >{{ country.name }}</mat-option
+                  >
+                </mat-select>
+              </mat-form-field>
+            </div>
 
-            <mat-form-field
-              appearance="outline"
-              class="editor-section"
-              *ngIf="isViewMode"
+            <div
+              fxFlex="50"
+              class="general"
+              *ngIf="createEditor.get('countryCode').value"
             >
-              <mat-label>{{ "EDITOR.EDITOR" | translate }}</mat-label>
-              <input matInput formControlName="name" readonly />
-              <mat-error *ngIf="name?.true">Name is Required</mat-error>
-            </mat-form-field>
+              <div fxLayout="column">
+                <h6>
+                  {{ "EDITOR.ADDRESS" | translate }}
+                </h6>
+                <mat-form-field appearance="outline">
+                  <input
+                    matInput
+                    formControlName="address"
+                    placeholder="{{ 'EDITOR.ENTER_ADDRESS' | translate }}"
+                  />
+                  <mat-error *ngIf="createEditor.get('address').invalid"
+                    >This field is required</mat-error
+                  >
+                </mat-form-field>
+              </div>
+            </div>
           </div>
-        </mat-card-content>
-      </mat-card>
 
-      <app-partner-managers
-        [partnerData]="editorData?.partner_managers"
-        [view]="isViewMode"
-      ></app-partner-managers>
-      <mat-card>
-        <mat-card-content class="general-info">
-          <div fxLayout="column" fxLayoutAlign="start">
-            <mat-card-title>
-              <h6 class="general-info-heading">
-                {{ "EDITOR.GENERAL_INFO" | translate }}
-              </h6>
-            </mat-card-title>
-            <mat-form-field
-              appearance="outline"
-              class="general-info-text"
-              *ngIf="!isViewMode"
-            >
-              <mat-label>{{ "EDITOR.GENERAL_INFO" | translate }}</mat-label>
-              <textarea
-                matInput
-                formControlName="genearlInformation"
-                placeholder="{{ 'EDITOR.GENERAL_INFO_AREA' | translate }}"
-              ></textarea>
-
-              <mat-error *ngIf="generalInfo.hasError('maxlength')"
-                >Only
-                {{ generalInfo.errors?.maxlength?.requiredLength }} characters
-                are allowed!</mat-error
+          <div>
+            <div fxLayout="row" fxLayoutAlign="end" fxLayoutGap="10px">
+              <button
+                id="cancelEditor"
+                *ngIf="!isViewMode"
+                (click)="cancelForm()"
+                class="btn-four"
+                mat-raised-button
               >
-            </mat-form-field>
-
-            <mat-form-field
-              appearance="outline"
-              class="general-info-text"
-              *ngIf="isViewMode"
-            >
-              <mat-label>{{ "EDITOR.GENERAL_INFO" | translate }}</mat-label>
-              <textarea
-                matInput
-                formControlName="genearlInformation"
-                placeholder="{{ 'EDITOR.GENERAL_INFO_AREA' | translate }}"
-                readonly
-              ></textarea>
-            </mat-form-field>
+                {{ "Cancel" | translate }}
+              </button>
+              <button
+                id="cancelEditor"
+                *ngIf="isViewMode"
+                (click)="closeDialog()"
+                class="btn-four"
+                mat-raised-button
+              >
+                {{ "Close" | translate }}
+              </button>
+              <button
+                mat-raised-button
+                *ngIf="isCreateMode && !isViewMode"
+                [disabled]="createEditor.invalid"
+                class="btn-two"
+                (click)="submitForm(succesCreateDialog, errorCreateDialog)"
+                id="submitForm"
+              >
+                {{ "Submit" | translate }}
+              </button>
+              <button
+                *ngIf="!isCreateMode && !isViewMode"
+                [disabled]="createEditor.invalid"
+                (click)="updateForm(succesUpdateDialog, errorCreateDialog)"
+                id="submitForm"
+                class="btn-two"
+                mat-raised-button
+              >
+                {{ "Update" | translate }}
+              </button>
+            </div>
           </div>
-        </mat-card-content>
-      </mat-card>
-      <app-audits [auditData]="editorData?.audits"></app-audits>
-      <app-vendors [fg]="createEditor" [view]="isViewMode"></app-vendors>
-      <div>
-        <div fxLayout="row" fxLayoutAlign="end">
-          <button
-            id="cancelEditor"
-            *ngIf="!isViewMode"
-            (click)="cancelForm()"
-            class="btn-four"
-            mat-raised-button
-          >
-            {{ "Cancel" | translate }}
-          </button>
-          <button
-            id="cancelEditor"
-            *ngIf="isViewMode"
-            (click)="closeDialog()"
-            class="btn-four"
-            mat-raised-button
-          >
-            {{ "Close" | translate }}
-          </button>
-          <button
-            mat-raised-button
-            *ngIf="isCreateMode && !isViewMode"
-            [disabled]="createEditor.invalid"
-            class="btn-two"
-            (click)="submitForm(succesCreateDialog, errorCreateDialog)"
-            id="submitForm"
-          >
-            {{ "Submit" | translate }}
-          </button>
-          <button
-            *ngIf="!isCreateMode && !isViewMode"
-            [disabled]="createEditor.invalid"
-            (click)="updateForm(succesUpdateDialog, errorCreateDialog)"
-            id="submitForm"
-            class="btn-two"
-            mat-raised-button
-          >
-            {{ "Update" | translate }}
-          </button>
         </div>
       </div>
     </div>
-    <app-loading-spinner *ngIf="_loading"></app-loading-spinner>
+  </div>
+  <app-loading-spinner *ngIf="_loading"></app-loading-spinner>
 
-    <ng-template #succesCreateDialog>
-      <h1 mat-dialog-title>Success !</h1>
-      <mat-dialog-content>
-        <p>{{ "Editor created successfully." | translate }}</p>
-      </mat-dialog-content>
-      <mat-dialog-actions align="center">
-        <button
-          [mat-dialog-close]="true"
-          (click)="cancelForm()"
-          class="btn-two"
-          mat-button
-          cdkFocusInitial
-        >
-          {{ "OK" }}
-        </button>
-      </mat-dialog-actions>
-    </ng-template>
-    <!-- Create error message -->
-    <ng-template #errorCreateDialog>
-      <mat-dialog-content>
-        <p>{{ errorMessage | translate }}</p>
-      </mat-dialog-content>
-      <mat-dialog-actions align="center">
-        <button
-          [mat-dialog-close]="true"
-          (click)="cancelForm()"
-          class="btn-two"
-          mat-button
-          cdkFocusInitial
-        >
-          {{ "OK" }}
-        </button>
-      </mat-dialog-actions>
-    </ng-template>
+  <ng-template #succesCreateDialog>
+    <h1 mat-dialog-title>Success !</h1>
+    <mat-dialog-content>
+      <p>{{ "Editor created successfully." | translate }}</p>
+    </mat-dialog-content>
+    <mat-dialog-actions align="center">
+      <button
+        [mat-dialog-close]="true"
+        (click)="cancelForm()"
+        class="btn-two"
+        mat-button
+        cdkFocusInitial
+      >
+        {{ "OK" }}
+      </button>
+    </mat-dialog-actions>
+  </ng-template>
+  <!-- Create error message -->
+  <ng-template #errorCreateDialog>
+    <mat-dialog-content>
+      <p>{{ errorMessage | translate }}</p>
+    </mat-dialog-content>
+    <mat-dialog-actions align="center">
+      <button
+        [mat-dialog-close]="true"
+        (click)="cancelForm()"
+        class="btn-two"
+        mat-button
+        cdkFocusInitial
+      >
+        {{ "OK" }}
+      </button>
+    </mat-dialog-actions>
+  </ng-template>
 
-    <ng-template #succesUpdateDialog>
-      <h1 mat-dialog-title>Success !</h1>
-      <mat-dialog-content>
-        <p>{{ "Editor updated successfully." | translate }}</p>
-      </mat-dialog-content>
-      <mat-dialog-actions align="center">
-        <button
-          [mat-dialog-close]="true"
-          (click)="cancelForm()"
-          class="btn-two"
-          mat-button
-          cdkFocusInitial
-        >
-          {{ "OK" }}
-        </button>
-      </mat-dialog-actions>
-    </ng-template>
-  </form>
-</div>
+  <ng-template #succesUpdateDialog>
+    <h1 mat-dialog-title>Success !</h1>
+    <mat-dialog-content>
+      <p>{{ "Editor updated successfully." | translate }}</p>
+    </mat-dialog-content>
+    <mat-dialog-actions align="center">
+      <button
+        [mat-dialog-close]="true"
+        (click)="cancelForm()"
+        class="btn-two"
+        mat-button
+        cdkFocusInitial
+      >
+        {{ "OK" }}
+      </button>
+    </mat-dialog-actions>
+  </ng-template>
+</form>

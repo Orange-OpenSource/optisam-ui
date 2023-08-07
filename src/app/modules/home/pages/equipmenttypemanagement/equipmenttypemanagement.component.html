@@ -62,6 +62,15 @@
         }}</mat-header-cell>
         <mat-cell *matCellDef="let equipment">
           <a
+            *ngIf="equipment.parent_type!==''"
+            class="mat-button-link"
+            matTooltip="{{ 'Click here to see Attributes List' | translate }}"
+            (click)="listAttributes(equipment.type, equipment.attributes)"
+          >
+            {{ equipment.attributes.length-1 || 0 }}</a
+          >
+          <a
+            *ngIf="equipment.parent_type===''"
             class="mat-button-link"
             matTooltip="{{ 'Click here to see Attributes List' | translate }}"
             (click)="listAttributes(equipment.type, equipment.attributes)"

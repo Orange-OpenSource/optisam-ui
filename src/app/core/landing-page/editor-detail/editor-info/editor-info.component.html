@@ -1,0 +1,544 @@
+<div fxLayout="column" class="main">
+  <div class="basic mat-elevation-z3">
+    <div fxFlex fxLayout="row" fxLayoutGap="5px">
+      <div fxFlex="80px" class="editor-icon">
+        <div class="image-box">
+          <img
+            alt="{{ data?.name }}"
+            class="company-icon"
+            src="{{
+              'https://pr-diod-ocp-fr01-dev-optisam-dev-optisam.oss.eu-west-0.prod-cloud-ocb.orange-business.com/optisam-dev/'
+            }}{{ data?.name.toLowerCase() }}.svg 
+        "
+            (error)="onImgError($event)"
+          />
+        </div>
+      </div>
+      <div class="editor-title" fxFlex>{{ data?.name }}</div>
+    </div>
+    <div *ngIf="data?.groupContract" fxFlex="25px" class="group-contract">
+      <mat-icon
+        class="icon"
+        matTooltipClass="multiline-tooltip"
+        matTooltip="{{ 'GROUP_CONTRACT' | translate }}"
+        >assignment_outline</mat-icon
+      >
+    </div>
+  </div>
+
+  <!-- general_information -->
+  <div class="basic mat-elevation-z3">
+    <div fxLayout="row" fxLayoutGap="3px" fxFill>
+      <div class="title-section">
+        <img
+          class="image-icon"
+          alt="general-info"
+          src="assets/images/general-info.svg"
+        />
+
+        <div class="detail-heading">
+          {{ "PRODUCT.TITLE.GENERAL_INFORMATION" | translate }}
+        </div>
+      </div>
+      <div class="detail-content">
+        <span
+          [matTooltip]="data?.general_information"
+          matTooltipClass="multiline-tooltip"
+          >{{ data?.general_information | trimText : 100 }}</span
+        >
+      </div>
+    </div>
+  </div>
+
+  <!-- entities -->
+  <div>
+    <mat-accordion>
+      <mat-expansion-panel hideToggle> </mat-expansion-panel>
+
+      <mat-expansion-panel
+        (opened)="panelOpenState = true"
+        (closed)="panelOpenState = false"
+      >
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <div fxLayout="row">
+              <img
+                class="image-icon"
+                alt="partner-manager"
+                src="assets/images/entity-entrepreneur-businessman-icon.svg"
+              />
+              <div class="detail-heading">
+                {{
+                  "PRODUCT_CATALOG.PRODUCTS_LIST_COLUMNS.ENTITIES" | translate
+                }}
+              </div>
+            </div>
+          </mat-panel-title>
+          <mat-panel-description class="flex-container">
+            <div fxFlex class="entity">
+              <div
+                fxLayout="row"
+                fxLayoutAlign="start center"
+                fxLayoutGap="10px"
+                *ngFor="let item of scopes?.slice(0, 2)"
+              >
+                <div
+                  class="box"
+                  [matTooltip]="item"
+                  matTooltipClass="multiline-tooltip"
+                >
+                  <strong>{{ item }}</strong>
+                </div>
+              </div>
+            </div>
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+        <div class="list-outer" *ngFor="let item of scopes?.slice(2)">
+          <div class="photo-name">
+            <img
+              class="contact-icon"
+              alt="scopes"
+              src="assets/images/office-icon.svg"
+            />
+            <div [matTooltip]="item" matTooltipClass="multiline-tooltip">
+              {{ item }}
+            </div>
+          </div>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </div>
+
+  <!-- partner manager -->
+  <div>
+    <mat-accordion>
+      <mat-expansion-panel hideToggle> </mat-expansion-panel>
+
+      <mat-expansion-panel
+        (opened)="panelOpenState = true"
+        (closed)="panelOpenState = false"
+      >
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <div fxLayout="row">
+              <img
+                class="image-icon"
+                alt="partner-manager"
+                src="assets/images/partner-broker-dealer-icon.svg"
+              />
+
+              <div class="detail-heading">
+                {{ "EDITOR.PARTNER_MANAGERS" | translate }}
+              </div>
+            </div>
+          </mat-panel-title>
+          <mat-panel-description
+            *ngFor="let partner of partnerManagerArray?.slice(0, 1)"
+          >
+            <!-- <div
+              class="outer-container"
+              *ngFor="let partner of partnerManagerArray?.slice(0, 2)"
+            > -->
+            <!-- <div fxLayout="row" class="inner-container"> -->
+            <div class="partner-name" (click)="sendEmail(partner?.email)">
+              <span
+                [matTooltip]="partner.name"
+                matTooltipClass="multiline-tooltip"
+                >{{ partner.name }}</span
+              >
+            </div>
+            <div class="partner-email">
+              <mat-icon
+                [matTooltip]="partner.email"
+                matTooltipClass="multiline-tooltip"
+                *ngIf="partner?.email"
+                (click)="sendEmail(partner?.email)"
+                >mail_outline</mat-icon
+              >
+              <!-- </div> -->
+              <!-- </div> -->
+            </div>
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+        <div
+          class="list-outer"
+          *ngFor="let partner of partnerManagerArray?.slice(1)"
+        >
+          <div class="photo-name">
+            <img
+              class="contact-icon"
+              alt="sourcers"
+              src="assets/images/profile.svg"
+            />
+            <div
+              [matTooltip]="partner?.name"
+              matTooltipClass="multiline-tooltip"
+            >
+              <span>{{ partner?.name }}</span>
+            </div>
+          </div>
+          <div
+            class="email-name"
+            *ngIf="partner?.email"
+            [matTooltip]="partner?.email"
+            matTooltipClass="multiline-tooltip"
+          >
+            <mat-icon>mail_outline</mat-icon>
+          </div>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </div>
+
+  <!-- audits -->
+  <div>
+    <mat-accordion>
+      <mat-expansion-panel hideToggle> </mat-expansion-panel>
+
+      <mat-expansion-panel
+        (opened)="panelOpenState = true"
+        (closed)="panelOpenState = false"
+      >
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <div fxLayout="row" class="accordian-title">
+              <img
+                class="image-icon"
+                alt="account-managers"
+                src="assets/images/audit-icon.svg"
+              />
+              <div class="detail-heading">
+                {{ "EDITOR.AUDITS" | translate }}
+              </div>
+            </div>
+          </mat-panel-title>
+
+          <mat-panel-description>
+            <div fxLayout="column" fxFlex>
+              <div
+                fxLayout="row"
+                *ngFor="
+                  let audit of auditsInfoArray?.slice(0, 3);
+                  let i = index
+                "
+              >
+                <div class="audits-detail">
+                  <div class="audit-year">
+                    <strong *ngIf="audit?.year !== 0"
+                      >{{ audit?.year }}
+                    </strong>
+                    <strong *ngIf="audit?.year === 0"> </strong>
+                  </div>
+
+                  <div
+                    [matTooltip]="audit?.entity"
+                    matTooltipClass="multiline-tooltip"
+                  >
+                    {{ audit?.entity | trimText : 20 }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+        <div
+          class="list-outer"
+          *ngFor="let partner of auditsInfoArray?.slice(3)"
+        >
+          <div class="photo-name">
+            <img
+              class="contact-icon"
+              alt="sourcers"
+              src="assets/images/entity-icon.svg"
+            />
+            <div
+              [matTooltip]="partner?.entity"
+              matTooltipClass="multiline-tooltip"
+            >
+              {{ partner?.entity }}
+            </div>
+          </div>
+          <div
+            class="year-audit"
+            *ngIf="partner?.year !== 0"
+            [matTooltip]="partner?.year"
+            matTooltipClass="multiline-tooltip"
+          >
+            {{ partner?.year }}
+          </div>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </div>
+
+  <!-- global account managers -->
+  <div>
+    <mat-accordion>
+      <mat-expansion-panel hideToggle *ngIf="globalAccountManagers?.length > 1">
+      </mat-expansion-panel>
+
+      <mat-expansion-panel
+        (opened)="panelOpenState = showViewMore"
+        (closed)="panelOpenState = false"
+      >
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <div fxLayout="row">
+              <img
+                class="image-icon"
+                alt="account-managers"
+                src="assets/images/globe.svg"
+              />
+
+              <div class="detail-heading">
+                {{ "EDITOR.GLOBAL_ACCOUNT_MANAGERS" | translate }}
+              </div>
+            </div>
+          </mat-panel-title>
+          <mat-panel-description
+            *ngFor="let partner of globalAccountManagers?.slice(0, 1)"
+          >
+            <!-- <div
+              class="outer-container"
+              *ngFor="let partner of globalAccountManagers?.slice(0, 2)"
+            > -->
+            <!-- <div fxLayout="row" class="inner-container"> -->
+            <div class="partner-name">
+              <span
+                [matTooltip]="partner.name"
+                matTooltipClass="multiline-tooltip"
+                >{{ partner.name }}</span
+              >
+            </div>
+            <div class="partner-email">
+              <mat-icon
+                [matTooltip]="partner.email"
+                matTooltipClass="multiline-tooltip"
+                *ngIf="partner?.email"
+                (click)="sendEmail(partner?.email)"
+                >mail_outline</mat-icon
+              >
+              <!-- </div> -->
+              <!-- </div> -->
+            </div>
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+        <div
+          class="list-outer"
+          *ngFor="let partner of globalAccountManagers?.slice(1)"
+        >
+          <div class="photo-name">
+            <img
+              class="contact-icon"
+              alt="sourcers"
+              src="assets/images/profile.svg"
+            />
+            <div
+              [matTooltip]="partner?.name"
+              matTooltipClass="multiline-tooltip"
+            >
+              {{ partner?.name }}
+            </div>
+          </div>
+          <div
+            class="email-name"
+            [matTooltip]="partner?.email"
+            matTooltipClass="multiline-tooltip"
+            *ngIf="partner?.email"
+            (click)="sendEmail(partner?.email)"
+          >
+            <mat-icon>mail_outline</mat-icon>
+          </div>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </div>
+
+  <!-- sourcers -->
+  <div>
+    <mat-accordion>
+      <mat-expansion-panel hideToggle> </mat-expansion-panel>
+
+      <mat-expansion-panel
+        (opened)="panelOpenState = true"
+        (closed)="panelOpenState = false"
+      >
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <div fxLayout="row">
+              <img
+                class="image-icon"
+                alt="sourcers"
+                src="assets/images/source.svg"
+              />
+
+              <div class="detail-heading">
+                {{ "EDITOR.SOURCERS" | translate }}
+              </div>
+            </div>
+          </mat-panel-title>
+          <mat-panel-description
+            *ngFor="let partner of sourcerArray?.slice(0, 1)"
+          >
+            <!-- <div
+              class="outer-container"
+              *ngFor="let partner of sourcerArray?.slice(0, 2)"
+            > -->
+            <!-- <div fxLayout="row" class="inner-container"> -->
+            <div class="partner-name">
+              <span
+                [matTooltip]="partner.name"
+                matTooltipClass="multiline-tooltip"
+                >{{ partner.name }}</span
+              >
+            </div>
+            <div class="partner-email">
+              <mat-icon
+                [matTooltip]="partner?.email"
+                matTooltipClass="multiline-tooltip"
+                (click)="sendEmail(partner?.email)"
+                *ngIf="partner?.email"
+                >mail_outline</mat-icon
+              >
+              <!-- </div> -->
+              <!-- </div> -->
+            </div>
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+        <div class="list-outer" *ngFor="let partner of sourcerArray?.slice(1)">
+          <div class="photo-name">
+            <img
+              class="contact-icon"
+              alt="sourcers"
+              src="assets/images/profile.svg"
+            />
+            <div
+              [matTooltip]="partner?.name"
+              matTooltipClass="multiline-tooltip"
+            >
+              {{ partner?.name }}
+            </div>
+          </div>
+          <div
+            class="email-name"
+            [matTooltip]="partner?.email"
+            *ngIf="partner?.email"
+            matTooltipClass="multiline-tooltip"
+            (click)="sendEmail(partner?.email)"
+          >
+            <mat-icon>mail_outline</mat-icon>
+          </div>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </div>
+
+  <!-- vendors -->
+  <div>
+    <mat-accordion>
+      <mat-expansion-panel hideToggle> </mat-expansion-panel>
+
+      <mat-expansion-panel
+        (opened)="panelOpenState = true"
+        (closed)="panelOpenState = false"
+      >
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <div fxLayout="row" class="accordian-title">
+              <img
+                class="image-icon"
+                alt="account-managers"
+                src="assets/images/consultant-icon.svg"
+              />
+              <div class="detail-heading">
+                {{ "EDITOR.VENDORS" | translate }}
+              </div>
+            </div>
+          </mat-panel-title>
+
+          <mat-panel-description>
+            <div fxLayout="column" fxFlex>
+              <div
+                fxLayout="row"
+                *ngFor="let item of vendorArray?.slice(0, 3); let i = index"
+              >
+                <p
+                  [matTooltip]="item"
+                  matTooltipClass="multiline-tooltip"
+                  class="audits-detail"
+                >
+                  {{ item }}
+                </p>
+              </div>
+            </div>
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+        <div class="list-outer" *ngFor="let item of vendorArray?.slice(3)">
+          <div class="photo-name">
+            <img
+              class="contact-icon"
+              alt="sourcers"
+              src="assets/images/industry.svg"
+            />
+            <div [matTooltip]="item" matTooltipClass="multiline-tooltip">
+              {{ item }}
+            </div>
+          </div>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </div>
+
+  <!-- country -->
+  <div class="basic mat-elevation-z3">
+    <div fxLayout="row" fxLayoutGap="3px" fxFill>
+      <div class="title-section">
+        <img
+          class="image-icon"
+          alt="vendors"
+          src="assets/images/office-address-icon.svg"
+        />
+
+        <div class="detail-heading">
+          {{ "EDITOR.HEAD_QUARTER_COUNTRY" | translate }}
+        </div>
+      </div>
+      <div class="detail-content">
+        <div fxLayout="row" class="country-class">
+          <div class="country-box">
+            <img
+              *ngIf="data?.country_code | isFlagAvailable; else defaultFlag"
+              matTooltipClass="multiline-tooltip"
+              matTooltip="{{ 'HEAD_QUARTER' | translate }}: {{
+                data?.country_code | countryNameFromCode
+              }}"
+              class="company-icon"
+              src="{{
+                'assets/images/flags/4x3/' + data?.country_code + '.svg'
+              }}"
+            />
+          </div>
+
+          <p
+            class="address"
+            matTooltipClass="multiline-tooltip"
+            [matTooltip]="data?.address"
+          >
+            {{ data?.address | trimText : 50 }}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #defaultFlag>
+  <img
+    matTooltip="{{ 'HEAD_QUARTER' | translate }}: {{
+      'NOT_DEFINED' | translate
+    }}"
+    class="company-icon"
+    src="assets/images/default-flag-icon.svg"
+    alt="Country not defined"
+  />
+</ng-template>

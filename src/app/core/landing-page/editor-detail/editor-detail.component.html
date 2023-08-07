@@ -1,0 +1,24 @@
+<div fxLayout="column">
+  <div>
+    <div fxLayout="row" fxLayoutAlign="end center" class="back">
+      <!-- <button class="backButton" mat-button>
+        <div fxLayout="row">
+          <mat-icon>arrow_back</mat-icon>
+          <p class="backText">{{ "Back" }}</p>
+        </div>
+      </button> -->
+    </div>
+  </div>
+</div>
+<div fxLayout="row" class="editorDetail">
+  <div fxFlex="50%" class="editorInfo">
+    <app-editor-info [data]="editorDetails" [loading]="false"></app-editor-info>
+  </div>
+
+  <div fxFlex="50%" class="productList">
+    <app-products-lists
+      [id]="editorDetails?.id"
+      [count]="editorDetails?.product_count"
+    ></app-products-lists>
+  </div>
+</div>

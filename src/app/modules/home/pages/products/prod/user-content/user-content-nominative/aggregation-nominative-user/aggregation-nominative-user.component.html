@@ -1,0 +1,103 @@
+<mat-card class="example-card">
+  <div class="container-fluid page-content-header">
+    <div
+      fxLayout="row"
+      fxLayoutAlign="end"
+      *ngIf="nominativeUsersList?.filteredData?.length"
+    >
+      <button
+        matButton
+        (click)="exportUsers()"
+        class="export-btn btn btn-two mat-raised-button"
+        fxLayout="row"
+        fxLayoutAlign="center center"
+        [disabled]="exporting"
+        fxLayoutGap="3px"
+      >
+        <mat-icon *ngIf="!exporting">save_alt</mat-icon>
+        <mat-spinner class="export-btn-spinner" *ngIf="exporting"></mat-spinner>
+        <span>{{ (exporting ? "EXPORTING" : "EXPORT") | translate }}</span>
+      </button>
+    </div>
+
+    <app-advance-search
+      [advanceSearchModel]="advanceSearchModel"
+      (advFilterEvent)="advSearchTrigger($event)"
+    ></app-advance-search>
+  </div>
+
+  <mat-card-content>
+    <div class="mat-elevation-z8">
+      <mat-table
+        [dataSource]="nominativeUsersList"
+        matSort
+        (matSortChange)="sortData($event)"
+      >
+        <ng-container *ngFor="let col of columns" matColumnDef="{{ col.key }}">
+          <ng-container [ngSwitch]="col.key">
+            <!-- Product name or Aggregation name start -->
+            <ng-container *ngSwitchCase="'aggregation_name'">
+              <mat-header-cell *matHeaderCellDef
+                >{{ col.label | translate }}
+              </mat-header-cell>
+              <mat-cell *matCellDef="let nominativeUser">
+                {{ nominativeUser[col.key] }}
+              </mat-cell>
+            </ng-container>
+            <!-- Product name or Aggregation name end -->
+            <!-- Activation Date start -->
+            <ng-container *ngSwitchCase="'activation_date'">
+              <mat-header-cell
+                *matHeaderCellDef
+                mat-sort-header="{{ col.key }}"
+                disableClear="true"
+                >{{ col.label | translate }}
+              </mat-header-cell>
+              <mat-cell *matCellDef="let nominativeUser">
+                {{ nominativeUser[col.key] | formatShortdate }}
+              </mat-cell>
+            </ng-container>
+            <!-- Activation Date end -->
+
+            <!-- Default switch case start -->
+            <ng-container *ngSwitchDefault>
+              <mat-header-cell
+                *matHeaderCellDef
+                mat-sort-header="{{ col.key }}"
+                disableClear="true"
+                >{{ col.label | translate }}
+              </mat-header-cell>
+              <mat-cell *matCellDef="let nominativeUser">
+                {{ nominativeUser[col.key] }}
+              </mat-cell>
+            </ng-container>
+            <!-- Default switch case end -->
+          </ng-container>
+        </ng-container>
+
+        <mat-header-row
+          *matHeaderRowDef="displayedColumns; sticky: true"
+        ></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+      </mat-table>
+      <app-loading-spinner *ngIf="listLoading"></app-loading-spinner>
+      <ng-container
+        *ngIf="!listLoading && !nominativeUsersList?.filteredData?.length"
+      >
+        <div id="noData" fxLayout="row" fxLayoutAlign="center center">
+          <mat-icon>error</mat-icon
+          >{{ "No Data details available" | translate }}
+        </div>
+      </ng-container>
+
+      <mat-paginator
+        [length]="length"
+        [pageSize]="pageSize"
+        [pageSizeOptions]="pageSizeOption"
+        (page)="getPaginatorData($event)"
+        showFirstLastButtons
+      >
+      </mat-paginator>
+    </div>
+  </mat-card-content>
+</mat-card>

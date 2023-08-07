@@ -1,0 +1,36 @@
+<h2 mat-dialog-title>
+  {{
+    (!data?.editData
+      ? "CONCURRENT_USER.TITLE.ADD_CONCURRENT_USER"
+      : "CONCURRENT_USER.TITLE.UPDATE_CONCURRENT_USER"
+    ) | translate
+  }}
+  ({{ data?.activeTitle | translate }})
+</h2>
+<mat-dialog-content>
+  <app-add-concurrent-users
+    [data]="data?.editData"
+    [activeTitle]="data?.activeTitle"
+    (isSuccess)="isSuccess($event)"
+  ></app-add-concurrent-users>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <div fxLayout="row" fxLayoutAlign="center center" fxFill>
+    <button mat-raised-button class="btn-four" mat-dialog-close>
+      {{ "CONCURRENT_USER.BUTTON.CANCEL" | translate }}
+    </button>
+    <button
+      (click)="addConcurrentUser()"
+      mat-raised-button
+      class="btn-two"
+      [disabled]="inValid"
+    >
+      {{
+        (isCreate
+          ? "CONCURRENT_USER.BUTTON.ADD"
+          : "CONCURRENT_USER.BUTTON.UPDATE"
+        ) | translate
+      }}
+    </button>
+  </div>
+</mat-dialog-actions>

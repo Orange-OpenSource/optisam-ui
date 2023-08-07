@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { map, catchError } from 'rxjs/operators';
+import { GroupComplianceAddParams, ErrorResponse } from '@core/modals';
 
 @Injectable({
   providedIn: 'root',
@@ -52,8 +53,10 @@ export class GroupService {
   changePassword(data): Observable<any> {
     return this.http.put<any>(this.apiUrl + '/account/changepassword', data);
   }
-  createGroup(groupData): Observable<any> {
-    return this.http.post<any>(
+  createGroup(
+    groupData: GroupComplianceAddParams
+  ): Observable<GroupComplianceAddParams | ErrorResponse> {
+    return this.http.post<GroupComplianceAddParams | ErrorResponse>(
       this.apiUrl + '/account/admin/groups',
       groupData
     );

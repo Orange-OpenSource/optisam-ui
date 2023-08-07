@@ -12,9 +12,9 @@
       matTooltipClass="search-label-tooltip"
       #labelHTML
       matTooltip="{{
-        label.type === 'date'
-          ? (filterFields[label.key] | date : 'M/d/y')
-          : filterFields[label.key]
+        ['text', 'select'].includes(label.type)
+          ? filterFields[label.key]
+          : (filterFields[label.key] | date : 'M/d/y')
       }}"
     >
       <span *ngIf="model.translate" class="text">{{
@@ -107,7 +107,7 @@
           class="advanceChild"
           *ngFor="let itm of model.other; let idx = index"
         >
-          <ng-container *ngIf="itm.type === 'text'">
+          <ng-container *ngIf="itm.type === 'text' && itm.show">
             <mat-form-field>
               <input
                 matInput
@@ -116,14 +116,44 @@
                   model.translate ? (itm.label | translate) : itm.label
                 }}"
                 class="advanceChild"
+                (change)="touched = true"
                 [(ngModel)]="filterFields[itm.key]"
                 (keyup)="onFocusOut()"
                 (keydown.enter)="pressEnter(filterFields[itm.key], true)"
               />
             </mat-form-field>
+            <div fxLayout="row" *ngIf="false">
+              <mat-form-field
+                appearance="fill"
+                class="advance-search-select"
+                fxFlex="30"
+              >
+                <mat-label>{{ "compare" | translate }}</mat-label>
+                <mat-select
+                  matInput
+                  [panelClass]="['operator-selection']"
+                  [class]="'operator-selection'"
+                  (selectionChange)="touched = true"
+                >
+                  <mat-option
+                    *ngFor="let selection of ['=', '>', '<', '<=', '>=']"
+                    [value]="selection"
+                    >{{ selection }}</mat-option
+                  >
+                </mat-select>
+              </mat-form-field>
+              <mat-form-field fxFlex="70">
+                <mat-label>{{ "compare" | translate }}</mat-label>
+                <input
+                  [panelClass]="[customFocusClass, advanceChild]"
+                  [class]="customFocusClass"
+                  matInput
+                />
+              </mat-form-field>
+            </div>
           </ng-container>
-          <ng-container *ngIf="itm.type === 'date'">
-            <mat-form-field appearance="fill">
+          <ng-container *ngIf="itm.type === 'date' && itm.show">
+            <mat-form-field appearance="fill" class="advance-search-select">
               <mat-label>{{
                 model.translate ? (itm.label | translate) : itm.label
               }}</mat-label>
@@ -131,9 +161,11 @@
                 matInput
                 class="advanceChild"
                 [matDatepicker]="picker"
+                (change)="touched = true"
                 [(ngModel)]="filterFields[itm.key]"
                 (keydown)="$event.preventDefault()"
                 (paste)="$event.preventDefault()"
+                autocomplete="off"
               />
               <mat-datepicker-toggle
                 matSuffix
@@ -141,8 +173,54 @@
               ></mat-datepicker-toggle>
               <mat-datepicker
                 #picker
-                [panelClass]="[customDateClass]"
+                [panelClass]="[customFocusClass]"
               ></mat-datepicker>
+            </mat-form-field>
+          </ng-container>
+          <ng-container *ngIf="itm.type === 'select' && itm.show">
+            <mat-form-field appearance="fill" class="advance-search-select">
+              <mat-label>{{
+                model.translate ? (itm.label | translate) : itm.label
+              }}</mat-label>
+              <mat-select
+                matInput
+                [panelClass]="[customFocusClass]"
+                [class]="customFocusClass"
+                (selectionChange)="touched = true"
+                [(ngModel)]="filterFields[itm.key]"
+              >
+                <mat-option value="">{{ "Select" | translate }}</mat-option>
+                <mat-option
+                  *ngFor="let selection of itm.selection"
+                  [value]="selection.value"
+                  >{{
+                    model.translate
+                      ? (selection.key | translate)
+                      : selection.key
+                  }}</mat-option
+                >
+              </mat-select>
+            </mat-form-field>
+          </ng-container>
+          <ng-container *ngIf="itm.type === 'compare' && itm.show">
+            <mat-form-field appearance="fill" class="advance-search-select">
+              <mat-label>{{
+                model.translate ? (itm.label | translate) : itm.label
+              }}</mat-label>
+              <mat-select
+                matInput
+                [panelClass]="[customFocusClass]"
+                [class]="customFocusClass"
+                (selectionChange)="touched = true"
+                [(ngModel)]="filterFields[itm.key]"
+              >
+                <mat-option value="">{{ "Select" | translate }}</mat-option>
+                <mat-option
+                  *ngFor="let selection of itm.selection"
+                  [value]="selection.value"
+                  >{{ selection.key }}</mat-option
+                >
+              </mat-select>
             </mat-form-field>
           </ng-container>
         </div>

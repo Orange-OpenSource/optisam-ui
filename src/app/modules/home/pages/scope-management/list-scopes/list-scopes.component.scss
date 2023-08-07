@@ -1,34 +1,157 @@
 .example-card {
-    padding: 25px 30px;
+  padding: 25px 30px;
 }
-.no-data{
-    padding: 20px;
-    font-size: 16px;
-    text-align: center;
+.no-data {
+  padding: 20px;
+  font-size: 16px;
+  text-align: center;
 }
 .page-heading {
-    width: 82%;
-    padding-left: 15px;
+  width: 82%;
+  padding-left: 15px;
 }
 
 .mat-table {
-    max-height: 80vh;
-    overflow-y: scroll;
+  max-height: 80vh;
+  overflow-y: scroll;
 }
-.add-btn {   
-    width: 20%;
-    display: flex;
-    flex-direction: column;
-    padding: unset;
-    margin: unset;
+.add-btn {
+  width: 20%;
+  display: flex;
+  flex-direction: column;
+  padding: unset;
+  margin: unset;
 }
 .mat-button-link {
-    cursor: auto;
+  cursor: auto;
 }
-.action-icon{
-    cursor: pointer;
-    color: #008AFC;
-    height: 20px;
-    width: 20px;
-    font-size: 20px;
+.action-icon {
+  cursor: pointer;
+  color: #008afc;
+  height: 20px;
+  width: 20px;
+  font-size: 20px;
+}
+
+mat-cell:has(.expenditure-block) {
+  overflow: visible;
+  .expenditure-block {
+    --edit-font-size: 16px;
+    --edit-default-color: #eee;
+    position: relative;
+    input {
+      width: 100%;
+      padding: 2px 20px 2px 3px;
+      border-radius: 0;
+      border-width: 1px;
+      border-style: solid;
+      border-color: transparent;
+      &:focus {
+        outline: none;
+      }
+    }
+    .edit-exp-box {
+      cursor: pointer;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: var(--edit-default-color);
+      visibility: hidden;
+      mat-icon {
+        font-size: var(--edit-font-size);
+        width: var(--edit-font-size);
+        height: var(--edit-font-size);
+      }
+      img {
+        width: var(--edit-font-size);
+        height: var(--edit-font-size);
+      }
+      &.loading-btn {
+        display: none;
+      }
+    }
+    .action-block {
+      $item-width: 18px;
+      display: none !important;
+
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      z-index: 1;
+
+      .action-item {
+        position: cursor;
+        background-color: #eee;
+        border-bottom-left-radius: 3px;
+        border-bottom-right-radius: 3px;
+        width: $item-width;
+        height: $item-width;
+        mat-icon {
+          font-size: $item-width;
+          color: #8b8b8b;
+        }
+        &:hover {
+          cursor: pointer;
+          background-color: #ddd;
+          mat-icon {
+            color: #8b8b8b;
+          }
+          outline: 1px solid #bbb;
+        }
+      }
+      &.active {
+        display: flex !important;
+      }
+    }
+
+    &:hover {
+      input {
+        border-color: var(--edit-default-color);
+      }
+      .edit-btn {
+        visibility: visible;
+      }
+    }
+
+    &.loading:hover {
+      .edit-btn {
+        display: none;
+      }
+    }
+
+    &.active {
+      .edit-btn {
+        display: none;
+      }
+      .action-block {
+        display: flex !important;
+      }
+      input {
+        border-color: var(--edit-default-color);
+        padding: 2px 3px 2px 3px;
+      }
+    }
+
+    &.loading {
+      .loading-btn {
+        display: flex;
+        visibility: visible !important;
+      }
+      .edit-btn {
+        display: none;
+      }
+      input {
+        border-color: var(--edit-default-color);
+        padding: 2px 3px 2px 3px;
+      }
+    }
   }
+}
+
+::ng-deep .tooltip-next-line {
+  white-space: pre-line;
+  word-wrap: break-word;
+}

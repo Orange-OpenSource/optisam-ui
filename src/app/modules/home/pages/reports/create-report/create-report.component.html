@@ -28,8 +28,7 @@
         <div
           class="col-md-6"
           *ngIf="
-            selectedReportType === 'Compliance' ||
-            selectedReportType === 'ProductEquipments'
+            [complianceType, productEquipmentType].includes(selectedReportType)
           "
         >
           <mat-form-field appearance="outline">

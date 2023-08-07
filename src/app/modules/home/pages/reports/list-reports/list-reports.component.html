@@ -72,7 +72,7 @@
             >{{ "Status" | translate }}
           </mat-header-cell>
           <mat-cell *matCellDef="let report">
-            {{ report.report_status | translate}}
+            {{ report.report_status | translate }}
           </mat-cell>
         </ng-container>
 
@@ -93,9 +93,11 @@
             <mat-menu #actionMenu="matMenu">
               <button
                 mat-menu-item
-                (click)="setFileFormat('CSV', report, exportConfirmationDialog)"
+                (click)="
+                  setFileFormat('XLSX', report, exportConfirmationDialog)
+                "
               >
-                CSV
+                XLSX
               </button>
               <button
                 mat-menu-item

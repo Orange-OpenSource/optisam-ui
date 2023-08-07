@@ -1,0 +1,21 @@
+<div class="kpi-tile" fxLayout="column">
+  <div class="kpi-header" fxLayoutAlign="center">
+    <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="3px">
+      <span class="tileHeader">{{ header }}</span
+      ><mat-icon
+        [matTooltip]="tooltip"
+        matTooltipClass="alertTooltip"
+        class="mat-icon-info"
+        >info</mat-icon
+      >
+    </div>
+  </div>
+  <div
+    fxFill
+    class="kpi-content"
+    fxLayout="column"
+    fxLayoutAlign="center center"
+  >
+    <ng-content></ng-content>
+  </div>
+</div>

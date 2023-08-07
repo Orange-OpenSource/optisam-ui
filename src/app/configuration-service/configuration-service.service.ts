@@ -11,7 +11,7 @@ export class ConfigurationServiceService {
     ? 'assets/config/dev/configuration.json'
     : 'assets/config/configuration.json';
   public $configurations: Observable<any>;
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   loadConfiguration(): any {
     if (!this.$configurations) {

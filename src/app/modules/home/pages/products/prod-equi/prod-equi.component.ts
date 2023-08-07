@@ -66,7 +66,7 @@ export class ProdEquiComponent implements OnInit {
     public dialog: MatDialog,
     private route: ActivatedRoute,
     private sharedService: SharedService
-  ) {}
+  ) { }
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: false }) sort: MatSort;
   swidTag: String;
@@ -390,6 +390,7 @@ export class ProdEquiComponent implements OnInit {
 
   advSearchTrigger(event) {
     this.searchFields = event;
+    this.current_page_num = 1;
     this.applyFilter();
   }
   backToProductsPage() {

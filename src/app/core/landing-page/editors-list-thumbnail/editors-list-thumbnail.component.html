@@ -1,0 +1,58 @@
+<div class="main-editor-list-container" fxLayout="column">
+  <form
+    [formGroup]="filterForm"
+    fxLayout="row wrap"
+    fxLayoutAlign="space-between start"
+    class="list-header"
+  >
+    <app-editor-search-bar
+      [total]="totalEditors"
+      [isLoading]="loadingEditors"
+      (searchValue)="searchText($event)"
+      class="narrow-form-fields"
+    ></app-editor-search-bar>
+    <app-editor-filters
+      formGroupName="filters"
+      class="narrow-form-fields"
+    ></app-editor-filters>
+  </form>
+  <div
+    #itemContainer
+    fxLayout="row wrap"
+    fxLayoutAlign="start start"
+    class="list-items"
+    [fxLayoutGap]="defaultItemGap"
+  >
+    <ng-container *ngFor="let editor of editorList">
+      <app-editor-item-thumb
+        (click)="editorDetails(editor)"
+        [editor]="editor"
+        [width]="firstContainerWidth"
+        fxFlex
+      ></app-editor-item-thumb>
+    </ng-container>
+
+    <ng-container *ngIf="!editorList.length && !loadingEditors">
+      <div class="no-data table" fxFill>
+        <mat-icon>error</mat-icon>{{ "No data available" | translate }}
+      </div>
+    </ng-container>
+    <div
+      class="loading-box"
+      fxLayout="row"
+      fxLayoutAlign="center center"
+      *ngIf="loadingEditors"
+    >
+      <app-loading-spinner></app-loading-spinner>
+    </div>
+  </div>
+  <mat-paginator
+    showFirstLastButtons
+    [length]="totalEditors"
+    [pageSize]="pageSize"
+    [pageSizeOptions]="[50, 100, 200]"
+    (page)="getPaginatorData($event)"
+    aria-label="Select page of core factor"
+  >
+  </mat-paginator>
+</div>

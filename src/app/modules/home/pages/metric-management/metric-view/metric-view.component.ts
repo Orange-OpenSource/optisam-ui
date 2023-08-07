@@ -119,6 +119,9 @@ export class MetricViewComponent implements OnInit, AfterViewInit {
   }
 
   editMetrics(metric: Metric): void {
+    if (metric.default) {
+       return
+    }
     let editDialog = this.dialog.open(EditMetricsComponent, {
       width: '800px',
       disableClose: true,

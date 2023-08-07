@@ -1,0 +1,33 @@
+<ng-container [formGroup]="SourcerGroup">
+  <div>
+    <div class="list-sourcers" fxLayout="column" fxLayoutAlign="space-between">
+      <div>
+        <h6 class="sourcers-heading">
+          {{ "EDITOR.SOURCERS" | translate }}
+        </h6>
+      </div>
+      <ng-container formArrayName="sourcers">
+        <app-single-sourcer
+          *ngFor="let item of SourcersArray?.controls; let i = index"
+          [index]="i"
+        ></app-single-sourcer>
+      </ng-container>
+      <button
+        mat-raised-button
+        class="btn-primary add-pm-type-btn"
+        disableRipple
+        (click)="addNewSourcer()"
+      >
+        <div
+          fxLayout="row"
+          fxLayoutAlign="space-between center"
+          fxLayoutGap="5px"
+          class="add-btn-content"
+        >
+          <mat-icon>add</mat-icon>
+          <span>{{ "EDITOR.ADD_SOURCER" | translate }}</span>
+        </div>
+      </button>
+    </div>
+  </div>
+</ng-container>

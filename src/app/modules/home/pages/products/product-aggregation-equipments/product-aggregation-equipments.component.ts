@@ -182,8 +182,8 @@ export class ProductAggregationEquipmentsComponent implements OnInit {
   }
 
   advSearchTrigger(event) {
-    // console.log('trigger event => ', event);
     this.searchFields = event;
+    this.current_page_num = 1;
     this.applyFilter();
   }
   openDialog(ele, x): void {

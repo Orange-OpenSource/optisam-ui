@@ -1,0 +1,60 @@
+<div>
+  <span class="title">{{ "Group Compliance" | translate }}</span>
+  <div>
+    <div class="inline block mat-elevation-z3">
+      <div class="col-md-12 field">
+        <mat-form-field appearance="outline" class="configurationName">
+          <mat-label>{{
+            "AGGREGATIONS.TEXTS.SELECT_EDITOR" | translate
+          }}</mat-label>
+          <mat-select
+            [(ngModel)]="simulateObj.editorName"
+            [disabled]="editorList.length == 0"
+            (selectionChange)="selectionChanged($event, 'editor')"
+          >
+            <mat-option value=""
+              >--
+              {{ "AGGREGATIONS.TEXTS.SELECT_EDITOR" | translate }}
+              --</mat-option
+            >
+            <mat-option *ngFor="let editor of editorList" [value]="editor">{{
+              editor
+            }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <canvas class="size" id="myBarChartEditor"></canvas>
+      <span class="title-inners">{{ "TOTAL_COST_EDITOR" | translate }}</span>
+      <canvas class="size" id="myHorizontalBarChartEditor"></canvas>
+    </div>
+    <div class="inline block right mat-elevation-z3">
+      <div class="col-md-12 field">
+        <mat-form-field appearance="outline" class="configurationName">
+          <mat-label>{{
+            "AGGREGATIONS.TEXTS.SELECT_PRODUCT" | translate
+          }}</mat-label>
+          <mat-select
+            [(ngModel)]="simulateObj.productName"
+            [disabled]="productList.length == 0"
+            (selectionChange)="
+              selectionChanged($event, 'product');
+            "
+          >
+            <mat-option value=""
+              >--
+              {{ "AGGREGATIONS.TEXTS.SELECT_PRODUCT" | translate }}
+              --</mat-option
+            >
+            <mat-option *ngFor="let product of productList" [value]="product">{{
+              product
+            }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <span class="title-inner">{{ "Licenses" | translate }}</span>
+      <canvas class="size" id="myBarChartLicense"></canvas>
+      <span class="title-inner">{{ "Costs" | translate }}</span>
+      <canvas class="size" id="myBarChartCost"></canvas>
+    </div>
+  </div>
+</div>

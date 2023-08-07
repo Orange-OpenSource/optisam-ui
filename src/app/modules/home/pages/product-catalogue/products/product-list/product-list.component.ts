@@ -1,8 +1,11 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { ProductCatalogService } from '@core/services';
 import {
+  AdvanceSearchField,
+  AdvanceSearchFieldSelect,
   AdvanceSearchModel,
   ErrorResponse,
+  LicenseType,
   PaginationDefaults,
   PaginationEvent,
   ProductCatalogEditorListParams,
@@ -10,6 +13,7 @@ import {
   ProductCatalogProductListParams,
   ProductCatalogProductsListResponse,
   ProductColumn,
+  ProductLocation,
   TableSortOrder,
 } from '@core/modals';
 import { COLUMNS, PRODUCT_CATALOG_TABS } from '@core/util/constants/constants';
@@ -49,18 +53,48 @@ export class ProductListComponent implements OnInit {
     private router: Router,
     private dialog: MatDialog,
     @Inject(MAT_DIALOG_DATA) public data: any
-  ) {}
+  ) { }
 
   columns: ProductColumn[] = COLUMNS;
 
-  advanceSearchModel: any = {
+  advanceSearchModel: AdvanceSearchModel = {
     title: `PRODUCT_CATALOG.SEARCH_BY_NAME`,
     primary: this.primarySearchField.key,
+    translate: true,
     other: [
       { key: 'name', label: 'Product Name' },
       ...(this.data?.id ? [] : [{ key: 'editor_name', label: 'Editor Name' }]),
-      { key: 'locationType', label: 'Location type' },
-      { key: 'licensing', label: 'Licensing' },
+      {
+        key: 'locationType',
+        label: 'DEPLOYMENT_TYPE',
+        type: 'select',
+        selection: [
+          {
+            key: 'PRODUCT_TABLE.HEADER.SAAS',
+            value: 'SAAS',
+          },
+          {
+            key: 'PRODUCT_TABLE.HEADER.ONPREMISE',
+            value: 'On Premise',
+          },
+          { key: 'Both', value: 'Both' },
+        ],
+      },
+      {
+        key: 'licensing',
+        label: 'LICENSING',
+        type: 'select',
+        selection: [
+          {
+            key: 'OPEN_SOURCE',
+            value: 'OPENSOURCE',
+          },
+          {
+            key: 'CLOSED_SOURCE',
+            value: 'CLOSEDSOURCE',
+          },
+        ],
+      },
     ],
   };
 
@@ -135,7 +169,7 @@ export class ProductListComponent implements OnInit {
           this.searchField.licensing?.trim(),
       }),
       ...(this.searchField.locationType?.trim() && {
-        'search_params.locationType.filteringkey':
+        'search_params.deploymentType.filteringkey':
           this.searchField.locationType?.trim(),
       }),
       ...(this.data && {

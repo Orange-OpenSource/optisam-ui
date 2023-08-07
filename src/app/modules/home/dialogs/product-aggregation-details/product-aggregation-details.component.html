@@ -42,7 +42,8 @@
                 role="tab"
                 aria-controls="nav-options"
                 aria-selected="false"
-                >{{ "Options" | translate }}</a
+                (click)="getMaintenanceDetails()"
+                >{{ "Maintenance" | translate }}</a
               >
             </div>
           </nav>
@@ -73,11 +74,11 @@
             >
               <div class="tab-content-inner">
                 <app-loading-spinner
-                  *ngIf="_loading && !aggregationOptions"
+                  *ngIf="_loading && !aggregationMaintenance"
                 ></app-loading-spinner>
                 <app-options
-                  [productOptions]="aggregationOptions"
-                  *ngIf="!_loading && aggregationOptions"
+                  [aggregationMaintenance]="aggregationMaintenance"
+                  *ngIf="!_loading"
                 ></app-options>
               </div>
             </div>
@@ -165,7 +166,7 @@
 
                                   <span
                                     class="error-msg"
-                                    *ngIf="!num_equipments"
+                                    *ngIf="product.notDeployed"
                                     >&nbsp;{{
                                       "Product is not
                                     deployed" | translate
@@ -174,7 +175,7 @@
                                   <span
                                     *ngIf="
                                       !product.metricNotDefined &&
-                                      num_equipments
+                                      !product.notDeployed
                                     "
                                   >
                                     {{ product.computedDetails || "-" }}
@@ -186,6 +187,13 @@
 
                                 <div *ngSwitchCase="'numCptLicences'">
                                   {{ product.numCptLicences || 0 }}
+                                </div>
+
+                                <div *ngSwitchCase="'availableLicences'">
+                                  {{ product.availableLicences || 0 }}
+                                </div>
+                                <div *ngSwitchCase="'totalCost'">
+                                  {{ product.totalCost || 0 }}
                                 </div>
 
                                 <div *ngSwitchCase="'deltaNumber'">

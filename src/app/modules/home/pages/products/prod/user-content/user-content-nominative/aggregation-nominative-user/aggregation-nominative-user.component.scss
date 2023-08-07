@@ -1,0 +1,15 @@
+::ng-deep {
+  .export-btn {
+    mat-spinner.export-btn-spinner {
+      height: 1em !important;
+      width: 1em !important;
+      svg {
+        height: inherit !important;
+        width: inherit !important;
+        circle {
+          stroke: #fff !important;
+        }
+      }
+    }
+  }
+}

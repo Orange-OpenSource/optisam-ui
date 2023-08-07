@@ -1,0 +1,48 @@
+.inline {
+  display: inline-block !important;
+}
+
+.main-container {
+  padding: 15px;
+  margin-bottom: 15px;
+}
+
+.configurationName {
+  margin: 20px 10px 10px -10px;
+}
+
+.group-selection {
+  padding-top: 30px;
+  padding-bottom: 30px;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 10px;
+  .title {
+    padding: 10px 0 10px 0px;
+    display: inline-block;
+    font-size: 1.4em !important;
+    font-weight: bold;
+  }
+  & ::ng-deep .group-selection-selector {
+    max-width: 400px;
+    .mat-form-field-wrapper {
+      padding-bottom: 0 !important;
+    }
+  }
+  .entity-label {
+    padding: 5px 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-weight: bold;
+    color: #5f5f5f;
+    background-color: #f4f4f4;
+  }
+}
+
+::ng-deep .group-compliance-main {
+  span.title {
+    padding: 10px 0 10px 0px;
+    display: inline-block;
+    font-size: 1.4em !important;
+  }
+}

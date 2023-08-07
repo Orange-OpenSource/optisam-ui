@@ -1,0 +1,133 @@
+<div class="main" fxLayout="column" fxLayoutAlign="space-between" fxFill>
+  <div fxLayout="row" class="icon-head-quarter" fxLayoutAlign="space-between">
+    <div
+      class="icon-header"
+      fxLayout="row"
+      fxLayoutGap="10px"
+      fxLayoutAlign="start start"
+      fxFlex="80"
+      matTooltip="{{ editor?.name }}"
+    >
+      <img
+        alt="{{ editor?.name }}"
+        class="company-icon"
+        src="{{
+          'https://pr-diod-ocp-fr01-dev-optisam-dev-optisam.oss.eu-west-0.prod-cloud-ocb.orange-business.com/optisam-dev/'
+        }}{{ editor?.name.toLowerCase() }}.svg 
+          "
+        (error)="onImgError($event)"
+      />
+      <!-- <ng-container
+        *ngIf="false && editor?.name | companyIcon | async; else defaultImage"
+      >
+        <img
+          alt="{{ editor?.name }}"
+          class="company-icon"
+          src="{{
+            'https://pr-diod-ocp-fr01-dev-optisam-dev-optisam.oss.eu-west-0.prod-cloud-ocb.orange-business.com/optisam-dev/'
+          }}{{ editor?.name.toLowerCase() }}.svg 
+          "
+        />
+      </ng-container> -->
+      <header #headerEl>
+        {{ editor?.name | trimTextRange : trimRangeHeader }}
+      </header>
+    </div>
+    <div class="head-quarter" fxFlex="20" fxLayoutAlign="end">
+      <img
+        *ngIf="editor?.country_code | isFlagAvailable; else defaultFlag"
+        matTooltip="{{ 'HEAD_QUARTER' | translate }}: {{
+          editor?.country_code | countryNameFromCode
+        }}"
+        class="company-icon"
+        src="{{ 'assets/images/flags/4x3/' + editor?.country_code + '.svg' }}"
+      />
+    </div>
+  </div>
+
+  <div
+    fxLayout="row"
+    class="info"
+    fxFlex
+    [ngClass]="{ 'no-available': !editor?.general_information }"
+  >
+    <span matTooltip="{{ editor?.general_information }}">
+      {{
+        (editor?.general_information | trimTextRange : trimRangeInfo) ||
+          ("NO_AVAILABLE" | translate)
+      }}
+    </span>
+  </div>
+
+  <div class="entity" fxLayout="row" fxLayoutAlign="space-between center">
+    <ng-container
+      *ngIf="editor?.scopes | takeFirst : firstContainerWidth as entityData"
+    >
+      <div fxLayout="row" fxLayoutGap="3px">
+        <span
+          *ngFor="let entity of entityData?.visibleScopes"
+          class="entity-label"
+          >{{ entity?.trim() }}
+        </span>
+      </div>
+
+      <div class="entity-count" *ngIf="entityData?.restScopeCount">
+        <a
+          class="link strong"
+          matTooltip="{{
+            editor?.scopes
+              | remainingEntities
+                : editor?.scopes.length - entityData.restScopeCount
+          }}"
+          matTooltipClass="multiline-tooltip"
+        >
+          +{{ entityData.restScopeCount }}
+          {{
+            (entityData.restScopeCount > 1 ? "ENTITIES" : "ENTITY") | translate
+          }}
+        </a>
+      </div>
+    </ng-container>
+  </div>
+  <div
+    class="product-contract"
+    fxLayout="row"
+    fxLayoutAlign="space-between center"
+  >
+    <div class="product-count">
+      <a class="link strong"
+        >{{ editor?.product_count }}
+        {{
+          (editor?.product_count > 1 ? "Products" : "Product") | translate
+        }}</a
+      >
+    </div>
+    <div class="contract">
+      <img
+        *ngIf="editor?.groupContract"
+        matTooltip="{{ 'GROUP_CONTRACT' | translate }}"
+        class="group-contract-icon"
+        src="assets/images/group-contract-icon.svg"
+      />
+    </div>
+  </div>
+</div>
+
+<ng-template #defaultImage>
+  <img
+    class="company-icon"
+    src="assets/images/default-company-icon.svg"
+    alt="Icon not available"
+  />
+</ng-template>
+
+<ng-template #defaultFlag>
+  <img
+    matTooltip="{{ 'HEAD_QUARTER' | translate }}: {{
+      'NOT_DEFINED' | translate
+    }}"
+    class="company-icon"
+    src="assets/images/default-flag-icon.svg"
+    alt="Country not defined"
+  />
+</ng-template>

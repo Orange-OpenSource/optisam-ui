@@ -1,0 +1,84 @@
+<mat-card class="main">
+  <ng-container *ngIf="visibleClose">
+    <div class="close-btn" (click)="deleteUser()">
+      <mat-icon>close</mat-icon>
+    </div>
+  </ng-container>
+  <form [formGroup]="form">
+    <div class="grid-row">
+      <mat-form-field appearance="outline">
+        <mat-label>{{
+          "NOMINATIVE_USER.FIELD.USERNAME" | translate
+        }}</mat-label>
+        <input formControlName="username" matInput />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>{{
+          "NOMINATIVE_USER.FIELD.FIRST_NAME" | translate
+        }}</mat-label>
+        <input formControlName="firstName" matInput />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>{{ "NOMINATIVE_USER.FIELD.EMAIL" | translate }}*</mat-label>
+        <input formControlName="email" matInput />
+        <mat-error *ngIf="email?.hasError('email')">
+          {{ "NOMINATIVE_USER.ERROR.INVALID_EMAIL" | translate }}
+        </mat-error>
+        <mat-error *ngIf="email?.hasError('required')">{{
+          "NOMINATIVE_USER.ERROR.REQUIRED.EMAIL" | translate
+        }}</mat-error>
+        <mat-error *ngIf="email?.hasError('emailUnique')">
+          <!-- "Email already exist with '"{{
+            email?.errors?.emailUnique?.profile == ""
+              ? ("EMPTY" | translate)
+              : email?.errors?.emailUnique?.profile
+          }}"' profile" -->
+
+          {{
+            "EMAIL_EXIST_ERROR"
+              | translate
+                : {
+                    profile:
+                      email?.errors?.emailUnique?.profile == ""
+                        ? emptyText
+                        : email?.errors?.emailUnique?.profile
+                  }
+          }}
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>{{ "NOMINATIVE_USER.FIELD.PROFILE" | translate }}</mat-label>
+        <input formControlName="profile" matInput />
+        <mat-error *ngIf="profile?.hasError('profileUnique')">
+          {{
+            "PROFILE_EXIST_ERROR"
+              | translate
+                : {
+                    email:
+                      profile?.errors?.profileUnique?.email == ""
+                        ? emptyText
+                        : profile?.errors?.profileUnique?.email
+                  }
+          }}
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>{{
+          "NOMINATIVE_USER.FIELD.ACTIVATION_DATE" | translate
+        }}</mat-label>
+        <input
+          formControlName="activationDate"
+          matInput
+          [matDatepicker]="picker"
+        />
+        <mat-hint>MM/DD/YYYY</mat-hint>
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+    </div>
+  </form>
+</mat-card>

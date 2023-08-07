@@ -1,0 +1,46 @@
+.action-section {
+  margin-bottom: 20px;
+}
+
+#noData {
+  padding: 2em;
+  background-color: var(--light-grey);
+  color: #aaa;
+  mat-icon {
+    color: inherit;
+  }
+}
+
+.action-icon {
+  cursor: pointer;
+  color: #008afc;
+  height: 20px;
+  width: 20px;
+  font-size: 20px;
+}
+
+mat-cell {
+  word-break: break-word;
+}
+
+::ng-deep #exportConcurrentUser {
+  mat-icon {
+    transform: rotate(90deg) translateX(-8%);
+  }
+  mat-spinner {
+    height: 15px !important;
+    width: 15px !important;
+    margin-right: 10px;
+    svg {
+      height: 15px !important;
+      width: 15px !important;
+    }
+  }
+
+  .mat-button-wrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+  }
+}

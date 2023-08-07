@@ -16,6 +16,8 @@ import {
   InstanceNumberStandardParams,
   StaticStandardParams,
   EquipmentAttributeParams,
+  UserStandardParams,
+  ErrorResponse,
 } from '@core/modals';
 
 @Injectable({
@@ -33,12 +35,14 @@ export class MetricService {
     IntanceNumberStandard: `${this.apiMetricUrl}/metric/inm`,
     StaticStandard: `${this.apiMetricUrl}/metric/ss`,
     EquipmentStandard: `${this.apiMetricUrl}/metric/equip_attr`,
+    concurrentUserStandard: `${this.apiMetricUrl}/metric/user_conc`,
+    nominativeUserStandard: `${this.apiMetricUrl}/metric/uns`,
   };
   defaultHeaders: HttpHeaders = new HttpHeaders({
     'Content-Type': 'application/json',
   });
 
-  constructor(private httpClient: HttpClient) {}
+  constructor(private httpClient: HttpClient) { }
 
   getMetricList(scope?: string) {
     const url = `${this.apiMetricUrl}/metrics`;
@@ -187,5 +191,32 @@ export class MetricService {
         { headers: this.defaultHeaders }
       )
       .pipe(catchError((e) => throwError(e.error)));
+  }
+
+  updateConcurrentUserStandard(
+    params: UserStandardParams
+  ): Observable<MetricUpdateSuccess | ErrorResponse> {
+    return this.httpClient
+      .patch<MetricUpdateSuccess | ErrorResponse>(
+        this.common.concurrentUserStandard,
+        params,
+        { headers: this.defaultHeaders }
+      )
+      .pipe(
+        catchError((e) => (e?.error ? throwError(e.error) : throwError(e)))
+      );
+  }
+  updateNominativeUserStandard(
+    params: UserStandardParams
+  ): Observable<MetricUpdateSuccess | ErrorResponse> {
+    return this.httpClient
+      .patch<MetricUpdateSuccess | ErrorResponse>(
+        this.common.nominativeUserStandard,
+        params,
+        { headers: this.defaultHeaders }
+      )
+      .pipe(
+        catchError((e) => (e?.error ? throwError(e.error) : throwError(e)))
+      );
   }
 }

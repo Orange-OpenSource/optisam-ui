@@ -1,0 +1,210 @@
+<mat-card>
+  <mat-card-content fxLayout="column" fxLayoutGap="10px">
+    <form [formGroup]="concurrentUserForm">
+      <div fxLayout="row" class="hidden">
+        <mat-radio-group
+          formControlName="type"
+          aria-label="Select an option"
+          fxLayoutGap="30px"
+          color="primary"
+        >
+          <mat-radio-button
+            [disableRipple]="true"
+            *ngFor="let userType of userTypeList"
+            [checked]="userType.value === type.value"
+            [value]="userType.value"
+            >{{ userType.name | translate }}</mat-radio-button
+          >
+        </mat-radio-group>
+      </div>
+      <ng-container
+        *ngIf="
+          type.value === productType &&
+          activeTitle === 'CONCURRENT_USER.TAB.INDIVIDUAL'
+        "
+        [formGroup]="product"
+      >
+        <div fxLayout="row" fxLayoutGap="10px">
+          <mat-form-field appearance="outline">
+            <mat-label
+              >{{
+                "NOMINATIVE_USER.FIELD.PRODUCT_EDITOR" | translate
+              }}*</mat-label
+            >
+            <input
+              type="text"
+              formControlName="productEditor"
+              matInput
+              [matAutocomplete]="editorAuto"
+            />
+
+            <mat-autocomplete
+              autoActiveFirstOption
+              #editorAuto="matAutocomplete"
+            >
+              <mat-option
+                *ngFor="
+                  let editor of productEditors$
+                    | async
+                    | filterEditor : productEditor?.value
+                "
+                [value]="editor"
+              >
+                {{ editor }}
+              </mat-option>
+            </mat-autocomplete>
+            <mat-error *ngIf="productEditor?.hasError('required')">
+              {{ "CONCURRENT_USER.ERROR.REQUIRED.PRODUCT_EDITOR" | translate }}
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label
+              >{{ "NOMINATIVE_USER.FIELD.PRODUCT" | translate }}*</mat-label
+            >
+            <input
+              type="text"
+              formControlName="productName"
+              matInput
+              [matAutocomplete]="latestProductsAuto"
+            />
+
+            <mat-autocomplete
+              autoActiveFirstOption
+              #latestProductsAuto="matAutocomplete"
+            >
+              <mat-option
+                *ngFor="
+                  let product of latestProducts$
+                    | async
+                    | filterProduct : productName?.value
+                "
+                [value]="product"
+              >
+                {{ product }}
+              </mat-option>
+            </mat-autocomplete>
+            <mat-error *ngIf="productName?.hasError('required')">
+              {{ "CONCURRENT_USER.ERROR.REQUIRED.PRODUCT" | translate }}
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>{{
+              "NOMINATIVE_USER.FIELD.VERSION" | translate
+            }}</mat-label>
+            <input formControlName="productVersion" matInput />
+          </mat-form-field>
+        </div>
+        <div fxLayout="row" fxLayoutGap="10px">
+          <mat-form-field appearance="outline">
+            <mat-label>{{
+              "CONCURRENT_USER.FIELD.TEAM" | translate
+            }}</mat-label>
+            <input formControlName="team" matInput />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label
+              >{{
+                "CONCURRENT_USER.FIELD.NUMBER_OF_USERS" | translate
+              }}*</mat-label
+            >
+            <input
+              formControlName="numberOfUsers"
+              matInput
+              (keydown)="restrictNonDigitAndNegative($event)"
+            />
+            <mat-error *ngIf="numberOfUsers?.hasError('required')">
+              {{ "CONCURRENT_USER.ERROR.REQUIRED.NUMBER_OF_USERS" | translate }}
+            </mat-error>
+            <mat-error *ngIf="numberOfUsers?.hasError('pattern')">
+              {{ "CONCURRENT_USER.ERROR.PATTERN.NUMBER_OF_USERS" | translate }}
+            </mat-error>
+            <mat-error *ngIf="numberOfUsers?.hasError('min')">
+              {{
+                "CONCURRENT_USER.ERROR.MIN.NUMBER_OF_USERS"
+                  | translate : numberOfUsers.errors.min
+              }}
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>{{
+              "CONCURRENT_USER.FIELD.PROFILE" | translate
+            }}</mat-label>
+            <input formControlName="profile" matInput />
+          </mat-form-field>
+        </div>
+      </ng-container>
+
+      <ng-container
+        *ngIf="
+          type.value === aggregationType &&
+          activeTitle === 'CONCURRENT_USER.TAB.AGGREGATION'
+        "
+        [formGroup]="aggregation"
+      >
+        <div fxLayout="row" fxLayoutGap="10px">
+          <mat-form-field appearance="outline" fxFlex="33">
+            <mat-label
+              >{{ "NOMINATIVE_USER.FIELD.AGGREGATION" | translate }}*</mat-label
+            >
+            <mat-select formControlName="aggregationName">
+              <mat-option
+                *ngFor="let aggregation of aggregationList$ | async"
+                [value]="aggregation.ID"
+              >
+                {{ aggregation?.aggregation_name }}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="aggregationName?.hasError('required')">{{
+              "CONCURRENT_USER.ERROR.REQUIRED.AGGREGATION" | translate
+            }}</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div fxLayout="row" fxLayoutGap="10px">
+          <mat-form-field appearance="outline">
+            <mat-label>{{
+              "CONCURRENT_USER.FIELD.TEAM" | translate
+            }}</mat-label>
+            <input formControlName="team" matInput />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label
+              >{{
+                "CONCURRENT_USER.FIELD.NUMBER_OF_USERS" | translate
+              }}*</mat-label
+            >
+            <input
+              formControlName="numberOfUsers"
+              matInput
+              (keydown)="restrictNonDigitAndNegative($event)"
+            />
+            <mat-error *ngIf="numberOfUsers?.hasError('required')">
+              {{ "CONCURRENT_USER.ERROR.REQUIRED.NUMBER_OF_USERS" | translate }}
+            </mat-error>
+            <mat-error *ngIf="numberOfUsers?.hasError('pattern')">
+              {{ "CONCURRENT_USER.ERROR.PATTERN.NUMBER_OF_USERS" | translate }}
+            </mat-error>
+            <mat-error *ngIf="numberOfUsers?.hasError('min')">
+              {{
+                "CONCURRENT_USER.ERROR.MIN.NUMBER_OF_USERS"
+                  | translate : numberOfUsers.errors.min
+              }}
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>{{
+              "CONCURRENT_USER.FIELD.PROFILE" | translate
+            }}</mat-label>
+            <input formControlName="profile" matInput />
+          </mat-form-field>
+        </div>
+      </ng-container>
+    </form>
+  </mat-card-content>
+</mat-card>

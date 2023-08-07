@@ -8,6 +8,9 @@ import {
   MenuRouterLinks,
   ProductColumn,
 } from '@core/modals';
+import { pieChartDataLabelFormatter } from '../common.functions';
+import Chart from 'chart.js';
+import { Options } from 'chartjs-plugin-datalabels/types/options';
 
 const allowedScopes = (): boolean => {
   const currentScope: string = localStorage.getItem('scopeType') || '';
@@ -55,6 +58,8 @@ export const METRIC_TYPES: MetricTypes = {
   INSTANCE_NUMBER_STANDARD: 'instance.number.standard',
   STATIC_STANDARD: 'static.standard',
   EQUIPMENT_ATTRIBUTE_STANDARD: 'equipment.attribute.standard',
+  SAAS_CONCURRENT: 'user.concurrent.standard',
+  SAAS_NOMINATIVE: 'user.nominative.standard',
 };
 
 export const ORACLE_TYPES = [
@@ -70,6 +75,8 @@ export const METRIC_DEPENDENCY_TYPES = {
     'attributeCounterOrAttributeSumOrEquipmentAttribute',
   INSTANCE_NUMBER: 'instanceNumber',
   STATIC_STANDARD: 'staticStandard',
+  SAAS_CONCURRENT: 'concurrentUser',
+  SAAS_NOMINATIVE: 'nominativeUser',
 };
 
 export const PAGINATION_DEFAULTS: PaginationDefaults = {
@@ -91,16 +98,47 @@ export const EDITOR_FORM_FIELDS = {
   },
 };
 export const COMMON_REGEX: CommonRegex = {
-  DIGITS_WITH_NAV:
-    '^[0-9]*$|Backspace|ArrowLeft|ArrowRight|ArrowDown|ArrowUp|Tab',
-  ONLY_DIGITS: '^[0-9]*$',
+  DIGITS_WITH_NAV: new RegExp(
+    `^[0-9]*$|Delete|Backspace|ArrowLeft|ArrowRight|ArrowDown|ArrowUp|Tab`
+  ),
+  ONLY_DIGITS: new RegExp('^[0-9]*$'),
+  DIGITS_WITH_DECIMALS: new RegExp(`^(\\d+(\\.\\d+)?)$`),
 };
 
 export const IMPORT_FILE_SIZE: number = 13 * 1024 * 1000; // converting MB into bytes
 
+export const MONTH_COLOR_SET: {
+  January: string;
+  February: string;
+  March: string;
+  April: string;
+  May: string;
+  June: string;
+  July: string;
+  August: string;
+  September: string;
+  October: string;
+  November: string;
+  December: string;
+} = {
+  January: '#ffbb00',
+  February: '#ffbbcc',
+  March: '#ffbb77',
+  April: '#ffbb',
+  May: '#ddbb',
+  June: '#ccffee',
+  July: '#bbee00',
+  August: '#ccbb88',
+  September: '#bbff',
+  October: '#aabb99',
+  November: '#bbaa11',
+  December: '#33aa33',
+};
 export enum PRODUCT_CATALOG_TABS {
-  EDITOR = 'Editors',
-  PRODUCT = 'Products',
+  EDITOR = 'PRODUCT_CATALOG_TAB_EDITORS',
+  PRODUCT = 'PRODUCT_CATALOG_TAB_PRODUCTS',
+  EDITOR_DETAIL = 'PRODUCT_CATALOG_TAB_EDITOR_DETAIL',
+  PRODUCT_DETAIL = 'PRODUCT_CATALOG_TAB_PRODUCT_DETAIL',
 }
 
 export enum CRUD {
@@ -125,6 +163,12 @@ export const MENU_ROUTER_LINKS: MenuRouterLinks = {
   equipmentsManagement: '/optisam/eqm',
   simulatorsManagement: '/optisam/cm/simulation-configuration',
 };
+
+export const PRODUCT_RECOMMENDATION: string[] = [
+  'RECOMMENDED',
+  'AUTHORIZED',
+  'BLACKLISTED',
+];
 
 export const OPEN_SOURCE_LIST: string[] = [
   '0-clause BSD License (0BSD)',
@@ -250,14 +294,129 @@ export const COLUMNS: ProductColumn[] = [
     key: 'editorName',
     label: 'PRODUCT_CATALOG.PRODUCTS_LIST_COLUMNS.EDITOR',
   },
- 
+
   {
     key: 'locationType',
-    label: 'PRODUCT_CATALOG.PRODUCTS_LIST_COLUMNS.LOCATION_TYPE',
+    label: 'DEPLOYMENT_TYPE',
   },
   {
     key: 'licensing',
     label: 'Licensing',
   },
-  
 ];
+
+export const ALL_SELECTION_NAME: string = 'all-selection';
+export enum ReportTypeNames {
+  compliance = 'Compliance',
+  productEquipments = 'ProductEquipments',
+  expensesByEditor = 'Expenses by Editor',
+}
+
+export const MAX_CHARS_ENTITY_LABEL: number = 8;
+
+export const REPORT_TRANSLATIONS = {
+  product: 'Product',
+  purchaseCost: 'PURCHASED_COST_BY_EDITOR',
+  maintenanceCost: 'MAINTENANCE_COST_BY_EDITOR',
+  editor: 'EDITOR_REPORT',
+  product_name: 'Product',
+  product_version: 'Version',
+  user_name: 'Username',
+  first_name: 'First Name',
+  user_email: 'Email',
+  profile: 'PROFILE',
+  activation_date: 'ACTIVATION_DATE',
+  aggregation_name: 'Aggregation Name',
+  totalCost: 'TOTAL_COST',
+  sku: "SKU",
+  aggregationName: "AGGREGATION_NAME",
+  metric: "METRIC_ONLY",
+  computedLicenses: "COMPUTED_LICENSES",
+  computationDetails: "COMPUTATION_DETAILS",
+  acquiredLicenses: "ACQUIRED_LICENSES",
+  'delta(licenses)': 'DELTA_LICENSES',
+  'delta(cost)': "DELTA_COST",
+  totalcost: "TOTAL_COST",
+  avgunitprice: "AVERAGE_UNIT_PRICE",
+  metaTranslation: {
+    title: {
+      reportType: "REPORT_META_REPORT_TYPE",
+      scope: "REPORT_META_SCOPE",
+      createdOn: "REPORT_META_CREATED_ON",
+      createdBy: "REPORT_META_CREATED_BY",
+      equipmentType: "REPORT_META_EQUIPMENT_TYPE",
+      editor: "REPORT_META_EDITOR"
+    },
+    value: {
+      'Expenses by Editor': "REPORT_META_EXPENSES_BY_EDITOR",
+      ProductEquipments: "REPORT_META_PRODUCT_EQUIPMENTS",
+      Compliance: "REPORT_META_COMPLIANCE",
+      server: "SERVER",
+      softpartition: "SOFT_PARTITION",
+      vcenter: "VCENTER",
+      cluster: "CLUSTER"
+    }
+  }
+};
+
+export enum ProductUserType {
+  nominative = 'NOMINATIVE',
+  concurrent = 'CONCURRENT',
+}
+
+export const CHART_COLORS = {
+  totalCost: '#3dcbff',
+  counterfeiting: '#ee4646',
+  underUsage: '#b0e57c',
+  acquiredLicense: '#d1d1f9',
+  computedLicense: '#ffd670',
+  expenditure: '#ff70a6',
+  sharedLicense: "#354e82",
+  receivedLicense: "#ec583a",
+  saas: "#3376bd",
+  onPremise: "#edae49"
+
+}
+
+export enum AdminLevel {
+  admin = "ADMIN",
+  superAdmin = "SUPER_ADMIN"
+}
+
+
+export const TREE_MAP_COLOR_RANGE: { from: number; to: number; color: string }[] = [
+  { from: 0, to: 5, color: '#3B93A5' },
+  { from: 6, to: 10, color: '#F7B844' },
+  { from: 11, to: 15, color: '#DAA89B' },
+  { from: 16, to: 20, color: '#9C8CB9' },
+  { from: 21, to: 25, color: '#616247' },
+  { from: 26, to: 30, color: '#F7E967' },
+  { from: 31, to: 35, color: '#FF5733' },
+  { from: 36, to: 40, color: '#00FFFF' },
+  { from: 41, to: 45, color: '#FFC300' },
+  { from: 46, to: 50, color: '#581845' },
+  { from: 51, to: 55, color: '#900C3F' },
+  { from: 56, to: 60, color: '#FF5733' },
+  { from: 61, to: 65, color: '#00FFFF' },
+  { from: 66, to: 70, color: '#FFC300' },
+  { from: 71, to: 75, color: '#581845' },
+  { from: 76, to: 80, color: '#900C3F' },
+  { from: 81, to: 85, color: '#F7E967' },
+  { from: 86, to: 90, color: '#FF5733' },
+  { from: 91, to: 95, color: '#00FFFF' },
+  { from: 96, to: 100, color: '#FFC300' },
+]
+
+export const TREE_MAP_COMMON_DATA_THRESHOLD: number = 1.5;
+export const TREE_MAP_COMMON_MAX_DATA = 100;
+
+export const EQUIPMENT_COLORS = {
+  desktop: '#fcbf49',
+  virtualMachines: '#2a9d8f',
+  server: '#f765a3',
+  cluster: '#a155b9',
+  vcenter: '#165baa',
+  softpartition: '#b4ff69'
+
+}
+

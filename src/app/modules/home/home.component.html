@@ -44,6 +44,26 @@
             }}</span>
           </div>
         </mat-list-item>
+
+        <mat-list-item
+          id="nav-product-catalog"
+          [ngClass]="sidebarOpenFlag ? '' : 'wide-space'"
+          mat-list-item
+          *ngIf="role === 'Super Admin'"
+          routerLink="/optisam/gc"
+          routerLinkActive="active"
+        >
+          <img
+            matTooltip="{{ 'Group Compliance' | translate }}"
+            [ngClass]="sidebarOpenFlag ? 'img-min' : 'img-max'"
+            src="\assets\images\gcs.png"
+          />
+          <div *ngIf="sidebarWidth > 6" class="sidenav-item">
+            &nbsp;&nbsp;&nbsp;<span>{{
+              "SIDEBAR_NAV.MENU.GROUP_COMPLIANCE" | translate | uppercase
+            }}</span>
+          </div>
+        </mat-list-item>
         <mat-list-item
           id="nav-dashboard"
           [ngClass]="sidebarOpenFlag ? '' : 'wide-space'"

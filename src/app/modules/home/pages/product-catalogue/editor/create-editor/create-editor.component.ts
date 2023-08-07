@@ -1,3 +1,4 @@
+import * as COUNTRY_CODES from '@assets/files/country_code.json';
 import { DatePipe } from '@angular/common';
 import { Component, Inject, OnInit } from '@angular/core';
 import {
@@ -38,6 +39,8 @@ export class CreateEditorComponent implements OnInit {
   _loading: boolean = false;
   isViewMode: boolean = false;
   editorData: ProductCatalogEditor = null;
+  countryCodeVal: string = '';
+  textFieldValue: string = '';
   constructor(
     private fb: FormBuilder,
     private router: Router,
@@ -48,6 +51,8 @@ export class CreateEditorComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any,
     public dialogRef: MatDialogRef<EditorListComponent>
   ) {}
+
+  countries = this.getCountries();
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((res: any) => {
@@ -61,13 +66,18 @@ export class CreateEditorComponent implements OnInit {
         Validators.maxLength(100),
       ]),
       partner_managers: this.fb.array([]),
-      genearlInformation: this.fb.control('', Validators.maxLength(200)),
+      genearlInformation: this.fb.control('', Validators.maxLength(1000)),
+      groupContract: this.fb.control(false),
+      globalAccountManager: this.fb.array([]),
+      sourcers: this.fb.array([]),
       audits: this.fb.array([]),
       vendors: this.fb.array([
         this.fb.group({
           name: ['', [Validators.minLength(3)]],
         }),
       ]),
+      countryCode: this.fb.control(''),
+      address: this.fb.control(''),
     });
 
     //function to load values based on id
@@ -76,6 +86,7 @@ export class CreateEditorComponent implements OnInit {
       this.productCatalog
         .getEditorById(this.id)
         .subscribe((editorData: ProductCatalogEditor) => {
+          console.log(editorData);
           this.editorData = editorData;
           this.updatedId = editorData.id;
           this.createdOn = editorData.created_on;
@@ -87,6 +98,9 @@ export class CreateEditorComponent implements OnInit {
           this.createEditor.patchValue({
             name: editorData.name,
             genearlInformation: editorData.general_information,
+            groupContract: editorData.groupContract,
+            address: editorData?.address,
+            countryCode: editorData?.country_code,
           });
 
           const vendorString: string[] = editorData.vendors.map((v) => {
@@ -131,6 +145,9 @@ export class CreateEditorComponent implements OnInit {
       this.createEditor.patchValue({
         name: this.data.name,
         genearlInformation: this.data.general_information,
+        groupContract: this.data.groupContract,
+        address: this.data?.address,
+        countryCode: this.data?.country_code,
       });
     }
   }
@@ -157,11 +174,34 @@ export class CreateEditorComponent implements OnInit {
       .map((x: any) => {
         return { name: x.trim() };
       });
+
     for (let i = 0; i < val.length; i++) {
       let x = val[i].date;
-      val[i].date = x ? new Date(x, 0, 1).toISOString() : null;
+      if (!x) {
+        val[i].date = null;
+      } else if (typeof x === 'string') {
+        if (x.indexOf('Z') !== x.length - 1) {
+          // Check if date is not already in ISO format
+          val[i].date = new Date(x).toISOString();
+        }
+        // If it's already in ISO format, leave it as is
+      } else if (typeof x === 'number') {
+        val[i].date = new Date(x, 0, 3).toISOString();
+      } else {
+        val[i].date = null;
+      }
     }
+
     this.createEditor.value.audits = val;
+
+    // const country = this.createEditor.get('countryCode').value;
+    // if (country) {
+    //   this.countryCodeVal = this.countries.find((c) => c.name === country).code;
+    //   this.textFieldValue = this.createEditor.get('address').value;
+    //   // Send the country code and text field value to the backend
+    // }
+    // this.createEditor.value.countryCode = this.countryCodeVal;
+    // this.createEditor.value.address = this.textFieldValue;
 
     this.createEditor.value.partner_managers =
       this.createEditor.value.partner_managers.filter(
@@ -196,7 +236,19 @@ export class CreateEditorComponent implements OnInit {
     let val = this.createEditor.value.audits;
     for (let i = 0; i < val.length; i++) {
       let x = val[i].date;
-      val[i].date = !!x ? new Date(x, 0, 1).toISOString() : null;
+      if (!x) {
+        val[i].date = null;
+      } else if (typeof x === 'string') {
+        if (x.indexOf('Z') !== x.length - 1) {
+          // Check if date is not already in ISO format
+          val[i].date = new Date(x).toISOString();
+        }
+        // If it's already in ISO format, leave it as is
+      } else if (typeof x === 'number') {
+        val[i].date = new Date(x, 0, 3).toISOString();
+      } else {
+        val[i].date = null;
+      }
     }
 
     const updatedObj = {
@@ -233,5 +285,19 @@ export class CreateEditorComponent implements OnInit {
 
   get partnerManagers(): FormArray {
     return this.createEditor.get('partner_managers') as FormArray;
+  }
+
+  private getCountries(): { code: string; name: string }[] {
+    const c = COUNTRY_CODES?.['default'];
+    return Object.keys(c).reduce(
+      (countries: { code: string; name: string }[], code: string) => {
+        countries.push({
+          code,
+          name: c[code],
+        });
+        return countries;
+      },
+      []
+    );
   }
 }

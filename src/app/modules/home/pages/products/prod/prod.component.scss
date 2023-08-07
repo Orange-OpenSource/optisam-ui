@@ -4,24 +4,24 @@
 }
 mat-menu-item {
   border: solid 1px #d1d8de !important;
-  width:260px !important;
-  height:41px !important;
+  width: 260px !important;
+  height: 41px !important;
   text-align: center !important;
 }
-  .mat-menu-item-checked {
-    background-color: #ffffff !important;
-    font-weight: bold !important;
+.mat-menu-item-checked {
+  background-color: #ffffff !important;
+  font-weight: bold !important;
 }
 
-  .mat-menu-item-toggle{
-    width:50% !important;
+.mat-menu-item-toggle {
+  width: 50% !important;
 }
 
 .mat-column-swidTag {
   word-wrap: break-word !important;
   white-space: unset !important;
   overflow-wrap: break-word;
-  word-wrap: break-word;    
+  word-wrap: break-word;
   word-break: break-word;
 }
 
@@ -30,11 +30,25 @@ mat-menu-item {
   width: 20% !important;
 }
 
-.mat-column-numOfApplications, .mat-column-numofEquipments, .mat-column-totalCost {
+.mat-column-numOfApplications,
+.mat-column-numofEquipments,
+.mat-column-totalCost {
   flex: 0 0 8% !important;
   width: 8% !important;
 }
 
+.mat-column-action {
+  flex: 0 0 60px;
+}
+
 .page-content-header {
-    padding-bottom: 10px;
+  padding-bottom: 10px;
+}
+
+.action-span {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
 }

@@ -68,7 +68,7 @@ export class ProdAplComponent implements OnInit {
     }
   }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
   RenderDataTable() {
     this.productservice
@@ -184,6 +184,7 @@ export class ProdAplComponent implements OnInit {
 
   advSearchTrigger(event) {
     this.searchFields = event;
+    this.current_page_num = 1;
     this.applyFilter();
   }
 

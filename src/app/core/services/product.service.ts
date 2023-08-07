@@ -1,6 +1,11 @@
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpErrorResponse,
+  HttpHeaders,
+  HttpParams,
+} from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, of, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import {
   Products,
@@ -15,7 +20,14 @@ import {
   AggregationProductsInformation,
   MetricComputationDetails,
   AggregationComputationDetails,
-} from './product';
+  Product,
+  ProductType,
+  UserCountDetailData,
+  ConcurrentUserHistoryParams,
+  ConcurrentUserHistoryResponse,
+  UploadedFilesParams,
+  UploadedFiles,
+} from '@core/modals';
 import { Applications } from './application';
 import {
   AcquiredRightsAggregation,
@@ -24,7 +36,6 @@ import {
   AcquiredRightAggregationBody,
 } from '../../modules/home/pages/acquiredrights/acquired-rights.modal';
 import {
-  AcquiredRightAggregationQuery,
   AcquiredRightsAggregationParams,
   AggregatedAcquiredRights,
   AggregationGetResponse,
@@ -34,15 +45,46 @@ import {
   ErrorResponse,
   GetAggregationParams,
   SuccessResponse,
-} from '@core/modals';
-import { CommonService } from './common.service';
-import { LOCAL_KEYS } from '@core/util/constants/constants';
-import { delay, catchError } from 'rxjs/operators';
-import {
-  AcquiredRights,
   AcquiredRightsIndividualParams,
   AcquiredRightsResponse,
-} from '@core/modals/acquired.rights.modal';
+  DashboardEditorListParams,
+  DashboardEditorListResponse,
+  ListProductQueryParams,
+  ProductListResponse,
+  NominativeUserProductBody,
+  NominativeUserListResponse,
+  NominativeUserListParams,
+  ConcurrentUserBody,
+  ConcurrentUserListResponse,
+  ConcurrentUserListParams,
+  SharedDataLicences,
+  SharedLicencesParams,
+  SharedLicencesUpdateParams,
+  SharedLicencesUpdateResponse,
+  SharedAggregationUpdateParams,
+  SharedAmountParams,
+  SharedAmount,
+  NominativeUsersExportParams,
+  ConcurrentUsersExportParams,
+} from '@core/modals';
+import { CommonService } from './common.service';
+import {
+  delay,
+  catchError,
+  debounceTime,
+  debounce,
+  takeLast,
+  throttleTime,
+} from 'rxjs/operators';
+import { LOCAL_KEYS } from '@core/util/constants/constants';
+import { fixErrorResponse } from '@core/util/common.functions';
+import { Expenditure } from './expenditure';
+import { GroupComplianceEditors } from './group-compliance-editor';
+import { GroupComplianceProducts } from './group-compliance-product';
+import {
+  ComplianceUnderUsage,
+  UnderUsageComplianceParams,
+} from './underusage-compliance';
 
 export interface CommonURL {
   acquiredRightAggregationAdmin: string;
@@ -51,7 +93,23 @@ export interface CommonURL {
   aggregation: string;
   aggregationEditors: string;
   aggregatedAcquiredRights: string;
+  productEditorList: string;
+  productEditorProducts: string;
+  nominativeUsers: string;
+  concurrentUsers: string;
+  acquiredRightsLicenses: string;
+  aggregationLicenses: string;
+  sharedAmount: string;
+  putAcquiredRightsLicenses: string;
+  nominativeUsersExport: string;
+  concurrentUsersExport: string;
+  concurrentUsersHistory: string;
   acquiredRightsEditors: string;
+  complianceSoftwareExpenditure: string;
+  groupComplianceEditors: string;
+  complianceProductList: string;
+  groupComplianceProducts: string;
+  uploadedNominativeFiles: string;
 }
 
 @Injectable()
@@ -64,6 +122,12 @@ export class ProductService {
     'Content-Type': 'application/json',
   });
   private aggregationData: BehaviorSubject<any> = new BehaviorSubject<any>({});
+  private costOptimization: BehaviorSubject<boolean> =
+    new BehaviorSubject<boolean>(false);
+  private userCountDetailData: BehaviorSubject<UserCountDetailData | null> =
+    new BehaviorSubject<UserCountDetailData | null>(null);
+
+  private groupComplianceSelectedEditor$: Subject<string> = new Subject();
 
   private URLs: CommonURL = {
     acquiredRightAggregationAdmin: `${this.apiUrl}/product/aggregated_acqrights`,
@@ -71,11 +135,27 @@ export class ProductService {
     aggregatedAcquiredRights: `${this.apiUrl}/product/aggregatedrights`,
     AcquiredRights: `${this.apiUrl}/product/acqrights`,
     aggregation: `${this.apiUrl}/product/aggregations`,
+    productEditorList: `${this.apiUrl}/product/editors`,
+    productEditorProducts: `${this.apiUrl}/product/editors/products`,
+    nominativeUsers: `${this.apiUrl}/product/nominative/users`,
+    concurrentUsers: `${this.apiUrl}/product/concurrent`,
+    nominativeUsersExport: `${this.apiUrl}/product/nominative/users/export`,
+    acquiredRightsLicenses: `${this.apiUrl}/product/acqrights/licenses`,
+    putAcquiredRightsLicenses: `${this.apiUrl}/product/licenses`,
+    aggregationLicenses: `${this.apiUrl}/product/aggrights/licenses`,
+    sharedAmount: `${this.apiUrl}/product/sharedamount`,
+    concurrentUsersExport: `${this.apiUrl}/product/concurrent/users/export`,
+    concurrentUsersHistory: `${this.apiUrl}/product/concurrent`,
     aggregationEditors: `${this.apiUrl}/product/aggregations/editors`,
     acquiredRightsEditors: `${this.apiUrl}/product/editors`,
+    complianceSoftwareExpenditure: `${this.apiUrl}/product/dashboard/compliance/soft_exp`,
+    groupComplianceEditors: `${this.apiUrl}/product/dashboard/groupcompliance/editor`,
+    complianceProductList: `${this.apiUrl}/product/dashboard/groupcompliance/editor/product`,
+    groupComplianceProducts: `${this.apiUrl}/product/dashboard/groupcompliance/product`,
+    uploadedNominativeFiles: `${this.apiUrl}/product/nominative/users/fileupload`,
   };
 
-  constructor(private http: HttpClient, private cs: CommonService) {}
+  constructor(private http: HttpClient, private cs: CommonService) { }
 
   getAggregationData(): Observable<any> {
     return this.aggregationData.asObservable();
@@ -83,6 +163,22 @@ export class ProductService {
 
   setAggregationData(data: any): void {
     this.aggregationData.next(data);
+  }
+
+  getUserCountDetailData(): Observable<UserCountDetailData> {
+    return this.userCountDetailData.asObservable();
+  }
+
+  setUserCountDetailsData(data: UserCountDetailData): void {
+    this.userCountDetailData.next(data);
+  }
+
+  setGroupComplianceSelectedEditor(editor: string): void {
+    this.groupComplianceSelectedEditor$.next(editor);
+  }
+
+  getGroupComplianceSelectedEditor(): Observable<string> {
+    return this.groupComplianceSelectedEditor$.asObservable();
   }
 
   getProducts(pageSize, length): Observable<Products[]> {
@@ -98,22 +194,35 @@ export class ProductService {
 
     return this.http.get<Products[]>(url);
   }
+
+  isCostOptimizationVisible(): Observable<boolean> {
+    return this.costOptimization.asObservable();
+  }
+
+  showCostOptimization(): void {
+    this.costOptimization.next(true);
+  }
+
+  hideCostOptimization(): void {
+    this.costOptimization.next(false);
+  }
+
   getMoreDetails(swidTag): Observable<Products[]> {
     return this.http.get<any>(
       this.apiUrl +
-        '/product/' +
-        swidTag +
-        '?scope=' +
-        localStorage.getItem('scope')
+      '/product/' +
+      swidTag +
+      '?scope=' +
+      localStorage.getItem('scope')
     );
   }
   getOptionsDetails(swidTag): Observable<any> {
     return this.http.get<any>(
       this.apiUrl +
-        '/product/' +
-        swidTag +
-        '/options?scope=' +
-        localStorage.getItem('scope')
+      '/product/' +
+      swidTag +
+      '/options?scope=' +
+      localStorage.getItem('scope')
     );
   }
   getAcquiredRightDetails(
@@ -124,20 +233,20 @@ export class ProductService {
     if (appID && appID != null) {
       return this.http.get<any>(
         this.apiLicenseUrl +
-          '/license/applications/' +
-          appID +
-          '/products/' +
-          swidTag +
-          '?scope=' +
-          localStorage.getItem('scope')
+        '/license/applications/' +
+        appID +
+        '/products/' +
+        swidTag +
+        '?scope=' +
+        localStorage.getItem('scope')
       );
     } else {
       return this.http.get<any>(
         this.apiLicenseUrl +
-          '/license/product/' +
-          swidTag +
-          '/acquiredrights?scope=' +
-          (scope ? scope : localStorage.getItem('scope'))
+        '/license/product/' +
+        swidTag +
+        '/acquiredrights?scope=' +
+        (scope ? scope : localStorage.getItem('scope'))
       );
     }
   }
@@ -148,7 +257,8 @@ export class ProductService {
     sort_order,
     filteringkey1,
     filteringkey2,
-    filteringkey3
+    filteringkey3,
+    filteringkey4
   ): Observable<Products[]> {
     let filteringCondition = '';
     if (filteringkey1 !== '' && filteringkey1 !== undefined) {
@@ -169,6 +279,12 @@ export class ProductService {
         filteringCondition +
         '&search_params.editor.filteringkey=' +
         filteringkey3;
+    }
+    if (filteringkey4 !== '' && filteringkey4 !== undefined) {
+      filteringCondition =
+        filteringCondition +
+        '&search_params.location.filteringkey=' +
+        filteringkey4;
     }
     if (sort_order === '') {
       sort_order = 'asc';
@@ -476,9 +592,19 @@ export class ProductService {
     return this.http.get<any>(url);
   }
 
-  getDashboardEditorList(query: any) {
-    const url = this.apiUrl + '/product/editors' + query;
-    return this.http.get<any>(url);
+  getDashboardEditorList(
+    query: DashboardEditorListParams
+  ): Observable<DashboardEditorListResponse | ErrorResponse> {
+    let params = new HttpParams();
+    for (let key in query) params = params.set(key, query[key]);
+    return this.http
+      .get<ErrorResponse | DashboardEditorListResponse>(
+        this.URLs.productEditorList,
+        { params }
+      )
+      .pipe(
+        catchError((e) => (e?.error ? throwError(e.error) : throwError(e)))
+      );
   }
 
   getEditorsList(
@@ -516,9 +642,19 @@ export class ProductService {
     return this.http.get<any>(url);
   }
 
-  getProductList(query: any) {
-    const url = this.apiUrl + '/product/editors/products' + query;
-    return this.http.get<any>(url);
+  getProductList(
+    query: ListProductQueryParams
+  ): Observable<ProductListResponse | ErrorResponse> {
+    let params = new HttpParams();
+    for (const key in query) params = params.set(key, query[key]);
+    return this.http
+      .get<ErrorResponse | ProductListResponse>(
+        this.URLs.productEditorProducts,
+        { params }
+      )
+      .pipe(
+        catchError((e) => (e?.error ? throwError(e.error) : throwError(e)))
+      );
   }
 
   getSimulationRights(query: any) {
@@ -536,16 +672,21 @@ export class ProductService {
 
   // Aggregation APIs
   getEditorListAggr(
-    scope: any
+    scopes: any
   ): Observable<{ editor: string[] } | ErrorResponse> {
-    let params = new HttpParams().set('scope', scope);
-    return this.http.get<{ editor: string[] } | ErrorResponse>(
-      this.URLs.aggregationEditors,
-      {
+    let params = new HttpParams();
+    params = params.set('scope', scopes);
+
+    return this.http
+      .get<{ editor: string[] } | ErrorResponse>(this.URLs.aggregationEditors, {
         headers: this.defaultHeaders,
         params,
-      }
-    );
+      })
+      .pipe(
+        catchError((e) => {
+          return e?.error ? throwError(e.error) : throwError(e);
+        })
+      );
   }
 
   getMetricListAggr(scope?: any) {
@@ -708,12 +849,11 @@ export class ProductService {
   }
 
   getAggregationAcquiredRights(
-    query: any
+    query: AcquiredRightsAggregationParams
   ): Observable<AggregatedAcquiredRights | ErrorResponse> {
     let params = new HttpParams();
-    for (let key of Object.keys(query)) {
-      params = params.set(key, query[key]);
-    }
+
+    for (let key in query) params = params.set(key, query[key]);
     return this.http.get<AggregatedAcquiredRights | ErrorResponse>(
       this.URLs.AggregationAcquiredRights,
       {
@@ -875,5 +1015,654 @@ export class ProductService {
         ***********/
         catchError((e) => (e?.error ? throwError(e.error) : throwError(e)))
       );
+  }
+
+  createNominativeUser(
+    body: NominativeUserProductBody
+  ): Observable<{ status: boolean } | ErrorResponse> {
+    return this.http
+      .post<{ status: boolean } | ErrorResponse>(
+        this.URLs.nominativeUsers,
+        body,
+        { headers: this.defaultHeaders }
+      )
+      .pipe(
+        catchError((e) => (e?.error ? throwError(e.error) : throwError(e)))
+      );
+  }
+
+  createConcurrentUer(body: ConcurrentUserBody): Observable<
+    | {
+      success: boolean;
+    }
+    | ErrorResponse
+  > {
+    return this.http
+      .post<
+        | {
+          success: boolean;
+        }
+        | ErrorResponse
+      >(this.URLs.concurrentUsers, body, { headers: this.defaultHeaders })
+      .pipe(
+        catchError((e) => (e?.error ? throwError(e.error) : throwError(e)))
+      );
+  }
+
+  updateNominativeUser(
+    body: NominativeUserProductBody
+  ): Observable<{ status: boolean } | ErrorResponse> {
+    return this.http
+      .post<{ status: boolean } | ErrorResponse>(
+        this.URLs.nominativeUsers,
+        body,
+        { headers: this.defaultHeaders }
+      )
+      .pipe(
+        catchError((e) => (e?.error ? throwError(e.error) : throwError(e)))
+      );
+  }
+
+  updateConcurrentUer(body: ConcurrentUserBody): Observable<
+    | ErrorResponse
+    | {
+      success: boolean;
+    }
+  > {
+    return this.http
+      .put<
+        | ErrorResponse
+        | {
+          success: boolean;
+        }
+      >(`${this.URLs.concurrentUsers}/${body.id}`, body)
+      .pipe(
+        catchError((e) => (e?.error ? throwError(e.error) : throwError(e)))
+      );
+  }
+
+  getNominativeUserList(
+    input: NominativeUserListParams
+  ): Observable<NominativeUserListResponse | ErrorResponse> {
+    let params = new HttpParams();
+    for (let key in input) params = params.set(key, input[key]);
+    return this.http
+      .get<ErrorResponse | NominativeUserListResponse>(
+        `${this.URLs.nominativeUsers}`,
+        {
+          params,
+        }
+      )
+      .pipe(
+        catchError((e) => (e?.error ? throwError(e.error) : throwError(e)))
+      );
+  }
+
+  getSharedAccquiredLicences(
+    input: SharedLicencesParams
+  ): Observable<SharedDataLicences | ErrorResponse> {
+    // return of<SharedDataLicences>({
+    //   "available_licenses": 80,
+    //   "shared_data": [
+    //     {
+    //       "scope": "AAK",
+    //       "shared_licenses": 10,
+    //       "recieved_licenses": 0
+    //     },
+    //   {
+    //       "scope": "AKA",
+    //       "shared_licenses": 20,
+    //       "recieved_licenses": 0
+    //     }
+    //   ],
+    //   "total_shared_licenses": 30,
+    //   "total_recieved_licenses": 0
+    // }).pipe(delay(3000))
+    console.log(input);
+    let params = new HttpParams();
+    for (let key in input) params = params.set(key, input[key]);
+    return this.http
+      .get<SharedDataLicences | ErrorResponse>(
+        `${this.URLs.acquiredRightsLicenses}`,
+        { params }
+      )
+      .pipe(
+        catchError((e) => (e?.error ? throwError(e.error) : throwError(e)))
+      );
+  }
+
+  putSharedAccquiredLicences(
+    input: SharedLicencesUpdateParams
+  ): Observable<SharedLicencesUpdateResponse | ErrorResponse> {
+    // return of<SharedLicencesUpdateResponse>({
+    //   success:true
+    // }).pipe(delay(2000))
+    return this.http
+      .put<SharedLicencesUpdateResponse | ErrorResponse>(
+        `${this.URLs.putAcquiredRightsLicenses}`,
+        input,
+        { headers: this.defaultHeaders }
+      )
+      .pipe(
+        catchError((e) => (e?.error ? throwError(e.error) : throwError(e)))
+      );
+  }
+
+  putSharedAggregationLicences(
+    input: SharedAggregationUpdateParams
+  ): Observable<SharedLicencesUpdateResponse | ErrorResponse> {
+    // return of<SharedLicencesUpdateResponse>({
+    //   success:true
+    // }).pipe(delay(2000))
+    return this.http
+      .put<SharedLicencesUpdateResponse | ErrorResponse>(
+        `${this.URLs.aggregationLicenses}`,
+        input,
+        { headers: this.defaultHeaders }
+      )
+      .pipe(
+        catchError((e) => (e?.error ? throwError(e.error) : throwError(e)))
+      );
+  }
+
+  getSharedAmount(
+    input: SharedAmountParams
+  ): Observable<SharedAmount | ErrorResponse> {
+    let params = new HttpParams();
+    for (let key in input) params = params.set(key, input[key]);
+    return this.http
+      .get<SharedAmount | ErrorResponse>(`${this.URLs.sharedAmount}`, {
+        params,
+      })
+      .pipe(
+        catchError((e) => (e?.error ? throwError(e.error) : throwError(e)))
+      );
+  }
+
+  deleteNominativeUser(
+    id: number
+  ): Observable<{ success: boolean } | ErrorResponse> {
+    let params = new HttpParams().set(
+      'scope',
+      this.cs.getLocalData(LOCAL_KEYS.SCOPE)
+    );
+    return this.http
+      .delete<{ success: boolean } | ErrorResponse>(
+        `${this.URLs.nominativeUsers}/${id}`,
+        { params }
+      )
+      .pipe(
+        catchError((e) => (e?.error ? throwError(e.error) : throwError(e)))
+      );
+  }
+
+  getConcurrentUserList(
+    body: ConcurrentUserListParams
+  ): Observable<ConcurrentUserListResponse | ErrorResponse> {
+    let params = new HttpParams();
+    for (const key in body) params = params.set(key, body[key]);
+    // return of<ConcurrentUserListResponse>({
+    //   totalRecords: 1,
+    //   concurrent_user: [
+    //     {
+    //       product_name: 'testing',
+    //       aggregation_name: 'testing',
+    //       product_version: 'testing',
+    //       team: 'testing',
+    //       profile_user: 'testing',
+    //       number_of_users: 3,
+    //       purchase_date: '2022-11-29T05:16:00.168Z',
+    //       aggregation_id: 0,
+    //       id: 0,
+    //       is_aggregation: false,
+    //     },
+    //     {
+    //       product_name: 'testing',
+    //       aggregation_name: 'testing',
+    //       product_version: 'testing',
+    //       team: 'testing',
+    //       profile_user: 'testing',
+    //       number_of_users: 3,
+    //       purchase_date: '2022-11-29T05:16:00.168Z',
+    //       aggregation_id: 0,
+    //       id: 0,
+    //       is_aggregation: true,
+    //     },
+    //   ],
+    // });
+    return this.http
+      .get<ConcurrentUserListResponse>(this.URLs.concurrentUsers, { params })
+      .pipe(
+        catchError((e) => (e?.error ? throwError(e.error) : throwError(e)))
+      );
+  }
+
+  deleteConcurrentUserProduct(
+    id: number,
+    scope: string
+  ): Observable<{ success: boolean } | ErrorResponse> {
+    let params: HttpParams = new HttpParams().set('scope', scope);
+    return this.http
+      .delete<{ success: boolean }>(`${this.URLs.concurrentUsers}/${id}`, {
+        params,
+      })
+      .pipe(
+        catchError((e) => (e?.error ? throwError(e.error) : throwError(e)))
+      );
+  }
+
+  getNominativeUserExport(
+    inputs: NominativeUsersExportParams
+  ): Observable<NominativeUserListResponse | ErrorResponse> {
+    let params = new HttpParams();
+    for (let key in inputs) params = params.set(key, inputs[key]);
+
+    // return of<NominativeUserListResponse>({
+    //   totalRecords: 2,
+    //   nominative_user: [
+    //     {
+    //       product_name: 'product 1',
+    //       aggregation_name: '',
+    //       product_version: '1.2.12',
+    //       user_name: 'test username',
+    //       first_name: 'test user',
+    //       user_email: 'test@emial.com',
+    //       profile: 'test profile',
+    //       activation_date: '2022-10-18T23:21:50.660Z',
+    //       aggregation_id: 0,
+    //       id: 23,
+    //     },
+    //     {
+    //       product_name: '',
+    //       aggregation_name: 'test',
+    //       product_version: '2.3',
+    //       user_name: 'vivek',
+    //       first_name: 'vivek',
+    //       user_email: 'viv@email.com',
+    //       profile: 'test profile',
+    //       activation_date: '2022-11-29T02:48:28.782Z',
+    //       aggregation_id: 22,
+    //       id: 0,
+    //     },
+    //   ],
+    // });
+
+    return this.http
+      .get<ErrorResponse | NominativeUserListResponse>(
+        this.URLs.nominativeUsersExport,
+        { params }
+      )
+      .pipe(
+        catchError((e) => (e?.error ? throwError(e.error) : throwError(e)))
+      );
+  }
+
+  getConcurrentUserExport(
+    inputs: ConcurrentUsersExportParams
+  ): Observable<ConcurrentUserListResponse | ErrorResponse> {
+    let params = new HttpParams();
+    for (let key in inputs) params = params.set(key, inputs[key]);
+
+    return this.http
+      .get<ErrorResponse | ConcurrentUserListResponse>(
+        this.URLs.concurrentUsersExport,
+        { params }
+      )
+      .pipe(
+        catchError((e) => (e?.error ? throwError(e.error) : throwError(e)))
+      );
+  }
+
+  getConcurrentUsersHistory(
+    inputs: ConcurrentUserHistoryParams
+  ): Observable<ErrorResponse | ConcurrentUserHistoryResponse> {
+    // return of({
+    //   concurrentUsersByDays: [],
+    //   concurrentUsersByMonths: [
+    //     {
+    //       purchase_month: 'February 2023',
+    //       councurrent_users: 10,
+    //     },
+    //     {
+    //       purchase_month: 'January 2023',
+    //       councurrent_users: 34,
+    //     },
+    //     {
+    //       purchase_month: 'December 2022',
+    //       councurrent_users: 74,
+    //     },
+    //     {
+    //       purchase_month: 'November 2022',
+    //       councurrent_users: 36,
+    //     },
+    //     {
+    //       purchase_month: 'October 2022',
+    //       councurrent_users: 44,
+    //     },
+    //     {
+    //       purchase_month: 'September 2022',
+    //       councurrent_users: 95,
+    //     },
+    //     {
+    //       purchase_month: 'August 2022',
+    //       councurrent_users: 46,
+    //     },
+    //     {
+    //       purchase_month: 'July 2022',
+    //       councurrent_users: 56,
+    //     },
+    //     {
+    //       purchase_month: 'June 2022',
+    //       councurrent_users: 28,
+    //     },
+    //     {
+    //       purchase_month: 'May 2022',
+    //       councurrent_users: 85,
+    //     },
+    //     {
+    //       purchase_month: 'April 2022',
+    //       councurrent_users: 74,
+    //     },
+    //     {
+    //       purchase_month: 'March 2022',
+    //       councurrent_users: 91,
+    //     },
+    //   ],
+    // });
+
+    let params = new HttpParams();
+    for (let key in inputs)
+      if (key !== 'scope') params = params.set(key, inputs[key]);
+    return this.http
+      .get<ErrorResponse | ConcurrentUserHistoryResponse>(
+        `${this.URLs.concurrentUsersHistory}/${inputs.scope}`,
+        { params }
+      )
+      .pipe(catchError(fixErrorResponse));
+  }
+
+  getSoftwareExpenditure(scopes: any): Observable<ErrorResponse | Expenditure> {
+    let params = new HttpParams();
+    if (Array.isArray(scopes) && scopes.length)
+      for (let scope of scopes) {
+        params = params.append('scope', scope);
+      };
+    return this.http
+      .get<ErrorResponse | Expenditure>(
+        this.URLs.complianceSoftwareExpenditure,
+        { params }
+      )
+      .pipe(catchError(fixErrorResponse));
+  }
+
+  //new APIS
+  getGroupComplianceByEditors(
+    scopes: any,
+    editor: string
+  ): Observable<ErrorResponse | GroupComplianceEditors> {
+    // if(editor == 'Oracle'){
+    //   return of<GroupComplianceEditors>({
+    //     costs: {
+    //       groupCounterFeitingCost: 5000,
+    //       groupUnderUsageCost: 8000,
+    //       groupTotalCost: 13000,
+    //       counterFeiting: [{
+    //         scope: 'AAK',
+    //         cost: 2500,
+    //       }, {
+    //         scope: 'BAK',
+    //         cost: 1200,
+    //       }, {
+    //         scope: 'BUG',
+    //         cost: 1300,
+    //       }],
+    //       underUsage: [{
+    //         scope: 'AAK',
+    //         cost: 3500,
+    //       }, {
+    //         scope: 'BAK',
+    //         cost: 1500,
+    //       }, {
+    //         scope: 'BUG',
+    //         cost: 3000,
+    //       }],
+    //       total: [{
+    //         scope: 'AAK',
+    //         cost: 6000,
+    //       }, {
+    //         scope: 'BAK',
+    //         cost: 2700,
+    //       }, {
+    //         scope: 'BUG',
+    //         cost: 4300,
+    //       }]
+    //     }
+    //   })
+    // }else{
+    //   return of<GroupComplianceEditors>({
+    //     costs: {
+    //       groupCounterFeitingCost: 2500,
+    //       groupUnderUsageCost: 4500,
+    //       groupTotalCost: 7000,
+    //       counterFeiting: [ {
+    //         scope: 'OJO',
+    //         cost: 1200,
+    //       }, {
+    //         scope: 'OFR',
+    //         cost: 1300,
+    //       }],
+    //       underUsage: [ {
+    //         scope: 'OJO',
+    //         cost: 1500,
+    //       }, {
+    //         scope: 'OFR',
+    //         cost: 3000,
+    //       }],
+    //       total: [ {
+    //         scope: 'OJO',
+    //         cost: 2700,
+    //       }, {
+    //         scope: 'OFR',
+    //         cost: 4300,
+    //       }]
+    //     }
+    //   })
+    // }
+
+    // const obj: any = {
+    //   scopes: scopes,
+    //   editor: editor,
+    // };
+
+    // let params = new HttpParams();
+    // // params.set('scopes', scopes); // can not add array as a value
+    // // params.set('editor', editor);
+    // for (let key in obj) {
+    //   params = params.set(key, obj[key]);
+    // }
+    let params = new HttpParams();
+    for (let scope of scopes) {
+      params = params.append('scopes', scope);
+    }
+    params = params.set('editor', editor);
+
+    return this.http
+      .get<ErrorResponse | GroupComplianceEditors>(
+        this.URLs.groupComplianceEditors,
+        { params }
+      )
+      .pipe(catchError(fixErrorResponse));
+  }
+
+  getProductsList(
+    scopes: any,
+    editor: string
+  ): Observable<ErrorResponse | { products: string[] }> {
+    // if (editor == 'Oracle') {
+    //   return of<{ products: string[] }>({
+    //     products: ['OracleProduct1', 'OracleProduct2'],
+    //   });
+    // } else {
+    //   return of<{ products: string[] }>({
+    //     products: ['MicrosoftProduct1', 'MicrosoftProduct2'],
+    //   });
+    // }
+
+    // const obj: any = {
+    //   scopes: scopes,
+    //   editor: editor,
+    // };
+    // let params = new HttpParams();
+    // // params.set('scopes', scopes); // can not add array as a value
+    // // params.set('editor', editor);
+    // for (let key in obj) {
+    //   params = params.set(key, obj[key]);
+    // }
+    let params = new HttpParams();
+    for (let scope of scopes) {
+      params = params.append('scopes', scope);
+    }
+    params = params.set('editor', editor);
+    return this.http
+      .get<ErrorResponse | { products: string[] }>(
+        this.URLs.complianceProductList,
+        { params }
+      )
+      .pipe(catchError(fixErrorResponse));
+  }
+
+  getGroupComplianceByProducts(
+    scopes: any,
+    editor: string,
+    product: string
+  ): Observable<ErrorResponse | GroupComplianceProducts> {
+    // if (product.includes('1')) {
+    //   return of<GroupComplianceProducts>({
+    //     licences: [
+    //       {
+    //         scope: 'AAK',
+    //         computed_licences: 500,
+    //         acquired_licences: 800,
+    //       },
+    //       {
+    //         scope: 'BUG',
+    //         computed_licences: 400,
+    //         acquired_licences: 1000,
+    //       },
+    //       {
+    //         scope: 'OFR',
+    //         computed_licences: 650,
+    //         acquired_licences: 990,
+    //       },
+    //     ],
+    //     cost: [
+    //       {
+    //         scope: 'AAK',
+    //         underusage_cost: 1200,
+    //         counterfeiting_cost: 2100,
+    //         total_cost: 3300,
+    //       },
+    //       {
+    //         scope: 'BUG',
+    //         underusage_cost: 700,
+    //         counterfeiting_cost: 1500,
+    //         total_cost: 2200,
+    //       },
+    //       {
+    //         scope: 'OFR',
+    //         underusage_cost: 1600,
+    //         counterfeiting_cost: 2800,
+    //         total_cost: 4400,
+    //       },
+    //     ],
+    //   });
+    // } else {
+    //   return of<GroupComplianceProducts>({
+    //     licences: [
+    //       {
+    //         scope: 'OJO',
+    //         computed_licences: 500,
+    //         acquired_licences: 800,
+    //       },
+    //       {
+    //         scope: 'BAK',
+    //         computed_licences: 800,
+    //         acquired_licences: 1100,
+    //       },
+    //     ],
+    //     cost: [
+    //       {
+    //         scope: 'OJO',
+    //         underusage_cost: 2200,
+    //         counterfeiting_cost: 2100,
+    //         total_cost: 4300,
+    //       },
+    //       {
+    //         scope: 'BAK',
+    //         underusage_cost: 1700,
+    //         counterfeiting_cost: 1500,
+    //         total_cost: 3200,
+    //       },
+    //     ],
+    //   });
+    // }
+    // let params = new HttpParams();
+    // // params.set('scopes', scopes); // can not add array as a value using any
+    // // params.set('editor', editor);
+    // // params.set('product_name', product);
+    // const obj = {
+    //   scopes: scopes,
+    //   editor: editor,
+    //   product_name: product,
+    // };
+    // for (let key in obj) {
+    //   params = params.set(key, obj[key]);
+    // }
+    let params = new HttpParams();
+    for (let scope of scopes) {
+      params = params.append('scopes', scope);
+    }
+    params = params.set('editor', editor);
+    params = params.set('product_name', product);
+    return this.http
+      .get<ErrorResponse | GroupComplianceProducts>(
+        this.URLs.groupComplianceProducts,
+        { params }
+      )
+      .pipe(catchError(fixErrorResponse));
+  }
+
+  getUnderUsageCompliance(
+    underUsage: UnderUsageComplianceParams
+  ): Observable<ErrorResponse | ComplianceUnderUsage> {
+    let params = new HttpParams();
+    for (const key in underUsage) {
+      if (key === 'scopes') {
+        if (Array.isArray(underUsage[key])) {
+          for (let scope of underUsage[key]) {
+            params = params.append(key, scope);
+          }
+        }
+        continue;
+      }
+
+      params = params.append(key, underUsage[key]);
+    }
+    return this.http.get<ErrorResponse | ComplianceUnderUsage>(
+      this.apiUrl + '/product/dashboard/underusage',
+      { params }
+    );
+  }
+
+  getUploadedFiles(
+    input: UploadedFilesParams
+  ): Observable<UploadedFiles | ErrorResponse> {
+    let params: HttpParams = new HttpParams();
+    for (let key in input) params = params.set(key, input[key]);
+    return this.http
+      .get<UploadedFiles | ErrorResponse>(this.URLs.uploadedNominativeFiles, {
+        params,
+      })
+      .pipe(catchError(fixErrorResponse));
   }
 }

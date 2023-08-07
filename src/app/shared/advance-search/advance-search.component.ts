@@ -1,3 +1,5 @@
+import { SelectionChange } from '@angular/cdk/collections';
+import { AdvanceSearchFieldSelect } from './../../core/modals/common.modal';
 import {
   Component,
   OnInit,
@@ -17,11 +19,24 @@ import { SharedService } from '../shared.service';
 import { Subscription } from 'rxjs';
 import { AdvanceSearchField, AdvanceSearchModel } from '@core/modals';
 import { ISOFormat } from '@core/util/common.functions';
+import { MAT_DATE_FORMATS } from '@angular/material/core';
 
+export const MY_FORMATS = {
+  parse: {
+    dateInput: 'DD/MM/YYYY',
+  },
+  display: {
+    dateInput: 'MM/DD/YYYY',
+    monthYearLabel: 'MMM YYYY',
+    dateA11yLabel: 'LL',
+    monthYearA11yLabel: 'MMMM YYYY',
+  },
+};
 @Component({
   selector: 'app-advance-search',
   templateUrl: './advance-search.component.html',
   styleUrls: ['./advance-search.component.scss'],
+  providers: [{ provide: MAT_DATE_FORMATS, useValue: MY_FORMATS }],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AdvanceSearchComponent
@@ -39,8 +54,10 @@ export class AdvanceSearchComponent
   enableSearch: Boolean;
   enableReset: boolean;
   hideToggleFlag: Boolean;
-  customDateClass: string = 'advance_search_date';
-  labels: AdvanceSearchField[] = [];
+  customFocusClass: string = 'focus-out-class-selector';
+  labels: Array<AdvanceSearchField | AdvanceSearchFieldSelect> = [];
+  selectionChanged: boolean = false;
+  touched: boolean = false;
 
   constructor(
     public sharedService: SharedService,
@@ -61,6 +78,7 @@ export class AdvanceSearchComponent
     // console.log(this.model)
     this.model.other.map((model) => {
       model.type = model?.type || 'text';
+      model.show = model?.show === undefined ? true : model?.show;
       return model;
     });
     this.model.translate = this.model?.translate !== false ? true : false;
@@ -75,6 +93,7 @@ export class AdvanceSearchComponent
       ? this.existingFilterFields[this.model.primary]
       : this.filterFields[this.model.primary];
     this.model.other.forEach((element) => {
+      if (!element?.show) return; // filter removed that has property show == false;
       this.filterFields[element.key] = this.existingFilterFields?.[element.key]
         ? this.existingFilterFields[element.key]
         : this.filterFields[element.key];
@@ -82,8 +101,12 @@ export class AdvanceSearchComponent
     this.onFocusOut();
   }
 
+  changeSelection(event, key): void {
+    // this.applyFilter();
+  }
+
   get isResetDisable(): boolean {
-    return !Object.values(this.filterFields).some((f) => !!f);
+    return !Object.values(this.filterFields).some((f) => !!f) && !this.touched;
   }
 
   getlabels(): void {
@@ -91,21 +114,24 @@ export class AdvanceSearchComponent
     for (const key in this.filterFields) {
       if (this.filterFields[key])
         this.labels.push(
-          this.model.other.find((f: AdvanceSearchField) => f.key === key)
+          this.model.other.find(
+            (f: AdvanceSearchField | AdvanceSearchFieldSelect) => f.key === key
+          )
         );
     }
   }
 
   focusout(ev) {
     if (ev.relatedTarget) {
-      console.log(ev.relatedTarget);
+      console.log(ev.relatedTarget.closest(`.${this.customFocusClass}`));
       if (
         ev.relatedTarget.id === 'toggleKeyUp' ||
         ev.relatedTarget.className.indexOf('advanceChild') !== -1 ||
         ev.relatedTarget.className.indexOf('advance-search') !== -1 ||
         ev.relatedTarget
-          .closest('mat-calendar')
-          ?.classList.contains(this.customDateClass) ||
+          .closest('mat-calendar, .mat-select')
+          ?.classList.contains(this.customFocusClass) ||
+        ev.relatedTarget.closest(`.${this.customFocusClass}`) ||
         !!ev.relatedTarget.closest('mat-datepicker-toggle')
       ) {
         return;
@@ -137,11 +163,12 @@ export class AdvanceSearchComponent
   openAdvanceSearch() {
     this.initForm();
     this.toggleAdvanceSearch = !this.toggleAdvanceSearch;
+    this.touched = false;
   }
 
   applyFilter() {
     const dateFields = this.model.other
-      .filter((m) => m.type === 'date')
+      .filter((m) => m.type === 'date' && m.show)
       .map((f) => f.key);
     dateFields.forEach((d) => {
       this.filterFields[d] = !!this.filterFields[d]

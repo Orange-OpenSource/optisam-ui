@@ -8,12 +8,11 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { group } from '@angular/animations';
 
 describe('EditGrpNameComponent', () => {
   let component: EditGrpNameComponent;
   let fixture: ComponentFixture<EditGrpNameComponent>;
-  let editNode = { 'name': 'group1', 'fully_qualified_name': 'Parent.Child' };
+  let editNode = { name: 'group1', fully_qualified_name: 'Parent.Child' };
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [EditGrpNameComponent],
@@ -23,13 +22,10 @@ describe('EditGrpNameComponent', () => {
         HttpClientTestingModule,
         BrowserAnimationsModule,
         ReactiveFormsModule,
-        TranslateModule.forRoot()
+        TranslateModule.forRoot(),
       ],
-      providers: [
-        { provide: MAT_DIALOG_DATA, useValue: {} }
-      ]
-    })
-      .compileComponents();
+      providers: [{ provide: MAT_DIALOG_DATA, useValue: {} }],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -42,60 +38,69 @@ describe('EditGrpNameComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it("page heading should be fully qualified name", () => {
-    component.data = editNode;
-    component.group.fully_qualified_name = 'Parent.Child';
+  it('page heading should be fully qualified name', () => {
+    component.data.item = editNode;
     component.ngOnInit();
+    component.group.fully_qualified_name = 'Parent.Child';
     fixture.detectChanges();
-    const viewScopesHeading = fixture.nativeElement.querySelector('.mat-card-title');
+    const viewScopesHeading =
+      fixture.nativeElement.querySelector('.mat-card-title');
     expect(viewScopesHeading.innerText).toContain('Parent.Child');
     expect(viewScopesHeading.innerText).toContain('Edit Group');
-  })
+  });
 
-  it("root field pre-poulated with existing value should be enabled for the user to edit", () => {
-    component.data = editNode;
-    component.group.name = 'group1';
+  it('root field pre-poulated with existing value should be enabled for the user to edit', () => {
+    component.data.item = editNode;
     component.ngOnInit();
+    component.group.name = 'group1';
     fixture.detectChanges();
     const name = fixture.nativeElement.querySelector('input#name');
     expect(name.disabled).toBeFalsy();
     expect(component.name.value).toBe('group1');
-  })
+  });
 
-  it("reset button should remain disabled if group name is not modified", () => {
-    component.data = editNode;
+  it('reset button should remain disabled if group name is not modified', () => {
+    component.data.item = editNode;
     component.ngOnInit();
     fixture.detectChanges();
-    const resetButton = fixture.nativeElement.querySelector('button#resetButton');
+    const resetButton =
+      fixture.nativeElement.querySelector('button#resetButton');
     expect(resetButton.disabled).toBeTruthy();
-  })
+  });
 
-  it("reset button should be enabled if group name is modified", () => {
-    component.data = editNode;
+  it('reset button should be enabled if group name is modified', () => {
+    component.data.item = editNode;
+    component.ngOnInit();
     component.group.name = 'group1';
-    component.ngOnInit();
     component.name.setValue('groupNew');
     component.name.markAsDirty();
     fixture.detectChanges();
-    const resetButton = fixture.nativeElement.querySelector('button#resetButton');
+    const resetButton =
+      fixture.nativeElement.querySelector('button#resetButton');
     expect(resetButton.disabled).toBeFalsy();
-  })
+  });
 
-  it("save button should remain disabled if group name is not modified", () => {
-    component.data = editNode;
+  it('save button should remain disabled if group name is not modified', () => {
+    component.data.item = editNode;
     component.ngOnInit();
     fixture.detectChanges();
-    const updateButton = fixture.nativeElement.querySelector('button#updateButton');
+    const updateButton = fixture.nativeElement.querySelector(
+      'button#updateButton'
+    );
     expect(updateButton.disabled).toBeTruthy();
-  })
+  });
 
-  it("save button should be enabled if group name is modified", () => {
-    component.data = editNode;
+  it('save button should be enabled if group name is modified', () => {
+    component.data.item = editNode;
     component.ngOnInit();
     component.name.setValue('groupNew');
+    component.groupCompliance.setValue(true);
+    component.scopes.setValue(['abc', 'bcd']);
     component.name.markAsDirty();
     fixture.detectChanges();
-    const updateButton = fixture.nativeElement.querySelector('button#updateButton');
+    const updateButton = fixture.nativeElement.querySelector(
+      'button#updateButton'
+    );
     expect(updateButton.disabled).toBeFalsy();
-  })
+  });
 });

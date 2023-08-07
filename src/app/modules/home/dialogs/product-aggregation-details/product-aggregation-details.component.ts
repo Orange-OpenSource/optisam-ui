@@ -11,6 +11,13 @@ import {
   trigger,
 } from '@angular/animations';
 import { MatTableDataSource } from '@angular/material/table';
+import {
+  AcquiredRightsAggregationParams,
+  AggregatedAcquiredRights,
+  Aggregation,
+} from '@core/modals';
+import { CommonService } from '@core/services';
+import { LOCAL_KEYS } from '@core/util/constants/constants';
 
 type AlertColor = {
   green: string;
@@ -41,7 +48,7 @@ export class ProductAggregationDetailsComponent implements OnInit, OnDestroy {
   edition: any;
   acquireRight: any;
   productdetails: any;
-  aggregationOptions: any;
+  aggregationMaintenance: Aggregation = null;
   loadingSubscription: Subscription;
   _loading: Boolean;
   expandedRow: any;
@@ -53,7 +60,10 @@ export class ProductAggregationDetailsComponent implements OnInit, OnDestroy {
     'metric',
     'numCptLicences',
     'computedDetails',
-    'numAcqLicences',
+    // 'numAcqLicences',
+    'availableLicences',
+    // 'sharedLicences',
+    // 'recievedLicences',
     'deltaNumber',
     'deltaCost',
     'totalCost',
@@ -65,7 +75,10 @@ export class ProductAggregationDetailsComponent implements OnInit, OnDestroy {
     metric_name: 'Metric',
     numCptLicences: 'Computed licenses',
     computedDetails: 'Computation details',
-    numAcqLicences: 'Acquired Licenses',
+    // numAcqLicences: 'Acquired Licenses',
+    availableLicences: 'Available Licenses',
+    // sharedLicences:"Shared Licenses",
+    // recievedLicences:"Received Licenses",
     deltaNumber: 'Delta (licenses)',
     deltaCost: 'Delta Cost',
     totalCost: 'Total Cost',
@@ -87,7 +100,8 @@ export class ProductAggregationDetailsComponent implements OnInit, OnDestroy {
     private productsService: ProductService,
     private sharedService: SharedService,
     public dialogRef: MatDialogRef<ProductAggregationDetailsComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    private cs: CommonService
   ) {
     this.loadingSubscription = this.sharedService
       .httpLoading()
@@ -98,7 +112,6 @@ export class ProductAggregationDetailsComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.getDetails();
-    this.getOptionDetails();
     this.getAcquiredRights();
   }
 
@@ -120,23 +133,30 @@ export class ProductAggregationDetailsComponent implements OnInit, OnDestroy {
       );
   }
 
-  // Get aggregation options
-  getOptionDetails() {
+  // Get aggregation Maintenance
+  getMaintenanceDetails() {
     this._loading = true;
-    this.productsService
-      .getAggregationOptions(this.data.aggregationID)
-      .subscribe(
-        (res: any) => {
-          this.aggregationOptions = res;
-          this._loading = false;
-        },
-        (error) => {
-          this._loading = false;
-          console.log(
-            'There was an error while retrieving Posts !!!' + error.message
-          );
-        }
-      );
+    const params: AcquiredRightsAggregationParams = {
+      page_num: 1,
+      page_size: 100,
+      sort_order: 'asc',
+      scope: this.cs.getLocalData(LOCAL_KEYS.SCOPE),
+      'search_params.name.filteringkey': this.data.aggregationName,
+      // 'search_params.SKU.filteringkey': this.data.aggregationSKU,
+    };
+
+    this.productsService.getAggregationAcquiredRights(params).subscribe(
+      ({ aggregations }: AggregatedAcquiredRights) => {
+        this.aggregationMaintenance = aggregations[0];
+        this._loading = false;
+      },
+      (error) => {
+        this._loading = false;
+        console.log(
+          'There was an error while retrieving Posts !!!' + error.message
+        );
+      }
+    );
   }
 
   get hasCompliance(): boolean {

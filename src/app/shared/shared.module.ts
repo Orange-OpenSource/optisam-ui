@@ -15,9 +15,19 @@ import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { PERFECT_SCROLLBAR_CONFIG } from 'ngx-perfect-scrollbar';
 import { FloorPipe } from '@home/pages/acquiredrights/pipes/floor.pipe';
 import { PerfectScrollbarConfigInterface } from 'ngx-perfect-scrollbar';
+import { SimpleConfirmationComponent } from './dialog/simple-confirmation/simple-confirmation.component';
+import { CommonPopupComponent } from './dialog/common-popup/common-popup.component';
+import { ToSeparateLinePipe } from './pipes/to-separate-line.pipe';
+import { AbsPipe } from './pipes/abs.pipe';
+import { IsSaasPipe } from './pipes/is-saas.pipe';
 import { SuccessDialogComponent } from './success-dialog/success-dialog.component';
 import { ErrorDialogComponent } from './error-dialog/error-dialog.component';
 import { AuditLastYearOnlyPipe } from './common-pipes/audit-last-year-only.pipe';
+import { TrimTextPipe } from './common-pipes/trim-text.pipe';
+import { CountryNameFromCodePipe } from './common-pipes/country-name-from-code.pipe';
+import { CompanyIconPipe } from './common-pipes/company-icon.pipe';
+import { TakeFirstPipe } from './common-pipes/take-first.pipe';
+import { RestScopeCountPipe } from './common-pipes/rest-scope-count.pipe';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true,
@@ -32,11 +42,34 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     FormatCostPipe,
     FormatShortdatePipe,
     FloorPipe,
+    SimpleConfirmationComponent,
+    CommonPopupComponent,
+    ToSeparateLinePipe,
+    AbsPipe,
+    IsSaasPipe,
     SuccessDialogComponent,
     ErrorDialogComponent,
     AuditLastYearOnlyPipe,
+    TrimTextPipe,
+    CountryNameFromCodePipe,
+    CompanyIconPipe,
+    TakeFirstPipe,
+    RestScopeCountPipe,
+    SimpleConfirmationComponent,
+    CommonPopupComponent,
+    ToSeparateLinePipe,
+    AbsPipe,
+    IsSaasPipe,
+    SuccessDialogComponent,
+    ErrorDialogComponent,
+    AuditLastYearOnlyPipe,
+    CountryNameFromCodePipe,
+    CompanyIconPipe,
+    TakeFirstPipe,
+    RestScopeCountPipe,
   ],
   exports: [
+    TrimTextPipe,
     FilterItemDirective,
     LoadingSpinnerComponent,
     AdvanceSearchComponent,
@@ -45,13 +78,23 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     FloorPipe,
     FlexLayoutModule,
     PerfectScrollbarModule,
+    SimpleConfirmationComponent,
+    CommonPopupComponent,
+    ToSeparateLinePipe,
+    AbsPipe,
+    IsSaasPipe,
     TranslateModule,
     ReactiveFormsModule,
     CustomMaterialModule,
     SuccessDialogComponent,
     ErrorDialogComponent,
     AuditLastYearOnlyPipe,
+    CountryNameFromCodePipe,
+    CompanyIconPipe,
+    TakeFirstPipe,
+    RestScopeCountPipe,
   ],
+
   imports: [
     CommonModule,
     TranslateModule,
@@ -68,4 +111,4 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     },
   ],
 })
-export class SharedModule {}
+export class SharedModule { }

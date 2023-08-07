@@ -7,30 +7,32 @@ You can see your products :
 - One by one ([individually](#individually))  
 - By group ([aggregation of products](#aggregations))  
 
-The list of products is ordered alphabetically.
-
 ## Individually
 
-![select APM](../../../img/exploring/structure/productsu.jpg){: .zoom}
+![select APM](../../../img/exploring/structure/products.jpg){: .zoom}
 
 You can see all of the attributes :  
+<!--
 - SWIDtag : The identifier of the product.   
-**SWIDtag is generate from the product name, its version and its editor name. The format is "prdoductName_editorName_version"**      
-- Product name : The name of the product.  
+**SWIDtag is generate from the product name, its version and its editor name. The format is "prdoductName_editorName_version"**    
+-->  
+- Product name : The name of the product
+- Version : The version of the product
 - Editor name : The name of the product's editor     
-**"_" is not allowed in product name and version neither in the editor name**   
-- Release : The version of the product  
+**"_" is not allowed in product name and version neither in the editor name** 
+- Location : On premise or Saas  
 - Edition : The edition of the product  
 - Total cost (€) : The total cost of the product with all the licences and maintenance costs  
-- Application count and Equipment count : The number of applications and equipments related to the product, you can click it to have a list
+- Users count : The number of users
+- Application count and Equipment count : The number of applications and equipments related to the product, you can click on it to have a list
 
 ## Aggregations
 
 An aggregation is a group of product. Aggregations are created by the administrator (see [here](../../../managing/aggregationsManagement)).  
 
-![select APM](../../../img/exploring/structure/productsAggu.jpg){: .zoom}
+![select APM](../../../img/exploring/structure/productsAgg.jpg){: .zoom}
 
-You can find the same attributes but the counts and the cost will represent the total number corresponding to all the products in the aggregations.
+You can find the almost the same attributes but the counts and the cost will represent the total number corresponding to all the products in the aggregations.
 
 ## Further details
 

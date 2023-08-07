@@ -2,12 +2,15 @@ import { Component, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { SharedService } from 'src/app/shared/shared.service';
 import { ProductService } from 'src/app/core/services/product.service';
-import { MetricSimulationRequest } from 'src/app/core/services/product';
 import { MetricService } from 'src/app/core/services/metric.service';
 import {
   AggregationGetResponse,
   AggregationSingle,
+  ErrorResponse,
   GetAggregationParams,
+  ListProductQueryParams,
+  MetricSimulationRequest,
+  ProductListResponse,
 } from '@core/modals';
 import { LOCAL_KEYS } from '@core/util/constants/constants';
 import { MatTableDataSource } from '@angular/material/table';
@@ -108,8 +111,8 @@ export class ProductSimulationComponent implements OnInit {
       if (this.simulateObj.product) {
         option.name + ' - ' + option.swidTag ===
           this.simulateObj.product.name +
-            ' - ' +
-            this.simulateObj.product.swidTag;
+          ' - ' +
+          this.simulateObj.product.swidTag;
       }
     });
     if (filteredProducts.length === 0) {
@@ -123,8 +126,8 @@ export class ProductSimulationComponent implements OnInit {
       if (this.simulateAggregationObj.aggregation) {
         option.name + ' - ' + option.swidTag ===
           this.simulateAggregationObj.aggregation +
-            ' - ' +
-            this.simulateAggregationObj.product.swidTag;
+          ' - ' +
+          this.simulateAggregationObj.product.swidTag;
       }
     });
     if (filteredAggregations.length === 0) {
@@ -188,15 +191,31 @@ export class ProductSimulationComponent implements OnInit {
   // Get All Products based on Editor
   getProductsList(product?: string) {
     this._loading = true;
-    var query = '?scopes=' + this.selectedScope;
-    query += '&editor=' + this.simulateObj.editor;
+
+    const query: ListProductQueryParams = {
+      scopes: this.selectedScope,
+      editor: this.simulateObj.editor,
+    };
+
+
+    // this.productService
+    //   .getProductsList([this.selectedScope], this.simulateObj.editor).subscribe((res: any) => {
+    //     this.productList = res.products || [];
+    //     this.filteredOptions = this.productList;
+    //     this._loading = false;
+    //   }, (error: any) => {
+    //     this._loading = false;
+    //     console.log('Error fetching products');
+    //   })
+
     this.productService.getProductList(query).subscribe(
-      (response: any) => {
+      (response: ProductListResponse) => {
+        console.log('response', response)
         this.productList = response.products || [];
         this.filteredOptions = this.productList;
         this._loading = false;
       },
-      (error) => {
+      (error: ErrorResponse) => {
         this._loading = false;
         console.log('Error fetching products');
       }

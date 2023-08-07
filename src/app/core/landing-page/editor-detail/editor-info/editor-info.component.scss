@@ -1,0 +1,380 @@
+.basic {
+  margin-bottom: 10px;
+  padding: 10px;
+  min-height: 70px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+
+}
+.basic:hover{
+  background-color:#f5f5f5;
+
+}
+.main{
+  min-height: calc(100vh - 80px);
+}
+
+a.mat-tooltip-trigger.viewMoreMan.ng-star-inserted {
+  display: flex;
+  justify-content: space-between;
+  margin: 3vh 0vh 0vh 2vh;
+}
+
+.image-box {
+  // border: 1px solid #ccc;
+  font-size: 1em;
+  width: 70px;
+  height: auto;
+  max-height: 46px;
+  aspect-ratio: 16 / 9;
+  padding: 3px;
+  margin: 5px;
+  img {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.icon{
+  width: 40px;
+    height: 25px;
+    display: flex;
+    align-items: center;
+    font-size: 3.0em;
+}
+
+
+
+
+
+
+a mat-icon {
+  color: black;
+}
+
+.box {
+  border: 1.5px solid #ccc;
+  height: 22px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 10px;
+  // gap: 5px;
+  // display: inline-block !important;
+  padding: 3px 5px;
+}
+
+.entity {
+  align-items: flex-start;
+  display: flex;
+}
+
+
+
+// ::ng-deep .viewMoreMan {
+//   margin: 10px 5px 5px -19px;
+//   font-size: 13px;
+//   text-decoration: underline;
+//   color: #008afc;
+// }
+
+
+
+
+
+.address {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  word-wrap: break-word;
+  margin-bottom: 0;
+}
+
+
+.company-icon {
+  width: 50px;
+  height: auto;
+  max-height: 50px;
+}
+
+.audits p {
+  margin: 0;
+}
+
+.tooltip {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 20px;
+  cursor: pointer;
+}
+
+.ellipsis {
+  background-color: white;
+  padding: 0 5px;
+}
+
+
+
+.country-class{
+  display: flex;
+  align-items: center;
+  gap:15px;
+}
+
+
+::ng-deep .custom-tooltip {
+  white-space: pre-line;
+  word-wrap: break-word;
+}
+
+.group-contract {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.editor-title {
+  display: flex;
+  align-items: center;
+  font-size: 1.7em;
+  font-weight: 500;
+}
+
+.detail-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  mat-icon {
+    width: 25px;
+    height: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2.5em;
+    color: #35d5f5;
+  }
+}
+
+.detail-heading {
+  display: flex;
+  flex: 0 0 169px;
+  justify-content: flex-start;
+  align-items: center;
+  font-size: 1.1em;
+  font-weight: bold;
+}
+
+.audits-detail{
+  display: flex;
+  align-items: center;
+  margin-bottom: 0;
+  gap:10px;
+}
+
+.image-icon{
+  width: 50px;
+height: auto;
+max-height: 28px;
+aspect-ratio: 16 / 9;
+}
+
+
+.title-section {
+  display: flex;
+  align-items: center;
+  flex: 0 0 240px;
+}
+
+.detail-content {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex: 1;
+  word-break: break-word;
+  gap: 3px;
+
+  .manager-name {
+    font-size: 1em;
+    font-weight: 600;
+  }
+
+  .email-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    mat-icon {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+  .view-more {
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    font-size: 1em;
+    font-weight: bold;
+    color: var(--primary);
+    &:hover {
+      text-decoration: underline;
+      cursor: pointer;
+    }
+  }
+}
+
+.mat-expansion-panel-header {
+  height: 70px;
+  padding: 0 14px 0 6px;
+  font-size: 1.1em;
+}
+
+:host ::ng-deep .mat-expansion-panel-body {
+  padding: 0px 7px 16px;
+}
+
+.flex-container{
+  display: flex !important;
+  align-items: center;
+  gap:5px;
+  justify-content: flex-start !important;
+}
+
+.outer-flex{
+  display: flex;
+  align-items: center;
+  width: 60px;
+  gap:10px
+}
+
+.accordian-title{
+  display: flex;
+  align-items: center;
+}
+
+
+.flexs-container{
+  display: flex !important;
+  align-items: center;
+  gap: 30px;
+  justify-content: start !important;
+  padding: 0 14px;
+}
+
+.decription-expand-name{
+  display: flex;
+  width:60px;
+}
+.manager-content{
+  display: flex;
+  justify-content: space-between;
+}
+
+.mat-expansion-panel-header-title {
+  display: flex;
+  flex: 0 1 247px;
+  padding: 0;
+  margin-right: 0px;
+  font-size: 0.9em !important;
+}
+
+.mat-expansion-panel-header-description{
+  display: flex;
+  align-items: center;
+  color:#212529;
+}
+
+.mat-accordion .mat-expansion-panel{
+      margin-bottom: 10px;
+      margin-top: -5px;
+      border-bottom-right-radius: 0px; 
+      border-bottom-left-radius: 0px; 
+      border-radius: 0;
+      box-shadow: 0px 3px 3px -2px rgba(0, 0, 0, 0.2), 0px 3px 4px 0px rgba(0, 0, 0, 0.14), 0px 1px 8px 0px rgba(0, 0, 0, 0.12)
+
+
+
+}
+
+.details-content{
+  display: flex;
+  flex: 1 ;
+}
+
+
+.outer-container{
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  
+}
+
+.inner-container{
+  display: flex;
+  justify-content: flex-start;
+  gap:10px;
+  object-fit: contain;
+  align-items: center;
+  margin-right: 20px;
+}
+
+.partner-name{
+  font-weight: bold;
+  flex:1;
+}
+
+.partner-email{
+  display: flex;
+  align-items: center;
+  width:2em;
+}
+
+.multiline-tooltip {
+  background-color: rgb(50, 50, 50);
+  font-size: 11px;
+  white-space: pre-line;
+  padding: 0 25px;
+}
+
+.list-outer{
+  display: flex;
+  align-items: center;
+  justify-content: space-between !important;
+  padding: 0 33px 10px 0px;
+}
+
+.list-inner{
+  display: flex !important;
+  align-items: center;
+}
+
+.photo-name{
+  display: flex;
+  align-items: center;
+}
+
+.audit-year{
+  width: 32px;
+}
+
+.contact-icon{ 
+  width: 50px;
+  height: auto;
+  max-height: 28px;
+  aspect-ratio: 16 / 9;
+  
+  /* Set a border radius to half of the width */
+  border-radius: 25px;
+}
+.email-name{
+  display: flex;
+  align-items: center;
+}
+
+.year-audit{
+  display: flex;
+  align-items: center;
+  font-weight: bold;
+}

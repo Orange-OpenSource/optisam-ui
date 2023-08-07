@@ -1,0 +1,120 @@
+<form [formGroup]="form">
+  <div
+    class="filter-box"
+    fxLayout="row"
+    fxLayoutAlign="end center"
+    fxLayoutGap="1em"
+  >
+    <!-- Deployment Types -->
+    <mat-form-field appearance="outline">
+      <mat-label>{{ "DEPLOYMENT_TYPE" | translate }} </mat-label>
+      <mat-select
+        multiple
+        #groupContract
+        [disableOptionCentering]="true"
+        panelClass="pc-filter-select"
+        formControlName="deploymentType"
+        (selectionChange)="
+          selectionChange($event, deploymentTypeAll, deploymentType)
+        "
+      >
+        <mat-option #deploymentTypeAll [value]="allSelection">
+          {{ "All" | translate }} ({{ totalDeploymentType }})</mat-option
+        >
+        <mat-option *ngFor="let select of deploymentType" [value]="select.name"
+          >{{
+            "PRODUCT_CATALOG_FILTER_DEPLOYMENT_TYPE." + select.name | translate
+          }}
+          ({{ select?.count }})</mat-option
+        >
+      </mat-select>
+    </mat-form-field>
+    <!-- Entities -->
+    <mat-form-field appearance="outline">
+      <mat-label>{{ "ENTITIES" | translate }}</mat-label>
+      <mat-select
+        multiple
+        #entitiesSelect
+        [disableOptionCentering]="true"
+        formControlName="entities"
+        panelClass="pc-filter-select"
+        (selectionChange)="selectionChange($event, entitiesAll, entities)"
+      >
+        <mat-option #entitiesAll [value]="allSelection">
+          {{ "All" | translate }} ({{ totalEntities }})</mat-option
+        >
+        <mat-option
+          *ngFor="let select of entities"
+          [value]="select.name"
+          matTooltip="{{ select?.name }}"
+          >{{ select?.name }} ({{ select?.count }})</mat-option
+        >
+      </mat-select>
+    </mat-form-field>
+    <!-- Recommendation -->
+    <mat-form-field appearance="outline">
+      <mat-label>{{ "RECOMMENDATION" | translate }} </mat-label>
+      <mat-select
+        multiple
+        [disableOptionCentering]="true"
+        formControlName="recommendation"
+        panelClass="pc-filter-select"
+        (selectionChange)="
+          selectionChange($event, recommendationAll, recommendation)
+        "
+      >
+        <mat-option [value]="allSelection" #recommendationAll>
+          {{ "All" | translate }} ({{ totalRecommendation }})</mat-option
+        >
+        <mat-option *ngFor="let select of recommendation" [value]="select?.name"
+          >{{
+            "PRODUCT_CATALOG_FILTER_RECOMMENDATION." + select?.name | translate
+          }}
+          ({{ select?.count }})</mat-option
+        >
+      </mat-select>
+    </mat-form-field>
+    <!-- Licensing -->
+    <mat-form-field appearance="outline">
+      <mat-label> {{ "LICENSING" | translate }}</mat-label>
+      <mat-select
+        multiple
+        [disableOptionCentering]="true"
+        formControlName="licensing"
+        panelClass="pc-filter-select"
+        (selectionChange)="selectionChange($event, licensingAll, licensing)"
+      >
+        <mat-option [value]="allSelection" #licensingAll>
+          {{ "All" | translate }} ({{ totalLicensing }})</mat-option
+        >
+        <mat-option *ngFor="let select of licensing" [value]="select?.name"
+          >{{
+            "PRODUCT_CATALOG_FILTER_LICENSING." + select?.name | translate
+          }}
+          ({{ select?.count }})</mat-option
+        >
+      </mat-select>
+    </mat-form-field>
+    <!-- Vendor -->
+    <mat-form-field appearance="outline">
+      <mat-label> {{ "VENDORS" | translate }}</mat-label>
+      <mat-select
+        multiple
+        [disableOptionCentering]="true"
+        formControlName="vendor"
+        panelClass="pc-filter-select"
+        (selectionChange)="selectionChange($event, vendorAll, vendor)"
+      >
+        <mat-option [value]="allSelection" #vendorAll>
+          {{ "All" | translate }} ({{ totalVendor }})</mat-option
+        >
+        <mat-option
+          *ngFor="let select of vendor"
+          [value]="select?.name"
+          [matTooltip]="select?.name"
+          >{{ select?.name }} ({{ select?.count }})</mat-option
+        >
+      </mat-select>
+    </mat-form-field>
+  </div>
+</form>

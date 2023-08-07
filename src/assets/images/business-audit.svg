@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
+<svg width="800px" height="800px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<style>.cls-1{fill:#231f20;}</style>
+</defs>
+<title/>
+<g id="Card">
+<path class="cls-1" d="M17,15a3,3,0,1,0-3-3,3,3,0,0,0,3,3,5,5,0,0,0-5,5v1a1,1,0,0,0,1,1h8a1,1,0,0,0,1-1V20A5,5,0,0,0,17,15Zm-1-3a1,1,0,1,1,1,1A1,1,0,0,1,16,12Zm-2,8h0a3,3,0,0,1,6,0Z"/>
+<path class="cls-1" d="M3,15h8a1,1,0,0,0,1-1V13A5,5,0,0,0,7,8,3,3,0,1,0,4,5,3,3,0,0,0,7,8a5,5,0,0,0-5,5v1A1,1,0,0,0,3,15ZM6,5A1,1,0,1,1,7,6,1,1,0,0,1,6,5ZM4,13a3,3,0,0,1,6,0H4Z"/>
+<path class="cls-1" d="M21,2H13a1,1,0,0,0,0,2h7V6a1,1,0,0,0,2,0V3A1,1,0,0,0,21,2Z"/>
+<path class="cls-1" d="M10,22a1,1,0,0,0,0-2H4V18a1,1,0,0,0-2,0v3a1,1,0,0,0,1,1Z"/>
+</g>
+</svg>

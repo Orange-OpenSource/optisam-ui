@@ -98,3 +98,8 @@ mat-menu-item {
 .mat-column-licenses_under_maintenance_number {
   min-width: 130px;
 }
+
+::ng-deep .custom-tooltip{
+  white-space: pre-line ;
+  word-wrap: break-word;
+}

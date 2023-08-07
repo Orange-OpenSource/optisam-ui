@@ -58,7 +58,7 @@ export class EquipmentsListComponent implements OnInit {
     public equipmentTypeManagementService: EquipmentTypeManagementService,
     public dialog: MatDialog,
     public sharedService: SharedService
-  ) {}
+  ) { }
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: false }) sort: MatSort;
 
@@ -297,7 +297,7 @@ export class EquipmentsListComponent implements OnInit {
         types: this.allType,
       },
     });
-    dialogRef.afterClosed().subscribe((result) => {});
+    dialogRef.afterClosed().subscribe((result) => { });
   }
 
   clearFilter() {
@@ -344,6 +344,7 @@ export class EquipmentsListComponent implements OnInit {
 
   advSearchTrigger(event) {
     this.searchFields = event;
+    this.current_page_num = 1;
     this.applyFilter();
   }
 }

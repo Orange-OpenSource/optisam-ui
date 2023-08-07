@@ -1,0 +1,118 @@
+<div class="main-product-list-container" fxLayout="column">
+  <form
+    [formGroup]="filterForm"
+    fxLayout="row wrap"
+    fxLayoutAlign="space-between start"
+    class="list-header"
+  >
+    <app-product-search-bar
+      [total]="totalProducts"
+      [isLoading]="loadingProducts"
+      (searchValue)="triggerSearch($event)"
+      class="narrow-form-fields"
+    ></app-product-search-bar>
+
+    <app-product-filters
+      formGroupName="filters"
+      class="narrow-form-fields"
+    ></app-product-filters>
+  </form>
+  <div fxLayout="row">
+    <div fxLayout="column" [fxFlex]="productDetailToggle ? 50 : 100">
+      <div
+        #itemContainer
+        fxLayout="row wrap"
+        fxLayoutAlign="start start"
+        class="list-items"
+        [fxLayoutGap]="defaultItemGap"
+      >
+        <ng-container *ngFor="let product of productList">
+          <app-product-item-thumb
+            [product]="product"
+            [ngClass]="{
+              active: product?.id == productInfo?.id && productDetailToggle
+            }"
+            [width]="firstContainerWidth"
+            fxFlex
+            (click)="productDetails(product)"
+          ></app-product-item-thumb>
+        </ng-container>
+
+        <ng-container *ngIf="!productList.length && !loadingProducts">
+          <div class="no-data table" fxFill>
+            <mat-icon>error</mat-icon>{{ "No data available" | translate }}
+          </div>
+        </ng-container>
+
+        <div
+          class="loading-box"
+          fxLayout="row"
+          fxLayoutAlign="center center"
+          *ngIf="loadingProducts"
+        >
+          <app-loading-spinner></app-loading-spinner>
+        </div>
+      </div>
+      <mat-paginator
+        showFirstLastButtons
+        [length]="totalProducts"
+        [pageSize]="pageSize"
+        [pageSizeOptions]="[50, 100, 200]"
+        (page)="getPaginatorData($event)"
+      >
+      </mat-paginator>
+    </div>
+    <div
+      class="detail-section"
+      fxLayout="column"
+      fxFlex="50"
+      *ngIf="productDetailToggle"
+    >
+      <div
+        #closeDetail
+        fxLayout="row"
+        fxLayoutAlign="space-between start"
+        class="close-row"
+      >
+        <div #productName class="product-name" fxFlex>
+          <div fxLayout="row" fxLayoutGap="15px" fxFlex>
+            <div fxFlex="10" fxLayout="row" fxLayoutAlign="start center">
+              <div class="image-box">
+                <img
+                  alt="{{ productInfo?.name }}"
+                  class="company-icon"
+                  src="{{
+                    'https://pr-diod-ocp-fr01-dev-optisam-dev-optisam.oss.eu-west-0.prod-cloud-ocb.orange-business.com/optisam-dev/'
+                  }}{{ productInfo?.editorName | lowercase }}.svg"
+                  (error)="onImgError($event)"
+                />
+              </div>
+            </div>
+            <div fxFlex fxLayout="row" fxLayoutAlign="start center">
+              <div>
+                ({{ productInfo?.editorName }}) &nbsp;{{ productInfo?.name }}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="close-product-detail" #closeButton>
+          <mat-icon (click)="productDetailToggle = false; removeActive()"
+            >close</mat-icon
+          >
+        </div>
+      </div>
+      <div
+        #productDetailsContainer
+        class="product-details-container"
+        fxLayout="column"
+        fxLayoutAlign="start start"
+      >
+        <app-product-detail
+          [separate]="false"
+          class="product-details"
+          [data]="productInfo"
+        ></app-product-detail>
+      </div>
+    </div>
+  </div>
+</div>

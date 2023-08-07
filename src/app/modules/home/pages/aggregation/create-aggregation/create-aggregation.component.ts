@@ -183,7 +183,6 @@ export class CreateAggregationComponent implements OnInit, OnDestroy {
           };
         });
 
-        console.log(this.swidList);
 
         this.selectedSwidList = this.selectedSwidList.filter((s) =>
           (this.createForm.value.product_names || []).includes(s.product_name)

@@ -136,3 +136,8 @@ mat-menu-item {
   flex-wrap: wrap;
   word-wrap: break-all;
 }
+
+::ng-deep .custom-tooltip{
+  white-space: pre-line ;
+  word-wrap: break-word;
+}

@@ -323,6 +323,40 @@
         </mat-form-field>
       </div>
     </div>
+    <!-- Concurrent User -->
+    <div
+      class="row"
+      *ngIf="metricDetails && metricType == 'user.concurrent.standard'"
+    >
+      <div class="col-md-3">
+        <mat-form-field appearance="outline">
+          <mat-label>{{ "METRIC.ATTRIBUTE.PROFILE" | translate }}</mat-label>
+          <input
+            matInput
+            id="concurrentProfile"
+            [value]="metricDetails.Profile"
+            readonly
+          />
+        </mat-form-field>
+      </div>
+    </div>
+    <!-- Nominative User -->
+    <div
+      class="row"
+      *ngIf="metricDetails && metricType == 'user.nominative.standard'"
+    >
+      <div class="col-md-3">
+        <mat-form-field appearance="outline">
+          <mat-label>{{ "METRIC.ATTRIBUTE.PROFILE" | translate }}</mat-label>
+          <input
+            matInput
+            id="nominativeProfile"
+            [value]="metricDetails.Profile"
+            readonly
+          />
+        </mat-form-field>
+      </div>
+    </div>
     <app-loading-spinner *ngIf="_loading"></app-loading-spinner>
   </mat-card-content>
   <mat-dialog-actions>

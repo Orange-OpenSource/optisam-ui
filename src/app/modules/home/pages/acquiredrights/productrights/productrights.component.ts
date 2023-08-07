@@ -1,4 +1,4 @@
-import { AcquiredRightsResponse } from './../../../../../core/modals/acquired.rights.modal';
+import { AcquiredRightsResponse } from '../../../../../core/modals/acquired-rights.modal';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { MoreDetailsComponent } from '../../../dialogs/product-details/more-details.component';
@@ -11,7 +11,7 @@ import { ProductService } from 'src/app/core/services/product.service';
 import { CreateAcquiredRightComponent } from '../create-acquired-right/create-acquired-right.component';
 import { CommonService } from '@core/services/common.service';
 import { LOCAL_KEYS } from '@core/util/constants/constants';
-import { AcquiredRightsIndividualParams } from '@core/modals/acquired.rights.modal';
+import { AcquiredRightsIndividualParams } from '@core/modals';
 import { ViewEditorDetailsAccComponent } from '../view-editor-details-acc/view-editor-details-acc.component';
 
 @Component({
@@ -60,18 +60,23 @@ export class ProductrightsComponent implements OnInit {
     'software_provider',
     'metric',
     'acquired_licenses_number',
-    'licenses_under_maintenance_number',
-    'start_of_maintenance',
-    'end_of_maintenance',
+    'available_licenses',
+    'shared_licenses',
+    'recieved_licenses',
+    // 'delta_cost',
+    // 'delta_licenses',
+    // 'licenses_under_maintenance_number',
+    // 'start_of_maintenance',
+    // 'end_of_maintenance',
     'licenses_under_maintenance',
     'avg_licenes_unit_price',
-    'avg_maintenance_unit_price',
+    // 'avg_maintenance_unit_price',
     'total_purchase_cost',
-    'total_maintenance_cost',
+    // 'total_maintenance_cost',
     'total_cost',
     'last_purchased_order',
-    'support_number',
-    'maintenance_provider',
+    // 'support_number',
+    // 'maintenance_provider',
     'comment',
   ];
 
@@ -146,7 +151,7 @@ export class ProductrightsComponent implements OnInit {
       .getAcquiredrights(this.pageSize, 1, 'SWID_TAG', 'asc')
       .subscribe(
         (res: any) => {
-          console.log(res)
+          console.log(res);
           this.MyDataSource = new MatTableDataSource(res.acquired_rights);
           this.MyDataSource.sort = this.sort;
           this.length = res.totalRecords;
@@ -158,11 +163,35 @@ export class ProductrightsComponent implements OnInit {
       );
   }
 
-  openEditorDialog(data:any){
-    this.dialogRef=this.dialog.open(ViewEditorDetailsAccComponent,{
+  getToolTipDataAcc(data) {
+    let tooltipContent = `Available Licenses Left:${data?.available_licenses},\n Received Licenses in Current Entity:${data?.recieved_licenses},\n Shared Licenses in Current Entity:${data?.shared_licenses},\n`;
+    data?.shared_data?.forEach((sl) => {
+      tooltipContent += `Shared Licenses in Entity ${sl?.scope} : ${sl?.shared_licenses},\nReceived Licenses from Entity ${sl?.scope}:${sl?.recieved_licenses}\n`;
+    });
+    return tooltipContent;
+  }
+  getToolTipSharedDataAcc(data) {
+    let tooltipContentData = `Shared Licenses in Current Entity:${data?.shared_licenses}\n`;
+    data?.shared_data?.forEach((sl) => {
+      tooltipContentData += `Shared Licenses in Entity ${sl?.scope} : ${sl?.shared_licenses}\n`;
+    });
+
+    return tooltipContentData;
+  }
+
+  getToolTipReceivedDataAcc(data) {
+    let tooltipContentData = `Received Licenses in Current Entity:${data?.recieved_licenses}\n`;
+    data?.shared_data?.forEach((sl) => {
+      tooltipContentData += `Received Licenses from Entity ${sl?.scope}:${sl?.recieved_licenses}\n`;
+    });
+    return tooltipContentData;
+  }
+
+  openEditorDialog(data: any) {
+    this.dialogRef = this.dialog.open(ViewEditorDetailsAccComponent, {
       width: '1300px',
       disableClose: true,
-      data: data
+      data: data,
     });
 
     this.dialogRef.afterClosed().subscribe((result) => {});
@@ -321,16 +350,18 @@ export class ProductrightsComponent implements OnInit {
 
   advSearchTrigger(event) {
     this.searchFields = event;
+    this.current_page_num = 1;
     this.applyFilter();
   }
 
-  openDialog(value, name): void {
+  openDialog(value, name, sku: string): void {
     const dialogRef = this.dialog.open(MoreDetailsComponent, {
       width: '1300px',
       disableClose: true,
       data: {
         datakey: value,
         dataName: name,
+        dataSKU: sku,
       },
     });
 

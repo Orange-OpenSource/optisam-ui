@@ -24,6 +24,18 @@ export class DataManagementComponent implements OnInit, AfterContentChecked {
       link: '/optisam/dm/globaldata',
       show: true,
     },
+    {
+      title: 'Nominative Users',
+      link: '/optisam/dm/nominative-users',
+      show: true,
+    },
+
+    {
+      title: 'Concurrent Users',
+      link: '/optisam/dm/concurrent-users',
+      show: true,
+    },
+
     { title: 'Log', link: '/optisam/dm/data', show: true },
   ];
   activeLink = this.tabMenus[0].link;

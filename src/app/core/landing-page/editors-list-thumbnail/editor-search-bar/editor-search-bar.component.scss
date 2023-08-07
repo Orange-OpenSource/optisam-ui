@@ -1,0 +1,31 @@
+.search-box {
+  .search-input {
+    width: 300px;
+  }
+  mat-icon {
+    cursor: pointer;
+  }
+
+  .count {
+    width: 155px;
+  }
+
+  .search-suffix-icon {
+    gap: 3px;
+    mat-icon {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 1em;
+      width: 1em;
+      &.clear-search {
+        color: #ccc;
+        &:hover {
+          background-color: #ccc;
+          color: #2c2c2c;
+          border-radius: 100%;
+        }
+      }
+    }
+  }
+}

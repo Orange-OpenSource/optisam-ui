@@ -6,6 +6,11 @@ import {
   Validators,
 } from '@angular/forms';
 import { MatSelectChange } from '@angular/material/select';
+import {
+  ErrorResponse,
+  ListProductQueryParams,
+  ProductListResponse,
+} from '@core/modals';
 import { MetricService } from '@core/services/metric.service';
 import { ProductService } from '@core/services/product.service';
 import { LOCAL_KEYS } from '@core/util/constants/constants';
@@ -136,9 +141,11 @@ export class ProductsStepComponent implements OnInit {
   metricClickHandler(selected: boolean, metricType: string): void {
     // if (!selected) return;
     this.currentMetricType = metricType;
+    console.log('test2!');
   }
 
   changed(values: string[]) {
+    console.log('test!');
     setTimeout(() => {
       const ORACLE_TYPES = ['oracle.nup.standard', 'oracle.processor.standard'];
       if (!this.productsMetrics.value.length) this.disabledMetricNameList = [];
@@ -176,17 +183,23 @@ export class ProductsStepComponent implements OnInit {
 
   // Get products list
   listProducts() {
-    const query =
-      '?scopes=' + this.currentScope + '&editor=' + this.productsEditor.value;
+    // const query =
+    //   '?scopes=' + this.currentScope + '&editor=' + this.productsEditor.value;
+
+    const query: ListProductQueryParams = {
+      scopes: this.currentScope,
+      editor: this.productsEditor.value,
+    };
+
     this.productService.getProductList(query).subscribe(
-      (res) => {
+      (res: ProductListResponse) => {
         this.productsList = res.products || [];
         this.displayProductsList = [
           ...new Set(this.productsList.map((prod) => prod.name)),
         ];
         this.filteredProductsList = this.displayProductsList;
       },
-      (err) => {
+      (err: ErrorResponse) => {
         console.log('Some error occured! Could not fetch products list.');
       }
     );

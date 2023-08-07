@@ -24,7 +24,7 @@ import { ProfileSettingsComponent } from './pages/settings/profile-settings/prof
 import { MatPaginatorIntl } from '@angular/material/paginator';
 import { AboutComponent } from './pages/about/about/about.component';
 import { CheckAggregationMetricLengthPipe } from './dialogs/product-aggregation-details/check-aggregation-metric-length.pipe';
-
+import { KpiTileComponent } from './pages/dashboard/kpi-tile/kpi-tile.component';
 @NgModule({
   declarations: [HeaderComponent, FooterComponent,
     HomeComponent, DashboardComponent, MetricComponent,
@@ -37,7 +37,8 @@ import { CheckAggregationMetricLengthPipe } from './dialogs/product-aggregation-
      ConfirmDialogComponent,
      ProfileSettingsComponent,
      AboutComponent,
-     CheckAggregationMetricLengthPipe],
+     CheckAggregationMetricLengthPipe,
+     KpiTileComponent],
   imports: [
     CommonModule,
     FormsModule,

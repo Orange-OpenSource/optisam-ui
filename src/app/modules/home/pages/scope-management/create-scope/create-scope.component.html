@@ -28,7 +28,7 @@
         <input
           id="scope_name"
           matInput
-          placeholder="Scope Name"
+          placeholder="{{ 'Scope Name' | translate }}"
           formControlName="scope_name"
         />
         <mat-error *ngIf="scope_name.invalid && !scope_name.pristine">

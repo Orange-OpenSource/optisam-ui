@@ -30,6 +30,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatTreeModule } from '@angular/material/tree';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 /**
  * NgModule that includes all Material modules that are required to serve
@@ -69,6 +70,7 @@ import { MatTreeModule } from '@angular/material/tree';
     MatNativeDateModule,
     MatPaginatorModule,
     MatTreeModule,
+    MatFormFieldModule,
   ],
 })
 export class CustomMaterialModule {}

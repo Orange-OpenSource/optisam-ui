@@ -1,15 +1,15 @@
 <ng-container [formGroup]="editorGroup">
-  <mat-card>
-    <mat-card-content
+  <div>
+    <div
       class="list-partner-managers"
       fxLayout="column"
       fxLayoutAlign="space-between"
     >
-      <mat-card-title>
+      <div>
         <h6 class="partner-manager-heading">
           {{ "EDITOR.PARTNER_MANAGERS" | translate }}
         </h6>
-      </mat-card-title>
+      </div>
       <ng-container formArrayName="partner_managers">
         <app-single-partner-manager
           *ngFor="let item of partnerManagers?.controls; let i = index"
@@ -32,6 +32,6 @@
           <span>{{ "EDITOR.ADD_MANAGERS" | translate }}</span>
         </div>
       </button>
-    </mat-card-content>
-  </mat-card>
+    </div>
+  </div>
 </ng-container>

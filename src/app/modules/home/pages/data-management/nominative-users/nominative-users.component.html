@@ -1,0 +1,64 @@
+<mat-card class="example-card">
+  <div class="container-fluid page-content-header">
+    <div
+      class="action-section"
+      fxLayout="row"
+      fxLayoutAlign="end"
+      fxLayoutGap="5px"
+    >
+      <!-- <button
+        id="exportNominativeUser"
+        [disabled]="inProcess"
+        mat-raised-button
+        class="btn-two"
+        (click)="exportNominativeUser()"
+        [disabled]="!isDataAvailable"
+      >
+        <span>
+          <mat-spinner *ngIf="inProcess"></mat-spinner>
+        </span>
+        <mat-icon *ngIf="!inProcess">play_arrow</mat-icon>
+        <span>
+          {{ "NOMINATIVE_USER.BUTTON.EXPORT_NOMINATIVE_USERS" | translate }}
+        </span>
+      </button> -->
+      <button
+        *ngIf="activeTitle !== logType"
+        id="addNominativeUser"
+        mat-raised-button
+        class="btn-two"
+        (click)="addNominativeUser()"
+      >
+        <mat-icon>add</mat-icon>
+        {{ "NOMINATIVE_USER.BUTTON.ADD_NOMINATIVE_USERS" | translate }}
+      </button>
+    </div>
+
+    <nav mat-tab-nav-bar cdkFocusInitial>
+      <ng-container *ngFor="let menu of tabMenus">
+        <a
+          mat-tab-link
+          class="tab-anchor"
+          (click)="activeTitle = menu.id"
+          [active]="activeTitle == menu.id"
+        >
+          {{ menu.title | translate }}
+        </a>
+      </ng-container>
+    </nav>
+  </div>
+  <mat-card-content>
+    <app-individual-nominative-user
+      [activeTitle]="activeTitle"
+      *ngIf="activeTitle === individualType"
+    ></app-individual-nominative-user>
+    <app-aggregation-nominative-user
+      [activeTitle]="activeTitle"
+      *ngIf="activeTitle === aggregationType"
+    ></app-aggregation-nominative-user>
+    <app-nominative-user-log
+      [activeTitle]="activeTitle"
+      *ngIf="activeTitle === logType"
+    ></app-nominative-user-log>
+  </mat-card-content>
+</mat-card>

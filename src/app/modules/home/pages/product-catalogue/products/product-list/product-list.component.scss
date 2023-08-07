@@ -3,7 +3,7 @@
   color: #008afc;
   // height: 20px;
   // width: 20px;
-  // font-size: 20px;
+  font-size: 1.2em;
 }
 
 .inc {
@@ -22,20 +22,66 @@
   flex: 0 0 90px;
 }
 
+.mat-column-editorName {
+  flex: 0 0 280px;
+}
+
+.mat-column-name {
+  flex: 1 0 280px;
+}
+
 .matPaginators {
   bottom: 0px;
   position: static;
   z-index: 10;
 }
 
+::ng-deep app-editor-products-dialog app-product-list .matPaginators {
+  position: sticky !important;
+}
+
 .tops {
   top: 0px !important;
   z-index: 100 !important;
 }
-.mat-column-editorName {
-  flex: 0 0 280px;
-}
 
 mat-cell {
   word-break: break-word;
+}
+
+.mat-row,
+.mat-header-row {
+  flex-wrap: nowrap;
+}
+
+mat-table {
+  overflow-x: auto;
+}
+
+@media only screen and (min-width: 1720px) {
+  .mat-column-editorName {
+    flex-grow: 1;
+  }
+
+  .mat-column-licensing {
+    flex-grow: 1;
+  }
+
+  .mat-column-name {
+    flex-grow: 1;
+  }
+}
+
+@media only screen and (max-width: 800px) {
+  .mat-row,
+  .mat-header-row {
+    width: 153%;
+  }
+}
+
+@media only screen and (max-width: 1024px) {
+  .mat-row,
+  .mat-header-row {
+    width: 109%;
+  }
 }

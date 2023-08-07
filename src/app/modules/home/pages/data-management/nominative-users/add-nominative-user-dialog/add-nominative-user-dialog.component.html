@@ -1,0 +1,41 @@
+<h2 mat-dialog-title>
+  {{
+    !data.editData
+      ? ("NOMINATIVE_USER.TITLE.ADD_NOMINATIVE_USER" | translate)
+      : ("NOMINATIVE_USER.TITLE.UPDATE_NOMINATIVE_USER" | translate)
+  }}
+  ({{
+    "NOMINATIVE_USER.TITLE." +
+      (data?.activeTitle == "Aggregation" ? "AGGREGATION" : "PRODUCT")
+      | translate
+      | uppercase
+  }})
+</h2>
+<mat-dialog-content>
+  <app-add-nominative-user
+    [data]="data.editData"
+    [activeTitle]="data.activeTitle"
+    (isSuccess)="isSuccess($event)"
+  ></app-add-nominative-user>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <div fxLayout="row" fxLayoutAlign="center center" fxFill>
+    <button mat-raised-button class="btn-four" mat-dialog-close>
+      {{ "NOMINATIVE_USER.BUTTON.CANCEL" | translate }}
+    </button>
+    <button
+      (click)="addNominativeUser()"
+      mat-raised-button
+      class="btn-two"
+      #actionButton
+      [disabled]="inValid"
+    >
+      {{
+        (isCreate
+          ? "NOMINATIVE_USER.BUTTON.ADD"
+          : "NOMINATIVE_USER.BUTTON.UPDATE"
+        ) | translate
+      }}
+    </button>
+  </div>
+</mat-dialog-actions>

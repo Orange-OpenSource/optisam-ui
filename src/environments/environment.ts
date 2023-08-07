@@ -20,6 +20,8 @@ export const environment = {
   API_PRODUCT_CATALOG: 'productCatalog',
 };
 
+export const BLOCKED_USERS: string[] = [];
+
 /*
  * For easier debugging in development mode, you can import the following file
  * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.

@@ -25,12 +25,564 @@
       </a>
     </nav>
   </div>
-  <div class="col-md-12 content">
-    <div id="overviewSection" [hidden]="currentTab !== 'Overview'">
+
+  <div class="col-md-12 white-bg" *ngIf="currentTab == 'Overview'">
+    <div class="col-md-12 main" fxLayout="column" fxLayoutGap="16px">
+      <div fxLayout="row" fxLayoutGap="16px">
+        <div fxFlex="50" class="kpi-column">
+          <div class="kpi-section" fxLayout="column" fxLayoutGap="10px">
+            <div class="kpi-row" fxLayout="row" fxLayoutGap="10px">
+              <!-- compliance -->
+              <app-kpi-tile
+                header="{{ 'Compliance' | translate }}"
+                tooltip="{{ 'Shows the state of compliance.' | translate }}
+              {{
+                  'Green : (under usage/total number of acquired licenses) = 0 AND (counterfeiting/total number of acquired licenses) = 0'
+                    | translate
+                }}
+              {{
+                  'Orange : 0 < (counterfeiting/total number of acquired licenses) <= 10% OR 10% < (under usage/total number of acquired licenses) <=25%'
+                    | translate
+                }}
+              {{
+                  'Red : 10% < (counterfeiting/total number of acquired licenses) OR 25% < (under usage/total number of acquired licenses)'
+                    | translate
+                }}"
+              >
+                <div class="tileBody">
+                  <div
+                    class="tileImage"
+                    *ngIf="complianceRibbonColor === 'Green'"
+                    matTooltipClass="alertTooltip"
+                    matTooltip="{{ 'Under-usage' | translate }} : {{
+                      overdeployment_percentage
+                    }}% &#13;{{ 'Counterfeiting' | translate }} : {{
+                      counterfeiting_percentage
+                    }}%"
+                  >
+                    <img src="assets/images/greenRibbon.svg" />
+                  </div>
+                  <div
+                    class="tileImage"
+                    *ngIf="complianceRibbonColor === 'Orange'"
+                    matTooltipClass="alertTooltip"
+                    matTooltip="{{ 'Under-usage' | translate }} : {{
+                      overdeployment_percentage
+                    }}% &#13;{{ 'Counterfeiting' | translate }} : {{
+                      counterfeiting_percentage
+                    }}%"
+                  >
+                    <img src="assets/images/orangeRibbon.svg" />
+                  </div>
+                  <div
+                    class="tileImage"
+                    *ngIf="complianceRibbonColor === 'Red'"
+                    matTooltipClass="alertTooltip"
+                    matTooltip="{{ 'Under-usage' | translate }} : {{
+                      overdeployment_percentage
+                    }}% &#13;{{ 'Counterfeiting' | translate }} : {{
+                      counterfeiting_percentage
+                    }}%"
+                  >
+                    <img src="assets/images/redRibbon.svg" />
+                  </div>
+                  <div
+                    class="tileImage"
+                    *ngIf="complianceRibbonColor === 'Error'"
+                  >
+                    <div class="errorIcon" *ngIf="alertComplianceDbErr">
+                      <mat-icon>error</mat-icon>
+                    </div>
+                    <div *ngIf="alertComplianceDbErr" class="errorMsg">
+                      {{ "Server Error" | translate }}
+                    </div>
+                    <div *ngIf="alertComplianceNetworkErr" class="errorMsg">
+                      {{ "No Data Found" | translate }}
+                    </div>
+                  </div>
+                </div></app-kpi-tile
+              >
+              <!-- quality -->
+              <app-kpi-tile
+                header="{{ 'Quality' | translate }}"
+                tooltip="{{
+                  'State of default products(A product for which at least one license has been bought but it is not currently deployed or the product is deployed at least on one host but no license is registered for it).'
+                    | translate
+                }}
+                            {{ 'Green : 0 products in default' | translate }}
+                            {{
+                  'Orange : between 10% and 30% of products in default'
+                    | translate
+                }}
+                            {{
+                  'Red : more than 30% of products are in default' | translate
+                }}"
+              >
+                <div class="tileBody">
+                  <div
+                    class="tileImage"
+                    *ngIf="qualityRibbonColor === 'Green'"
+                    matTooltipClass="alertTooltip"
+                    matTooltip="{{ 'Default Products' | translate }} : {{
+                      data_quality
+                    }}%"
+                  >
+                    <img src="assets/images/greenRibbon.svg" />
+                  </div>
+                  <div
+                    class="tileImage"
+                    *ngIf="qualityRibbonColor === 'Orange'"
+                    matTooltipClass="alertTooltip"
+                    matTooltip="{{ 'Default Products' | translate }} : {{
+                      data_quality
+                    }}%"
+                  >
+                    <img src="assets/images/orangeRibbon.svg" />
+                  </div>
+                  <div
+                    class="tileImage"
+                    *ngIf="qualityRibbonColor === 'Red'"
+                    matTooltipClass="alertTooltip"
+                    matTooltip="{{ 'Default Products' | translate }} : {{
+                      data_quality
+                    }}%"
+                  >
+                    <img src="assets/images/redRibbon.svg" />
+                  </div>
+                  <div class="tileImage" *ngIf="qualityRibbonColor === 'Error'">
+                    <div class="errorIcon" *ngIf="alertQualityDbErr">
+                      <mat-icon>error</mat-icon>
+                    </div>
+                    <div *ngIf="alertQualityDbErr" class="errorMsg">
+                      {{ "Server Error" | translate }}
+                    </div>
+                    <div *ngIf="alertQualityNetworkErr" class="errorMsg">
+                      {{ "No Data Found" | translate }}
+                    </div>
+                  </div>
+                </div>
+              </app-kpi-tile>
+            </div>
+            <div class="kpi-row" fxLayout="row" fxLayoutGap="10px">
+              <!-- Editor -->
+              <app-kpi-tile
+                header="{{ 'Editors' | translate }}"
+                tooltip="{{
+                  'Number of different editors for all products deployed.'
+                    | translate
+                }}"
+              >
+                <div class="tileBody">
+                  <div
+                    class="tileText"
+                    *ngIf="noOfManagedEditors || noOfManagedEditors == 0"
+                  >
+                    {{ noOfManagedEditors }}
+                  </div>
+                  <div
+                    class="tileImage"
+                    *ngIf="!noOfManagedEditors && noOfManagedEditors != 0"
+                  >
+                    <div class="errorIcon" *ngIf="getProductsDbError">
+                      <mat-icon>error</mat-icon>
+                    </div>
+                    <div *ngIf="getProductsDbError" class="errorMsg">
+                      {{ "Server Error" | translate }}
+                    </div>
+                    <div *ngIf="getProductsNetworkError" class="errorMsg">
+                      {{ "No Data Found" | translate }}
+                    </div>
+                  </div>
+                </div>
+              </app-kpi-tile>
+
+              <!-- Product -->
+              <app-kpi-tile
+                header="{{ 'Products' | translate }}"
+                tooltip="{{
+                  'Number of different products deployed.' | translate
+                }}"
+              >
+                <div class="tileBody">
+                  <div
+                    class="tileText"
+                    *ngIf="noOfProducts || noOfProducts == 0"
+                  >
+                    {{ noOfProducts }}
+                  </div>
+                  <div
+                    class="tileImage"
+                    *ngIf="!noOfProducts && noOfProducts != 0"
+                  >
+                    <div class="errorIcon" *ngIf="getProductsDbError">
+                      <mat-icon>error</mat-icon>
+                    </div>
+                    <div *ngIf="getProductsDbError" class="errorMsg">
+                      {{ "Server Error" | translate }}
+                    </div>
+                    <div *ngIf="getProductsNetworkError" class="errorMsg">
+                      {{ "No Data Found" | translate }}
+                    </div>
+                  </div>
+                </div>
+              </app-kpi-tile>
+            </div>
+            <div class="kpi-row" fxLayout="row" fxLayoutGap="10px">
+              <!-- Owned licenses -->
+              <app-kpi-tile
+                header="{{ 'Owned Licenses' | translate }}"
+                tooltip="{{ 'Cost of all licenses owned.' | translate }}"
+              >
+                <div class="tileBody">
+                  <div
+                    class="tileText"
+                    *ngIf="
+                      valuationOfOwnedLicense || valuationOfOwnedLicense == 0
+                    "
+                  >
+                    {{ valuationOfOwnedLicense | floor }}
+                  </div>
+                  <div
+                    class="tileImage"
+                    *ngIf="
+                      !valuationOfOwnedLicense && valuationOfOwnedLicense != 0
+                    "
+                  >
+                    <div class="errorIcon" *ngIf="getProductsDbError">
+                      <mat-icon>error</mat-icon>
+                    </div>
+                    <div *ngIf="getProductsDbError" class="errorMsg">
+                      {{ "Server Error" | translate }}
+                    </div>
+                    <div *ngIf="getProductsNetworkError" class="errorMsg">
+                      {{ "No Data Found" | translate }}
+                    </div>
+                  </div>
+                </div>
+              </app-kpi-tile>
+
+              <!-- Maintenance Licenses -->
+              <app-kpi-tile
+                header="{{ 'Maintenance Licenses' | translate }}"
+                tooltip="{{
+                  'Maintenance cost of all licenses acquired.' | translate
+                }}"
+              >
+                <div class="tileBody">
+                  <div
+                    class="tileText"
+                    *ngIf="
+                      valuationOfOwnedLicenseMaintenance ||
+                      valuationOfOwnedLicenseMaintenance == 0
+                    "
+                  >
+                    {{ valuationOfOwnedLicenseMaintenance | floor }}
+                  </div>
+                  <div
+                    class="tileImage"
+                    *ngIf="
+                      !valuationOfOwnedLicenseMaintenance &&
+                      valuationOfOwnedLicenseMaintenance != 0
+                    "
+                  >
+                    <div class="errorIcon" *ngIf="getProductsDbError">
+                      <mat-icon>error</mat-icon>
+                    </div>
+                    <div *ngIf="getProductsDbError" class="errorMsg">
+                      {{ "Server Error" | translate }}
+                    </div>
+                    <div *ngIf="getProductsNetworkError" class="errorMsg">
+                      {{ "No Data Found" | translate }}
+                    </div>
+                  </div>
+                </div>
+              </app-kpi-tile>
+            </div>
+            <div class="kpi-row" fxLayout="row" fxLayoutGap="10px">
+              <!-- Shared Licenses -->
+              <app-kpi-tile
+                header=" {{ 'Shared Licenses' | translate }}"
+                tooltip="{{ 'Shared Amount Across Scope' | translate }}"
+              >
+                <div class="tileBody">
+                  <div
+                    class="tileText"
+                    *ngIf="totalSharedAmount || totalSharedAmount == 0"
+                  >
+                    {{ totalSharedAmount | floor }}
+                  </div>
+                  <div
+                    class="tileImage"
+                    *ngIf="!totalSharedAmount && totalSharedAmount != 0"
+                  >
+                    <div class="errorIcon" *ngIf="getProductsDbError">
+                      <mat-icon>error</mat-icon>
+                    </div>
+                    <div *ngIf="getProductsDbError" class="errorMsg">
+                      {{ "Server Error" | translate }}
+                    </div>
+                    <div *ngIf="getProductsNetworkError" class="errorMsg">
+                      {{ "No Data Found" | translate }}
+                    </div>
+                  </div>
+                </div>
+              </app-kpi-tile>
+              <!-- received Licenses -->
+              <app-kpi-tile
+                header="{{ 'Received Licenses' | translate }}"
+                tooltip="{{ 'Received Amount Across Scope' | translate }}"
+              >
+                <div class="tileBody">
+                  <div
+                    class="tileText"
+                    *ngIf="totalReceivedAmount || totalReceivedAmount == 0"
+                  >
+                    {{ totalReceivedAmount | floor }}
+                  </div>
+                  <div
+                    class="tileImage"
+                    *ngIf="!totalReceivedAmount && totalReceivedAmount != 0"
+                  >
+                    <div class="errorIcon" *ngIf="getProductsDbError">
+                      <mat-icon>error</mat-icon>
+                    </div>
+                    <div *ngIf="getProductsDbError" class="errorMsg">
+                      {{ "Server Error" | translate }}
+                    </div>
+                    <div *ngIf="getProductsNetworkError" class="errorMsg">
+                      {{ "No Data Found" | translate }}
+                    </div>
+                  </div>
+                </div>
+              </app-kpi-tile>
+            </div>
+            <div class="kpi-row" fxLayout="row" fxLayoutGap="10px">
+              <!-- UnderUsage Amount -->
+              <app-kpi-tile
+                header="{{ 'Underusage Amount' | translate }}"
+                tooltip="{{ 'Total underusage amount.' | translate }}"
+              >
+                <div class="tileBody">
+                  <div
+                    class="tileText"
+                    *ngIf="
+                      total_underusage_amount || total_underusage_amount == 0
+                    "
+                  >
+                    {{ total_underusage_amount | floor }}
+                  </div>
+                  <div
+                    class="tileImage"
+                    *ngIf="
+                      !total_underusage_amount && total_underusage_amount != 0
+                    "
+                  >
+                    <div class="errorIcon" *ngIf="getProductsDbError">
+                      <mat-icon>error</mat-icon>
+                    </div>
+                    <div *ngIf="getProductsDbError" class="errorMsg">
+                      {{ "Server Error" | translate }}
+                    </div>
+                    <div *ngIf="getProductsNetworkError" class="errorMsg">
+                      {{ "No Data Found" | translate }}
+                    </div>
+                  </div>
+                </div>
+              </app-kpi-tile>
+              <!-- Counterfeiting Amount -->
+              <app-kpi-tile
+                header="{{ 'Counterfeiting Amount' | translate }}"
+                tooltip="{{ 'Total counterfeiting amount.' | translate }}"
+              >
+                <div class="tileBody">
+                  <div
+                    class="tileText"
+                    *ngIf="
+                      total_counterfeiting_amount ||
+                      total_counterfeiting_amount == 0
+                    "
+                  >
+                    {{ total_counterfeiting_amount | floor | abs }}
+                  </div>
+                  <div
+                    class="tileImage"
+                    *ngIf="
+                      !total_counterfeiting_amount &&
+                      total_counterfeiting_amount != 0
+                    "
+                  >
+                    <div class="errorIcon" *ngIf="getProductsDbError">
+                      <mat-icon>error</mat-icon>
+                    </div>
+                    <div *ngIf="getProductsDbError" class="errorMsg">
+                      {{ "Server Error" | translate }}
+                    </div>
+                    <div *ngIf="getProductsNetworkError" class="errorMsg">
+                      {{ "No Data Found" | translate }}
+                    </div>
+                  </div>
+                </div>
+              </app-kpi-tile>
+            </div>
+            <div class="kpi-row" fxLayout="row" fxLayoutGap="10px">
+              <!-- Scope Expense -->
+              <app-kpi-tile
+                header="{{ 'Scope Expense' | translate }}"
+                tooltip="{{ 'Scope Expense' | translate }}"
+              >
+                <div class="tileBody">
+
+                  <ng-container *ngIf="(scopeExpense$ | async) as scopeExpense; else expenseFallback" >
+                      <div class="tileText">
+                        {{ scopeExpense | floor }}
+                      </div>
+                  </ng-container>
+                </div>
+              </app-kpi-tile>
+            </div>
+          </div>
+        </div>
+        <div fxFlex="50" class="kpi-column" fxLayoutAlign="center stretch">
+          <!-- Software License Composition -->
+          <app-kpi-tile
+            header="{{ 'Software License Composition' | translate }}"
+            tooltip="{{
+              'Distribution of the software licenses owned in categories (for example : Perpetual, SaaS and Subscribe)'
+                | translate
+            }}"
+          >
+            <div id="swLicComChartContainer">
+              <div
+                class="loader"
+                *ngIf="!(swLicCompData || emptyLicCompFlag || getLicCompFailed)"
+              ></div>
+              <div
+                class="tileLoadingMsg"
+                *ngIf="!(swLicCompData || emptyLicCompFlag || getLicCompFailed)"
+              >
+                {{
+                  "Wait a moment while we set things up for you!" | translate
+                }}
+              </div>
+              <div class="noDataImgContainer" *ngIf="emptyLicCompFlag">
+                <img class="noDataImg" src="assets/images/NoDataFound.PNG" />
+              </div>
+              <div class="noDataMsg" *ngIf="emptyLicCompFlag">
+                {{ "Unfortunately no data could be found." | translate }}
+              </div>
+              <div class="noDataImgContainer" *ngIf="getLicCompFailed">
+                <img
+                  class="noDataImg"
+                  src="assets/images/ConnectionError.PNG"
+                />
+              </div>
+              <canvas id="swLicComChart" width="350" height="250"></canvas>
+            </div>
+          </app-kpi-tile>
+        </div>
+      </div>
+      <div fxLayout="row" fxLayoutGap="16px">
+        <div fxFlex="50" class="kpi-column" fxLayoutAlign="center stretch">
+          <!-- Equipment Details -->
+          <app-kpi-tile
+            header=" {{ 'Equipment Details' | translate }}"
+            tooltip="{{
+              'Distribution of the equipments in categories (for example : Partition, Server, Cluster, Vcenter)'
+                | translate
+            }}"
+          >
+            <div id="equipmentDetailsContainer">
+              <div
+                class="loader"
+                *ngIf="!(equipsData || emptyequipsDataFlag || getEquipsFailed)"
+              ></div>
+              <div
+                class="tileLoadingMsg"
+                *ngIf="!(equipsData || emptyequipsDataFlag || getEquipsFailed)"
+              >
+                {{
+                  "Wait a moment while we set things up for you!" | translate
+                }}
+              </div>
+              <div class="noDataImgContainer" *ngIf="emptyequipsDataFlag">
+                <img class="noDataImg" src="assets/images/NoDataFound2.PNG" />
+              </div>
+              <div class="noDataMsg" *ngIf="emptyequipsDataFlag">
+                {{ "Ummm.. Looks like there's no data here." | translate }}
+              </div>
+              <div class="noDataImgContainer" *ngIf="getEquipsFailed">
+                <img
+                  class="noDataImg"
+                  src="assets/images/ConnectionError.PNG"
+                />
+              </div>
+              <canvas id="equipmentDetails" width="380" height="260"></canvas>
+            </div>
+          </app-kpi-tile>
+        </div>
+        <div fxFlex="50" class="kpi-column" fxLayoutAlign="center stretch">
+          <!-- Number of Products Per Editor -->
+          <app-kpi-tile
+            header="{{ 'Number of Products Per Editor' | translate }}"
+            tooltip="{{ 'Number of products per editor.' | translate }}"
+          >
+            <div id="noOfProdsPerEditorContainer">
+              <div
+                class="loader"
+                *ngIf="
+                  !(
+                    productsPerEditorData ||
+                    emptyproductsPerEditorFlag ||
+                    getProductsPerEditorFailed
+                  )
+                "
+              ></div>
+              <div
+                class="tileLoadingMsg"
+                *ngIf="
+                  !(
+                    productsPerEditorData ||
+                    emptyproductsPerEditorFlag ||
+                    getProductsPerEditorFailed
+                  )
+                "
+              >
+                {{
+                  "Wait a moment while we set things up for you!" | translate
+                }}
+              </div>
+              <div
+                class="noDataImgContainer"
+                *ngIf="emptyproductsPerEditorFlag"
+              >
+                <img class="noDataImg" src="assets/images/CryingNoData.PNG" />
+              </div>
+              <div class="noDataMsg" *ngIf="emptyproductsPerEditorFlag">
+                {{ "Oh no! I have got nothing for you." | translate }}
+              </div>
+              <div
+                class="noDataImgContainer"
+                *ngIf="getProductsPerEditorFailed"
+              >
+                <img
+                  class="noDataImg"
+                  src="assets/images/ConnectionError.PNG"
+                />
+              </div>
+              <canvas id="noOfProdsPerEditor" width="380" height="260"></canvas>
+            </div>
+          </app-kpi-tile>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-12 content" *ngIf="currentTab !== 'Overview'">
+    <div *ngIf="false" id="overviewSection">
       <mat-grid-list [cols]="2" rowHeight="3:2" [gutterSize]="'16px'">
         <mat-grid-tile class="parentTile">
           <div class="internalMatGrid">
-            <mat-grid-list [cols]="2" rowHeight="9:3" [gutterSize]="'10px'">
+            <mat-grid-list [cols]="2" rowHeight="12:3" [gutterSize]="'10px'">
               <mat-grid-tile class="contentTile">
                 <div class="tileHeader">
                   {{ "Compliance" | translate
@@ -328,6 +880,74 @@
               </mat-grid-tile>
               <mat-grid-tile class="contentTile">
                 <div class="tileHeader">
+                  {{ "Shared Licenses" | translate
+                  }}<mat-icon
+                    class="mat-icon-info"
+                    matTooltipClass="alertTooltip"
+                    matTooltip="{{ 'Shared Amount Across Scope' | translate }}"
+                    >info</mat-icon
+                  >
+                </div>
+                <div class="tileBody">
+                  <div
+                    class="tileText"
+                    *ngIf="totalSharedAmount || totalSharedAmount == 0"
+                  >
+                    {{ totalSharedAmount | floor }}
+                  </div>
+                  <div
+                    class="tileImage"
+                    *ngIf="!totalSharedAmount && totalSharedAmount != 0"
+                  >
+                    <div class="errorIcon" *ngIf="getProductsDbError">
+                      <mat-icon>error</mat-icon>
+                    </div>
+                    <div *ngIf="getProductsDbError" class="errorMsg">
+                      {{ "Server Error" | translate }}
+                    </div>
+                    <div *ngIf="getProductsNetworkError" class="errorMsg">
+                      {{ "No Data Found" | translate }}
+                    </div>
+                  </div>
+                </div>
+              </mat-grid-tile>
+              <mat-grid-tile class="contentTile">
+                <div class="tileHeader">
+                  {{ "Received Licenses" | translate
+                  }}<mat-icon
+                    class="mat-icon-info"
+                    matTooltipClass="alertTooltip"
+                    matTooltip="{{
+                      'Received Amount Across Scope' | translate
+                    }}"
+                    >info</mat-icon
+                  >
+                </div>
+                <div class="tileBody">
+                  <div
+                    class="tileText"
+                    *ngIf="totalReceivedAmount || totalReceivedAmount == 0"
+                  >
+                    {{ totalReceivedAmount | floor }}
+                  </div>
+                  <div
+                    class="tileImage"
+                    *ngIf="!totalReceivedAmount && totalReceivedAmount != 0"
+                  >
+                    <div class="errorIcon" *ngIf="getProductsDbError">
+                      <mat-icon>error</mat-icon>
+                    </div>
+                    <div *ngIf="getProductsDbError" class="errorMsg">
+                      {{ "Server Error" | translate }}
+                    </div>
+                    <div *ngIf="getProductsNetworkError" class="errorMsg">
+                      {{ "No Data Found" | translate }}
+                    </div>
+                  </div>
+                </div>
+              </mat-grid-tile>
+              <mat-grid-tile class="contentTile">
+                <div class="tileHeader">
                   {{ "Underusage Amount" | translate
                   }}<mat-icon
                     class="mat-icon-info"
@@ -407,7 +1027,7 @@
             </mat-grid-list>
           </div>
         </mat-grid-tile>
-        <mat-grid-tile id="swLicComChartContainer" class="contentTile">
+        <mat-grid-tile id="!swLicComChartContainer" class="contentTile">
           <div class="tileHeader">
             {{ "Software Licence Composition" | translate
             }}<mat-icon
@@ -441,7 +1061,7 @@
           </div>
           <canvas id="swLicComChart" width="350" height="250"></canvas>
         </mat-grid-tile>
-        <mat-grid-tile id="equipmentDetailsContainer" class="contentTile">
+        <mat-grid-tile id="!equipmentDetailsContainer" class="contentTile">
           <div class="tileHeader">
             {{ "Equipment Details" | translate
             }}<mat-icon
@@ -475,7 +1095,7 @@
           </div>
           <canvas id="equipmentDetails" width="380" height="260"></canvas>
         </mat-grid-tile>
-        <mat-grid-tile id="noOfProdsPerEditorContainer" class="contentTile">
+        <mat-grid-tile id="!noOfProdsPerEditorContainer" class="contentTile">
           <div class="tileHeader">
             {{ "Number of Products Per Editor" | translate
             }}<mat-icon
@@ -521,7 +1141,7 @@
       </mat-grid-list>
     </div>
     <!-- Quality -->
-    <div id="qualitySection" [hidden]="currentTab !== 'Quality'">
+    <div id="qualitySection" *ngIf="currentTab == 'Quality'">
       <mat-grid-list [cols]="2" rowHeight="3:2" [gutterSize]="'16px'">
         <mat-grid-tile class="parentTile">
           <div class="internalMatGrid">
@@ -755,7 +1375,7 @@
         </mat-grid-tile>
       </mat-grid-list>
     </div>
-    <div id="complianceSection" [hidden]="currentTab !== 'Compliance'">
+    <div id="complianceSection" *ngIf="currentTab == 'Compliance'">
       <div class="inputSection">
         <mat-form-field id="selectEditor" appearance="outline">
           <mat-label>{{ "Editor" | translate }}</mat-label>
@@ -797,7 +1417,7 @@
               />
             </mat-option>
             <app-loading-spinner *ngIf="searchLoading"></app-loading-spinner>
-            <ng-container *ngIf="!searchLoading && !loadingEditor">
+            <ng-container *ngIf="!searchLoading">
               <mat-option
                 *ngFor="let editor of filteredEditor"
                 [value]="editor"
@@ -988,10 +1608,18 @@
             >{{ product.product_name }}
           </mat-cell>
         </ng-container>
+        <ng-container matColumnDef="version">
+          <mat-header-cell *matHeaderCellDef>{{
+            "Version" | translate
+          }}</mat-header-cell>
+          <mat-cell *matCellDef="let product">{{ product.version }} </mat-cell>
+        </ng-container>
         <mat-header-row
-          *matHeaderRowDef="['productName']; sticky: true"
+          *matHeaderRowDef="['productName', 'version']; sticky: true"
         ></mat-header-row>
-        <mat-row *matRowDef="let row; columns: ['productName']"></mat-row>
+        <mat-row
+          *matRowDef="let row; columns: ['productName', 'version']"
+        ></mat-row>
       </mat-table>
     </div>
   </mat-dialog-content>
@@ -1025,10 +1653,18 @@
             >{{ product.product_name }}
           </mat-cell>
         </ng-container>
+        <ng-container matColumnDef="version">
+          <mat-header-cell *matHeaderCellDef>{{
+            "Version" | translate
+          }}</mat-header-cell>
+          <mat-cell *matCellDef="let product">{{ product.version }} </mat-cell>
+        </ng-container>
         <mat-header-row
-          *matHeaderRowDef="['productName']; sticky: true"
+          *matHeaderRowDef="['productName', 'version']; sticky: true"
         ></mat-header-row>
-        <mat-row *matRowDef="let row; columns: ['productName']"></mat-row>
+        <mat-row
+          *matRowDef="let row; columns: ['productName', 'version']"
+        ></mat-row>
       </mat-table>
     </div>
   </mat-dialog-content>
@@ -1042,4 +1678,26 @@
       {{ "OK" | translate }}
     </button>
   </mat-dialog-actions>
+</ng-template>
+
+
+<ng-template #expenseFallback >
+  <div
+      class="tileText"
+      *ngIf="!scopeErrorMsg"
+    >
+      0
+    </div>
+
+    <ng-container *ngIf="scopeErrorMsg">
+      <div class="tileImage">
+        <div class="errorIcon">
+          <mat-icon>error</mat-icon>
+        </div>
+
+        <div class="errorMsg">
+          {{ scopeErrorMsg | translate }}
+        </div>
+      </div>
+    </ng-container>
 </ng-template>

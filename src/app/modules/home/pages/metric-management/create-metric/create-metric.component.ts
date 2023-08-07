@@ -1,3 +1,4 @@
+import { LOCAL_KEYS } from '@core/util/constants/constants';
 import {
   AfterViewChecked,
   AfterViewInit,
@@ -19,6 +20,7 @@ import { Observable } from 'rxjs';
 import { filter, pluck } from 'rxjs/operators';
 import { EquipmentTypeManagementService } from 'src/app/core/services/equipmenttypemanagement.service';
 import { MetricService } from 'src/app/core/services/metric.service';
+import { SharedService } from '@shared/shared.service';
 
 const TRANSFORM_METRIC_TYPES = ['oracle.processor.standard'];
 
@@ -28,8 +30,7 @@ const TRANSFORM_METRIC_TYPES = ['oracle.processor.standard'];
   styleUrls: ['./create-metric.component.scss'],
 })
 export class CreateMetricComponent
-  implements OnInit, AfterViewInit, AfterViewChecked
-{
+  implements OnInit, AfterViewInit, AfterViewChecked {
   metricForm: FormGroup;
   selectedScope: string;
   _loading: Boolean;
@@ -56,7 +57,8 @@ export class CreateMetricComponent
     private metricService: MetricService,
     public dialog: MatDialog,
     private cs: CommonService,
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+    private ss: SharedService
   ) {
     this.selectedScope = localStorage.getItem('scope');
     this.getMetricList();
@@ -126,6 +128,7 @@ export class CreateMetricComponent
   get name() {
     return this.metricForm.get('name');
   }
+
   get type() {
     return this.metricForm.get('type');
   }
@@ -183,14 +186,24 @@ export class CreateMetricComponent
     return this.equipmentsTypesList.filter((eq) => eq.ID === equipID)[0].type;
   }
 
+  get concurrentProfile(): FormControl {
+    return this.configuration.get('concurrentProfile') as FormControl;
+  }
+
+  get nominativeProfile(): FormControl {
+    return this.configuration.get('nominativeProfile') as FormControl;
+  }
+
   // Validators
   duplicateName(input) {
-    const value = input.value;
-    const metricsList = JSON.parse(localStorage.getItem('existingMetricNames'));
+    const value = input.value.toLowerCase().trim();
+    const metricsList = (
+      JSON.parse(localStorage.getItem('existingMetricNames')) || []
+    ).map((metricName: string) => metricName.toLowerCase().trim());
     return value && metricsList.includes(value)
       ? {
-          duplicateName: true,
-        }
+        duplicateName: true,
+      }
       : null;
   }
 
@@ -296,6 +309,7 @@ export class CreateMetricComponent
     this.selectedMetricTypeId = selectedMetric.type_id;
     this.description.setValue(selectedMetric.description);
     this.getEquipmentsTypes();
+
     switch (this.selectedMetricTypeId) {
       case 'Oracle_Processor':
         configControls = new FormGroup({
@@ -389,6 +403,22 @@ export class CreateMetricComponent
           attributeName: new FormControl('', [Validators.required]),
           referenceValue: new FormControl({ value: '', disabled: true }, [
             Validators.required,
+          ]),
+        });
+        break;
+
+      case 'User_Concurent':
+        configControls = new FormGroup({
+          concurrentProfile: new FormControl('', [
+            Validators.pattern(/^(\s+\S+\s*)*(?!\s).*$/),
+          ]),
+        });
+        break;
+
+      case 'Nominative_User':
+        configControls = new FormGroup({
+          nominativeProfile: new FormControl('', [
+            Validators.pattern(/^(\s+\S+\s*)*(?!\s).*$/),
           ]),
         });
         break;
@@ -547,6 +577,7 @@ export class CreateMetricComponent
       .filter((m) => m.type_id === this.selectedMetricTypeId)[0]
       .href.split('/v1')
       .pop();
+
     switch (this.selectedMetricTypeId) {
       case 'Oracle_Processor':
         body = {
@@ -649,6 +680,24 @@ export class CreateMetricComponent
           scopes: [this.selectedScope],
         };
         break;
+
+      case 'User_Concurent':
+        body = {
+          ID: '',
+          Name: this.name.value.trim(),
+          profile: this.concurrentProfile.value,
+          scopes: [this.cs.getLocalData(LOCAL_KEYS.SCOPE)],
+        };
+        break;
+
+      case 'Nominative_User':
+        body = {
+          ID: '',
+          Name: this.name.value.trim(),
+          profile: this.nominativeProfile.value,
+          scopes: [this.cs.getLocalData(LOCAL_KEYS.SCOPE)],
+        };
+        break;
     }
 
     this.metricService.createMetric(body, url).subscribe(
@@ -668,8 +717,13 @@ export class CreateMetricComponent
             'Some error occured! Metric could not be created. Error: ' +
             error.error.message;
         }
-        this.openModal(errorMsg);
-        console.log('An error occured.', error);
+
+        this.ss.commonPopup({
+          title: 'Error',
+          singleButton: true,
+          message: this.errorMessage,
+          buttonText: 'OK',
+        });
       }
     );
   }

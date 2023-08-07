@@ -5,6 +5,7 @@ import { MetricComponent } from './pages/metric-management/metric.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { SettingsComponent } from './pages/settings/settings.component';
 import { ChangePasswordComponent } from './pages/change-password/change-password.component';
+import { GroupComplianceComponent } from './pages/group-compliance/group-compliance.component';
 // import { ChangePasswordComponent } from './pages/change-password/change-password.component';
 
 const routes: Routes = [
@@ -13,6 +14,12 @@ const routes: Routes = [
     component: HomeComponent,
     children: [
       { path: 'dashboard', component: DashboardComponent },
+      { path: 'gc', 
+        loadChildren: () =>
+        import('./pages/group-compliance/group-compliance.module').then(
+          (m) => m.GroupComplianceModule
+        ),
+      },
       // { path: 'chngPassword', component: ChangePasswordComponent },
       {
         path: 'apl',

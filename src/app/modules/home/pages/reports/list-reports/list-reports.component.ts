@@ -8,6 +8,8 @@ import { format } from 'date-fns';
 import { Subscription } from 'rxjs';
 import { ReportService } from 'src/app/core/services/report.service';
 import { CreateReportComponent } from '../create-report/create-report.component';
+import { REPORT_TRANSLATIONS } from '@core/util/constants/constants';
+
 
 @Component({
   selector: 'app-list-reports',
@@ -40,7 +42,7 @@ export class ListReportsComponent implements OnInit {
   constructor(
     private dialog: MatDialog,
     private reportService: ReportService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.getReportsData();
@@ -96,17 +98,41 @@ export class ListReportsComponent implements OnInit {
     });
   }
 
+
+
   getReportById(successMsg, errorMsg) {
     this.isDownloading = true;
 
     this.reportService.getReportById(this.selectedReportID).subscribe(
       (res: ReportByIdResponse) => {
         let decodedReportData: any = atob(res.report_data);
+        // export
+
         let editor: string = '';
-        const excludeData = ['swidtags', 'editor', 'swidtag'];
-        const dataInJSONFormat = JSON.parse(decodedReportData).map((d) => {
-          if (d?.editor) editor = d.editor;
-          for (const exclude of excludeData)
+        let equipmentType: string = '';
+        let isExpensesByEditor: boolean = false;
+        let isProductEquipments: boolean = false;
+
+        let customExclusionByType: string[] = ['editor'];
+        switch (this.selectedReportType) {
+          case 'Expenses by Editor':
+            customExclusionByType = [];
+            isExpensesByEditor = true;
+            break;
+          case 'ProductEquipments':
+            isProductEquipments = true;
+            break;
+
+        }
+        const excludeHeader: string[] = [
+          'swidtags',
+          'swidtag',
+          ...customExclusionByType,
+        ];
+        const dataInJSONFormat = JSON.parse(decodedReportData).map((d: any, i: number) => {
+          if (d?.editor && !isExpensesByEditor && i == 0) editor = d.editor;
+          // if (isProductEquipments && i == 0) equipmentType = this.getEquipmentTypeFromData(d);
+          for (const exclude of excludeHeader)
             if (exclude in d) delete d[exclude];
           return d;
         });
@@ -114,6 +140,7 @@ export class ListReportsComponent implements OnInit {
           reportType: res.report_type,
           scope: res.scope,
           editor,
+          equipmentType: res.equip_type,
           createdOn: format(new Date(res.created_on), 'yyyy-MM-dd'),
           createdBy: res.created_by,
         };
@@ -121,13 +148,16 @@ export class ListReportsComponent implements OnInit {
         reportContents = dataInJSONFormat;
         var headerList = [];
         for (var k in reportContents[0]) headerList.push(k);
-        this.reportService.downloadFile(
-          reportContents,
+        const translations = REPORT_TRANSLATIONS;
+        this.reportService.downloadFile({
+          data: reportContents,
           headerList,
-          'Report_' + this.selectedReportType + '_' + this.selectedReportID,
-          this.selectedFileFormat,
-          metaData
-        );
+          filename:
+            'Report_' + this.selectedReportType + '_' + this.selectedReportID,
+          formatType: this.selectedFileFormat,
+          metaData,
+          translations,
+        });
         this.dialog.closeAll();
         this.isDownloading = false;
       },
@@ -156,6 +186,26 @@ export class ListReportsComponent implements OnInit {
     this.current_page_num = ev.pageIndex + 1;
     this.page_size = ev.pageSize;
     this.getReportsData();
+  }
+
+  private getEquipmentTypeFromData(data: any): string {
+    let equipmentType: string = '';
+    switch (true) {
+      case !!data?.server_id:
+        equipmentType = 'Server'
+        break;
+      case !!data?.softpartition_id:
+        equipmentType = 'Softpartition'
+        break;
+      case !!data?.cluster_name:
+        equipmentType = 'Cluster'
+        break;
+      case !!data?.vcenter_name:
+        equipmentType = 'VCenter'
+        break;
+    }
+
+    return equipmentType;
   }
 
   ngOnDestroy() {

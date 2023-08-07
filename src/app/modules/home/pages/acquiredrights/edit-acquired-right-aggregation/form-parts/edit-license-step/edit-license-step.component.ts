@@ -20,6 +20,7 @@ export class EditLicenseStepComponent implements OnInit {
   metricsList: Metric[];
   currentMetricType: string = '';
   disabledMetricNameList: string[] = [];
+  temporarydisabledMetricList: string[] = [];
   mySelections: Metric[] = [];
 
   constructor(
@@ -104,6 +105,39 @@ export class EditLicenseStepComponent implements OnInit {
     const ORACLE_TYPES = ['oracle.nup.standard', 'oracle.processor.standard'];
     if (!this.productsMetrics.value.length) this.disabledMetricNameList = [];
     // condition for if metric type is in the oracle block list-- ORACLE_TYPES
+    const nominativeUserType = 'user.nominative.standard';
+    const concurrentUserType = 'user.concurrent.standard';
+    if (
+      this.productsMetrics.value.length &&
+      this.currentMetricType === nominativeUserType
+    ) {
+      const selectedMetricName: Metric =
+        this.productsMetrics.value[this.productsMetrics.value.length - 1];
+      this.disabledMetricNameList = this.metricsList
+        .filter(
+          (m) =>
+            m.type !== nominativeUserType && m.name !== selectedMetricName.name
+        )
+        .map((m) => m.name);
+      console.log(this.disabledMetricNameList);
+      return;
+    }
+
+    if (
+      this.productsMetrics.value.length &&
+      this.currentMetricType === concurrentUserType
+    ) {
+      const selectedMetricName: Metric =
+        this.productsMetrics.value[this.productsMetrics.value.length - 1];
+      this.disabledMetricNameList = this.metricsList
+        .filter(
+          (m) =>
+            m.type !== concurrentUserType && m.name !== selectedMetricName.name
+        )
+        .map((m) => m.name);
+      console.log(this.disabledMetricNameList);
+      return;
+    }
     if (
       this.productsMetrics.value.length &&
       ORACLE_TYPES.includes(this.currentMetricType)
@@ -118,15 +152,28 @@ export class EditLicenseStepComponent implements OnInit {
             m.name !== selectedMetricName.name
         )
         .map((m) => m.name);
+      return;
     }
 
     if (
       this.productsMetrics.value.length &&
-      !ORACLE_TYPES.includes(this.currentMetricType)
+      !ORACLE_TYPES.includes(this.currentMetricType) &&
+      this.currentMetricType !== nominativeUserType &&
+      this.currentMetricType !== concurrentUserType
     ) {
       this.disabledMetricNameList = this.metricsList
         .filter((m) => ORACLE_TYPES.includes(m.type))
         .map((m) => m?.name);
+
+      this.temporarydisabledMetricList = this.metricsList
+        .filter(
+          (x) => x.type === nominativeUserType || x.type === concurrentUserType
+        )
+        .map((m) => m?.name);
+      this.temporarydisabledMetricList.forEach((x) => {
+        this.disabledMetricNameList.push(x);
+      });
+      return;
     }
 
     if (this.productsMetrics.value.length <= 5) {

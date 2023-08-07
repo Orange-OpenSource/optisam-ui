@@ -623,6 +623,76 @@
         </div>
       </ng-container>
 
+      <!-- concurrent user  -->
+      <ng-container *ngIf="metricType === metricTypes.SAAS_CONCURRENT">
+        <div class="row">
+          <div class="col-md-3">
+            <mat-form-field appearance="outline">
+              <mat-label>{{
+                "METRIC.ATTRIBUTE.PROFILE" | translate
+              }}</mat-label>
+              <input
+                matInput
+                #concurrentProfile
+                id="concurrentProfile"
+                formControlName="concurrentProfile"
+                placeholder="{{ 'METRIC.ATTRIBUTE.PROFILE' | translate }}"
+                (keyup)="inputChangeDetection(concurrentProfile.value)"
+                autocomplete="off"
+                list="profileList"
+              />
+              <datalist id="profileList">
+                <option value="ALL">ALL</option>
+              </datalist>
+              <mat-error
+                *ngIf="
+                  concurrentProfileControl?.touched &&
+                  concurrentProfileControl?.hasError('pattern')
+                "
+              >
+                {{ "METRIC.ERROR.PROFILE_SPACES" | translate }}
+              </mat-error>
+              <mat-hint>{{ "METRIC_ALL_HINT" | translate }}</mat-hint>
+            </mat-form-field>
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- nominative user  -->
+      <ng-container *ngIf="metricType === metricTypes.SAAS_NOMINATIVE">
+        <div class="row">
+          <div class="col-md-3">
+            <mat-form-field appearance="outline">
+              <mat-label>{{
+                "METRIC.ATTRIBUTE.PROFILE" | translate
+              }}</mat-label>
+              <input
+                matInput
+                #nominativeProfile
+                id="nominativeProfile"
+                list="profileList"
+                formControlName="nominativeProfile"
+                placeholder="{{ 'METRIC.ATTRIBUTE.PROFILE' | translate }}"
+                (keyup)="inputChangeDetection(nominativeProfile.value)"
+                autocomplete="off"
+              />
+              <datalist id="profileList">
+                <option value="ALL">ALL</option>
+              </datalist>
+              <mat-error
+                *ngIf="
+                  nominativeProfileControl?.touched &&
+                  nominativeProfileControl?.hasError('pattern')
+                "
+              >
+                {{ "METRIC.ERROR.PROFILE_SPACES" | translate }}
+              </mat-error>
+              <mat-hint>{{ "METRIC_ALL_HINT" | translate }}</mat-hint>
+            </mat-form-field>
+          </div>
+        </div>
+      </ng-container>
+
       <!-- Static Standard -->
       <ng-container *ngIf="metricType === metricTypes.STATIC_STANDARD">
         <div class="row">

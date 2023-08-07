@@ -6,7 +6,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TranslateModule } from '@ngx-translate/core';
 import { CustomMaterialModule } from 'src/app/material.module';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 
 describe('ListMetadataComponent', () => {
   let component: ListMetadataComponent;
@@ -14,21 +14,16 @@ describe('ListMetadataComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ 
-                      ListMetadataComponent,
-                      LoadingSpinnerComponent
-                    ],
-      imports:[
-                CustomMaterialModule,
-                HttpClientTestingModule,
-                BrowserAnimationsModule,
-                TranslateModule.forRoot()
-              ],
-      providers:[
-                  { provide: MatDialog, useValue: {} }
-                ]
-    })
-    .compileComponents();
+      declarations: [ListMetadataComponent, LoadingSpinnerComponent],
+      imports: [
+        CustomMaterialModule,
+        HttpClientTestingModule,
+        BrowserAnimationsModule,
+        TranslateModule.forRoot(),
+        MatDialogModule,
+      ],
+      providers: [],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

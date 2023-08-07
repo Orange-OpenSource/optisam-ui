@@ -1,0 +1,40 @@
+<form [formGroup]="form">
+  <div
+    class="search-box"
+    fxLayout="row"
+    fxLayoutGap="1em"
+    fxLayoutAlign="start center"
+  >
+    <mat-form-field appearance="outline" class="search-input">
+      <input
+        matInput
+        placeholder="{{ 'Search' | translate }}"
+        formControlName="search"
+        (keydown.enter)="triggerSearch(search?.value)"
+      />
+      <span
+        class="product-search-suffix-icon"
+        matSuffix
+        fxLayout="row"
+        fxLayoutAlign="end center"
+      >
+        <mat-icon
+          class="clear-search"
+          *ngIf="search?.value"
+          (click)="clearSearch()"
+          >close</mat-icon
+        >
+        <mat-icon (click)="triggerSearch(search?.value)">search</mat-icon>
+      </span>
+    </mat-form-field>
+    <div class="count" *ngIf="!isLoading; else loading">
+      <h5>
+        {{ count }} {{ (count == 1 ? "Product" : "Products") | translate }}
+      </h5>
+    </div>
+  </div>
+
+  <ng-template #loading>
+    <span class="count">{{ "Loading" | translate }}...</span>
+  </ng-template>
+</form>

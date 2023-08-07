@@ -2,9 +2,8 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { SharedService } from 'src/app/shared/shared.service';
 import { ProductService } from 'src/app/core/services/product.service';
-import { MetricSimulationRequest } from 'src/app/core/services/product';
 import { MetricService } from 'src/app/core/services/metric.service';
-import { SimulationTotal } from '@core/modals';
+import { MetricSimulationRequest, SimulationTotal } from '@core/modals';
 
 @Component({
   selector: 'app-metric-simulation',

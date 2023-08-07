@@ -39,6 +39,13 @@ import { SinglePartnerManagerComponent } from './editor/create-editor/partner-ma
 import { PartnerDeletionConfirmationComponent } from './editor/create-editor/partner-managers/single-partner-manager/partner-deletion-confirmation/partner-deletion-confirmation.component';
 import { SingleAuditComponent } from './editor/create-editor/audits/single-audit/single-audit.component';
 import { AuditDeletionConfirmationComponent } from './editor/create-editor/audits/single-audit/audit-deletion-confirmation/audit-deletion-confirmation.component';
+import { GlobalAccountManagersComponent } from './editor/create-editor/global-account-managers/global-account-managers.component';
+import { SingleGlobalAccountManagerComponent } from './editor/create-editor/global-account-managers/single-global-account-manager/single-global-account-manager.component';
+import { SourcersComponent } from './editor/create-editor/sourcers/sourcers.component';
+import { SingleSourcerComponent } from './editor/create-editor/sourcers/single-sourcer/single-sourcer.component';
+import { DeleteGlobalAccountManagerComponent } from './editor/create-editor/global-account-managers/single-global-account-manager/delete-global-account-manager/delete-global-account-manager.component';
+import { DeleteSourcerConfirmationComponent } from './editor/create-editor/sourcers/single-sourcer/delete-sourcer-confirmation/delete-sourcer-confirmation.component';
+import { OpenSourceComponent } from './products/create-product/open-source/open-source.component';
 
 @NgModule({
   declarations: [
@@ -80,6 +87,13 @@ import { AuditDeletionConfirmationComponent } from './editor/create-editor/audit
     PartnerDeletionConfirmationComponent,
     SingleAuditComponent,
     AuditDeletionConfirmationComponent,
+    GlobalAccountManagersComponent,
+    SingleGlobalAccountManagerComponent,
+    SourcersComponent,
+    SingleSourcerComponent,
+    DeleteGlobalAccountManagerComponent,
+    DeleteSourcerConfirmationComponent,
+    OpenSourceComponent,
   ],
   imports: [
     CommonModule,

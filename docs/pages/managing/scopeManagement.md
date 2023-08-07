@@ -26,29 +26,33 @@ You can access to "Scope Management" by clicking here :
 
 The presentation table is : 
 
-![select APM](../../img/scopeMana/presentationu.jpg){: .zoom}
+![select APM](../../img/scopeMana/presentation.jpg){: .zoom}
 
 You can see :  
 - Scope code : The code of the scope. You will see it in the selection tab of the scope (top left)  
 - Scope name : The name of the scope  
+- Scope Type : The type of the scope
 - Created by : The mail adress of the creator of the scope  
 - Created on : The date of the creation of the scope  
 - Groups : The number of groups inside of the scope  
+- Expenditure : The expenses of the scope
+- Action : Allow to delete a scope
 
 ## Possibilities
 
 You can do 3 things from there :  
 - <span style="color:red">Create a new scope</span> ([here](#create-a-new-scope))  
 - <span style="color:blue">Check the groups of an existing scope</span> ([here](#check-the-groups-of-an-existing-scope))  
+- <span style="color:orange">Edit the expenditure</span> ([here](#edit-the-expenditure))
 - <span style="color:green">Delete an existing scope</span> ([here](#delete-an-existing-scope))  
 
-![select APM](../../img/scopeMana/possibilitiesu.jpg){: .zoom}
+
 
 ## Create a new scope
 
 Click on "Create scope" : 
 
-![select APM](../../img/scopeMana/create1u.jpg){: .zoom}
+![select APM](../../img/scopeMana/create1.jpg){: .zoom}
 
 This screen will be shown : 
 
@@ -73,6 +77,16 @@ You will see this small list :
 ![select APM](../../img/scopeMana/checkGrps2.jpg){: .zoom}
 
 This list is the list of groups in the scope.
+
+## Edit the expenditure
+
+To edit the expenditure of a scope, click on the pencil icone next to the scope that you want to edit the expenditure : 
+
+![select APM](../../img/scopeMana/expenditure1.jpg){: .zoom}
+
+From there, you will be allow to enter the amount of the expenditure, as displayed below : 
+
+![select APM](../../img/scopeMana/expenditure2.jpg){: .zoom}
 
 ## Delete an existing scope
 

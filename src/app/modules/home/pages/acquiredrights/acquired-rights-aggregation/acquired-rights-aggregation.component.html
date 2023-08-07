@@ -90,6 +90,22 @@
                 </a>
               </div>
 
+                <span *ngSwitchCase="'num_licenses_acquired'">
+                  {{
+                    rights.num_licenses_acquired || 0
+                }}</span>
+                <span *ngSwitchCase="'available_licenses'" [matTooltip]="getToolTipDataAcc(rights)" [matTooltipClass]="'custom-tooltip'" >
+                  {{
+                    rights.available_licenses || 0
+                }}</span>
+                <span *ngSwitchCase="'shared_licenses'" [matTooltip]="getToolTipSharedDataAcc(rights)" [matTooltipClass]="'custom-tooltip'" >
+                  {{
+                    rights.shared_licenses || 0
+                }}</span>
+                <span *ngSwitchCase="'recieved_licenses'" [matTooltip]="getToolTipReceivedDataAcc(rights)" [matTooltipClass]="'custom-tooltip'" >
+                  {{
+                    rights.recieved_licenses || 0
+                }}</span>
               <span *ngSwitchCase="'ordering_date'">
                 {{ rights.ordering_date | formatShortdate }}
               </span>
@@ -109,6 +125,7 @@
             </div>
           </mat-cell>
         </ng-container>
+        
         <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
         <ng-container matColumnDef="expandedDetail">
           <mat-cell
@@ -128,13 +145,22 @@
                   matColumnDef="{{ column }}"
                   *ngFor="let column of expandDisplayedColumns"
                 >
+                
                   <mat-header-cell *matHeaderCellDef>
                     {{ tableKeyLabelMap[column] | translate }}
                   </mat-header-cell>
                   <mat-cell *matCellDef="let element" [ngSwitch]="column">
-                    <span *ngSwitchCase="'acquired_licenses_number'">{{
+                    <span *ngSwitchCase="'acquired_licenses_number'" >
+                      {{
                       element.acquired_licenses_number || 0
                     }}</span>
+                    <!-- <span *ngSwitchCase="'acquired_licenses_number'">{{
+                      element.acquired_licenses_number || 0
+                    }}</span> -->
+                      <span *ngSwitchCase="'available_licenses'" [matTooltip]="getToolTipDataAcc(element)" [matTooltipClass]="'custom-tooltip'" >
+                        {{
+                        element.available_licenses || 0
+                      }}</span>
                     <span *ngSwitchCase="'licenses_under_maintenance_number'">{{
                       element.licenses_under_maintenance_number || 0
                     }}</span>

@@ -68,6 +68,7 @@ export class EquipmenttypemanagementComponent implements OnInit {
         this.parentTypeIDs = (res.equipment_types || []).map(
           (type) => type.parent_id
         );
+        console.log(this.MyDataSource)
         this._loading = false;
       },
       (error) => {

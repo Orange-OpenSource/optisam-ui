@@ -7,6 +7,8 @@ export * from './simulation.modal';
 export * from './about.modal';
 export * from './equipment.modal';
 export * from './report.modal';
+export * from './acquired-rights.modal';
+export * from './account.modal';
 export * from './header.modal';
 export * from './product-catalog.modal';
 export * from './product.modal';

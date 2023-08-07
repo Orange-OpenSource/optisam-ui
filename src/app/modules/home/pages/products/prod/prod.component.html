@@ -36,7 +36,7 @@
               id="product_name_{{ i }}"
               class="ellipsis mat-button-link"
               matTooltip="{{ product.name }}"
-              (click)="openDialog(product.swidTag, product.name)"
+              (click)="openDialog(product.swidTag, product.name, product.sku)"
             >
               {{ product.name }}</a
             >
@@ -47,17 +47,18 @@
           <mat-header-cell *matHeaderCellDef mat-sort-header="editor"
             >{{ "Editor name" | translate }}
           </mat-header-cell>
-          <mat-cell *matCellDef="let product"> 
-          <span *ngIf="product.editor_id==''">{{product.editor}}</span>  
-          <span *ngIf="product.editor_id!=''">
-            <a
-              id="editor_name_{{ i }}"
-              class="ellipsis mat-button-link"
-              matTooltip="{{ product.editor }}"
-              (click)="openEditorDialog(product)"
-            >
-              {{ product.editor }}</a>
-          </span>
+          <mat-cell *matCellDef="let product">
+            <span *ngIf="product.editor_id == ''">{{ product.editor }}</span>
+            <span *ngIf="product.editor_id != ''">
+              <a
+                id="editor_name_{{ i }}"
+                class="ellipsis mat-button-link"
+                matTooltip="{{ product.editor }}"
+                (click)="openEditorDialog(product)"
+              >
+                {{ product.editor }}</a
+              >
+            </span>
           </mat-cell>
         </ng-container>
 
@@ -81,6 +82,36 @@
           }}</mat-header-cell>
           <mat-cell *matCellDef="let product">
             {{ product.totalCost || 0 | formatCost }}
+          </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="location">
+          <mat-header-cell *matHeaderCellDef mat-sort-header disableClear>{{
+            "Location" | translate
+          }}</mat-header-cell>
+          <mat-cell *matCellDef="let product">
+            {{
+              (product.location
+                ? "PRODUCT_TABLE.HEADER." + product.location
+                : "-"
+              ) | translate
+            }}
+          </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="numofUsers">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>{{
+            "Users count" | translate
+          }}</mat-header-cell>
+          <mat-cell *matCellDef="let product; let i = index">
+            <ng-container
+              *ngTemplateOutlet="
+                ((product.numofUsers || 0) > 0 && product | isSaas)
+                  ? userClickable
+                  : userNotClickable;
+                context: { $implicit: product, index: i }
+              "
+            ></ng-container>
           </mat-cell>
         </ng-container>
 
@@ -151,3 +182,18 @@
     </div>
   </mat-card-content>
 </mat-card>
+
+<ng-template #userClickable let-product let-i="index">
+  <a
+    id="numberOfUsers_{{ i }}"
+    class="ellipsis mat-button-link"
+    matTooltip="{{ product.numofUsers }}"
+    (click)="openUserDetails(product)"
+  >
+    {{ product.numofUsers || 0 }}</a
+  >
+</ng-template>
+
+<ng-template #userNotClickable let-product>
+  <span>{{ product.numofUsers || 0 }} </span>
+</ng-template>

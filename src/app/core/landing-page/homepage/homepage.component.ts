@@ -1,19 +1,20 @@
-import { Subscription } from 'rxjs';
-import { ChangeDetectorRef, Component, OnInit, OnDestroy } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { AuthService } from '@core/auth/auth.service';
 import {
   AboutFuture,
   ProductCatalogEditor,
+  ProductCatalogProductSet,
   ProductCatalogTab,
+  ProductCatalogTabs,
+  TabsFlow,
 } from '@core/modals';
-import { CommonService } from '@core/services';
+import { CommonService, ProductCatalogService } from '@core/services';
 import {
   LOCAL_KEYS,
   PRODUCT_CATALOG_TABS,
 } from '@core/util/constants/constants';
-import { AboutComponent } from '@home/pages/about/about/about.component';
 import { TranslateService } from '@ngx-translate/core';
 import { AboutsComponent } from '../abouts/abouts.component';
 
@@ -29,16 +30,28 @@ export class HomepageComponent implements OnInit {
   future: AboutFuture[];
   copyRight: string;
   loginStatus: boolean = false;
-  selectedTab: string = PRODUCT_CATALOG_TABS.EDITOR;
+  selectedTab: PRODUCT_CATALOG_TABS = PRODUCT_CATALOG_TABS.EDITOR;
   selectedProductId: string = '';
   selectedEditorId: string = '';
   editorData: ProductCatalogEditor = null;
 
-  productCatalogTabs: string[] = [
-    PRODUCT_CATALOG_TABS.EDITOR,
-    PRODUCT_CATALOG_TABS.PRODUCT,
+  productCatalogTabs: ProductCatalogTabs[] = [
+    { title: PRODUCT_CATALOG_TABS.EDITOR, alias: null },
+    { title: PRODUCT_CATALOG_TABS.PRODUCT, alias: null },
   ];
   accessToken: string = null;
+  from: PRODUCT_CATALOG_TABS;
+  productInfo: ProductCatalogProductSet;
+  editorInfo: ProductCatalogEditor;
+  editorSet: PRODUCT_CATALOG_TABS[] = [
+    PRODUCT_CATALOG_TABS.EDITOR,
+    PRODUCT_CATALOG_TABS.EDITOR_DETAIL,
+    PRODUCT_CATALOG_TABS.PRODUCT_DETAIL,
+  ];
+  productSet: PRODUCT_CATALOG_TABS[] = [
+    PRODUCT_CATALOG_TABS.PRODUCT,
+    PRODUCT_CATALOG_TABS.PRODUCT_DETAIL,
+  ];
 
   constructor(
     private translate: TranslateService,
@@ -46,8 +59,9 @@ export class HomepageComponent implements OnInit {
     private router: Router,
     private cs: CommonService,
     private auth: AuthService,
-    private cd: ChangeDetectorRef
-  ) {}
+    private cd: ChangeDetectorRef,
+    private pc: ProductCatalogService
+  ) { }
   ngOnInit(): void {
     this.userLang = localStorage.getItem('language')
       ? localStorage.getItem('language')
@@ -57,6 +71,7 @@ export class HomepageComponent implements OnInit {
     this.currLang = this.userLang;
     this.loginStatus = this.getLoginStatus();
     this.fetchAboutData();
+    this.allStream();
   }
 
   login() {
@@ -118,12 +133,36 @@ export class HomepageComponent implements OnInit {
     return false;
   }
 
+  get isInEditorSet(): boolean {
+    return this.editorSet.includes(this.selectedTab);
+  }
+
   get isEditor(): boolean {
     return this.selectedTab === PRODUCT_CATALOG_TABS.EDITOR;
   }
 
+  get isEditorDetail(): boolean {
+    return this.selectedTab === PRODUCT_CATALOG_TABS.EDITOR_DETAIL;
+  }
+
+  get isProductDetail(): boolean {
+    return this.selectedTab === PRODUCT_CATALOG_TABS.PRODUCT_DETAIL;
+  }
+
+  get isInProductSet(): boolean {
+    return this.productSet.includes(this.selectedTab);
+  }
+
   get isProduct(): boolean {
     return this.selectedTab === PRODUCT_CATALOG_TABS.PRODUCT;
+  }
+
+  get fromProduct(): boolean {
+    return this.from === PRODUCT_CATALOG_TABS.PRODUCT;
+  }
+
+  get fromEditor(): boolean {
+    return this.from === PRODUCT_CATALOG_TABS.EDITOR;
   }
 
   private getLoginStatus(): boolean {
@@ -158,5 +197,51 @@ export class HomepageComponent implements OnInit {
     this.editorData = null;
   }
 
-  ngOnDestroy(): void {}
+  allStream(): void {
+    this.pc.getNewTab().subscribe((tabFlow: TabsFlow) => {
+      this.from = tabFlow.from;
+      this.productCatalogTabs.push({ title: tabFlow.tabName, alias: tabFlow.alias });
+      const uniqueProductCatalogTabs: ProductCatalogTabs[] = [];
+      this.productCatalogTabs.forEach((tab: ProductCatalogTabs) => {
+        if (!uniqueProductCatalogTabs.some((t: ProductCatalogTabs) => t.title === tab.title))
+          uniqueProductCatalogTabs.push(this.getLatestTabMatchingWithTitle(tab));
+      })
+      this.productCatalogTabs = uniqueProductCatalogTabs;
+      this.selectedTab = tabFlow.tabName;
+    });
+  }
+
+  private getLatestTabMatchingWithTitle(tab: ProductCatalogTabs): ProductCatalogTabs {
+    let lastTab: ProductCatalogTabs = tab;
+
+    for (let i = this.productCatalogTabs.length; i > 0; i--) {
+      if (this.productCatalogTabs?.[i]?.title === tab.title) {
+        lastTab = this.productCatalogTabs[i];
+        break;
+      }
+    }
+    return lastTab;
+  }
+
+  closeTab(index: number): void {
+    this.productCatalogTabs.splice(index, 1);
+    this.selectedTab = this.afterCloseTab();
+
+  }
+
+  private afterCloseTab(): PRODUCT_CATALOG_TABS {
+    if (this.productCatalogTabs.some((tab: ProductCatalogTabs) => tab.title === this.selectedTab))
+      return this.selectedTab;
+    if (this.productCatalogTabs.some((tab: ProductCatalogTabs) => tab.title === this.from)) return this.from;
+    if (this.editorSet.includes(this.selectedTab))
+      return PRODUCT_CATALOG_TABS.EDITOR;
+    return PRODUCT_CATALOG_TABS.PRODUCT;
+  }
+
+  changeTab(tabTitle: PRODUCT_CATALOG_TABS): void {
+    this.selectedTab = tabTitle;
+    this.cd.detectChanges();
+  }
+
+  ngOnDestroy(): void { }
 }

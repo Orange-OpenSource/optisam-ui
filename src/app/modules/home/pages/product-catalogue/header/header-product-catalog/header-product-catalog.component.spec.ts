@@ -2,7 +2,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialogModule } from '@angular/material/dialog';
 import { TranslateModule } from '@ngx-translate/core';
-
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { HeaderProductCatalogComponent } from './header-product-catalog.component';
 
 describe('HeaderProductCatalogComponent', () => {
@@ -12,7 +12,12 @@ describe('HeaderProductCatalogComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [HeaderProductCatalogComponent],
-      imports: [HttpClientTestingModule,MatDialogModule,TranslateModule.forRoot()],
+      imports: [
+        HttpClientTestingModule,
+        MatDialogModule,
+        TranslateModule.forRoot(),
+        MatSnackBarModule,
+      ],
     }).compileComponents();
   });
 

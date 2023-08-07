@@ -1,20 +1,32 @@
+import { PRODUCT_CATALOG_TABS } from '@core/util/constants/constants';
+import { fixErrorResponse } from '@core/util/common.functions';
+import { Observable } from 'rxjs';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {
   Editor,
+  EditorFiltersResponse,
   EditorNamesResponse,
   ErrorResponse,
   LandingEditorParams,
+  LandingProductParams,
   OpenSourceType,
+  ProductCatalogEditor,
   ProductCatalogEditorListParams,
   ProductCatalogEditorListResponse,
   ProductCatalogManagementEditorListParams,
   ProductCatalogProduct,
+  ProductCatalogProductListResponse,
+  ProductCatalogProductSet,
   ProductCatalogProductsListResponse,
+  ProductFilters,
+  ProductFiltersResponse,
+  TabsFlow,
 } from '@core/modals';
-import { BehaviorSubject, Observable, Subject, throwError, of } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { BehaviorSubject, Subject, throwError, of } from 'rxjs';
+import { catchError, debounceTime } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
+import * as EDITOR_FILTER_MOCK from '@core/util/mock-data/editor-filters.json';
 
 interface URL {
   productList: string;
@@ -29,6 +41,8 @@ interface URL {
   uploadFile: string;
   uploadData: string;
   editorNames: string;
+  editorFilter: string;
+  productFilter: string;
 }
 
 const BASE_URL: string = environment.API_PRODUCT_CATALOG;
@@ -43,10 +57,22 @@ export class ProductCatalogService {
     new BehaviorSubject<string>('');
   private activityLogVisibility: BehaviorSubject<boolean> =
     new BehaviorSubject<boolean>(true);
+
+  public newTab: Subject<TabsFlow> = new Subject<TabsFlow>();
+  private productListingData: Subject<number> = new Subject<number>();
+  productListingCacheData: {
+    productList: ProductCatalogProductSet[];
+    currentPage: number;
+    totalProducts: number;
+    productFilters: ProductFilters;
+  } = null;
+
   URLs: URL = {
     productList: `${BASE_URL}/catalog/products`,
     addProduct: `${BASE_URL}/api/v1/catalog/product`,
     editorList: `${BASE_URL}/catalog/editor`,
+    editorFilter: `${BASE_URL}/catalog/editorfilters`,
+    productFilter: `${BASE_URL}/catalog/productfilters`,
     editorNames: `${BASE_URL}/catalog/editornames`,
     editorsList: `${BASE_URL}/catalog/editors`,
     editorByIdList: `${BASE_URL}/catalog/editor`,
@@ -62,7 +88,23 @@ export class ProductCatalogService {
     'Content-Type': 'application/json',
   });
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
+
+  addNewTab(data: TabsFlow): void {
+    this.newTab.next(data);
+  }
+
+  getNewTab(): Observable<TabsFlow> {
+    return this.newTab.asObservable();
+  }
+
+  setProductListingData(number): void {
+    this.productListingData.next(number);
+  }
+
+  getPrevProductListingData(): Observable<number> {
+    return this.productListingData.asObservable();
+  }
 
   getProductsList(
     input: any
@@ -76,9 +118,7 @@ export class ProductCatalogService {
           params,
         }
       )
-      .pipe(
-        catchError((e) => (e?.error ? throwError(e.error) : throwError(e)))
-      );
+      .pipe(catchError(fixErrorResponse));
   }
 
   addProduct(
@@ -88,9 +128,7 @@ export class ProductCatalogService {
       .post<ProductCatalogProduct>(this.URLs.addProduct, body, {
         headers: this.defaultHeaders,
       })
-      .pipe(
-        catchError((e) => (e?.error ? throwError(e.error) : throwError(e)))
-      );
+      .pipe(catchError(fixErrorResponse));
   }
 
   getEditorList(
@@ -100,9 +138,7 @@ export class ProductCatalogService {
     for (const key in input) params = params.set(key, input[key]);
     return this.http
       .get<ProductCatalogEditorListResponse>(this.URLs.editorList, { params })
-      .pipe(
-        catchError((e) => (e?.error ? throwError(e.error) : throwError(e)))
-      );
+      .pipe(catchError(fixErrorResponse));
   }
 
   getEditors(
@@ -116,46 +152,50 @@ export class ProductCatalogService {
         this.URLs.editorsList,
         { params }
       )
-      .pipe(
-        catchError((e) => (e?.error ? throwError(e.error) : throwError(e)))
-      );
+      .pipe(catchError(fixErrorResponse));
   }
 
   getEditorsLanding(
     inputs: LandingEditorParams
   ): Observable<ErrorResponse | ProductCatalogEditorListResponse> {
-    const url = this.URLs.editorsList;
     let params: HttpParams = new HttpParams();
-
     for (let key in inputs) params = params.set(key, inputs[key]);
     return this.http
-      .get<ErrorResponse | ProductCatalogEditorListResponse>(url, { params })
-      .pipe(
-        catchError((e) => (e?.error ? throwError(e.error) : throwError(e)))
-      );
+      .get<ErrorResponse | ProductCatalogEditorListResponse>(
+        this.URLs.editorsList,
+        { params }
+      )
+      .pipe(catchError(fixErrorResponse));
+  }
+
+  getProductLanding(
+    inputs: LandingProductParams
+  ): Observable<ErrorResponse | ProductCatalogProductListResponse> {
+    let params: HttpParams = new HttpParams();
+    for (let key in inputs) params = params.set(key, inputs[key]);
+    return this.http
+      .get<ErrorResponse | ProductCatalogProductListResponse>(
+        this.URLs.productList,
+        { params }
+      )
+      .pipe(catchError(fixErrorResponse));
   }
 
   filterEditors(input: any) {
     let params = new HttpParams();
     for (const key in input) params = params.set(key, input[key]);
+
     return this.http
       .get<any>(this.URLs.editorsList, { params })
-      .pipe(
-        catchError((e) => (e?.error ? throwError(e.error) : throwError(e)))
-      );
+      .pipe(catchError(fixErrorResponse));
   }
 
   getEditorById(id: any) {
     const url = `${this.URLs.editorByIdList}?id=${id}`;
-    return this.http
-      .get<any>(url)
-      .pipe(
-        catchError((e) => (e?.error ? throwError(e.error) : throwError(e)))
-      );
+    return this.http.get<any>(url).pipe(catchError(fixErrorResponse));
   }
 
   createEditor(editor: Editor) {
-    console.log(JSON.stringify(editor));
     const url = this.URLs.createEditor;
     const token = localStorage.getItem('access_token');
     const headers = new HttpHeaders({
@@ -164,18 +204,12 @@ export class ProductCatalogService {
     });
     return this.http
       .post<any>(url, editor, { headers })
-      .pipe(
-        catchError((e) => (e?.error ? throwError(e.error) : throwError(e)))
-      );
+      .pipe(catchError(fixErrorResponse));
   }
 
   updateProduct(data: any) {
     const url = this.URLs.addProduct;
-    return this.http
-      .put<any>(url, data)
-      .pipe(
-        catchError((e) => (e?.error ? throwError(e.error) : throwError(e)))
-      );
+    return this.http.put<any>(url, data).pipe(catchError(fixErrorResponse));
   }
 
   updateEditor(editor: Editor) {
@@ -188,18 +222,12 @@ export class ProductCatalogService {
 
     return this.http
       .put<any>(url, editor, { headers })
-      .pipe(
-        catchError((e) => (e?.error ? throwError(e.error) : throwError(e)))
-      );
+      .pipe(catchError(fixErrorResponse));
   }
 
   deleteEditor(id: any) {
     const url = `${this.URLs.deleteEditor}/${id}`;
-    return this.http
-      .delete<any>(url)
-      .pipe(
-        catchError((e) => (e?.error ? throwError(e.error) : throwError(e)))
-      );
+    return this.http.delete<any>(url).pipe(catchError(fixErrorResponse));
   }
 
   uploadFile(formData: any): Observable<any> {
@@ -211,20 +239,14 @@ export class ProductCatalogService {
   deleteProduct(id: any) {
     console.log(id);
     const url = `${this.URLs.addProduct}/${id}`;
-    return this.http
-      .delete<any>(url)
-      .pipe(
-        catchError((e) => (e?.error ? throwError(e.error) : throwError(e)))
-      );
+    return this.http.delete<any>(url).pipe(catchError(fixErrorResponse));
   }
 
   getProductById(id: any): Observable<ProductCatalogProduct | ErrorResponse> {
     const url = `${this.URLs.addProduct}/${id}`;
     return this.http
       .get<ProductCatalogProduct>(url)
-      .pipe(
-        catchError((e) => (e?.error ? throwError(e.error) : throwError(e)))
-      );
+      .pipe(catchError(fixErrorResponse));
   }
 
   getProductByIdV2(id: string): Observable<ProductCatalogProduct> {
@@ -267,9 +289,7 @@ export class ProductCatalogService {
     const params: HttpParams = new HttpParams().set('id', id);
     return this.http
       .get<ProductCatalogProduct>(this.URLs.getProduct, { params })
-      .pipe(
-        catchError((e) => (e?.error ? throwError(e.error) : throwError(e)))
-      );
+      .pipe(catchError(fixErrorResponse));
   }
 
   setActivityLogError(string: string): void {
@@ -302,8 +322,18 @@ export class ProductCatalogService {
   getEditorNames(): Observable<EditorNamesResponse | ErrorResponse> {
     return this.http
       .get<EditorNamesResponse | ErrorResponse>(this.URLs.editorNames)
-      .pipe(
-        catchError((e) => (e?.error ? throwError(e.error) : throwError(e)))
-      );
+      .pipe(catchError(fixErrorResponse));
+  }
+
+  getEditorFilters(): Observable<ErrorResponse | EditorFiltersResponse> {
+    return this.http
+      .get<EditorFiltersResponse | ErrorResponse>(this.URLs.editorFilter)
+      .pipe(catchError(fixErrorResponse));
+  }
+
+  getProductFilters(): Observable<ErrorResponse | ProductFiltersResponse> {
+    return this.http
+      .get<ProductFiltersResponse | ErrorResponse>(this.URLs.productFilter)
+      .pipe(catchError(fixErrorResponse));
   }
 }

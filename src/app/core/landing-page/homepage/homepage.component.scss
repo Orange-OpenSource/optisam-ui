@@ -5,12 +5,11 @@
 
 .content {
   background-color: white;
-  padding: 16px;
-  padding-top: 71px;
+  padding: 0 16px;
 }
 
 .left-menu {
-  padding: 16px;
+  padding: 0 16px;
 }
 
 ::ng-deep .mat-menu-content {
@@ -100,4 +99,45 @@ mat-toolbar {
 .mat-tab-nav-bar,
 .mat-tab-header {
   border-bottom: none;
+}
+
+.tab-anchor {
+  position: relative;
+  .close-tab {
+    display: none;
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-size: 1em;
+    height: 18px;
+    width: 18px;
+    border-radius: 50%;
+    // border: 1px solid #ccc;
+    justify-content: center;
+    align-items: center;
+    mat-icon {
+      font-size: 19px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+  & {
+    .close-tab {
+      display: flex;
+      padding: 3px;
+      border-radius: 50%;
+      transition: background-color 100ms;
+      cursor: pointer;
+      mat-icon {
+        font-size: 1em;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      &:hover {
+        background-color: #00000067;
+      }
+    }
+  }
 }

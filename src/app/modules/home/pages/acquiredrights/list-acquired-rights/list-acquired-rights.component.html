@@ -55,7 +55,6 @@
         [advanceSearchModel]="advanceSearchModel"
         (advFilterEvent)="advSearchTrigger($event)"
       ></app-advance-search>
-
       <mat-table
         [dataSource]="myLicensedDataSource"
         matSort
@@ -110,7 +109,8 @@
               (click)="
                 openDialog(
                   acquired_rights.swid_tag,
-                  acquired_rights.product_name
+                  acquired_rights.product_name,
+                  acquired_rights.SKU
                 )
               "
             >
@@ -124,7 +124,7 @@
             >{{ "Version" | translate }}
           </mat-header-cell>
           <mat-cell *matCellDef="let acquired_rights"
-            >{{ acquired_rights.version || "-" }}
+            >{{ acquired_rights.version || " " }}
           </mat-cell>
         </ng-container>
 
@@ -173,6 +173,45 @@
           >
         </ng-container>
 
+        <ng-container matColumnDef="available_licenses">
+          <mat-header-cell *matHeaderCellDef>
+            {{ "Available Licenses" | translate }}</mat-header-cell
+          >
+          <mat-cell
+            *matCellDef="let acquired_rights"
+            [matTooltip]="getToolTipDataAcc(acquired_rights)"
+            [matTooltipClass]="'custom-tooltip'"
+          >
+            {{ acquired_rights.available_licenses || 0 }}</mat-cell
+          >
+        </ng-container>
+
+        <ng-container matColumnDef="shared_licenses">
+          <mat-header-cell *matHeaderCellDef>
+            {{ "Shared Licenses" | translate }}</mat-header-cell
+          >
+          <mat-cell
+            *matCellDef="let acquired_rights"
+            [matTooltip]="getToolTipSharedDataAcc(acquired_rights)"
+            [matTooltipClass]="'custom-tooltip'"
+          >
+            {{ acquired_rights.shared_licenses || 0 }}</mat-cell
+          >
+        </ng-container>
+
+        <ng-container matColumnDef="recieved_licenses">
+          <mat-header-cell *matHeaderCellDef>
+            {{ "Received Licenses" | translate }}</mat-header-cell
+          >
+          <mat-cell
+            *matCellDef="let acquired_rights"
+            [matTooltip]="getToolTipReceivedDataAcc(acquired_rights)"
+            [matTooltipClass]="'custom-tooltip'"
+          >
+            {{ acquired_rights.recieved_licenses || 0 }}</mat-cell
+          >
+        </ng-container>
+
         <ng-container matColumnDef="avg_licenes_unit_price">
           <mat-header-cell
             *matHeaderCellDef
@@ -187,7 +226,7 @@
           >
         </ng-container>
 
-        <ng-container matColumnDef="action">
+        <ng-container matColumnDef="actions">
           <mat-header-cell *matHeaderCellDef>{{
             "Action" | translate
           }}</mat-header-cell>
@@ -203,6 +242,7 @@
               id="deleteBtn_{{ i }}"
               class="action-icon dlt"
               matTooltip="{{ 'Delete Acquired Right' | translate }}"
+              *ngIf="acquired_rights?.shared_licenses === 0"
               (click)="
                 deleteAcqRightsConfirmation(
                   acquired_rights,
@@ -211,11 +251,65 @@
               "
               >delete
             </mat-icon>
+
+            <mat-icon
+              id="deleteBtn_{{ i }}"
+              class="action-icon dlt"
+              matTooltip="{{ 'Delete Acquired Right' | translate }}"
+              *ngIf="acquired_rights?.shared_licenses > 0"
+              (click)="
+                deleteAcqRightsConfirmation(
+                  acquired_rights,
+                  deleteShareConfirmationDialog
+                )
+              "
+              >delete
+            </mat-icon>
+
+            <mat-icon
+              id="shareBtn_{{ i }}"
+              class="action-icon dlt"
+              matTooltip="{{ 'Share Acquired Right' | translate }}"
+              (click)="shareAccquiredRight(acquired_rights)"
+              >share
+            </mat-icon>
           </mat-cell>
         </ng-container>
         <ng-template #deleteConfirmationDialog>
           <mat-dialog-content>
-            <p>{{ "DELETE_ACQRIGHT_CONFIRM_MSG" | translate }}</p>
+            <h6>{{ "DELETE_ACQRIGHT_CONFIRM_MSG" | translate }}</h6>
+          </mat-dialog-content>
+          <mat-dialog-actions align="center">
+            <button
+              mat-button
+              [mat-dialog-close]="true"
+              class="btn-two"
+              (click)="deleteProductAcqRights(successDialog, errorDialog)"
+              cdkFocusInitial
+            >
+              <span
+                class="spinner-border spinner-border-sm"
+                role="status"
+                aria-hidden="true"
+                *ngIf="_deleteInProgress"
+              ></span>
+              {{ "OK" | translate }}
+            </button>
+            <button
+              mat-button
+              [mat-dialog-close]="true"
+              class="btn-three"
+              cdkFocusInitial
+            >
+              {{ "Cancel" | translate }}
+            </button>
+          </mat-dialog-actions>
+        </ng-template>
+
+        <ng-template #deleteShareConfirmationDialog>
+          <mat-dialog-content>
+            <h6>{{ "DELETE_ACQRIGHT_CONFIRM_MSG" | translate }}</h6>
+            <mat-hint>{{ "DELETE_ACQRIGHT_HINT_MSG" | translate }}</mat-hint>
           </mat-dialog-content>
           <mat-dialog-actions align="center">
             <button
@@ -301,7 +395,8 @@
               (click)="
                 openDialog(
                   acquired_rights.swid_tag,
-                  acquired_rights.product_name
+                  acquired_rights.product_name,
+                  acquired_rights.SKU
                 )
               "
             >
@@ -315,7 +410,7 @@
             >{{ "Version" | translate }}
           </mat-header-cell>
           <mat-cell *matCellDef="let acquired_rights"
-            >{{ acquired_rights.version || "-" }}
+            >{{ acquired_rights.version || " " }}
           </mat-cell>
         </ng-container>
 
@@ -512,6 +607,45 @@
             >
           </ng-container>
 
+          <ng-container matColumnDef="available_licenses">
+            <mat-header-cell *matHeaderCellDef>
+              {{ "Available Licenses" | translate }}</mat-header-cell
+            >
+            <mat-cell
+              *matCellDef="let aggregation"
+              [matTooltip]="getToolTipDataAcc(aggregation)"
+              matTooltipClass="custom-tooltip"
+            >
+              {{ aggregation.available_licenses || 0 }}</mat-cell
+            >
+          </ng-container>
+
+          <ng-container matColumnDef="shared_licenses">
+            <mat-header-cell *matHeaderCellDef>
+              {{ "Shared Licenses" | translate }}</mat-header-cell
+            >
+            <mat-cell
+              *matCellDef="let aggregation"
+              [matTooltip]="getToolTipSharedDataAcc(aggregation)"
+              [matTooltipClass]="'custom-tooltip'"
+            >
+              {{ aggregation.shared_licenses || 0 }}</mat-cell
+            >
+          </ng-container>
+
+          <ng-container matColumnDef="recieved_licenses">
+            <mat-header-cell *matHeaderCellDef>
+              {{ "Received Licenses" | translate }}</mat-header-cell
+            >
+            <mat-cell
+              *matCellDef="let aggregation"
+              [matTooltip]="getToolTipReceivedDataAcc(aggregation)"
+              [matTooltipClass]="'custom-tooltip'"
+            >
+              {{ aggregation.recieved_licenses || 0 }}</mat-cell
+            >
+          </ng-container>
+
           <ng-container matColumnDef="avg_unit_price">
             <mat-header-cell *matHeaderCellDef mat-sort-header="avg_unit_price">
               {{ "Unit price" | translate }}</mat-header-cell
@@ -536,6 +670,7 @@
               <mat-icon
                 class="action-icon dlt"
                 matTooltip="Delete Aggregated Right"
+                *ngIf="aggregation?.shared_licenses === 0"
                 (click)="
                   deleteAggregationConfirmation(
                     aggregation,
@@ -544,12 +679,68 @@
                 "
                 >delete</mat-icon
               >
+              <mat-icon
+                class="action-icon dlt"
+                matTooltip="Delete Aggregated Right"
+                *ngIf="aggregation?.shared_licenses > 0"
+                (click)="
+                  deleteAggregationConfirmation(
+                    aggregation,
+                    deleteConfirmationShareDialogMessage
+                  )
+                "
+                >delete</mat-icon
+              >
+              <mat-icon
+                class="action-icon dlt"
+                matTooltip="{{ 'Share Acquired Right' | translate }}"
+                (click)="shareAggregationRight(aggregation)"
+                >share
+              </mat-icon>
               <ng-template #deleteConfirmationDialog>
                 <mat-dialog-content>
-                  <p>
+                  <h6>
                     {{ "DELETE_AGGREGATEDRIGHTS_CONFIRM_MSG" | translate }}-
                     {{ aggregation.sku }}
-                  </p>
+                  </h6>
+                </mat-dialog-content>
+                <mat-dialog-actions align="center">
+                  <button
+                    mat-button
+                    [mat-dialog-close]="true"
+                    class="btn-two"
+                    (click)="
+                      deleteProductAggregation(successAggDialog, errorAggDialog)
+                    "
+                    cdkFocusInitial
+                  >
+                    <span
+                      class="spinner-border spinner-border-sm"
+                      role="status"
+                      aria-hidden="true"
+                      *ngIf="_deleteInProgress"
+                    ></span>
+                    {{ "OK" | translate }}
+                  </button>
+                  <button
+                    mat-button
+                    [mat-dialog-close]="true"
+                    class="btn-three"
+                    cdkFocusInitial
+                  >
+                    {{ "Cancel" | translate }}
+                  </button>
+                </mat-dialog-actions>
+              </ng-template>
+              <ng-template #deleteConfirmationShareDialogMessage>
+                <mat-dialog-content>
+                  <h6>
+                    {{ "DELETE_AGGREGATEDRIGHTS_CONFIRM_MSG" | translate }}-
+                    {{ aggregation.sku }}
+                  </h6>
+                  <mat-hint>{{
+                    "DELETE_ACQRIGHT_HINT_MSG" | translate
+                  }}</mat-hint>
                 </mat-dialog-content>
                 <mat-dialog-actions align="center">
                   <button

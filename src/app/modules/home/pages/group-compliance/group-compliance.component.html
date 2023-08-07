@@ -1,0 +1,53 @@
+<div class="col-md-12 group-compliance-main">
+  <div class="group-selection" fxLayout="row wrap">
+    <mat-form-field appearance="outline" class="group-selection-selector">
+      <mat-label>{{ "Select Group" | translate }}</mat-label>
+      <mat-select
+        [(ngModel)]="simulateObj.groupName"
+        [disabled]="false"
+        (selectionChange)="
+          selectionChanged($event, 'group');
+          softExpend.selectionChanged($event);
+          groupComp.selectionChanged($event, 'group')
+        "
+      >
+        <mat-option value=""
+          >--
+          {{ "AGGREGATIONS.TEXTS.SELECT_GROUPS" | translate }}
+          --</mat-option
+        >
+        <mat-option *ngFor="let group of groupList" [value]="group">{{
+          group.name
+        }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <ng-container *ngIf="selectedScopeNames?.length">
+      <mat-label class="title"
+        >{{ "Selected Entities" | translate }}:</mat-label
+      >
+      <div
+        class="entity-label"
+        *ngFor="let scope of selectedScopeNames; let i = index"
+      >
+        {{ scope }}
+      </div>
+    </ng-container>
+  </div>
+  <div class="mat-elevation-z3 main-container">
+    <app-software-expenditure
+      [selectedScopeCodes]="selectedScopeCodes"
+      [selectedScopeNames]="selectedScopeNames"
+      #softExpend
+    ></app-software-expenditure>
+    <app-compliance-chart
+      [selectedScopeCodes]="selectedScopeCodes"
+      [selectedScopeNames]="selectedScopeNames"
+      #groupComp
+    ></app-compliance-chart>
+    <app-underusage
+      [selectedScopeCodes]="selectedScopeCodes"
+      [editor]="selectedEditor"
+      #underUsage
+    ></app-underusage>
+  </div>
+</div>

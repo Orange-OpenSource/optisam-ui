@@ -1,0 +1,25 @@
+<h2 mat-dialog-title *ngIf="data?.productType === individual">
+  {{ "USER_DETAILS" | translate }}: {{ data?.product?.editor }}&#8594;{{
+    data?.product?.name
+  }}
+  <ng-container *ngIf="data?.product?.version">
+    &#8594;{{ data?.product?.version }} </ng-container
+  >({{ data?.productType | translate }})
+</h2>
+
+<h2 mat-dialog-title *ngIf="data?.productType === aggregation">
+  {{ "USER_DETAILS" | translate }}: {{ data?.product?.aggregation_name }}({{
+    data?.productType | translate
+  }})
+</h2>
+
+<mat-dialog-content>
+  <app-user-content></app-user-content>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <div fxLayout="row" fxLayoutAlign="end" fxLayoutGap="5px" fxFill>
+    <button mat-button-raised class="btn primary-btn" mat-dialog-close>
+      {{ "Close" | translate }}
+    </button>
+  </div>
+</mat-dialog-actions>

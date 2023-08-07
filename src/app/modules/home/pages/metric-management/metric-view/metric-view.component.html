@@ -67,7 +67,8 @@
               id="editBtn_{{ i }}"
               class="action-icon"
               matTooltip="{{ 'Edit Metric' | translate }}"
-              (click)="editMetrics(element)"
+              (click)="editMetrics(element)" 
+              [ngClass]="{'disable': element.default}"           
               >edit</mat-icon
             >
             <mat-icon
@@ -77,6 +78,7 @@
               (click)="
                 deleteMetricConfirmation(element, deleteConfirmationDialog)
               "
+              [ngClass]="{'disable':element.default}"
               >delete</mat-icon
             >
           </mat-cell>

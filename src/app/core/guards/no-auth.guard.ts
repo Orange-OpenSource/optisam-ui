@@ -13,7 +13,6 @@ export class NoAuthGuard implements CanActivate {
       return true;
     } else {
       const token = localStorage.getItem('access_token').split('.')[1];
-      console.log('test2', );
       if (JSON.parse(atob(token)).exp * 1000 < Date.now()) {
         return true;
       }

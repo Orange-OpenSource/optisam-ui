@@ -51,7 +51,7 @@
             placeholder="{{ 'Email' | translate }}"
             [formControl]="user_id"
           />
-          <mat-hint>{{ "Errors appear instantly!" | translate }}</mat-hint>
+          <!-- <mat-hint>{{ "Errors appear instantly!" | translate }}</mat-hint> -->
           <mat-error
             *ngIf="user_id.hasError('email') && !user_id.hasError('required')"
           >

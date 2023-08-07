@@ -1,3 +1,4 @@
+import { SubSink } from 'subsink';
 import {
   Component,
   Inject,
@@ -18,9 +19,18 @@ import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { MetricService } from 'src/app/core/services/metric.service';
 import { ProductService } from 'src/app/core/services/product.service';
-import { Metric } from '@core/modals';
+import {
+  ErrorResponse,
+  ListProductQueryParams,
+  Metric,
+  ProductListResponse,
+} from '@core/modals';
 import { TranslateService } from '@ngx-translate/core';
 import { ISOFormat } from '@core/util/common.functions';
+import {
+  DashboardEditorListParams,
+  DashboardEditorListResponse,
+} from '@core/modals';
 
 @Component({
   selector: 'app-edit-acquired-right',
@@ -68,8 +78,11 @@ export class EditAcquiredRightComponent implements OnInit, AfterViewInit {
   ];
   currentMetricType: string;
   disabledMetricNameList: string[] = [];
+  temporarydisabledMetricList: string[] = [];
   checkFile: Boolean;
   updateFile: Boolean;
+  isCostOptimizationVisible: boolean = false;
+  subs: SubSink = new SubSink();
 
   constructor(
     private metricService: MetricService,
@@ -88,7 +101,6 @@ export class EditAcquiredRightComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.skuForm = new FormGroup({
       sku: new FormControl({ value: '', disabled: true }),
-      repartition: new FormControl(false),
     });
 
     this.contractForm = new FormGroup({
@@ -99,6 +111,7 @@ export class EditAcquiredRightComponent implements OnInit, AfterViewInit {
 
     this.productForm = new FormGroup({
       // Product Name, Version, Editor: Allow all characters except _ & allow just one space between words only
+      repartition: new FormControl(false),
       product_name: new FormControl('', [
         Validators.required,
         Validators.pattern(/^\S+(?: \S+)*$/),
@@ -161,10 +174,17 @@ export class EditAcquiredRightComponent implements OnInit, AfterViewInit {
       .subscribe((res) => {
         this.filteredVersionsList = res;
       });
+
+    this.subs.add(
+      this.productService
+        .isCostOptimizationVisible()
+        .subscribe((status: boolean) => {
+          this.isCostOptimizationVisible = status;
+        })
+    );
   }
 
   ngAfterViewInit(): void {
-    console.log('after view Initi');
     // this.metricClickHandler(true, )
   }
 
@@ -194,16 +214,18 @@ export class EditAcquiredRightComponent implements OnInit, AfterViewInit {
 
   // Get editors list
   listEditors() {
-    const query = '?scopes=' + this.currentScope;
-    this.productService.getDashboardEditorList(query).subscribe(
-      (res) => {
+    const param: DashboardEditorListParams = {
+      scopes: this.currentScope,
+    };
+    this.productService.getDashboardEditorList(param).subscribe(
+      (res: DashboardEditorListResponse) => {
         this.editorsList = res.editors || [];
         this.filteredEditorsList = this._filter(
           'editor',
           this.product_editor.value
         );
       },
-      (err) => {
+      (err: ErrorResponse) => {
         console.log('Some error occured! Could not fetch editors list.');
       }
     );
@@ -211,10 +233,12 @@ export class EditAcquiredRightComponent implements OnInit, AfterViewInit {
 
   // Get products list
   listProducts() {
-    const query =
-      '?scopes=' + this.currentScope + '&editor=' + this.product_editor.value;
+    const query: ListProductQueryParams = {
+      scopes: this.currentScope,
+      editor: this.product_editor.value,
+    };
     this.productService.getProductList(query).subscribe(
-      (res) => {
+      (res: ProductListResponse) => {
         this.productsList = res.products || [];
         this.displayProductsList = [
           ...new Set(this.productsList.map((prod) => prod.name)),
@@ -223,8 +247,9 @@ export class EditAcquiredRightComponent implements OnInit, AfterViewInit {
           'product',
           this.product_name.value
         );
+        this.listVersions();
       },
-      (err) => {
+      (err: ErrorResponse) => {
         console.log('Some error occured! Could not fetch products list.');
       }
     );
@@ -274,7 +299,6 @@ export class EditAcquiredRightComponent implements OnInit, AfterViewInit {
       this.corporateSource.setValue(this.data.corporate_sourcing_contract);
       this.softwareProvider.setValue(this.data.software_provider);
       this.listProducts();
-      this.listVersions();
       this.metrics.setValue((this.data.metric || '').split(','));
       this.licenses_acquired.setValue(this.data.acquired_licenses_number);
       this.unit_price.setValue(this.data.avg_licenes_unit_price);
@@ -292,17 +316,14 @@ export class EditAcquiredRightComponent implements OnInit, AfterViewInit {
       }
       this.comment.setValue(this.data.comment);
       this.file_name.setValue(this.data.file_name);
-      console.log(this.file_name);
 
       // this.selectedFile = this.fileInput.nativeElement.files[0];
       // console.log("New"+this.selectedFile);
 
       this.fileName = this.file_name.value || ' ';
-      console.log(this.file_name.value);
 
       // this.abc.setValue(this.data.file_data.value);
       // console.log("filedata"+ this.data.file_data.value);
-      console.log('filedata' + this.data.file_data);
 
       this.filteredEditorsList = this._filter(
         'editor',
@@ -322,8 +343,8 @@ export class EditAcquiredRightComponent implements OnInit, AfterViewInit {
   get sku() {
     return this.skuForm.get('sku');
   }
-  get repartition() {
-    return this.skuForm.get('repartition');
+  get repartition(): FormControl {
+    return this.productForm.get('repartition') as FormControl;
   }
   get orderingDate() {
     return this.contractForm.get('orderingDate');
@@ -521,7 +542,9 @@ export class EditAcquiredRightComponent implements OnInit, AfterViewInit {
     this._updateLoading = true;
     const body = {
       sku: this.sku.value,
-      repartition: this.repartition.value,
+      repartition: this.isCostOptimizationVisible
+        ? this.repartition.value
+        : false,
       product_name: this.product_name.value,
       version: this.product_version.value,
       product_editor: this.product_editor.value,
@@ -572,9 +595,50 @@ export class EditAcquiredRightComponent implements OnInit, AfterViewInit {
   changed(values: string[]) {
     setTimeout(() => {
       const ORACLE_TYPES = ['oracle.nup.standard', 'oracle.processor.standard'];
+      const nominativeUserType = 'user.nominative.standard';
+      const concurrentUserType = 'user.concurrent.standard';
 
       if (!this.metrics.value.length) this.disabledMetricNameList = [];
       // condition for if metric type is in the oracle block list-- ORACLE_TYPES
+      if (
+        this.metrics.value.length &&
+        this.currentMetricType === nominativeUserType
+      ) {
+        const selectedMetricName =
+          this.metrics.value[this.metrics.value.length - 1];
+        console.log(
+          this.currentMetricType,
+          selectedMetricName,
+          this.metricsList
+        );
+        this.disabledMetricNameList = this.metricsList
+          .filter(
+            (m) =>
+              m.type !== nominativeUserType || m.name !== selectedMetricName
+          )
+          .map((m) => m.name);
+        return;
+      }
+
+      if (
+        this.metrics.value.length &&
+        this.currentMetricType === concurrentUserType
+      ) {
+        const selectedMetricName =
+          this.metrics.value[this.metrics.value.length - 1];
+        console.log(
+          this.currentMetricType,
+          selectedMetricName,
+          this.metricsList
+        );
+        this.disabledMetricNameList = this.metricsList
+          .filter(
+            (m) =>
+              m.type !== concurrentUserType || m.name !== selectedMetricName
+          )
+          .map((m) => m.name);
+        return;
+      }
       if (
         this.metrics.value.length &&
         ORACLE_TYPES.includes(this.currentMetricType)
@@ -587,15 +651,29 @@ export class EditAcquiredRightComponent implements OnInit, AfterViewInit {
               m.type !== this.currentMetricType || m.name !== selectedMetricName
           )
           .map((m) => m.name.toString());
+        return;
       }
 
       if (
         this.metrics.value.length &&
-        !ORACLE_TYPES.includes(this.currentMetricType)
+        !ORACLE_TYPES.includes(this.currentMetricType) &&
+        this.currentMetricType !== nominativeUserType &&
+        this.currentMetricType !== concurrentUserType
       ) {
         this.disabledMetricNameList = this.metricsList
           .filter((m) => ORACLE_TYPES.includes(m.type))
           .map((m) => m.name.toString());
+
+        this.temporarydisabledMetricList = this.metricsList
+          .filter(
+            (x) =>
+              x.type === nominativeUserType || x.type === concurrentUserType
+          )
+          .map((m) => m?.name.toString());
+        this.temporarydisabledMetricList.forEach((x) => {
+          this.disabledMetricNameList.push(x);
+        });
+        return;
       }
 
       if (this.metrics.value.length <= 5) {
@@ -603,6 +681,8 @@ export class EditAcquiredRightComponent implements OnInit, AfterViewInit {
       } else {
         this.metrics.setValue(this.mySelections);
       }
+
+      this.enableCostOptimization();
     }, 0);
   }
 
@@ -724,6 +804,37 @@ export class EditAcquiredRightComponent implements OnInit, AfterViewInit {
       width: '30%',
       disableClose: true,
     });
+  }
+
+  enableCostOptimization(): void {
+    const METRIC_TYPE_LIST_FOR_COST_OPTIMIZATION: string[] = [
+      'attribute.sum.standard',
+      'instance.number.standard',
+    ];
+    const metricTypeList = this.metricsList
+      .filter((metric: Metric) =>
+        (this.metrics.value || []).includes(metric.name)
+      )
+      .map((metric: Metric) => metric.type);
+    // Check for enabling cost optimization for METRIC_TYPE_LIST_FOR_COST_OPTIMIZATION
+    if (!metricTypeList.length) {
+      // disable cost optimization
+      console.log('disable cost optimization');
+      this.productService.hideCostOptimization();
+      return;
+    }
+
+    // enable cost optimization
+    if (
+      metricTypeList.every((type: string) =>
+        METRIC_TYPE_LIST_FOR_COST_OPTIMIZATION.includes(type)
+      )
+    ) {
+      this.productService.showCostOptimization();
+      return;
+    }
+
+    this.productService.hideCostOptimization();
   }
 
   ngOnDestroy() {

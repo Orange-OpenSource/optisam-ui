@@ -1,0 +1,313 @@
+<div class="productName mat-elevation-z3" *ngIf="!_loading && separate">
+  <div fxLayout="row">
+    <div class="title-section">
+      <img
+        alt="{{ product?.name }}"
+        class="image-box"
+        src="{{
+          'https://pr-diod-ocp-fr01-dev-optisam-dev-optisam.oss.eu-west-0.prod-cloud-ocb.orange-business.com/optisam-dev/'
+        }}{{ product?.editorName.toLowerCase() }}.svg"
+        (error)="onImgError($event)"
+      />
+    </div>
+    <div class="detail-content">
+      <p>
+        {{ product?.name | trimText : 80 }}
+      </p>
+    </div>
+  </div>
+</div>
+<div
+  class="basic mat-elevation-z3"
+  fxLayout="column"
+  fxLayoutGap="0px"
+  *ngIf="!_loading"
+>
+  <div fxLayout="row" fxLayoutGap="5em">
+    <div fxFlex="25">
+      <p class="heading">
+        {{ "PRODUCT_CATALOG.PRODUCTS_LIST_COLUMNS.SWID_TAG" | translate }}
+      </p>
+    </div>
+    <div fxFlex="40">
+      <p class="text">
+        <span [matTooltip]="product?.productSwidTag">{{
+          product?.productSwidTag
+        }}</span>
+      </p>
+    </div>
+  </div>
+
+  <div fxLayout="row" fxLayoutGap="5em">
+    <div fxFlex="25">
+      <p class="heading">
+        {{
+          "PRODUCT_CATALOG.PRODUCTS_LIST_COLUMNS.GENERAL_INFORMATION"
+            | translate
+        }}
+      </p>
+    </div>
+    <div fxFlex="40">
+      <p class="text" [matTooltip]="product?.genearlInformation">
+        {{ product?.genearlInformation | trimText : 100 }}
+      </p>
+    </div>
+  </div>
+
+  <div fxLayout="row" fxLayoutGap="5em">
+    <div fxFlex="25">
+      <p class="heading">
+        {{ "PRODUCT_CATALOG.PRODUCTS_LIST_COLUMNS.CONTRACT_TIPS" | translate }}
+      </p>
+    </div>
+    <div fxFlex="40">
+      <p class="text">
+        <span [matTooltip]="product?.contracttTips">{{
+          product?.contracttTips
+        }}</span>
+      </p>
+    </div>
+  </div>
+
+  <div fxLayout="row" fxLayoutGap="5em">
+    <div fxFlex="25">
+      <p class="heading">
+        {{ "PRODUCT_CATALOG.PRODUCTS_LIST_COLUMNS.RECOMMENDATION" | translate }}
+      </p>
+    </div>
+    <div fxFlex="40">
+      <p
+        class="recommendation"
+        *ngIf="product?.recommendation"
+        [ngClass]="{
+          blacklisted: product?.recommendation == 'BLACKLISTED',
+          authorized: product?.recommendation == 'AUTHORIZED',
+          recommended: product?.recommendation == 'RECOMMENDED',
+          none: product?.recommendation == 'NONE'
+        }"
+      >
+        <span [matTooltip]="product?.recommendation?.toLowerCase()">{{
+          "PRODUCT_CATALOG_FILTER_RECOMMENDATION." + product?.recommendation
+            | translate
+        }}</span>
+      </p>
+      <p *ngIf="!product?.recommendation"></p>
+    </div>
+  </div>
+
+  <div fxLayout="row" fxLayoutGap="5em">
+    <div fxFlex="25">
+      <p class="heading">
+        {{ "PRODUCT_CATALOG.PRODUCTS_LIST_COLUMNS.METRICS" | translate }}
+      </p>
+    </div>
+    <div fxFlex="40">
+      <p class="text">
+        <span [matTooltip]="product?.metrics?.join(' ,')">{{
+          product?.metrics?.join(" , ")
+        }}</span>
+      </p>
+    </div>
+  </div>
+
+  <div fxLayout="row" fxLayoutGap="5em">
+    <div fxFlex="25">
+      <p class="heading">
+        {{
+          "PRODUCT_CATALOG.PRODUCTS_LIST_COLUMNS.SUPPORT_VENDORS" | translate
+        }}
+      </p>
+    </div>
+    <div fxFlex="40">
+      <p class="text">
+        <span [matTooltip]="product?.supportVendors?.join(' , ')">{{
+          supportVendors?.join(" , ")
+        }}</span>
+      </p>
+    </div>
+  </div>
+
+  <div fxLayout="row" fxLayoutGap="5em">
+    <div fxFlex="25">
+      <p class="heading">
+        {{ "PRODUCT_CATALOG.PRODUCTS_LIST_COLUMNS.LOCATION_TYPE" | translate }}
+      </p>
+    </div>
+    <div fxFlex="40">
+      <p class="deployment">
+        <span [matTooltip]="product?.locationType">{{
+          product?.locationType
+        }}</span>
+      </p>
+    </div>
+  </div>
+
+  <div fxLayout="row" fxLayoutGap="5em">
+    <div fxFlex="25">
+      <p class="heading">
+        {{ "PRODUCT_CATALOG.PRODUCTS_LIST_COLUMNS.LICENSING" | translate }}
+      </p>
+    </div>
+    <div fxFlex="40">
+      <div fxLayout="column" fxLayoutGap="min">
+        <div fxLayout="row" fxLayoutGap="4px">
+          <!-- <div
+            *ngIf="product?.licensing === 'OPENSOURCE'"
+            class="licenseIconOpen"
+          >
+            <mat-icon>code</mat-icon>
+          </div>
+
+          <div
+            *ngIf="product?.licensing === 'CLOSEDSOURCE'"
+            class="licenseIconClosed"
+          >
+            <mat-icon>remove_circle</mat-icon>
+          </div>
+          <p class="licenseText" *ngIf="product?.licensing === 'OPENSOURCE'">
+            Open Source
+          </p>
+          <p class="licenseText" *ngIf="product?.licensing === 'CLOSEDSOURCE'">
+            Closed Source
+          </p>
+          <p class="licenseText" *ngIf="product?.licensing === 'NONE'"></p> -->
+          <p
+            class="recommendation"
+            *ngIf="product?.licensing"
+            [ngClass]="{
+              blacklisted: product?.licensing == 'CLOSEDSOURCE',
+              authorized: product?.licensing == 'OPENSOURCE',
+              none: product?.licensing == 'NONE'
+            }"
+          >
+            <span
+              [matTooltip]="'Open Source'"
+              *ngIf="product?.licensing === 'OPENSOURCE'"
+              >Open Source</span
+            >
+            <span
+              [matTooltip]="'Closed Source'"
+              *ngIf="product?.licensing === 'CLOSEDSOURCE'"
+              >Closed Source</span
+            >
+            <span [matTooltip]="'None'" *ngIf="product?.licensing === 'NONE'"
+              >None</span
+            >
+          </p>
+        </div>
+
+        <div>
+          <p
+            class="licenseTypeText"
+            *ngIf="
+              product?.licensing === 'OPENSOURCE' &&
+              product?.openSource?.openSourceType !== 'NONE'
+            "
+          >
+            {{ product?.openSource?.openSourceType }}
+            <span *ngIf="product?.openSource?.openLicences !== ''"
+              >({{ product?.openSource?.openLicences }})</span
+            >
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div fxLayout="row" fxLayoutGap="5em">
+    <div fxFlex="25">
+      <p class="heading">
+        {{ "PRODUCT_CATALOG.PRODUCTS_LIST_COLUMNS.USEFUL_LINKS" | translate }}
+      </p>
+    </div>
+    <div fxFlex="40">
+      <div class="link" fxLayout="row" fxLayoutGap="4px">
+        <a
+          [href]="
+            (link.includes('http://') || link.includes('https://')
+              ? ''
+              : 'https://') + link
+          "
+          target="_blank"
+          style="text-decoration: underline"
+          *ngFor="let link of product?.usefulLinks"
+          [matTooltip]="link"
+          >{{ link }}</a
+        >
+      </div>
+    </div>
+  </div>
+
+  <div fxLayout="row" fxLayoutGap="5em">
+    <div fxFlex="25">
+      <p class="heading">
+        {{ "PRODUCT_CATALOG.PRODUCTS_LIST_COLUMNS.ENTITIES" | translate }}
+      </p>
+    </div>
+    <div fxLayout="row" class="entityBox" fxLayoutGap="5px">
+      <div fxFlex *ngFor="let item of vendorsArray">
+        <p class="box">{{ item }}</p>
+      </div>
+      <div *ngIf="product?.scopes?.length > 3">
+        <a
+          class="linkEntities"
+          matTooltip="{{
+            product?.scopes.slice(3, product?.scopes?.length - 1).join(',\n')
+          }}"
+          >+ View More</a
+        >
+        <!-- <mat-tooltip *ngIf="showAll" [position]="'below'">{{
+          vendorsArray.join(", ")
+        }}</mat-tooltip> -->
+      </div>
+    </div>
+  </div>
+
+  <div fxLayout="row" fxLayoutGap="5em">
+    <div fxFlex="25">
+      <p class="heading">
+        {{ "PRODUCT_CATALOG.PRODUCTS_LIST_COLUMNS.VERSION" | translate }}
+      </p>
+    </div>
+    <div fxFlex="75">
+      <div *ngIf="product?.version && product?.version?.length !== 0">
+        <div class="versionTable">
+          <table>
+            <thead>
+              <tr>
+                <th>{{ "PRODUCT.VERSION.NAME" | translate }}</th>
+                <th>{{ "PRODUCT.VERSION.SWIDTAG" | translate }}</th>
+                <th>{{ "PRODUCT.VERSION.EOL" | translate }}</th>
+                <th>{{ "PRODUCT.VERSION.EOS" | translate }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of product?.version">
+                <td>{{ item?.name }}</td>
+                <!-- <td *ngIf="!item?.name">-</td> -->
+                <td>{{ item?.nameitem?.swidTagVersion }}</td>
+                <!-- <td *ngIf="!item?.swidTagVersion">-</td> -->
+                <td>{{ item?.endOfLife | date : "yyyy-MM-dd" }}</td>
+                <!-- <td *ngIf="!item?.endOfLife">-</td> -->
+                <td>{{ item?.endOfSupport | date : "yyyy-MM-dd" }}</td>
+                <!-- <td *ngIf="!item?.endOfSupport">-</td> -->
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="no-data" *ngIf="_loading">
+  <app-loading-spinner></app-loading-spinner>
+</div>
+<ng-template #defaultImage>
+  <div class="image-box">
+    <img
+      class="company-icon"
+      src="assets/images/default-company-icon.svg"
+      alt="Icon not available"
+    />
+  </div>
+</ng-template>

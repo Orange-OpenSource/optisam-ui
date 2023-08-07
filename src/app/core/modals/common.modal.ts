@@ -20,7 +20,7 @@ export interface SuccessResponse {
 }
 export interface AdvanceSearchModel {
   title: string;
-  other: AdvanceSearchField[];
+  other: Array<AdvanceSearchField | AdvanceSearchFieldSelect>;
   primary: string;
   translate?: boolean;
 }
@@ -29,6 +29,16 @@ export interface AdvanceSearchField {
   key: string;
   label: string;
   type?: 'text' | 'date';
+  show?: boolean;
+}
+
+export interface AdvanceSearchFieldSelect
+  extends Omit<AdvanceSearchField, 'type'> {
+  type: 'select';
+  selection: {
+    key: string;
+    value: string;
+  }[];
 }
 
 export enum TableSortOrder {
@@ -43,8 +53,24 @@ export interface PaginationDefaults {
 }
 
 export interface CommonRegex {
-  ONLY_DIGITS: string;
-  DIGITS_WITH_NAV: string;
+  ONLY_DIGITS: RegExp;
+  DIGITS_WITH_NAV: RegExp;
+  DIGITS_WITH_DECIMALS: RegExp;
+}
+
+export interface PaginationEvent {
+  length: number;
+  pageIndex: number;
+  pageSize: number;
+  previousPageIndex: number;
+}
+
+export interface CommonPopupSetting {
+  title: string;
+  message: string;
+  singleButton?: boolean;
+  buttonText: string;
+  messageVariable?: object;
 }
 
 export interface PaginationEvent {

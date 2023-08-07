@@ -5,6 +5,8 @@ import { ProductService } from 'src/app/core/services/product.service';
 import { ReportService } from 'src/app/core/services/report.service';
 import { EquipmentTypeManagementService } from 'src/app/core/services/equipmenttypemanagement.service';
 import { MatSelect } from '@angular/material/select';
+import { ReportTypeNames } from '@core/util/constants/constants';
+import { ListProductQueryParams } from '@core/modals';
 
 @Component({
   selector: 'app-create-report',
@@ -40,6 +42,18 @@ export class CreateReportComponent implements OnInit {
     this.initForm();
     this.getEditorsList();
     this.getReportsList();
+  }
+
+  get reportTypeNames(): string[] {
+    return Object.values(ReportTypeNames);
+  }
+
+  get complianceType(): ReportTypeNames {
+    return ReportTypeNames.compliance;
+  }
+
+  get productEquipmentType(): ReportTypeNames {
+    return ReportTypeNames.productEquipments;
   }
 
   initForm() {
@@ -83,9 +97,11 @@ export class CreateReportComponent implements OnInit {
     // this.reportForm.removeControl('product');
     this.reportForm.removeControl('equipmentType');
     this.selectedReportType = this.reportType.value.report_type_name;
+    console.log('selectedReportType', this.selectedReportType);
     if (
-      this.reportType.value.report_type_name == 'Compliance' ||
-      this.reportType.value.report_type_name == 'ProductEquipments'
+      [this.complianceType, this.productEquipmentType].includes(
+        this.selectedReportType
+      )
     ) {
       this.reportForm.addControl(
         'editor',
@@ -160,24 +176,29 @@ export class CreateReportComponent implements OnInit {
     // this.searchInput. as HTMLInputElement));
   }
 
-  // editorSelected() {
-  //   this.getProductsList();
-  // }
+  editorSelected() {
+    this.getProductsList();
+  }
 
-  // // Get All Products based on Editor
-  // getProductsList() {
-  //   this._loading = true;
-  //   let query = '?scopes=' + this.selectedScope;
-  //   query += '&editor='+ this.editor.value;
+  // Get All Products based on Editor
+  getProductsList() {
+    this._loading = true;
+    const query: ListProductQueryParams = {
+      scopes: this.selectedScope,
+      editor: this.editor.value,
+    };
 
-  //   this.productService.getProductList(query).subscribe((response: any) => {
-  //     this.productsList = response.products || [];
-  //     this._loading = false;
-  //   }, (error) => {
-  //     this._loading = false;
-  //     console.log("Error fetching products");
-  //   });
-  // }
+    this.productService.getProductList(query).subscribe(
+      (response: any) => {
+        this.productsList = response.products || [];
+        this._loading = false;
+      },
+      (error) => {
+        this._loading = false;
+        console.log('Error fetching products');
+      }
+    );
+  }
 
   // Get list of equipment types
   getEquipTypes() {
@@ -197,26 +218,37 @@ export class CreateReportComponent implements OnInit {
   createReport(successMsg, errorMsg) {
     this.reqInProgress = true;
     let body;
-    if (this.reportType.value.report_type_name == 'Compliance') {
-      body = {
-        scope: this.selectedScope,
-        report_type_id: this.reportType.value.report_type_id,
-        acqrights_report: {
-          editor: this.editor.value,
-          // "swidtag": this.product.value
-        },
-      };
-    } else if (this.reportType.value.report_type_name == 'ProductEquipments') {
-      body = {
-        scope: this.selectedScope,
-        report_type_id: this.reportType.value.report_type_id,
-        product_equipments_report: {
-          editor: this.editor.value,
-          // "swidtag": this.product.value,
-          equipType: this.equipmentType.value.type,
-        },
-      };
+    switch (this.selectedReportType) {
+      case ReportTypeNames.compliance:
+        body = {
+          scope: this.selectedScope,
+          report_type_id: this.reportType.value.report_type_id,
+          acqrights_report: {
+            editor: this.editor.value,
+          },
+        };
+
+        break;
+
+      case ReportTypeNames.productEquipments:
+        body = {
+          scope: this.selectedScope,
+          report_type_id: this.reportType.value.report_type_id,
+          product_equipments_report: {
+            editor: this.editor.value,
+            equipType: this.equipmentType.value.type,
+          },
+        };
+        break;
+
+      case ReportTypeNames.expensesByEditor:
+        body = {
+          scope: this.selectedScope,
+          report_type_id: this.reportType.value.report_type_id,
+        };
+        break;
     }
+
     this.reportService.createReport(body).subscribe(
       (res) => {
         this.openModal(successMsg);

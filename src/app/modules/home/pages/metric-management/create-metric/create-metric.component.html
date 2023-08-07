@@ -554,6 +554,7 @@
             </mat-error>
           </div>
 
+          <!-- Static standard -->
           <div
             class="col-md-3 equipments"
             *ngIf="selectedMetricTypeId === 'Static_Standard'"
@@ -582,6 +583,72 @@
             >
               {{ "Value must be a positive integer" | translate }}
             </mat-error>
+          </div>
+
+          <!-- Concurrent Profile -->
+          <div
+            class="col-md-3 equipments"
+            *ngIf="selectedMetricTypeId === 'User_Concurent'"
+          >
+            <mat-form-field appearance="outline">
+              <mat-label>{{
+                "METRIC.ATTRIBUTE.PROFILE" | translate
+              }}</mat-label>
+              <input
+                id="concurrentProfile"
+                matInput
+                formControlName="concurrentProfile"
+                type="text"
+                placeholder="{{ 'METRIC.ATTRIBUTE.PROFILE' | translate }}"
+                list="profileList"
+                autocomplete="off"
+              />
+              <datalist id="profileList">
+                <option value="ALL">ALL</option>
+              </datalist>
+
+              <mat-error
+                *ngIf="
+                  concurrentProfile?.touched &&
+                  concurrentProfile?.hasError('pattern')
+                "
+              >
+                {{ "METRIC.ERROR.PROFILE_SPACES" | translate }}
+              </mat-error>
+              <mat-hint>{{ "METRIC_ALL_HINT" | translate }}</mat-hint>
+            </mat-form-field>
+          </div>
+          <!-- Nominative Profile  -->
+          <div
+            class="col-md-3 equipments"
+            *ngIf="selectedMetricTypeId === 'Nominative_User'"
+          >
+            <mat-form-field appearance="outline">
+              <mat-label>{{
+                "METRIC.ATTRIBUTE.PROFILE" | translate
+              }}</mat-label>
+              <input
+                id="concurrentProfile"
+                matInput
+                formControlName="nominativeProfile"
+                type="text"
+                placeholder="{{ 'METRIC.ATTRIBUTE.PROFILE' | translate }}"
+                list="profileList"
+                autocomplete="off"
+              />
+              <datalist id="profileList">
+                <option value="ALL">ALL</option>
+              </datalist>
+              <mat-error
+                *ngIf="
+                  nominativeProfile?.touched &&
+                  nominativeProfile?.hasError('pattern')
+                "
+              >
+                {{ "METRIC.ERROR.PROFILE_SPACES" | translate }}
+              </mat-error>
+              <mat-hint>{{ "METRIC_ALL_HINT" | translate }}</mat-hint>
+            </mat-form-field>
           </div>
 
           <!-- No of deployments -->

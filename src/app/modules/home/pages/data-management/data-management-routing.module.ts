@@ -7,8 +7,9 @@ import { Role } from 'src/app/utils/roles.config';
 import { ListDataComponent } from './list-data/list-data.component';
 import { ListMetadataComponent } from './list-metadata/list-metadata.component';
 import { ListGlobaldataComponent } from './list-globaldata/list-globaldata.component';
-import { AllowSpecificScopesGuard } from '@core/guards/allow-scopes.guard';
-import { AllowGenericScopesGuard } from '@core/guards/allow-generic-scopes.guard';
+import { NominativeUsersComponent } from './nominative-users/nominative-users.component';
+import { ConcurrentUsersComponent } from './concurrent-users/concurrent-users.component';
+import { AllowSpecificScopesGuard } from '@core/guards/allow-specific-scopes.guard';
 
 const routes: Routes = [
   {
@@ -42,6 +43,19 @@ const routes: Routes = [
             component: UploadDataComponent,
           },
         ],
+      },
+      {
+        path: 'nominative-users',
+        component: NominativeUsersComponent,
+        canActivate: [AuthGuard],
+        data: { roles: [Role.SuperAdmin.valueOf(), Role.Admin.valueOf()] },
+      },
+
+      {
+        path: 'concurrent-users',
+        component: ConcurrentUsersComponent,
+        canActivate: [AuthGuard],
+        data: { roles: [Role.SuperAdmin.valueOf(), Role.Admin.valueOf()] },
       },
     ],
   },

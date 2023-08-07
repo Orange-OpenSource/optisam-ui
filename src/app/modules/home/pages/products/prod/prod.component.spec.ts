@@ -1056,7 +1056,7 @@ export class ProductServiceStub {
 //   let component: ProdComponent;
 //   let fixture: ComponentFixture<ProdComponent>;
 //   const tableColumns = [
-    
+
 //     'name',
 //     'editor',
 //     'version',

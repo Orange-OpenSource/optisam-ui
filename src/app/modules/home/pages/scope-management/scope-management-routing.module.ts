@@ -7,21 +7,21 @@ import { Role } from 'src/app/utils/roles.config';
 
 const routes: Routes = [
   {
-    path: '', 
+    path: '',
     component: ListScopesComponent,
     canActivate: [AuthGuard],
-    data: { roles: [Role.SuperAdmin.valueOf()] }
+    data: { roles: [Role.SuperAdmin.valueOf(), Role.Admin.valueOf()] },
   },
-  { 
-    path: 'create', 
-    component: CreateScopeComponent, 
+  {
+    path: 'create',
+    component: CreateScopeComponent,
     canActivate: [AuthGuard],
-    data: { roles: [Role.SuperAdmin.valueOf()] }
-  }
+    data: { roles: [Role.SuperAdmin.valueOf()] },
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class ScopeManagementRoutingModule { }
+export class ScopeManagementRoutingModule {}

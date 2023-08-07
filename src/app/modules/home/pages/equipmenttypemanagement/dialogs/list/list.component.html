@@ -2,17 +2,11 @@
   >{{ "Attribute List for" | translate }} {{ this.equipName }}
 </mat-card-title>
 
-<mat-table #table [dataSource]="attribute" class="equipments-action-table">
-  <ng-container matColumnDef="name">
-    <mat-header-cell *matHeaderCellDef>{{
-      "Name" | translate
-    }}</mat-header-cell>
-    <mat-cell *matCellDef="let row"
-      ><span [ngClass]="row.primary_key ? 'highlight' : ''">{{
-        row.schema_name
-      }}</span></mat-cell
-    >
-  </ng-container>
+      <mat-table #table [dataSource]="attributes1" class="equipments-action-table">
+        <ng-container matColumnDef="name">
+          <mat-header-cell *matHeaderCellDef >{{'Name' | translate}}</mat-header-cell>
+          <mat-cell *matCellDef="let row"><span  [ngClass]="(row.primary_key)?'highlight':''">{{row.name}}</span></mat-cell>
+        </ng-container>
 
   <ng-container matColumnDef="data_type">
     <mat-header-cell *matHeaderCellDef>{{

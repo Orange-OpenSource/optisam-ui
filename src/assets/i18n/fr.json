@@ -1,4 +1,15 @@
 {
+  "COMMON": {
+    "BUTTON": {
+      "OK": "OK"
+    },
+    "TABS": {
+      "INDIVIDUAL": "Individuelle",
+      "AGGREGATION": "Agrégation"
+    },
+    "PLACE_HOLDER_PREFIX": "Recherché par"
+  },
+
   "language": "Fr",
   "english (en)": "anglais (en)",
   "french (fr)": "français (fr)",
@@ -22,6 +33,7 @@
   "Metrics": "Métrique",
   "Simulation": "Simulation",
   "List of Inventoried Products": "Liste des produits inventoriés",
+  "Number of users": "Nombre d'utilisateurs",
   "List of Inventoried Applications": "Liste des Applications inventoriés",
   "Information": "Informations",
   "Options": "Options",
@@ -110,6 +122,8 @@
   "AVG Maintenance unit price": "Prix ​​unitaire de maintenance",
   "Total purchase cost": "Coût total d'achat",
   "Total maintenance cost": "Coût total de maintenance",
+  "Licenses-maintenance": "Licences (licences de maintenance)",
+  "Total maintenance": "Total de maintenance",
   "Metric Name": "Nom métrique",
   "Metric Type": "Type métrique",
   "Next": "Suivant",
@@ -135,6 +149,15 @@
   "LAST_PURCHASED_ORDER": "Dernière commande achetée",
   "SUPPORT_NUMBER": "Numéro d'assistance",
   "MAINTENANCE_PROVIDER": "Prestataire d'entretien",
+  "USER_DETAILS": "Détails de l'utilisateur",
+  "EXPORT_USERS": "Exporte les utilisateurs",
+  "DELTA_COST": "Coût de delta",
+  "DELTA_LICENSES": "Licences delta",
+  "PURCHASED_COST": "Coût acheté",
+  "MAINTENANCE_COST": "Coût de maintenance",
+  "TOTAL_COST": "Coût total",
+  "GROUP_COMPLIANCE": "Conformité du groupe",
+  "NOMINATIVE_USER_TEMPLATE": "Modèle d'utilisateur nominatif",
   "OK": "D'accord",
   "Equipment Management": "Gestion de l'équipement",
   "Metrics Management": "Gestion des métriques",
@@ -211,8 +234,8 @@
   "Manage Users": "Gérer les utilisateurs",
   "Select User": "Sélectionnez l'utilisateur",
   "user": "userutilisatrice",
-  "scope": "portée",
-  "scopes": "étendues",
+  "scope": "Entité",
+  "scopes": "Entités",
   "No. of Users": "Nombre d'utilisateurs",
   "Transform to processor": "Transformer en processeur",
   "Environment value": "Valeur environnementale",
@@ -264,7 +287,9 @@
   "Existing": "Existant",
   "Not existing": "N'existe pas",
   "Edit role": "Modifier le rôle",
-
+  "User count": "Nombre d'utilisateurs",
+  "Edit User": "Modifier l'utilisateur",
+  "DELETE_ACQRIGHT_HINT_MSG": "Certains droits acquis sont partagés avec d'autres entités. Si vous effacez ces droits, vous perdrez la possibilité de modifier le nombre de licences partagées par la suite",
   "Hardware": "Matériel",
   "Environment": "Environnement",
   "Total computed cost:": "Coût total calculé:",
@@ -272,6 +297,7 @@
   "After simulation": "Après simulation",
   "Total cost by editor after: ": "Coût total par éditeur après: ",
   "Total cost by editor before: ": "Coût total par éditeur avant: ",
+  "ALERT": "Alerte!",
 
   "Select Entity": "sélectionner l'entité",
   "No Entity": "aucune entité",
@@ -399,7 +425,7 @@
   "Surname": "Nom de famille",
   "Roles": "Rôles",
   "Update User": "Mettre à jour l'utilisateur",
-  "View Scope": "Afficher la portée",
+  "View Scope": "Afficher l'entité",
   "users": "utilisateurs",
   "Group Created Succesfully": "Groupe créé avec succès",
   "Create Group": "Créer un groupe",
@@ -473,18 +499,18 @@
   "ERROR_EQUIP_UPDATE_MSG": "Une erreur s'est produite! L'équipement n'a pas pu être mis à jour.",
   "UPLOAD_FILE_SUCCESS": "Fichier(s) téléversé(s) avec succès!",
   "UPLOAD_FILE_ERROR": "Une erreur s'est produite! Les fichiers n'ont pas pu être téléchargés.",
-  "CREATE_SCOPE_SUCCESS": "Étendue créée avec succès! Veuillez vous reconnecter pour voir la portée créée dans la liste.",
-  "RELOGIN_MSG": "Veuillez vous reconnecter pour voir les étendues mises à jour.",
-  "CREATE_SCOPE_ERROR": "Une erreur s'est produite! La portée n'a pas pu être créée.",
-  "DUPLICATE_SCOPE_ERROR": "La portée existe déjà!",
-  "Create Scope": "Créer une portée",
-  "Scope Code": "Code de portée",
+  "CREATE_SCOPE_SUCCESS": "Entité créée avec succès ! Veuillez vous reconnecter pour voir l'entité créée dans la liste.",
+  "RELOGIN_MSG": "Veuillez vous reconnecter pour voir les entités mises à jour.",
+  "CREATE_SCOPE_ERROR": "Une erreur s'est produite ! L'entité n'a pas pu être créée.",
+  "DUPLICATE_SCOPE_ERROR": "L'entité existe déjà !",
+  "Create Scope": "Créer une entité",
+  "Scope Code": "Créer une entité",
   "Scope Name": "Nom de l'étendue",
   "Scope Type": "Nom de la portée",
-  "Delete Scope": "Supprimer l'étendue",
-  "DELETE_SCOPE_CONFIRM_MSG": "Êtes-vous sûr de vouloir supprimer l'étendue",
+  "Delete Scope": "Supprimer l'entité",
+  "DELETE_SCOPE_CONFIRM_MSG": "Êtes-vous sûr de vouloir supprimer l'entité",
   "This action is irreversible and all related data will be erased.": "Cette action est irréversible et toutes les données associées seront effacées.",
-  "DELETE_SCOPE_SUCCESS": "L'étendue a bien été supprimée!",
+  "DELETE_SCOPE_SUCCESS": "Entité supprimée avec succès !",
   "ATTR_CHANGE_CONFIRM_MSG": "La modification de la valeur de cet attribut peut avoir un impact sur les valeurs modifiées par une autre sélection(s). Es-tu sur de vouloir continuer?",
   "UPDATE_METRIC": "Mettre à jour la métrique",
   "IMAGE_SIZE_ERROR": "Image trop grande! La taille maximale autorisée est de 1 Mo.",
@@ -502,11 +528,26 @@
   "INVALID_DATA_FILE_NAME_ERROR": "Le nom de fichier est requis dans les valeurs / format suivants:",
   "INVALID_METADATA_FILE_NAME_ERROR": "Le nom du fichier est requis au format metadata_[a-zA-Z]*.csv",
   "INVALID_FILE_TYPE": "Type de fichier invalide",
+  "ENTITIES": "Entités",
+  "ENTITY": "Entité",
+  "HEAD_QUARTER": "Quartier général",
+  "CHOOSE_HEAD_QUARTER": "Choisissez le pays du siège social",
+  "GROUP_CONTRACT": "Contrat de groupe",
+  "AUDIT_YEAR": "Audit",
+  "COUNTRY": "Pays",
+  "NOT_DEFINED": "Non défini",
+  "OPEN_SOURCE": "Open source",
+  "CLOSED_SOURCE": "Source fermée",
+  "DEPLOYMENT_TYPE": "Type de déploiement",
+  "RECOMMENDATION": "Recommandation",
+  "LICENSING": "Licence",
+  "VENDORS": "Vendeuses",
   "Choose picture": "Choisissez l'image",
   "Change picture": "Changer l'image",
+  "METRIC_ALL_HINT": "Ajouter n'importe quel nom de profil ou ajouter \"ALL\" pour tout le profil.",
   "Upload Data Files": "Télécharger des fichiers de données",
   "Upload Metadata Files": "Télécharger des fichiers de métadonnées",
-  "Select Scope": "Sélectionnez la portée",
+  "Select Scope": "Créer une entité",
   "Select the file to upload.": "Sélectionnez le fichier à télécharger.",
   "Inventory Deletion is in progress. It might take some time.": "La suppression de l'inventaire est en cours. Cela peut prendre un certain temps.",
   "Select the files to upload. Files must be in csv format only.": "Sélectionnez les fichiers à télécharger. Les fichiers doivent être au format csv uniquement.",
@@ -560,7 +601,7 @@
   "Owned Licenses": "Licences possédées",
   "Maintenance Licenses": "Licences sous maintenance",
   "Underusage Amount": "Sous-utilisation",
-  "Software Licence Composition": "Composition de la licence logicielle",
+  "Software License Composition": "Composition de la licence logicielle",
   "Counterfeiting Amount": "Contrefaçon",
   "Equipment Details": "Détails de l'équipement",
   "Number of Products Per Editor": "Nombre de produits par éditeur",
@@ -575,7 +616,7 @@
   "Products with licenses least used": "Produits dont les licences sont les moins utilisées",
   "Counterfeiting : Number of License": "Contrefaçon: nombre de licences",
   "Top non-compliant products": "Principaux produits non conformes",
-  "Changing scope to ": "Changer la portée en ",
+  "Changing scope to ": "Créer une entité",
   "You will be taken to the dashboard after clicking OK.": "Vous serez redirigé vers le tableau de bord après avoir cliqué sur OK.",
   "You will see the new data after clicking OK.": "Vous verrez les nouvelles données après avoir cliqué sur OK.",
   "Yay": "Yay",
@@ -640,6 +681,11 @@
   "Click here to view deletion logs": "Cliquez ici pour afficher les journaux de suppression",
   "Deletion Logs": "Journaux de suppression",
   "Requester": "Demandeur",
+  "Shared Licenses": "Licences partagées",
+  "Shared Amount Across Scope": "Montant partagé entre l'entité",
+  "Received Licenses": "Licences reçues",
+  "Received Amount Across Scope": "Montant reçu dans l'entité",
+  "Scope Expense": "Dépense de l'entité",
   "Date": "Date",
   "No logs available": "Aucun journal disponible",
   "Close": "Fermer",
@@ -648,8 +694,10 @@
   "Acquired Rights": "Droits Acquis",
   "Product is not deployed": "Le produit n'est pas défini",
   "Metric is not defined": "La métrique n'est pas définie",
-
+  "Are you Sure want to remove this Global Account Manager": "Voulez-vous vraiment supprimer ce gestionnaire de compte mondial",
+  "Are you Sure want to remove this Sourcer": "Êtes-vous sûr de vouloir supprimer ce sourceur",
   "Create New": "Créer un nouveau",
+  "Selected Entities": "Entités sélectionnées",
   "Create Acquired Right": "Créer un droit acquis",
   "Licensed Products": "Produits sous licence",
   "Add Acquired Right": "Ajouter un droit acquis",
@@ -718,9 +766,15 @@
 
   "PRODUCT_CATALOG_MANAGEMENT": "Gestion du catalogue de produits",
 
+  "PRODUCT_USER_TYPE": {
+    "NOMINATIVE": "Utilisateurs nominatifs",
+    "CONCURRENT": "Utilisateurs concurrents"
+  },
+
   "SIDEBAR_NAV": {
     "MENU": {
-      "PRODUCT_CATALOG": "Catalogue de produits"
+      "PRODUCT_CATALOG": "Catalogue de produits",
+      "GROUP_COMPLIANCE": "Conformité du groupe'"
     }
   },
 
@@ -765,7 +819,9 @@
       "CSC": "Contrat d'approvisionnement d'entreprise",
       "ORDERING_DATE": "Date d'achat",
       "SOFTWARE_PROVIDER": "Fournisseur",
-      "SELECT_ALL_SWIDTAGS": "Sélectionner tous les SWIDTags"
+      "SELECT_ALL_SWIDTAGS": "Sélectionner tous les SWIDTags",
+      "SELECT_GROUPS": "Sélectionnez la group",
+      "UNUSED_LICENSE": "Unused Licences fr"
     },
     "ACTIONS": {
       "SAVE": "Sauver",
@@ -785,19 +841,229 @@
       "NAME_OVER_LIMIT": "Le nom ne peut pas comporter plus de {{limit}} caractères!"
     }
   },
+  "EMPTY_MESSAGE": "La conformité ne peut pas être calculée car aucun droit n'est défini pour le produit",
+  "NOMINATIVE_USER": {
+    "BUTTON": {
+      "ADD_NOMINATIVE_USERS": "Ajouter des utilisateurs nominatifs",
+      "EXPORT_NOMINATIVE_USERS": "Exportation",
+      "UPLOAD_FILE": "Téléverser un fichier",
+      "IMPORT_USERS": " Importer des utilisateurs",
+      "ADD_NEW_USER": "Ajouter un nouvel utilisateur",
+      "CANCEL": "Annuler",
+      "ADD": "Ajouter",
+      "UPDATE": "Mise à jour",
+      "YES": "Oui",
+      "OK": "OK"
+    },
+    "TITLE": {
+      "USER_SEARCH_TITLE": "Rechercher par nom d'utilisateur",
+      "SEARCH_BY_PRODUCT": "Rechercher par produit",
+      "SEARCH_BY_AGGREGATION": "Rechercher par agrégation",
+      "ADD_NOMINATIVE_USER": "Ajouter un utilisateur de produit nominatif",
+      "UPDATE_NOMINATIVE_USER": "Mettre à jour l'utilisateur nominatif du produit",
+      "ERROR": "Erreur!",
+      "SUCCESS": "Succès!",
+      "CONFIRMATION": "Confirmation",
+      "AGGREGATION": "Agrégation",
+      "PRODUCT": "Produit"
+    },
+    "TABLE_HEADER": {
+      "PRODUCT": "Produit",
+      "VERSION": "Version",
+      "USERNAME": "Nom d'utilisateur",
+      "USER_FIRST_NAME": "Prénom de l'utilisateur",
+      "EMAIL": "E-mail",
+      "PROFILE": "Profil",
+      "ACTIVATION_DATE": "Date d'activation",
+      "ACTIONS": "Actes",
+      "AGGREGATION": "Agrégation",
+      "EDITOR": "Éditrice"
+    },
+    "FIELD": {
+      "USERNAME": "Nom d'utilisateur",
+      "FIRST_NAME": "Prénom",
+      "EMAIL": "E-mail",
+      "PROFILE": "Profil",
+      "ACTIVATION_DATE": "Date d'activation",
+      "PRODUCT_EDITOR": "Éditeur de produit",
+      "PRODUCT": "Produit",
+      "VERSION": "Version",
+      "AGGREGATION": "Agrégation",
+      "SELECT_EDITOR": "Sélectionnez l'éditeur"
+    },
+
+    "ERROR": {
+      "CSV_FILE_TYPE_ERROR": "Seuls les fichiers CSV sont pris en charge!",
+      "CSV_EMPTY": "Le fichier semble être vide ou au format inapproprié!",
+      "USER_ADD_ERROR": "Il y a un problème lors de l'ajout d'utilisateurs!",
+      "SERVER_ERROR": "Il y a une erreur de serveur!",
+      "INVALID_EMAIL": "L'email n'est pas valide.",
+      "MIN": {
+        "NUMBER_OF_USERS": "Le nombre minimum d'utilisateurs doit être de {{min}}!"
+      },
+      "PATTERN": {
+        "NUMBER_OF_USERS": "Seuls les chiffres positifs sans décimales sont autorisés!"
+      },
+      "REQUIRED": {
+        "PRODUCT_EDITOR": "L'éditeur de produit est requis!",
+        "PRODUCT": "Le produit est requis!",
+        "EMAIL": "L'e-mail est requis!",
+        "AGGREGATION": "L'agrégation est requise!"
+      }
+    },
+    "MESSAGE": {
+      "USERS_ADDED_SUCCESS": "{{userCount}} les utilisateur(s) ont été ajoutés avec succès!",
+      "USERS_UPDATED_SUCCESS": "{{userCount}} utilisateur(s) ont été mis à jour avec succès!",
+      "USER_DELETION_SUCCESS": "L'utilisateur a été supprimé avec succès!",
+      "USER_DELETION_CONFIRMATION": "Êtes-vous sûr de vouloir supprimer l'utilisateur?",
+      "AT_LEAST_A_USER": "Vous devez ajouter au moins un utilisateur."
+    },
+    "LABEL": {
+      "PRODUCT": "Produit",
+      "AGGREGATION": "Agrégations"
+    },
+    "TAB": {
+      "INDIVIDUAL": "Individuels",
+      "AGGREGATION": "Agrégation",
+      "LOG": "Journal utilisateur nominatif"
+    }
+  },
+
+  "CONCURRENT_USER": {
+    "BUTTON": {
+      "ADD_CONCURRENT_USERS": "Ajouter des utilisateurs Concurrente",
+      "UPDATE_CONCURRENT_USER": "mettre à jour l'utilisateur simultané",
+      "EXPORT_CONCURRENT_USERS": "Exportation",
+      "UPLOAD_FILE": "Téléverser un fichier",
+      "ADD_NEW_USER": "Ajouter un nouvel utilisateur",
+      "CANCEL": "Annuler",
+      "ADD": "Ajouter",
+      "UPDATE": "Mise à jour",
+      "OK": "OK"
+    },
+    "TITLE": {
+      "ADD_CONCURRENT_USER": "Ajouter des utilisateurs de produits simultanés",
+      "UPDATE_CONCURRENT_USER": "Mettre à jour l'utilisateur de produit simultané",
+      "SEARCH_TITLE": "Rechercher par produit",
+      "SEARCH_TITLE_AGGREGATION": "Rechercher par agrégation",
+      "ADD_NOMINATIVE_USER": "Ajouter un utilisateur nominatif",
+      "ERROR": "Erreur!",
+      "SUCCESS": "Succès!",
+      "CONFIRMATION": "Confirmation",
+      "USER_SEARCH_TITLE": "Rechercher par profil",
+      "CONCURRENT_GRAPH": "Concurrent users history"
+    },
+    "FIELD": {
+      "PROFILE": "Profil",
+      "NUMBER_OF_USERS": "nombre d'utilisateurs",
+      "TEAM": "Équipe",
+      "USERNAME": "Nom d'utilisateur",
+      "FIRST_NAME": "Prénom",
+      "EMAIL": "E-mail",
+      "ACTIVATION_DATE": "Date d'activation",
+      "PRODUCT_EDITOR": "Éditeur de produit",
+      "PRODUCT": "Produit",
+      "VERSION": "Version",
+      "AGGREGATION": "Agrégation",
+      "SELECT_EDITOR": "Sélectionnez l'éditeur"
+    },
+    "TAB": {
+      "INDIVIDUAL": "Individuelle",
+      "AGGREGATION": "Agrégation"
+    },
+
+    "TABLE_HEADER": {
+      "PRODUCT": "Produit",
+      "VERSION": "Version",
+      "PROFILE": "Profile",
+      "TEAM": "Équipe",
+      "LAST_UPDATE": "Dernière mise à jour",
+      "ACTIONS": "Actions",
+      "AGGREGATION": "Agrégation",
+      "EDITOR": "Éditrice",
+      "NUMBER_OF_USERS": "Nombre d'utilisateurs",
+      "USERS_COUNT": "Nombre d'utilisateurs"
+    },
+    "ERROR": {
+      "CSV_FILE_TYPE_ERROR": "Seuls les fichiers CSV sont pris en charge!",
+      "CSV_EMPTY": "Le fichier semble être vide ou au format inapproprié!",
+      "USER_ADD_ERROR": "Il y a un problème lors de l'ajout d'utilisateurs!",
+      "SERVER_ERROR": "Il y a une erreur de serveur!",
+      "REQUIRED": {
+        "PRODUCT_EDITOR": "L'éditeur de produit est requis!",
+        "PRODUCT": "Le produit est requis!",
+        "EMAIL": "L'e-mail est requis!",
+        "NUMBER_OF_USERS": "Le nombre d'utilisateurs est requis!",
+        "AGGREGATION": "L'agrégation est requise!"
+      }
+    },
+    "MESSAGE": {
+      "USERS_ADDED_SUCCESS": "{{userCount}} les utilisateurs ont été ajoutés avec succès!",
+      "USER_ADDED_SUCCESS": "Les utilisateurs ont été ajoutés avec succès!",
+      "USER_UPDATED_SUCCESS": "Utilisateur mis à jour avec succès!",
+      "DELETION_CONFIRMATION": "Etes-vous sûr que vous voulez supprimer?",
+      "DELETION_SUCCESS": "Supprimé avec succès!"
+    },
+    "LABEL": {
+      "PRODUCT": "Produit",
+      "AGGREGATION": "Agrégations",
+      "ENDING_MONTH": "Dernier mois",
+      "STARTING_MONTH": "mois de départ"
+    }
+  },
+
+  "METRIC": {
+    "ATTRIBUTE": {
+      "PROFILE": "Profil"
+    },
+    "ERROR": {
+      "PROFILE_MANDATORY": "Le profil est obligatoire!",
+      "PROFILE_SPACES": "Seuls les espaces ne sont pas autorisés!"
+    }
+  },
+
+  "SHARED": {
+    "BUTTON": {
+      "CANCEL": "Annuler",
+      "YES": "Oui"
+    },
+    "TITLE": {
+      "CONFIRMATION": "Confirmation"
+    },
+    "MESSAGE": {
+      "CONFIRMATION_REMOVE": "Êtes-vous sûr de vouloir désinstaller?"
+    },
+    "TAB": {
+      "INDIVIDUAL": "Individuels",
+      "AGGREGATION": "Agrégation"
+    }
+  },
+  "DASHBOARDS": {
+    "ERROR": {
+      "NO_EXPENSES_EXIST": "Aucune dépense n'existe!",
+      "SERVER_ERROR": "Erreur du Serveur"
+    }
+  },
+
+  "PRODUCT_TABLE": {
+    "HEADER": {
+      "ONPREMISE": "Sur site",
+      "SAAS": "SAAS"
+    }
+  },
   "HEADER": {
     "MENU_ITEM": {
-      "PRODUCT_CATALOG": "Gestion du catalogue de produits",
-      "ACQUIRED_RIGHTS": "Gestion des droits acquis",
-      "AGGREGATION": "Gestion de l'agrégation",
-      "GROUP": "Gestion de groupe",
-      "INVENTORY": "Gestion de l'inventaire",
-      "METRICS": "Gestion des métriques",
-      "OBSOLESCENCE": "Gestion des Obsolescences",
-      "SCOPES": "Gestion des périmètres",
-      "USERS": "Gestion des utilisateurs",
-      "EQUIPMENTS": "Gestion des équipements",
-      "SIMULATIONS": "Gestion de la simulation"
+      "PRODUCT_CATALOG": "catalogue de produits",
+      "ACQUIRED_RIGHTS": "droits acquis",
+      "AGGREGATION": "l'agrégation",
+      "GROUP": "groupe",
+      "INVENTORY": "l'inventaire",
+      "METRICS": "métriques",
+      "OBSOLESCENCE": "Obsolescences",
+      "SCOPES": "entités",
+      "USERS": "utilisateurs",
+      "EQUIPMENTS": "équipements",
+      "SIMULATIONS": "la simulation"
     }
   },
 
@@ -809,12 +1075,16 @@
       "CONFIRMATION": "Confirmation",
       "RECOMMENDATION": "Recommendation",
       "SUPPORT_VENDOR": "Fournisseur d'assistance",
+      "GROUP_CONTRACT": "Contrat de groupe",
       "GENERAL_INFORMATION": "Informations générales",
       "CONTRACT_TIPS": "Conseils sur les contrats",
       "LOCATION": "Emplacement",
       "SOURCE": "La source",
       "USEFUL_LINKS": "Liens utiles",
-      "PRODUCT": "Produit"
+      "PRODUCT": "Produits",
+      "ENTITIES": "Entités",
+      "SEARCH_PRODUCT": "rechercher par produit",
+      "UPDATE_EDITOR": "Mettre à jour l'éditeur"
     },
     "PRODUCTS_LIST_COLUMNS": {
       "NAME": "Nom",
@@ -824,14 +1094,16 @@
       "CONTRACT_TIPS": "Conseils sur les contrats",
       "CREATED_ON": "Créé sur",
       "GENERAL_INFORMATION": "Informations générales",
-      "LOCATION_TYPE": "Type de lieu",
+      "LOCATION_TYPE": "Type de déploiement",
       "METRICS": "Métrique",
       "OPEN_SOURCE": "Open source",
+      "LICENSING": "Licences",
       "RECOMMENDATION": "Recommandation",
       "SUPPORT_VENDORS": "Fournisseurs de soutien",
-      "SWID_TAG": "Swid Tag",
+      "SWID_TAG": "Balise swid",
       "USEFUL_LINKS": "Liens utiles",
-      "VERSION": "Version"
+      "VERSION": "Versions",
+      "ENTITIES": "Entités"
     },
     "SEARCH_BY_NAME": "Rechercher par nom",
     "BUTTON": {
@@ -851,6 +1123,7 @@
       "RECOMMENDATION": "Recommendation",
       "END_OF_LIFE": "End of Life",
       "END_OF_SUPPORT": "End of Support",
+      "GROUP_CONTRACT": "Contrat de groupe",
       "SUPPORT_VENDORS_NAME": "Nom du fournisseur d'assistance",
       "GENERAL_INFORMATION": "General Information",
       "CONTRACT_TIPS": "Conseils sur les contrats",
@@ -867,33 +1140,42 @@
       "CONFIRM_DELETION": "Êtes-vous sûr de vouloir désinstaller?",
       "PRODUCT_ADDED": "Un nouveau produit a été ajouté avec succès!"
     },
-    "EDITOR": {
-      "EDITOR": "éditeur",
-      "PRODUCT_MANAGERS": "Chefs de produit",
-      "NO_OF_PRODUCTS": "Nombre de produits",
-      "LAST_AUDIT": "Dernier audit",
-      "VENDOR": "Vendeur",
-      "ACTION": "action",
-      "ADD_EDITOR": "Ajouter un éditeur",
-      "EDIT_PRODUCT": "Modifier le produit",
-      "DELETE_PRODUCT": "Supprimer le produit",
-      "CREATE_EDITOR": "Créer un éditeur",
-      "EDITOR_NAME": "Nom de l'éditeur",
-      "GENERAL_INFO": "Informations générales",
-      "GENERAL_INFO_AREA": "Zone de texte Informations générales",
-      "PARTNER_MANAGERS": "Responsables partenaires",
-      "ADD_MANAGERS": "Ajouter des gestionnaires",
-      "AUDITS": "Audits",
-      "ENTITY": "Entité",
-      "AUDIT_TEXT": "Texte d'audit",
-      "ADD_AUDITS": "Ajouter un audit",
-      "VENDORS": "Vendeurs",
-      "ADD_VENDOR": "Ajouter des fournisseurs"
-    },
     "PLACE_HOLDER": {
       "EDIT_PRODUCT": "Modifier le produit",
       "DELETE_PRODUCT": "Supprimer le produit"
     }
+  },
+  "EDITOR": {
+    "EDITOR": "éditeur",
+    "PRODUCT_MANAGERS": "Chefs de produit",
+    "NO_OF_PRODUCTS": "Nombre de produits",
+    "LAST_AUDIT": "Dernier audit",
+    "VENDOR": "Vendeur",
+    "ACTION": "action",
+    "ADD_EDITOR": "Ajouter un éditeur",
+    "EDIT_PRODUCT": "Modifier le produit",
+    "DELETE_PRODUCT": "Supprimer le produit",
+    "CREATE_EDITOR": "Créer un éditeur",
+    "EDITOR_NAME": "Nom de l'éditeur",
+    "GENERAL_INFO": "Informations générales",
+    "GENERAL_INFO_AREA": "Zone de texte Informations générales",
+    "PARTNER_MANAGERS": "Responsables partenaires",
+    "GLOBAL_ACCOUNT_MANAGERS": "gestionnaires de comptes mondiaux",
+    "ACCOUNT_MANAGERS": "Gestionnaires de compte",
+    "GROUP_CONTRACT": "Contrat de groupe",
+    "ADD_MANAGERS": "Ajouter des gestionnaires",
+    "AUDITS": "Audits",
+    "SOURCERS": "Sourcers",
+    "ADD_SOURCER": "Ajouter un fournisseur",
+    "ENTITY": "Entité",
+    "AUDIT_TEXT": "Texte d'audit",
+    "ADD_AUDITS": "Ajouter un audit",
+    "VENDORS": "Vendeurs",
+    "ADD_VENDOR": "Ajouter des fournisseurs",
+    "HEAD_QUARTER_COUNTRY": "Siège social",
+    "ADDRESS": "Adresse",
+    "ENTER_ADDRESS": "Entrer l'adresse",
+    "SELECT_YEAR": "sélectionner l'année"
   },
   "PRODUCT": {
     "TITLE": {
@@ -914,5 +1196,174 @@
       "EOS": "Fin de prise en charge"
     }
   },
-  "EMPTY_MESSAGE": "La conformité ne peut pas être calculée car aucun droit n'est défini pour le produit"
+  "NO_AVAILABLE": "Pas disponible",
+  "RECOMMENDATIONS": {
+    "AUTHOURIZED": "Autorisée",
+    "BLACKLISTED": "Liste noire",
+    "RECOMMENDED": "Recommandée"
+  },
+  "PRODUCT_CATALOG_TAB_EDITORS": "Éditeurs",
+  "PRODUCT_CATALOG_TAB_PRODUCTS": "Produits",
+  "PRODUCT_CATALOG_TAB_EDITOR_DETAIL": "Détail de l'éditeur",
+  "PRODUCT_CATALOG_TAB_PRODUCT_DETAIL": "Détail du produit",
+  "PRODUCT_CATALOG_FILTER_GROUP_CONTRACT": {
+    "true": "Oui",
+    "false": "Non"
+  },
+  "All": "Tout",
+  "PRODUCT_CATALOG_FILTER_DEPLOYMENT_TYPE": {
+    "NONE": "Aucune",
+    "On Premise": "Sur place",
+    "SAAS": "SAAS",
+    "Both": "Les deux"
+  },
+  "PRODUCT_CATALOG_FILTER_RECOMMENDATION": {
+    "AUTHORIZED": "Autorisée",
+    "RECOMMENDED": "Recommandée",
+    "BLACKLISTED": "Liste noire",
+    "NONE": "Aucune"
+  },
+  "PRODUCT_CATALOG_FILTER_LICENSING": {
+    "NONE": "Aucune",
+    "CLOSEDSOURCE": "Source fermée",
+    "OPENSOURCE": "Open source"
+  },
+  "EXPORT": "Exporter",
+  "EXPORTING": "Exportation...",
+  "NOMINATIVE_USER_IMPORT": "Importation nominative des utilisateurs",
+  "UPLOAD": "Télécharger",
+  "BROWSE": "Parcourir",
+  "SELECT_FILE_TO_UPLOAD": "Sélectionnez le fichier à télécharger",
+  "UNKNOWN_ERROR": "Il y a une erreur lors du téléchargement!",
+  "PROFILE": "Profil",
+  "ACTIVATION_DATE": "Date d'activation",
+  "REFRESH_STATUS": "État d'actualisation",
+  "FILE_STATUS": {
+    "PARTIAL": "Partielle",
+    "FAILED": "Échoué",
+    "COMPLETED": "Complété"
+  },
+  "CHECK_STATUS": "Vérifier l'état",
+  "NOMINATIVE_USER_FILE_PROCESSED": "Votre dossier a été traité. Vous pouvez vérifier l'état du fichier à partir des journaux.",
+  "PREPARING": "En train de préparer",
+  "PROCESSING": "Traitement",
+  "DOWNLOAD_ERROR": "Il y a une erreur lors du téléchargement du fichier.",
+  "NOTE_FILE_ACCEPT_XLS": "Remarque : Seuls les fichiers .xlsx ou .xls sont acceptés.",
+  "EDITOR_REPORT": "Nom de l'éditeur",
+  "PURCHASED_COST_BY_EDITOR": "Coût d'achat/licence",
+  "MAINTENANCE_COST_BY_EDITOR": "Coût de maintenance",
+  "TOTAL_COST_BY_EDITOR": "Coût total",
+  "PRODUCT_AGGREGATION_NAME": "Nom du produit/de l'agrégation",
+  "Choose Recommendation": "Choisissez la recommandation",
+  "Choose Open Source Licenses List": "Choisir la liste des licences Open Source",
+  "PRODUCT_TYPE": "type de produit",
+  "PRODUCT_VERSION": "Version de produit",
+  "EMPTY": "vide",
+  "PROFILE_EXIST_ERROR": "Le profil existe déjà avec {{email}} e-mail",
+  "EMAIL_EXIST_ERROR": "L'e-mail existe déjà avec le profil '{{profile}}'",
+  "NO_DATA_AVAILABLE": "Pas de données disponibles",
+  "NOMINATIVE_USER_LOG": {
+    "TYPE": {
+      "indivisual": "Individuelle",
+      "individual": "Individuelle",
+      "aggregation": "Agrégation"
+    }
+  },
+  "REPORT_META_REPORT_TYPE": "Titre",
+  "REPORT_META_SCOPE": "Entité",
+  "REPORT_META_CREATED_ON": "Date de génération",
+  "REPORT_META_CREATED_BY": "Généré par",
+  "REPORT_META_EQUIPMENT_TYPE": "Type d'équipement",
+  "REPORT_META_EDITOR": "Éditrice",
+  "REPORT_META_EXPENSES_BY_EDITOR": "Dépenses par éditeur",
+  "REPORT_META_PRODUCT_EQUIPMENTS": "Équipement de produit",
+  "REPORT_META_COMPLIANCE": "Conformité",
+  "AGGREGATION_NAME": "Nom de l'agrégation",
+  "COMPUTED_LICENSES": "Licences calculées",
+  "COMPUTATION_DETAILS": "Détails du calcul",
+  "ACQUIRED_LICENSES": "Licences acquises",
+  "AVERAGE_UNIT_PRICE": "Prix unitaire moyen",
+  "METRIC_ONLY": "Métrique",
+  "GLOBAL_ACCOUNT_MANAGER": "Gestionnaire de compte mondial",
+  "TOTAL_COST_EDITOR": "Coût total pour un éditeur",
+  "NAME_REQUIRED_ALPHA_NUMERIC": "Le nom est requis au format alphanumérique",
+  "SERVER": "Server",
+  "SOFT_PARTITION": "Soft partition",
+  "CLUSTER": "Cluster",
+  "VCENTER": "Vcenter",
+  "OPTIMIZE": "Optimiser",
+  "EXPLORE": "Explorer",
+  "SOFTWARE_EXPENDITURE": "Dépenses en logiciels",
+  "EFFECTIVE_LICENSE_POSITION": "Position de licence effective",
+  "SOFTWARE_USAGE_EXPENDITURE": "Utilisation et dépenses des logiciels",
+  "MAINTENANCE": "Entretien",
+  "PARK": "Parc",
+  "ENTITY_EXPENDITURE": "Dépenses de l'entité",
+  "OWNED_LICENSES": "Licences détenues",
+  "USED_LICENSES": "Licences utilisées",
+  "WITHOUT_MAINTENANCE": "Sans entretien",
+  "WITH_MAINTENANCE": "Avec entretien",
+  "SHARED_RECEIVED_LICENSES": "Licences partagées et reçues",
+  "SOFTWARE_PRODUCT_SPEND": "Dépenses en produits logiciels",
+  "COVERED_EXPENDITURE": "Covered",
+  "NON_COVERED_EXPENDITURE": "Non Covered",
+  "ACTIVE_USER_STATUS": "Actif",
+  "INACTIVE_USER_STATUS": "Inactif",
+  "RESEND_ACTIVATION_LINK": "Renvoyer le lien d'activation",
+  "ACTIVATION_LINK_SENT": "Un nouveau lien d'activation a été envoyé avec succès sur \"{{email}}\".",
+  "ACTIVATION_LINK_SENT_ERROR": "Il y a un problème lors de l'envoi d'un nouveau lien d'activation. Veuillez essayer après un certain temps!",
+  "SENDING": "Envoi en cours",
+  "IMPORT": "Importer",
+  "IMPORT_METRICS": "Importer des métriques",
+  "SUCCESS_METRIC_IMPORT": "Vous avez importé avec succès la métrique(s)!",
+  "OVERVIEW": "Aperçu",
+  "SOFTWARE_USAGE_AND_EXPENDITURE": "Utilisation et dépenses des logiciels",
+  "USER_ACTIVATION_MSG": "L'utilisateur a été activé avec succès!",
+  "PASSWORD_RESET_MSG": "Votre mot de passe a été réinitialisé avec succès!",
+  "USER_GUIDE": "Mode d'emploi",
+  "FORGOT_PASSWORD_ERRORS": {
+    "USER_NOT_FOUND": "\"{{email}}\" est un utilisateur invalide!"
+  },
+  "SUPPORT_NUMBER_ERROR": "La valeur {{index}} dépasse la longueur requise de {{length}}",
+  "TOTAL_EDITOR": "Éditeur total",
+  "TOTAL_PRODUCT": "Produit total",
+  "PC_DASHBOARD_LICENSE_TITLE": "% de produits open source",
+  "PC_DASHBOARD_LOCATION_TITLE": "% de produits Saas",
+  "EQUIPMENT_NAMES": {
+    "desktop": "Desktop",
+    "virtualmachine": "Virtual Machine",
+    "server": "Server",
+    "cluster": "Cluster",
+    "vcenter": "VCenter"
+  },
+  "INTERNAL_SERVER_ERROR": "Il y a une erreur de serveur, veuillez réessayer après un certain temps!",
+  "USER_NOT_FOUND": "L'utilisateur n'existe pas!",
+  "TRUE_UP": "True Up",
+  "WASTE": "Waste Cost",
+  "TOTAL_USAGE_COST": "Coût d'utilisation total",
+  "SOFTWARE_EXPENDITURE_AMOUNT": "Montant des dépenses en logiciels",
+  "USAGE_COST": "Coût d'utilisation",
+  "PRODUCTS_BY_LOCATION": "Produit par emplacement",
+  "PRODUCTS_BY_LICENSING": "Produit par licence",
+  "EQUIPMENT_STATISTICS": "Statistiques d'équipement",
+  "TOTAL_TRUE_UP_COST": "Coût total de mise au point",
+  "TOTAL_WASTE_COST": "Coût total des déchets",
+  "TOTAL_WASTE_COST_INFO": "Coût total des déchets pour le périmètre actuel",
+  "TOTAL_TRUE_UP_COST_INFO": "Coût d'ajustement total pour le périmètre actuel",
+  "SOFTWARE_EXPENDITURE_INFO": "Total des dépenses logicielles pour le périmètre actuel",
+  "TOTAL_USAGE_COST_INFO": "Coût d'utilisation total pour le périmètre actuel",
+  "ENTITY_SOFTWARE_EXPENDITURE_INFO": "Coût total des dépenses en logiciels pour l'entité actuelle",
+  "OWNED_LICENSES_INFO": "Coût total des licences détenues pour l'entité actuelle",
+  "USED_LICENSES_INFO": "Coût total des licences utilisées pour l'entité actuelle",
+  "SOFTWARE_PRODUCT_SPEND_INFO": "Dépenses totales pour le produit logiciel pour l'entité actuelle",
+  "SHARED_RECEIVED_LICENSES_INFO": "Coût total des licences partagées et reçues pour l'entité actuelle",
+  "PERCENT_SAAS_INFO": "Pourcentage des produits SAAS",
+  "PERCENT_OPEN_SOURCE_INFO": "Pourcentage de produits open source",
+  "EDITOR_TITLE_INFO": "Nombre total d'éditeurs disponibles",
+  "PRODUCT_TITLE_INFO": "Produits totaux disponibles",
+  "CANCEL_INJECTION": "Annuler l'injection",
+  "INJECTION_CANCELED_MSG": "L'injection a été annulée avec succès!",
+  "TOTAL_MAINTENANCE_COST_INFO": "Le coût de maintenance total est affiché pour l'entité actuelle",
+  "OTHER": "Autre",
+  "SOFTPARTITION": "Soft Partition"
 }

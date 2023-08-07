@@ -1,0 +1,192 @@
+<div class="mat-elevation-z8">
+  <mat-table
+    [dataSource]="dataSource"
+    matSort
+    (matSortChange)="sortChange($event)"
+  >
+    <ng-container matColumnDef="file_name">
+      <!-- mat-sort-header="file_name" disableClear="true" -->
+      <mat-header-cell
+        *matHeaderCellDef
+        mat-sort-header="fileName"
+        disableClear="true"
+        disableClear="true"
+        >{{ "File Name" | translate }}
+      </mat-header-cell>
+      <mat-cell *matCellDef="let file">
+        <a class="mat-button-link" matTooltip="{{ file.file_name }}">
+          {{ file.file_name }}
+        </a>
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="file_status">
+      <!-- mat-sort-header="status" -->
+      <mat-header-cell
+        *matHeaderCellDef
+        mat-sort-header="status"
+        disableClear="true"
+        >{{ "Status" | translate }}
+      </mat-header-cell>
+      <mat-cell *matCellDef="let file">
+        <span
+          class="file-status"
+          *ngIf="[statusPartial, statusFailed].includes(file.file_status)"
+          ><mat-icon
+            *ngIf="!file?.errorFileDownloadingStatus"
+            (click)="downloadFile(file, errorDownloadType)"
+            matTooltip="{{
+              'Click here to download failed records' | translate
+            }}"
+            >error</mat-icon
+          >
+          <mat-spinner
+            *ngIf="file?.errorFileDownloadingStatus"
+            class="error-file-download-spinner"
+          ></mat-spinner>
+
+          {{ "FILE_STATUS." + file.file_status | translate }}</span
+        >
+        <span *ngIf="file.file_status == statusCompleted">
+          {{ file.file_status }}
+        </span>
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="uploaded_by">
+      <!-- mat-sort-header="uploaded_by" disableClear="true" -->
+      <mat-header-cell
+        *matHeaderCellDef
+        mat-sort-header="uploadedBy"
+        disableClear="true"
+        >{{ "Uploaded By" | translate }}
+      </mat-header-cell>
+      <mat-cell *matCellDef="let file"> {{ file.uploaded_by }} </mat-cell>
+    </ng-container>
+    <!-- product editor -->
+    <ng-container matColumnDef="product_editor">
+      <!-- mat-sort-header="uploaded_by" disableClear="true" -->
+      <mat-header-cell
+        *matHeaderCellDef
+        mat-sort-header="editor"
+        disableClear="true"
+        >{{ "EDITOR.EDITOR" | translate }}
+      </mat-header-cell>
+      <mat-cell *matCellDef="let file">
+        {{ file.product_editor }}
+      </mat-cell>
+    </ng-container>
+    <!-- product name -->
+    <ng-container matColumnDef="name">
+      <!-- mat-sort-header="uploaded_by" disableClear="true" -->
+      <mat-header-cell
+        *matHeaderCellDef
+        mat-sort-header="name"
+        disableClear="true"
+        >{{ "PRODUCT_AGGREGATION_NAME" | translate }}
+      </mat-header-cell>
+      <mat-cell *matCellDef="let file">
+        {{ file.name }}
+      </mat-cell>
+    </ng-container>
+    <!-- type  -->
+    <ng-container matColumnDef="type">
+      <mat-header-cell
+        *matHeaderCellDef
+        mat-sort-header="productType"
+        disableClear="true"
+        >{{ "PRODUCT_TYPE" | translate }}
+      </mat-header-cell>
+      <mat-cell *matCellDef="let file">
+        {{ "NOMINATIVE_USER_LOG.TYPE." + file.type | translate }}
+      </mat-cell>
+    </ng-container>
+    <!-- product version -->
+    <ng-container matColumnDef="product_version">
+      <mat-header-cell
+        *matHeaderCellDef
+        mat-sort-header="productVersion"
+        disableClear="true"
+        >{{ "PRODUCT_VERSION" | translate }}
+      </mat-header-cell>
+      <mat-cell *matCellDef="let file">
+        {{ file.product_version }}
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="uploaded_at">
+      <!-- mat-sort-header="uploaded_at" disableClear="true" -->
+      <mat-header-cell
+        *matHeaderCellDef
+        mat-sort-header="UploadedOn"
+        disableClear="true"
+        >{{ "Uploaded On" | translate }}</mat-header-cell
+      >
+      <mat-cell *matCellDef="let file">
+        <!-- {{ file.uploaded_at | date : "y-MM-dd, h:mm a" }} -->
+        {{ file.uploaded_at }}
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="action">
+      <mat-header-cell *matHeaderCellDef>{{
+        "Action" | translate
+      }}</mat-header-cell>
+      <mat-cell *matCellDef="let file">
+        <span>
+          <a class="mat-button-link">
+            <img
+              *ngIf="!file?.downloadingStatus"
+              (click)="downloadFile(file, actualDownloadType)"
+              draggable="false"
+              id="downloadIcon"
+              src="assets/images/DownloadIcon.svg"
+            />
+            <mat-spinner
+              class="file-download-spinner"
+              *ngIf="file?.downloadingStatus"
+            ></mat-spinner>
+          </a>
+        </span>
+      </mat-cell>
+    </ng-container>
+
+    <mat-header-row
+      *matHeaderRowDef="displayedColumns; sticky: true"
+    ></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+  </mat-table>
+  <app-loading-spinner *ngIf="loadingData"></app-loading-spinner>
+  <div
+    id="noData"
+    *ngIf="
+      !loadingData &&
+      (!dataSource || (dataSource && dataSource.data.length === 0))
+    "
+  >
+    {{ "NO_DATA_AVAILABLE" | translate }}
+  </div>
+  <mat-paginator
+    [length]="length"
+    [pageSize]="pageSize"
+    [pageSizeOptions]="[50, 100, 200]"
+    (page)="getPaginatorData($event)"
+    showFirstLastButtons
+  >
+  </mat-paginator>
+</div>
+<ng-template #errorDialog>
+  <mat-dialog-content>
+    <p>{{ "Error" | translate }}: {{ errorMsg | translate }}.</p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="center">
+    <button
+      mat-button
+      [mat-dialog-close]="true"
+      class="btn-two"
+      cdkFocusInitial
+    >
+      {{ "OK" | translate }}
+    </button>
+  </mat-dialog-actions>
+</ng-template>

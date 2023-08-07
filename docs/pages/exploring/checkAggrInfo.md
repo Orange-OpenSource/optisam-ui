@@ -4,7 +4,7 @@
 
 Go to "Products" :
 
-![select APM](../../img/exploring/checkCompForOneProd11u.jpg){: .zoom}
+![select APM](../../img/exploring/checkCompForOneProd11.jpg){: .zoom}
 
 Click on aggregation :
 
@@ -16,7 +16,7 @@ Click on the aggregation name :
 
 ![select APM](../../img/exploring/checkAggrInfo1.jpg){: .zoom}
 
-## Check the informations
+## Check the information
 
 In the details of the product, click on "Information" :
 

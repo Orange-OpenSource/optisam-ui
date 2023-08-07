@@ -1,12 +1,8 @@
-<mat-card>
-  <mat-card-content
-    class="list-vendors"
-    fxLayout="column"
-    fxLayoutAlign="space-between"
-  >
-    <mat-card-title>
+<div>
+  <div class="list-vendors" fxLayout="column" fxLayoutAlign="space-between">
+    <div>
       <h6 class="vendors-heading">{{ "EDITOR.VENDORS" | translate }}</h6>
-    </mat-card-title>
+    </div>
     <div [formGroup]="fg">
       <div
         formArrayName="vendors"
@@ -20,7 +16,7 @@
             >close</mat-icon
           > -->
           <div fxLayout="row" fxLayoutAlign="start">
-            <mat-form-field appearance="outline" class="vendors-section">
+            <mat-form-field appearance="outline">
               <mat-label>{{ "EDITOR.VENDORS" | translate }}</mat-label>
               <input matInput *ngIf="!view" formControlName="name" />
               <input matInput *ngIf="view" formControlName="name" readonly />
@@ -64,8 +60,8 @@
         </div>
       </button> -->
     </div>
-  </mat-card-content>
-</mat-card>
+  </div>
+</div>
 
 <ng-template #deleteConfirmationDialog>
   <mat-dialog-content>

@@ -22,6 +22,13 @@ import { SharedService } from 'src/app/shared/shared.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { ProductAggregationDetailsComponent } from '../product-aggregation-details/product-aggregation-details.component';
+import {
+  AcquiredRights,
+  AcquiredRightsIndividualParams,
+  AcquiredRightsResponse,
+} from '@core/modals/acquired-rights.modal';
+import { CommonService } from '@core/services';
+import { LOCAL_KEYS } from '@core/util/constants/constants';
 
 type AlertColor = {
   green: string;
@@ -61,7 +68,9 @@ export class MoreDetailsComponent implements OnInit {
   swidTag: any;
   productInfo: DialogData = new DialogData();
   productOptions: DialogData = new DialogData();
-//  emptyMsg: string ='The compliance can not be computed because no right has been defined for the product. Please contact your admin to define acquired rights for the product.';
+  productSKU: string = null;
+  emptyMsg: string =
+    'The compliance can not be computed because no right has been defined for the product. Please contact your admin to define acquired rights for the product.';
 
   @ViewChild(MatSort, { static: false }) sort: MatSort;
   displayedColumns: string[] = [
@@ -69,7 +78,10 @@ export class MoreDetailsComponent implements OnInit {
     'metric',
     'numCptLicences',
     'computedDetails',
-    'numAcqLicences',
+    // 'numAcqLicences',
+    'availableLicences',
+    // 'sharedLicences',
+    // 'recievedLicences',
     'deltaNumber',
     'deltaCost',
     'totalCost',
@@ -81,6 +93,9 @@ export class MoreDetailsComponent implements OnInit {
     metric_name: 'Metric',
     numCptLicences: 'Computed licenses',
     computedDetails: 'Computation details',
+    availableLicences: 'Available Licenses',
+    // sharedLicences:"Shared Licenses",
+    // recievedLicences:"Received Licenses",
     numAcqLicences: 'Acquired Licenses',
     deltaNumber: 'Delta (licenses)',
     deltaCost: 'Delta Cost',
@@ -102,6 +117,7 @@ export class MoreDetailsComponent implements OnInit {
   alertColor: string;
   isCostOptimization: boolean = false;
   totalCostOfCostOptimization: number = 0;
+  maintenanceInfo: AcquiredRights;
   deltaCostOfCostOptimization: number = 0;
 
   //new table
@@ -111,7 +127,14 @@ export class MoreDetailsComponent implements OnInit {
     private router: Router,
     public dialog: MatDialog,
     public dialogRef: MatDialogRef<MoreDetailsComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData
+    @Inject(MAT_DIALOG_DATA)
+    public data: {
+      datakey: string;
+      dataName: string;
+      dataSKU?: string;
+      appID?: string;
+    },
+    private cs: CommonService
   ) {
     this.loadingSubscription = this.sharedService
       .httpLoading()
@@ -121,13 +144,14 @@ export class MoreDetailsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.swidTag = this.data['datakey'];
-    this.pName = this.data['dataName'];
-    if (this.data['appID']) {
-      this.appID = this.data['appID'];
+    this.swidTag = this.data.datakey;
+    this.pName = this.data.dataName;
+    if (this.data.appID) {
+      this.appID = this.data.appID;
     } else {
       this.appID = null;
     }
+    this.productSKU = this.data.dataSKU || null;
     this.getProductDetails();
     this.getAcquiredRights();
   }
@@ -166,18 +190,30 @@ export class MoreDetailsComponent implements OnInit {
     dialogRef.afterClosed().subscribe((result) => {});
   }
 
-  getProductOptions() {
+  getProductMaintenance() {
     this._loading = true;
-    this.productsService.getOptionsDetails(this.swidTag).subscribe(
-      (res: any) => {
-        this.productOptions = res;
-        this._loading = false;
-      },
-      (error) => {
-        this._loading = false;
-        console.log('There was an error while retrieving Posts !!!' + error);
-      }
-    );
+    const acquiredRightsIndividualParams: AcquiredRightsIndividualParams = {
+      page_num: 1,
+      page_size: 50,
+      sort_by: 'PRODUCT_NAME',
+      sort_order: 'asc',
+      scopes: this.cs.getLocalData(LOCAL_KEYS.SCOPE),
+      'search_params.swidTag.filteringkey': this.swidTag,
+      'search_params.SKU.filteringkey': this.productSKU,
+    };
+    this.productsService
+      .filteredDataAcqRights(acquiredRightsIndividualParams)
+      .subscribe(
+        ({ acquired_rights }: AcquiredRightsResponse) => {
+          this.maintenanceInfo = acquired_rights?.[0];
+          console.log('maintenanceInfo', this.maintenanceInfo);
+          this._loading = false;
+        },
+        (error) => {
+          this._loading = false;
+          console.log('There was an error while retrieving Posts !!!' + error);
+        }
+      );
   }
 
   getAcquiredRights() {

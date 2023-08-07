@@ -1,0 +1,57 @@
+<span class="title"
+  >{{ "Underusage" | translate }} {{ editor ? "( " + editor + " )" : "" }}
+</span>
+<mat-table [dataSource]="underUsageDataSource" class="table-size">
+  <!-- Scope Column -->
+  <ng-container matColumnDef="scope">
+    <mat-header-cell *matHeaderCellDef>{{
+      "ENTITIES" | translate
+    }}</mat-header-cell>
+    <mat-cell *matCellDef="let element"> {{ element.scope }} </mat-cell>
+  </ng-container>
+
+  <!-- Metrics Column -->
+  <ng-container matColumnDef="metrics">
+    <mat-header-cell *matHeaderCellDef>{{
+      "AGGREGATIONS.TEXTS.METRICS" | translate
+    }}</mat-header-cell>
+    <mat-cell *matCellDef="let element"> {{ element.metrics }} </mat-cell>
+  </ng-container>
+
+  <!-- Product Name Column -->
+  <ng-container matColumnDef="product_name">
+    <mat-header-cell *matHeaderCellDef>{{
+      "Product Name" | translate
+    }}</mat-header-cell>
+    <mat-cell *matCellDef="let element">
+      {{ element.product_name }}
+      {{
+        element.is_aggregation
+          ? "( " +
+            ("CONCURRENT_USER.TABLE_HEADER.AGGREGATION" | translate) +
+            " )"
+          : ""
+      }}
+    </mat-cell>
+  </ng-container>
+
+  <!-- Unused Licenses Column -->
+  <ng-container matColumnDef="delta_number">
+    <mat-header-cell *matHeaderCellDef>
+      {{ "AGGREGATIONS.TEXTS.UNUSED_LICENSE" | translate }}
+    </mat-header-cell>
+    <mat-cell *matCellDef="let element">
+      {{ element.delta_number }}
+    </mat-cell>
+  </ng-container>
+
+  <mat-header-row
+    *matHeaderRowDef="displayedColumns; sticky: true"
+  ></mat-header-row>
+  <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+</mat-table>
+<ng-container *ngIf="!underUsageDataSource?.length">
+  <div id="noData" fxLayout="row" fxLayoutAlign="center center">
+    <mat-icon>error</mat-icon>{{ "No Data details available" | translate }}
+  </div>
+</ng-container>
