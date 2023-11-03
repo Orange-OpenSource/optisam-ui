@@ -8,9 +8,10 @@ import { TranslateModule } from '@ngx-translate/core';
 import { CustomMaterialModule } from 'src/app/material.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { SetExpenditureComponent } from './set-expenditure/set-expenditure.component';
 
 @NgModule({
-  declarations: [ListScopesComponent, CreateScopeComponent],
+  declarations: [ListScopesComponent, CreateScopeComponent, SetExpenditureComponent],
   imports: [
     CustomMaterialModule,
     TranslateModule,

@@ -1,36 +1,34 @@
-site_name: OpTISAM IT Documentation v1.5.0
+site_name: OpTISAM IT Documentation v1.2.1
 site_url: https://optisam-ui-prod.kermit-noprod-b.itn.intraorange/optisam
 repo_url: https://gitlab.tech.orange/optisam/optisam-it/optisam-guide
-
 
 nav:
   - Introduction : 
     - What is OpTISAM : pages/presentation/whatIs.md
     - How is OpTISAM computing compliance : pages/presentation/computCompliance.md
-  - Scopes configuration:
-    - Configuration order : pages/configure/configurationOrder.md
-    - 1. Create equipment types (only specific scopes) : pages/configure/createEquipmentTypes.md
-    - 2. Create metrics : pages/configure/createMetrics.md
-    - 3. Import your inventory data : pages/configure/importInventoryData.md
-  - Navigation :
+  - Features :
     - Park inventory :
-      - Applications : pages/exploring/parkInventory/applications.md
-      - Equipments : pages/exploring/parkInventory/equipments.md
       - Global presentation : pages/exploring/parkInventory/presentation.md
+      - Equipments : pages/exploring/parkInventory/equipments.md
       - Products : pages/exploring/parkInventory/products.md
-      
+      - Applications : pages/exploring/parkInventory/applications.md
     - Check informations: 
       - Global: pages/exploring/checkGlobalInfo.md
       - One product: pages/exploring/checkProdInfo.md
       - Aggregation: pages/exploring/checkAggrInfo.md
+   # - Check global informations : pages/exploring/checkGlobalInfo.md
+   # - Check products informations: pages/exploring/checkProdInfo.md
+   # - Check aggregations informations: pages/exploring/checkAggrInfo.md
+  
     - Check compliance: 
       - Global: pages/exploring/checkGlobalCompliance.md
-      - Group : pages/exploring/checkGroupCompliance.md
       - One product : pages/exploring/checkComplianceOne.md 
       - Aggregation: pages/exploring/checkAggregationCompliance.md
       #- Metric allocated: /pages/exploring/checkAllocatedCompliance.md
-    - Check products deployment : pages/exploring/checkProdDeployment.md
-    #- Check products maintenance : pages/exploring/checkProdMaintenance.md (Draft)
+    # - Check global compliance : pages/exploring/checkGlobalCompliance.md
+    #- Check compliance for one product : pages/exploring/checkComplianceOne.md 
+    #- Check compliance for an aggregation of product: pages/exploring/checkAggregationCompliance.md
+    - Check products deployment : pages/exploring/checkProdDeployment.md  
     - Licensing :
       - Acquired rights : pages/exploring/licensing/acquiredRights.md
       - Aggregations : pages/exploring/licensing/aggregations.md
@@ -40,33 +38,29 @@ nav:
       #- Hardware : pages/exploring/simulation/hardware.md
     - Reports : 
       - Compliance : pages/exploring/reports/compliance.md
-      - Inventory : pages/exploring/reports/inventory.md 
-  - Administration : 
-    - Acquired rights :
+      - Inventory : pages/exploring/reports/inventory.md
+  - Configure OpTISAM :
+    - Configuration order : pages/configure/configurationOrder.md
+    - 1. Create equipment types (only specific scopes) : pages/configure/createEquipmentTypes.md
+    - 2. Create metrics : pages/configure/createMetrics.md
+    - 3. Import your inventory data : pages/configure/importInventoryData.md
+  - Administration :
+    - Scope management : pages/managing/scopeManagement.md
+    - Groups management : pages/managing/groupsManagement.md
+    - Users management : pages/managing/usersManagement.md
+    - Equipments management : pages/managing/equipmentsManagement.md
+    - Metrics management : pages/managing/metricsManagement.md
+    - Aggregations management : pages/managing/aggregationsManagement.md
+    - Acquired rights management :
       - Individual : pages/managing/acquiredRights.md
       - Aggregation : pages/managing/acquiredRightsAggregation.md
-    - Aggregations : pages/managing/aggregationsManagement.md
-    - Equipments : pages/managing/equipmentsManagement.md
-    - Groups : pages/managing/groupsManagement.md
-    - Inventory :
-      - On premise products :
-        - Upload inventory : pages/managing/genericTemplate.md
-        - Delete the inventory data : pages/managing/dataManagement.md
-        - Importation errors management : pages/managing/errorData.md
-      - Saas products :
-        - Nominative users : pages/managing/nominativeUsers.md
-        - Concurrent users : pages/managing/concurrentUsers.md
-    - Metrics : pages/managing/metricsManagement.md
-    - Obsolescence management : pages/managing/obsolescenceManagement.md
-    - Simulation management : pages/managing/simulationsManagement.md
-    - Users : pages/managing/usersManagement.md 
    # - Acquired rights aggregation managament : pages//managing/acquiredRightsAggregation.md
-  - Product catalog : 
-    - View : pages/exploring/checkProductCatalog.md
-    - Management : pages/managing/productCatalogManagement.md
-  - Super admin :
-    - Scopes management : pages/managing/scopeManagement.md
-    - Product catalog : pages/managing/uploadProductCatalog.md
+    - Inventory management :
+      - Upload all of your data in one global file : pages/managing/genericTemplate.md
+      - Delete the inventory data : pages/managing/dataManagement.md
+      - Importation errors management : pages/managing/errorData.md
+    - Simulation management : pages/managing/simulationsManagement.md
+    - Obsolescence management : pages/managing/obsolescenceManagement.md
   - Glossary : pages/glossary.md
   - SAM :
     - Oracle : 
@@ -87,9 +81,9 @@ theme:
     - header.autohide
     - navigation.tabs
     - navigation.instant
-  logo : img/favicon.ico
+  logo: img/favicon.ico
   favicon: img/favicon.ico
-    
+
 markdown_extensions:
   - attr_list
 

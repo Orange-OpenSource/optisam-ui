@@ -7,7 +7,7 @@ import { map, catchError } from 'rxjs/operators';
 import { Equipments } from './equipments';
 import { LOCAL_KEYS } from '@core/util/constants/constants';
 import { DeleteAttributeParams, ErrorResponse } from '@core/modals';
-import { fixErrorResponse } from '@core/util/common.functions';
+import { fixedErrorResponse } from '@core/util/common.functions';
 
 @Injectable({
   providedIn: 'root',
@@ -22,7 +22,7 @@ export class EquipmentsService {
   });
 
   public errorMsg: string;
-  constructor(private http: HttpClient, private cs: CommonService) {}
+  constructor(private http: HttpClient, private cs: CommonService) { }
 
   getTypes(scope?: string): Observable<Equipments[]> {
     let url;

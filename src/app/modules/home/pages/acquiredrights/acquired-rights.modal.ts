@@ -55,16 +55,18 @@ export interface AcquiredRightAggregationBody
     | 'sku'
     | 'ID'
     | 'num_licences_maintainance'
+    | 'support_number'
   > {
   ID?: number;
   aggregation_name?: string;
   sku?: string;
-  repartition?:boolean;
+  repartition?: boolean;
   aggregationID?: string;
   num_licences_maintainance?: number;
   num_licences_maintenance?: number;
   file_name?: string;
   file_data?: string;
+  support_number: string[];
 }
 
 export interface AcquiredRightAggregationUpdateParams {

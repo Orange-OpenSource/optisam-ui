@@ -21,7 +21,7 @@
           (click)="getEquipmentsData(disCol); activeLink = disCol.type"
           [active]="activeLink == disCol.type"
         >
-          {{ disCol.type | uppercase | translate }}
+          {{ "EQUIPMENT_NAMES." + disCol.type | translate }}
         </a>
       </nav>
       <div class="table-section">

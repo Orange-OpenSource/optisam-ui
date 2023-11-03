@@ -7,6 +7,7 @@ import {
 } from '@angular/forms';
 import { Aggregation } from '@core/modals';
 import { ProductService } from '@core/services/product.service';
+import { supportNumberMax } from '@core/util/common.functions';
 
 @Component({
   selector: 'app-edit-maintenance-step',
@@ -28,7 +29,7 @@ export class EditMaintenanceStepComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private productService: ProductService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.formInit();
@@ -42,17 +43,17 @@ export class EditMaintenanceStepComponent implements OnInit {
         maintenanceProvider: this.data.maintenance_provider || '',
         ...(this.isDateExist
           ? {
-              startMaintenanceDate: new Date(
-                this.data.start_of_maintenance
-              ).toISOString(),
-              endMaintenanceDate: new Date(
-                this.data.end_of_maintenance
-              ).toISOString(),
-            }
+            startMaintenanceDate: new Date(
+              this.data.start_of_maintenance
+            ).toISOString(),
+            endMaintenanceDate: new Date(
+              this.data.end_of_maintenance
+            ).toISOString(),
+          }
           : {
-              startMaintenanceDate: null,
-              endMaintenanceDate: null,
-            }),
+            startMaintenanceDate: null,
+            endMaintenanceDate: null,
+          }),
       });
     });
   }
@@ -62,7 +63,7 @@ export class EditMaintenanceStepComponent implements OnInit {
       startMaintenanceDate: this.fb.control(null),
       endMaintenanceDate: this.fb.control(null),
       lastPurchasedOrder: this.fb.control(''),
-      supportNumber: this.fb.control(''),
+      supportNumber: this.fb.control('', [supportNumberMax(16)]),
       maintenanceProvider: this.fb.control(''),
       licenses_maintenance: this.fb.control(
         null,
@@ -90,6 +91,10 @@ export class EditMaintenanceStepComponent implements OnInit {
 
   get maintenance_price() {
     return this.maintenanceForm.get('maintenance_price');
+  }
+
+  get supportNumber(): FormControl {
+    return this.maintenanceForm.get('supportNumber') as FormControl;
   }
 
   // True if end date is less than start date
@@ -120,8 +125,8 @@ export class EditMaintenanceStepComponent implements OnInit {
   validatePattern(input) {
     return input?.value?.includes('_')
       ? {
-          hasUnderscore: true,
-        }
+        hasUnderscore: true,
+      }
       : null;
   }
 
@@ -209,4 +214,5 @@ export class EditMaintenanceStepComponent implements OnInit {
     }
     return false; // if no modification done in maintenance form
   }
+
 }

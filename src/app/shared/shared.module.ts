@@ -28,6 +28,23 @@ import { CountryNameFromCodePipe } from './common-pipes/country-name-from-code.p
 import { CompanyIconPipe } from './common-pipes/company-icon.pipe';
 import { TakeFirstPipe } from './common-pipes/take-first.pipe';
 import { RestScopeCountPipe } from './common-pipes/rest-scope-count.pipe';
+import { HeaderWithoutLoginComponent } from './header-without-login/header-without-login.component';
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { ToFixedPipe } from './common-pipes/to-fixed.pipe';
+import { KpiBlockComponent } from './kpi-block/kpi-block.component';
+import { KpiPieBlockComponent } from './kpi-pie-block/kpi-pie-block.component';
+import { FrenchNumberPipe } from './common-pipes/french-number.pipe';
+import { UserChangePasswordComponent } from './user-change-password/user-change-password.component';
+import { InvalidLinkComponent } from './invalid-link/invalid-link.component';
+import { RouterModule } from '@angular/router';
+import { CheckForMillionPipe } from './common-pipes/check-for-million.pipe';
+import { ArrayToStringPipe } from './common-pipes/array-to-string.pipe';
+import { KpiLoaderComponent } from './kpi-loader/kpi-loader.component';
+import { ChopValuePipe } from './common-pipes/chop-value.pipe';
+import { EditMetricAllocatedComponent } from './edit-metricAllocated/edit-metric-allocated.component';
+import { WarningAllocationChangeComponent } from './edit-metricAllocated/dialog/warning-allocation-change/warning-allocation-change.component';
+import { DeleteAllocatedMetricConfirmationDialogComponent } from './edit-metricAllocated/delete-allocated-metric-confirmation-dialog/delete-allocated-metric-confirmation-dialog.component';
+import { AllocatedMetricDeleteErrorComponent } from './edit-metricAllocated/allocated-metric-delete-error/allocated-metric-delete-error.component';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true,
@@ -55,18 +72,23 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     CompanyIconPipe,
     TakeFirstPipe,
     RestScopeCountPipe,
-    SimpleConfirmationComponent,
-    CommonPopupComponent,
-    ToSeparateLinePipe,
-    AbsPipe,
-    IsSaasPipe,
-    SuccessDialogComponent,
-    ErrorDialogComponent,
-    AuditLastYearOnlyPipe,
-    CountryNameFromCodePipe,
-    CompanyIconPipe,
-    TakeFirstPipe,
-    RestScopeCountPipe,
+    HeaderWithoutLoginComponent,
+    PageNotFoundComponent,
+    ToFixedPipe,
+    KpiBlockComponent,
+    KpiPieBlockComponent,
+    FrenchNumberPipe,
+    UserChangePasswordComponent,
+    InvalidLinkComponent,
+    CheckForMillionPipe,
+    ArrayToStringPipe,
+    KpiLoaderComponent,
+    FrenchNumberPipe,
+    ChopValuePipe,
+    EditMetricAllocatedComponent,
+    WarningAllocationChangeComponent,
+    DeleteAllocatedMetricConfirmationDialogComponent,
+    AllocatedMetricDeleteErrorComponent
   ],
   exports: [
     TrimTextPipe,
@@ -93,8 +115,18 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     CompanyIconPipe,
     TakeFirstPipe,
     RestScopeCountPipe,
+    HeaderWithoutLoginComponent,
+    KpiBlockComponent,
+    KpiPieBlockComponent,
+    FrenchNumberPipe,
+    UserChangePasswordComponent,
+    InvalidLinkComponent,
+    CheckForMillionPipe,
+    ArrayToStringPipe,
+    KpiLoaderComponent,
+    FrenchNumberPipe,
+    ChopValuePipe
   ],
-
   imports: [
     CommonModule,
     TranslateModule,
@@ -103,6 +135,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     CustomMaterialModule,
     FlexLayoutModule,
     PerfectScrollbarModule,
+    RouterModule
   ],
   providers: [
     {

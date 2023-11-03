@@ -1,0 +1,52 @@
+<mat-card>
+  <div class="main">
+    <div
+      fxLayout="row wrap"
+      class="main-pc-dashboard"
+      fxLayoutAlign="space-between"
+    >
+      <div
+        fxFlex
+        class="main-kpi-block"
+        fxLayout="column"
+        fxLayoutAlign="space-between"
+      >
+        <app-kpi-block
+          [options]="editorOptions"
+          style="min-height: 150px"
+        ></app-kpi-block>
+        <app-kpi-block
+          [options]="productOptions"
+          style="min-height: 150px"
+        ></app-kpi-block>
+      </div>
+      <div
+        fxFlex="35"
+        class="block pc-open-source-chart-block mat-elevation-z3"
+      >
+        <app-kpi-pie-block [data]="pcOpenSourceChartData">
+          <ng-template #chart>
+            <canvas
+              id="pc-open-source-chart"
+              [ngClass]="{ 'display-none': pcOpenSourceChartData?.loading }"
+              width="100%"
+              height="60px"
+            ></canvas>
+          </ng-template>
+        </app-kpi-pie-block>
+      </div>
+      <div fxFlex="35" class="block pc-saas-chart-block mat-elevation-z3">
+        <app-kpi-pie-block [data]="pcSaasChartData">
+          <ng-template #chart>
+            <canvas
+              id="pc-location-chart"
+              [ngClass]="{ 'display-none': pcSaasChartData?.loading }"
+              width="100%"
+              height="60px"
+            ></canvas>
+          </ng-template>
+        </app-kpi-pie-block>
+      </div>
+    </div>
+  </div>
+</mat-card>

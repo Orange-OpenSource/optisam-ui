@@ -1,0 +1,15 @@
+<mat-card>
+  <nav mat-tab-nav-bar>
+    <a
+      mat-tab-link
+      class="tab-anchor"
+      *ngFor="let tab of tabList"
+      (click)="currentTab = tab.tabLink"
+      [routerLink]="['./' + tab.tabLink]"
+      routerLinkActive="mat-tab-label-active"
+    >
+      {{ tab.translate | translate }}
+    </a>
+  </nav>
+  <router-outlet></router-outlet>
+</mat-card>

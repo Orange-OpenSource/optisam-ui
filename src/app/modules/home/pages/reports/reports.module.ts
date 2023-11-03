@@ -8,6 +8,7 @@ import { CustomMaterialModule } from 'src/app/material.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { FrenchNumberPipe } from '@shared/common-pipes/french-number.pipe';
 
 @NgModule({
   declarations: [ListReportsComponent, CreateReportComponent],
@@ -19,6 +20,6 @@ import { SharedModule } from 'src/app/shared/shared.module';
     FormsModule,
     SharedModule,
     ReactiveFormsModule
-  ]
+  ],
 })
 export class ReportsModule { }

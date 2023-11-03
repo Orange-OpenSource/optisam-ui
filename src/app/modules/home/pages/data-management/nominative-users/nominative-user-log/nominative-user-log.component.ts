@@ -13,7 +13,6 @@ import {
   NominativeUserDownloadParams,
   NominativeUserDownloadType,
   NominativeUserFileStatus,
-  NominativeUserType,
   ProductType,
   UploadedFiles,
   UploadedFilesParams,
@@ -23,7 +22,6 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort, Sort, SortDirection } from '@angular/material/sort';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
-import { Router } from '@angular/router';
 import { CommonService, ProductService } from '@core/services';
 import { SharedService } from '@shared/shared.service';
 
@@ -59,7 +57,6 @@ export class NominativeUserLogComponent implements OnInit {
 
   constructor(
     private dialog: MatDialog,
-    private router: Router,
     private dataService: DataManagementService,
     private productService: ProductService,
     private cs: CommonService,
@@ -81,6 +78,10 @@ export class NominativeUserLogComponent implements OnInit {
 
   get statusPartial(): NominativeUserFileStatus {
     return NominativeUserFileStatus.partial;
+  }
+
+  get statusPending(): NominativeUserFileStatus {
+    return NominativeUserFileStatus.pending;
   }
 
   get actualDownloadType(): NominativeUserDownloadType {
@@ -116,12 +117,12 @@ export class NominativeUserLogComponent implements OnInit {
       (e: ErrorResponse) => {
         this.loadingData = false;
         this.ss.commonPopup({
-          title: 'ERROR',
-          message: e.message,
+          title: 'ERROR_TITLE',
+          message: e?.message ? e.message : String(e),
           singleButton: true,
           buttonText: 'OK',
         });
-        this.cd.markForCheck();
+        // this.cd.markForCheck();
       }
     );
   }
@@ -154,14 +155,19 @@ export class NominativeUserLogComponent implements OnInit {
         file[status] = false;
         const prefix: string =
           type === NominativeUserDownloadType.error ? 'Error_' : '';
-        const url = URL.createObjectURL(res);
-        const link: HTMLAnchorElement = document.createElement('a');
-        link.setAttribute('href', url);
-        link.setAttribute('download', prefix + file_name);
-        link.style.visibility = 'hidden';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        this.ss.downloadFile({
+          data: res,
+          filename: file_name,
+          prefix
+        })
+        // const url = URL.createObjectURL(res);
+        // const link: HTMLAnchorElement = document.createElement('a');
+        // link.setAttribute('href', url);
+        // link.setAttribute('download', prefix + file_name);
+        // link.style.visibility = 'hidden';
+        // document.body.appendChild(link);
+        // link.click();
+        // document.body.removeChild(link);
         this.cd.markForCheck();
       },
       (e: any) => {

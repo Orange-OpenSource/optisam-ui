@@ -1,9 +1,9 @@
+import { element } from 'protractor';
 import { Component, Input, OnInit } from '@angular/core';
 import { ProductService } from '@core/services';
 import { ExpansePercent, Expenditure } from '@core/services/expenditure';
 import { CHART_COLORS } from '@core/util/constants/constants';
 import * as Chart from 'chart.js';
-import 'chartjs-plugin-datalabels';
 import * as d3 from 'd3';
 import { commonPieChartDataLabelConfig, pieChartLabelCallback } from '@core/util/common.functions';
 
@@ -188,7 +188,7 @@ export class SoftwareExpenditureComponent implements OnInit {
         },
         tooltips: {
           callbacks: {
-            label: pieChartLabelCallback
+            label: pieChartLabelCallback()
           }
         },
         responsive: false,

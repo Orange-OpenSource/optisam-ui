@@ -65,6 +65,22 @@
           <mat-cell *matCellDef="let element"> {{ element.role }} </mat-cell>
         </ng-container>
 
+        <!-- Status Column -->
+        <ng-container matColumnDef="status">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>
+            {{ "STATUS" | translate }}
+          </mat-header-cell>
+          <mat-cell *matCellDef="let element" class="status-cell">
+            <span>{{
+              (element?.account_status === activeUserStatus ||
+              element.role === "SUPER_ADMIN"
+                ? "ACTIVE_USER_STATUS"
+                : "INACTIVE_USER_STATUS"
+              ) | translate
+            }}</span>
+          </mat-cell>
+        </ng-container>
+
         <!-- Action Column -->
         <ng-container matColumnDef="action">
           <div *ngIf="role === 'ADMIN' || role === 'SUPER_ADMIN'">
@@ -80,6 +96,31 @@
                 (click)="editUser(element)"
                 >edit</mat-icon
               >
+              <!-- Resend link start -->
+              <mat-icon
+                *ngIf="element.role !== 'SUPER_ADMIN' && !element.isSendingLink"
+                (click)="resendActivationLink(element)"
+                class="action-icon"
+                matTooltip="{{
+                  element?.account_status !== activeUserStatus
+                    ? ('RESEND_ACTIVATION_LINK' | translate)
+                    : ''
+                }}"
+                [ngClass]="{
+                  'disable-icon': element?.account_status === activeUserStatus
+                }"
+                >email</mat-icon
+              >
+
+              <span
+                matTooltip="{{ 'SENDING' | translate }}..."
+                class="sending-activation-link"
+                *ngIf="element.isSendingLink"
+              >
+                <mat-spinner class="action-icon"></mat-spinner>
+              </span>
+
+              <!-- Resend link end -->
               <mat-icon
                 id="deleteBtn_{{ i }}"
                 *ngIf="element.role !== 'SUPER_ADMIN'"

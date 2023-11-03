@@ -164,7 +164,7 @@ export class MoreDetailsComponent implements OnInit {
     this._loading = true;
     this.productsService.getMoreDetails(this.swidTag).subscribe(
       (res: any) => {
-        console.log(res)
+        console.log(res);
         this.productInfo = res;
         this._loading = false;
       },
@@ -187,7 +187,38 @@ export class MoreDetailsComponent implements OnInit {
       },
     });
 
-    dialogRef.afterClosed().subscribe((result) => {});
+    dialogRef.afterClosed().subscribe((result) => { });
+  }
+
+  isDateLessThanToday(dateString: string): boolean {
+    // Return false if there is no date string provided
+    if (!dateString) {
+      return false;
+    }
+
+    const endOfMaintenanceDate = new Date(dateString);
+    const today = new Date();
+
+    // Compare year, month, and day values of both dates
+    const endOfMaintenanceYear = endOfMaintenanceDate.getUTCFullYear();
+    const endOfMaintenanceMonth = endOfMaintenanceDate.getUTCMonth();
+    const endOfMaintenanceDay = endOfMaintenanceDate.getUTCDate();
+
+    const todayYear = today.getUTCFullYear();
+    const todayMonth = today.getUTCMonth();
+    const todayDay = today.getUTCDate();
+
+    if (endOfMaintenanceYear < todayYear) {
+      return true;
+    } else if (endOfMaintenanceYear === todayYear) {
+      if (endOfMaintenanceMonth < todayMonth) {
+        return true;
+      } else if (endOfMaintenanceMonth === todayMonth) {
+        return endOfMaintenanceDay < todayDay;
+      }
+    }
+
+    return false;
   }
 
   getProductMaintenance() {
@@ -200,6 +231,7 @@ export class MoreDetailsComponent implements OnInit {
       scopes: this.cs.getLocalData(LOCAL_KEYS.SCOPE),
       'search_params.swidTag.filteringkey': this.swidTag,
       'search_params.SKU.filteringkey': this.productSKU,
+      'search_params.SKU.filter_type': true
     };
     this.productsService
       .filteredDataAcqRights(acquiredRightsIndividualParams)
@@ -240,8 +272,8 @@ export class MoreDetailsComponent implements OnInit {
           this.alertColor = anyNegativeDelta
             ? ALERT_COLOR.red
             : !!res.acq_rights.length
-            ? ALERT_COLOR.green
-            : '';
+              ? ALERT_COLOR.green
+              : '';
 
           if (this.acquireRight.filteredData.length > 0) {
             for (var i = 0; i < this.acquireRight.filteredData.length; i++) {

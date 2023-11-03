@@ -98,6 +98,7 @@ export class ListCoreFactorComponent implements OnInit, AfterViewInit {
   }
 
   getPaginatorData(ev: any): void {
+    console.log(ev);
     this.pageSize = ev.pageSize;
     this.currentPage = ev.pageIndex + 1;
     this.getCoreFactorList();

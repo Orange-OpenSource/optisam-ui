@@ -163,5 +163,7 @@ export class ProductsListComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.resetEditor.emit(true);
     this.$getProductsList?.unsubscribe();
+    this.resetFilter();
+
   }
 }

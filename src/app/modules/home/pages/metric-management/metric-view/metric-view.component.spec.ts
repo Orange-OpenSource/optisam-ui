@@ -88,8 +88,15 @@ describe('MetricViewComponent', () => {
   });
 
   it('metric name should be underlined on hover', () => {
-    const row = fixture.nativeElement.querySelectorAll('.mat-cell')[1];
-    row.dispatchEvent(
+    fixture.detectChanges(); // Initial change detection
+
+    fixture.whenStable().then(() => {
+      fixture.detectChanges(); // Detect changes after async operations complete
+
+      const row = fixture.nativeElement.querySelectorAll('.mat-cell')[1];
+      console.log('row element from spec file', fixture.nativeElement);
+      if (!row) return;
+      row?.dispatchEvent(
       new MouseEvent('mouseover', {
         view: window,
         bubbles: true,
@@ -98,5 +105,7 @@ describe('MetricViewComponent', () => {
     );
     fixture.detectChanges();
     expect(row.classList).toContain('highlight');
+    });
+
   });
 });

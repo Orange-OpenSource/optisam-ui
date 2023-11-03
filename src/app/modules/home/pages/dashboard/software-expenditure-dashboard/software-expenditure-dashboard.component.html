@@ -1,0 +1,65 @@
+<mat-card>
+  <div class="main">
+    <div
+      fxLayout="row wrap"
+      class="main-software-expenditure"
+      fxLayoutAlign="space-between"
+    >
+      <div
+        fxFlex
+        class="main-kpi-block"
+        fxLayout="column"
+        fxLayoutAlign="space-between"
+      >
+        <app-kpi-block [options]="scopeExpenditureOptions"></app-kpi-block>
+        <app-kpi-block
+          [options]="ownedLicensesOptions"
+          (change)="ownedLicenseWithMaintenance($event)"
+        ></app-kpi-block>
+        <app-kpi-block
+          [options]="usedLicensesOptions"
+          (change)="usedLicensesWithMaintenance($event)"
+        ></app-kpi-block>
+      </div>
+      <div fxFlex="35" class="block software-product-spend mat-elevation-z3">
+        <app-kpi-pie-block [data]="softwareProductSpendData">
+          <ng-template #chart let-data>
+
+            <div class="noDataImgContainer" *ngIf="data?.noData && !data?.loading">
+              <img class="noDataImg" src="assets/images/NoDataFound.PNG" />
+            </div>
+            <div class="noDataMsg" *ngIf="data?.noData && !data?.loading">
+              {{ "Unfortunately no data could be found." | translate }}
+            </div>
+
+            <canvas
+            [ngClass]="{ 'display-none': data?.noData || data?.loading }"
+              id="software-product-spend-chart"
+              width="100%"
+              height="100px"
+            ></canvas>
+          </ng-template>
+        </app-kpi-pie-block>
+      </div>
+      <div fxFlex="35" class="block shared-received-licenses mat-elevation-z3">
+        <app-kpi-pie-block [data]="sharedReceivedLicensesData">
+          <ng-template #chart let-data>
+            <div class="noDataImgContainer" *ngIf="data?.noData && !data?.loading">
+              <img class="noDataImg" src="assets/images/NoDataFound.PNG" />
+            </div>
+            <div class="noDataMsg" *ngIf="data?.noData && !data?.loading">
+              {{ "Unfortunately no data could be found." | translate }}
+            </div>
+
+            <canvas
+              [ngClass]="{ 'display-none': data.noData || data?.loading }"
+              id="shared-received-licenses-chart"
+              width="100%"
+              height="100px"
+            ></canvas>
+          </ng-template>
+        </app-kpi-pie-block>
+      </div>
+    </div>
+  </div>
+</mat-card>

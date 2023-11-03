@@ -1,0 +1,40 @@
+<div class="container">
+  <div class="title">
+    <ng-container
+      *ngTemplateOutlet="
+        titleTemplate || defaultTitleTemplate;
+        context: { $implicit: data?.title }
+      "
+    ></ng-container>
+  </div>
+  <div class="chart-box">
+    <ng-container
+      *ngTemplateOutlet="
+        chart || defaultChartTemplate;
+        context: { $implicit: data }
+      "
+    ></ng-container>
+    <!-- <app-loading-spinner *ngIf="data?.loading"></app-loading-spinner> -->
+    <div class="loading-box" *ngIf="data?.loading">
+      <div class="loader"></div>
+      <div class="tileLoadingMsg">
+        {{ "Wait a moment while we set things up for you!" | translate }}
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #defaultTitleTemplate let-headerTitle>
+  <span class="header">{{ headerTitle?.title | translate }}</span>
+  <mat-icon
+    *ngIf="headerTitle?.info"
+    matTooltip="{{ headerTitle?.info | translate }}"
+    matTooltipClass="alertTooltip"
+    >info</mat-icon
+  >
+</ng-template>
+
+<ng-template #defaultChartTemplate>
+  <app-loading-spinner></app-loading-spinner>
+</ng-template>
+<ng-template #loadingChartTemplate> </ng-template>

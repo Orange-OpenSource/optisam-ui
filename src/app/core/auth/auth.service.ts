@@ -1,8 +1,16 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, throwError } from 'rxjs';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
+import { ErrorResponse, ForgotPasswordParams, SetPasswordBody, SetPasswordResponse } from '@core/modals';
+import { defaultHeaders } from '@core/util/constants/constants';
+import { fixedErrorResponse } from '@core/util/common.functions';
+
+interface URL {
+  forgotPassword: string;
+  setPassword: string;
+}
 
 @Injectable()
 export class AuthService {
@@ -14,6 +22,11 @@ export class AuthService {
   private loginToken: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
     false
   );
+  URLs: URL = {
+    forgotPassword: `${this.apiAuth}/forgot_password`,
+    setPassword: `${this.apiAuth}/set_password`,
+  }
+
   currentMessage = this.loginToken.asObservable();
   constructor(private http: HttpClient) {
     if (localStorage.getItem('access_token')) {
@@ -62,5 +75,19 @@ export class AuthService {
     const token = localStorage.getItem('access_token');
     const url = this.apiUrl + '/account/admin@test.com';
     return this.http.get<any>(url);
+  }
+
+  forgotPassword(body: ForgotPasswordParams): Observable<any> {
+    return this.http.post<any>(
+      this.URLs.forgotPassword,
+      body,
+      { headers: defaultHeaders }
+    ).pipe(catchError(fixedErrorResponse))
+  }
+
+  setPassword(body: SetPasswordBody): Observable<ErrorResponse | SetPasswordResponse> {
+    return this.http.post<ErrorResponse | SetPasswordResponse>(this.URLs.setPassword, body, { headers: defaultHeaders }).pipe(
+      catchError(fixedErrorResponse)
+    )
   }
 }

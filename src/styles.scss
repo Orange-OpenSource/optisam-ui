@@ -11,6 +11,7 @@ $btnPrimaryColor: #008afc;
 :root {
   --btnPrimaryColor: #008afc;
   --link: #008afc;
+  --secondaryColor: #07537b;
 }
 
 :root {
@@ -628,4 +629,47 @@ margin-bottom:5px; */
   border-left: 1px solid #ccc;
   border-bottom: 1px solid #ccc;
   border-right: 1px solid #ccc;
+  text-align: center;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+}
+
+.display-none {
+  display: none !important;
+}
+
+.dashboard-map-custom-tooltip {
+  background-color: rgba(255, 255, 255, 0.5);
+  display: flex;
+  flex-direction: row;
+  gap: 0.5em;
+  font-size: 1em;
+  // font-weight: bold;
+  padding: 0.5em 1.2em;
+  .custom-tooltip--category {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0.3em;
+    .custom-tooltip--category--color {
+      display: inline-block;
+      width: 1em;
+      height: 1em;
+      border-radius: 100%;
+    }
+  }
+  .custom-tooltip--value {
+    font-weight: 600;
+  }
+}
+
+
+.no-data-container{
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  justify-content: center;
 }

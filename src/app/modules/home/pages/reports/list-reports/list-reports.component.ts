@@ -9,12 +9,14 @@ import { Subscription } from 'rxjs';
 import { ReportService } from 'src/app/core/services/report.service';
 import { CreateReportComponent } from '../create-report/create-report.component';
 import { REPORT_TRANSLATIONS } from '@core/util/constants/constants';
+import { FrenchNumberPipe } from '@shared/common-pipes/french-number.pipe';
 
 
 @Component({
   selector: 'app-list-reports',
   templateUrl: './list-reports.component.html',
   styleUrls: ['./list-reports.component.scss'],
+  providers: [FrenchNumberPipe]
 })
 export class ListReportsComponent implements OnInit {
   subscription: Subscription;
@@ -41,7 +43,8 @@ export class ListReportsComponent implements OnInit {
   @ViewChild(MatSort, { static: false }) sort: MatSort;
   constructor(
     private dialog: MatDialog,
-    private reportService: ReportService
+    private reportService: ReportService,
+    private numberFr: FrenchNumberPipe
   ) { }
 
   ngOnInit() {

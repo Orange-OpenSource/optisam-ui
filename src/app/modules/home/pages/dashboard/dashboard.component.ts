@@ -1,5 +1,11 @@
 import { LOCAL_KEYS } from '@core/util/constants/constants';
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ChangeDetectorRef,
+  ViewChild,
+  AfterViewInit,
+} from '@angular/core';
 import { Router } from '@angular/router';
 import * as Chart from 'chart.js';
 import * as d3 from 'd3';
@@ -10,10 +16,10 @@ import { EquipmentsService } from 'src/app/core/services/equipments.service';
 import { ProductService } from 'src/app/core/services/product.service';
 import { SharedService } from 'src/app/shared/shared.service';
 import { MatDialog } from '@angular/material/dialog';
-import { FloorPipe } from '../acquiredrights/pipes/floor.pipe';
-import { ErrorResponse, SharedAmount, SharedAmountParams } from '@core/modals';
+import { DashboardOverviewResponse, ErrorResponse, SharedAmount, SharedAmountParams, SoftwareMaintenance, SoftwareWithNoMaintenance } from '@core/modals';
 import { AccountService, CommonService } from '@core/services';
 import { MatSelect } from '@angular/material/select';
+import { ProductsWithNoMaintainanceInfoComponent } from './products-with-no-maintainance-info/products-with-no-maintainance-info.component';
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -22,7 +28,14 @@ import { MatSelect } from '@angular/material/select';
 export class DashboardComponent implements OnInit {
   canvas: any;
   ctx: any;
-  tabList: string[] = ['Overview', 'Quality', 'Compliance'];
+  tabList: string[] = [
+    'Overview',
+    'Quality',
+    'Compliance',
+    'Maintenance',
+    'Software Usage Expenditure',
+    'Park',
+  ];
   currentTab: string = localStorage.getItem('dashboardTab') || this.tabList[0];
   parentGutterSize: '16px';
   childGutterSize: '8px';
@@ -102,6 +115,10 @@ export class DashboardComponent implements OnInit {
   searchLoading: boolean = false;
   delayLoader: any = null;
   searchText: string = '';
+  softwareMaintenance: SoftwareMaintenance;
+  totalProductsWithNoMaintenance: number;
+  ProductsWithNoMaintenance: SoftwareWithNoMaintenance;
+  ProductsWithMaintenance: SoftwareMaintenance;
 
   constructor(
     private productService: ProductService,
@@ -136,6 +153,7 @@ export class DashboardComponent implements OnInit {
 
   private getAllApis(): void {
     this.getProductsQualityInfo();
+    this.getProductsWithNoMaintenance();
     this.getDashboardUpdateInfo();
     this.generateCharts();
   }
@@ -206,6 +224,8 @@ export class DashboardComponent implements OnInit {
       this.generateChartsForQuality();
     } else if (this.currentTab === 'Compliance') {
       this.generateChartsForCompliance();
+    } else if (this.currentTab === 'Maintenance') {
+      this.generateChartsForMaintenance();
     }
   }
 
@@ -221,6 +241,10 @@ export class DashboardComponent implements OnInit {
     this.getSoftwareLicenceComposition();
     this.getEquipmentDetails();
     this.getScopeExpenses();
+  }
+
+  generateChartsForMaintenance() {
+    this.getProductsMaintenance();
   }
 
   getComplianceAlert() {
@@ -273,7 +297,7 @@ export class DashboardComponent implements OnInit {
     this.getProductsDbError = false;
     this.getProductsNetworkError = false;
     this.productService.getProductsOverview(this.currentScope).subscribe(
-      (res) => {
+      (res: DashboardOverviewResponse) => {
         this.noOfProducts = res.num_products || 0;
         this.noOfManagedEditors = res.num_editors || 0;
         this.valuationOfOwnedLicense = res.total_license_cost || 0;
@@ -415,12 +439,8 @@ export class DashboardComponent implements OnInit {
               fontColor: 'white',
               precision: 2,
             },
-            datalabels: {
-              display: false
-            }
           },
           responsive: false,
-          // display: true,
         },
       });
     }
@@ -448,12 +468,8 @@ export class DashboardComponent implements OnInit {
         options: {
           legend: { display: false },
           responsive: false,
-          // display: true,
           plugins: {
             labels: false,
-            datalabels: {
-              display: false
-            }
           },
           scales: {
             yAxes: [
@@ -474,6 +490,7 @@ export class DashboardComponent implements OnInit {
 
   generateNoOfProductsPerEditor() {
     this.canvas = document.getElementById('noOfProdsPerEditor');
+    console.log(this.canvas);
     if (this.canvas) {
       this.ctx = this.canvas.getContext('2d');
       const myChart = new Chart(this.ctx, {
@@ -502,12 +519,8 @@ export class DashboardComponent implements OnInit {
               precision: 2,
               position: 'border',
             },
-            datalabels: {
-              display: false
-            }
           },
           responsive: false,
-          // display: true,
         },
       });
     }
@@ -605,6 +618,36 @@ export class DashboardComponent implements OnInit {
     );
   }
 
+  getProductsWithNoMaintenance() {
+    this.productService
+      .getProductsWithNoMaintenance(this.currentScope)
+      .subscribe(
+        (res: SoftwareWithNoMaintenance) => {
+          this.ProductsWithNoMaintenance = res;
+          console.log(this.ProductsWithNoMaintenance);
+        },
+        (err) => {
+          console.log(
+            'Some error occured! Could not get product quality info.'
+          );
+          if (err.status == 500) {
+            this.alertQualityDbErr = true;
+          } else {
+            this.alertQualityNetworkErr = true;
+          }
+        }
+      );
+  }
+
+  openProductsNoMaintenanceInfo(obj: SoftwareWithNoMaintenance) {
+    console.log(obj);
+    let dialogRef = this.dialog.open(ProductsWithNoMaintainanceInfoComponent, {
+      width: '40%',
+      autoFocus: false,
+      disableClose: true,
+      data: obj,
+    });
+  }
   getQualityProducts() {
     this.productsNotDeployedInfo = null;
     this.productsNotAcquiredInfo = null;
@@ -619,6 +662,23 @@ export class DashboardComponent implements OnInit {
       },
       (err) => {
         console.log('Some error occured! Could not get quality products.');
+      }
+    );
+  }
+
+  getProductsMaintenance() {
+    this.productService.getProductsWithMaintenance(this.currentScope).subscribe(
+      (res: SoftwareMaintenance) => {
+        this.ProductsWithMaintenance = res;
+        this.generateDeployedPieChart(res);
+      },
+      (err) => {
+        console.log('Some error occured! Could not get quality products.');
+        if (err.status == 500) {
+          this.alertQualityDbErr = true;
+        } else {
+          this.alertQualityNetworkErr = true;
+        }
       }
     );
   }
@@ -722,12 +782,8 @@ export class DashboardComponent implements OnInit {
               precision: 2,
               position: 'border',
             },
-            datalabels: {
-              display: false
-            }
           },
           responsive: false,
-          // display: true,
         },
       });
     }
@@ -801,7 +857,19 @@ export class DashboardComponent implements OnInit {
         break;
     }
   }
-
+  // getSoftwareMaintenanceData() {
+  //   const currentScope = localStorage.getItem('scope');
+  //   this.productService.getSoftwareMaintenance(currentScope).subscribe(
+  //     (res: SoftwareMaintenance) => {
+  //       console.log(res);
+  //       this.softwareMaintenance = res;
+  //       this.getSoftwareMaintenance(this.softwareMaintenance);
+  //     },
+  //     (err) => {
+  //       console.log('some error occured');
+  //     }
+  //   );
+  // }
   getDevelopmentRateDetails() {
     this.refreshCanvasDevRate();
     this.dpsService
@@ -865,6 +933,7 @@ export class DashboardComponent implements OnInit {
 
   generateDevRateDetails() {
     this.canvas = document.getElementById('devRateDetails');
+    console.log(this.canvas);
     if (this.canvas) {
       this.ctx = this.canvas.getContext('2d');
       const myChart = new Chart(this.ctx, {
@@ -880,12 +949,8 @@ export class DashboardComponent implements OnInit {
             align: 'start',
           },
           responsive: false,
-          // display: true,
           plugins: {
             labels: true,
-            datalabels: {
-              display: false
-            }
           },
         },
       });
@@ -1135,12 +1200,8 @@ export class DashboardComponent implements OnInit {
             ],
           },
           responsive: false,
-          // display: true,
           plugins: {
             labels: false,
-            datalabels: {
-              display: false
-            }
           },
         },
       });
@@ -1205,12 +1266,8 @@ export class DashboardComponent implements OnInit {
             ],
           },
           responsive: false,
-          // display: true,
           plugins: {
             labels: false,
-            datalabels: {
-              display: false
-            }
           },
         },
       });
@@ -1383,9 +1440,6 @@ export class DashboardComponent implements OnInit {
           responsive: false,
           plugins: {
             labels: false,
-            datalabels: {
-              display: false
-            }
           },
         },
       });
@@ -1449,14 +1503,10 @@ export class DashboardComponent implements OnInit {
           },
 
           responsive: false,
-          // display: true,
           plugins: {
             labels: false,
-            datalabels: {
-              display: false
-            }
           },
-        }
+        },
       });
     }
   }
@@ -1499,6 +1549,92 @@ export class DashboardComponent implements OnInit {
     }
 
     return colorArray;
+  }
+
+  generateDeployedPieChart(data: SoftwareMaintenance) {
+    const productWithMaintenancePercentage =
+      data?.product_with_maintenance_percentage;
+    const productsWithoutMaintenancePercentage =
+      data?.product_without_maintenance_percentage;
+    this.canvas = document.getElementById('deployedProductsChart');
+    console.log(this.canvas);
+    if (this.canvas) {
+      this.ctx = this.canvas.getContext('2d');
+      const myChart = new Chart(this.ctx, {
+        type: 'pie',
+        data: {
+          labels: ['Covered', 'Non Covered'],
+          datasets: [
+            {
+              backgroundColor: [
+                '#2ecc71',
+                '#3498db',
+                // '#95a5a6',
+                // '#9b59b6',
+                // '#f1c40f',
+                // '#e74c3c',
+              ],
+              data: [
+                productWithMaintenancePercentage,
+                productsWithoutMaintenancePercentage,
+              ],
+            },
+          ],
+        },
+        options: {
+          legend: {
+            display: true,
+            position: 'bottom',
+            align: 'center',
+          },
+          responsive: false,
+          plugins: {
+            labels: true,
+          },
+        },
+      });
+    }
+  }
+
+  getSoftwareMaintenance(data: SoftwareMaintenance) {
+    const productsWithMaintenance = data?.product_with_maintenance_percentage;
+    const productsWithoutMaintenance =
+      data?.product_without_maintenance_percentage;
+    this.canvas = document.getElementById('getSoftwareMaintenance');
+    console.log(this.canvas);
+    if (this.canvas) {
+      this.ctx = this.canvas.getContext('2d');
+      const myChart = new Chart(this.ctx, {
+        type: 'pie',
+        data: {
+          labels: ['Covered', 'Non Covered'],
+          datasets: [
+            {
+              backgroundColor: [
+                '#2ecc71',
+                '#3498db',
+                // '#95a5a6',
+                // '#9b59b6',
+                // '#f1c40f',
+                // '#e74c3c',
+              ],
+              data: [productsWithMaintenance, productsWithoutMaintenance],
+            },
+          ],
+        },
+        options: {
+          legend: {
+            display: true,
+            position: 'bottom',
+            align: 'center',
+          },
+          responsive: false,
+          plugins: {
+            labels: true,
+          },
+        },
+      });
+    }
   }
 
   ngOnDestroy() {

@@ -1,0 +1,135 @@
+<mat-card>
+  <mat-grid-list
+    cols="2"
+    rowHeight="4:3"
+    gutterSize="20px"
+    class="main-effective-licenses-position"
+  >
+    <mat-grid-tile
+      class="mat-elevation-z3 block-total-true-up chart-block-tile"
+    >
+      <div class="chart-block" fxLayout="column">
+        <div class="chart-block--header">
+          <div class="chart-block--header--icon">
+            <mat-icon svgIcon="money-deck"></mat-icon>
+          </div>
+          <div class="chart-block--header--content">
+            <div class="chart-block--header--content--title">
+              <span class="title">
+                {{ "TOTAL_USAGE_COST" | translate }}
+              </span>
+              <mat-icon
+                matTooltip="{{ 'TOTAL_USAGE_COST_INFO' | translate }}"
+                matTooltipClass="alertTooltip"
+                >info</mat-icon
+              >
+            </div>
+            <div class="chart-block--header--content--number">
+              {{ totalUsageCost || 0 | numberFr }}
+            </div>
+          </div>
+        </div>
+        <ng-container *ngIf="_loadingUsage; else usageChartContainer">
+          <app-kpi-loader></app-kpi-loader>
+        </ng-container>
+      </div>
+    </mat-grid-tile>
+    <mat-grid-tile
+      class="mat-elevation-z3 block-software-expenditure chart-block-tile"
+    >
+      <div class="chart-block" fxLayout="column">
+        <div class="chart-block--header">
+          <div class="chart-block--header--icon">
+            <mat-icon svgIcon="money-deck"></mat-icon>
+          </div>
+          <div class="chart-block--header--content" fxFlex>
+            <div class="chart-block--header--content--title">
+              <span class="title"
+                >{{ "SOFTWARE_EXPENDITURE" | translate }}
+              </span>
+              <mat-icon
+                matTooltip="{{ 'SOFTWARE_EXPENDITURE_INFO' | translate }}"
+                matTooltipClass="alertTooltip"
+                >info</mat-icon
+              >
+            </div>
+            <div class="chart-block--header--content--number">
+              {{ currentTotalSoftExp || 0 | numberFr }}
+            </div>
+            <div
+              class="chart-block--header--content---meta-description"
+              *ngIf="!nullValues.includes(totalUsageCost)"
+            >
+              {{
+                (isMaintenanceChecked
+                  ? "WITH_MAINTENANCE"
+                  : "WITHOUT_MAINTENANCE"
+                ) | translate
+              }}
+            </div>
+          </div>
+
+          <mat-slide-toggle
+            *ngIf="!nullValues.includes(totalUsageCost)"
+            class="maintenance-toggle"
+            (change)="onMaintenanceChanged($event)"
+            color="primary"
+            [checked]="isMaintenanceChecked"
+            disableRipple
+          ></mat-slide-toggle>
+        </div>
+
+        <ng-container *ngIf="_loadingUsage; else expenditureChartContainer">
+          <app-kpi-loader></app-kpi-loader>
+        </ng-container>
+      </div>
+    </mat-grid-tile>
+  </mat-grid-list>
+</mat-card>
+
+<ng-template #noDataTemplate>
+  <div class="no-data-container">
+    <div class="noDataImgContainer">
+      <img class="noDataImg" src="assets/images/NoDataFound.PNG" />
+    </div>
+    <div class="noDataMsg">
+      {{ "Unfortunately no data could be found." | translate }}
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #usageChartContainer>
+  <ng-container *ngIf="totalUsageCost; else noDataTemplate">
+    <div class="chart-block--map" fxFill>
+      <div #treeMapContainer class="tree-map-chart-container">
+        <apx-chart
+          [series]="usageCostChartOption?.series"
+          [chart]="usageCostChartOption?.chart"
+          [title]="usageCostChartOption?.title"
+          [plotOptions]="usageCostChartOption?.plotOptions"
+          [dataLabels]="usageCostChartOption?.dataLabels"
+          [tooltip]="customTooltip"
+        >
+        </apx-chart>
+      </div>
+    </div>
+  </ng-container>
+</ng-template>
+
+<ng-template #expenditureChartContainer>
+  <ng-container *ngIf="currentTotalSoftExp; else noDataTemplate">
+    <div class="chart-block--map" fxFill>
+      <div #treeMapContainer class="tree-map-chart-container">
+        <apx-chart
+          [series]="softExpChartOption?.series"
+          [chart]="softExpChartOption?.chart"
+          [title]="softExpChartOption?.title"
+          [plotOptions]="softExpChartOption?.plotOptions"
+          [dataLabels]="softExpChartOption?.dataLabels"
+          [tooltip]="customTooltip"
+        >
+        </apx-chart>
+      </div>
+    </div>
+  </ng-container>
+</ng-template>

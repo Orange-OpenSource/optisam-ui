@@ -17,8 +17,6 @@ import { MoreDetailsComponent } from '../../../dialogs/product-details/more-deta
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import { EditMetricAllocatedComponent } from '../edit-metricAllocated/edit-metric-allocated/edit-metric-allocated.component';
-import { DeleteAllocatedMetricConfirmationDialogComponent } from './delete-allocated-metric-confirmation-dialog/delete-allocated-metric-confirmation-dialog.component';
 import {
   DeleteAllocatedMetricParams,
   DeleteAllocatedMetricResponse,
@@ -26,8 +24,10 @@ import {
 } from '@core/modals';
 import { LOCAL_KEYS } from '@core/util/constants/constants';
 import { CommonService } from '@core/services';
-import { AllocatedMetricDeleteErrorComponent } from './allocated-metric-delete-error/allocated-metric-delete-error.component';
 import { ViewEditorDetailsEquipComponent } from '../view-editor-details-equip/view-editor-details-equip.component';
+import { EditMetricAllocatedComponent } from '@shared/edit-metricAllocated/edit-metric-allocated.component';
+import { AllocatedMetricDeleteErrorComponent } from '@shared/edit-metricAllocated/allocated-metric-delete-error/allocated-metric-delete-error.component';
+import { DeleteAllocatedMetricConfirmationDialogComponent } from '@shared/edit-metricAllocated/delete-allocated-metric-confirmation-dialog/delete-allocated-metric-confirmation-dialog.component';
 
 /*  import { DialogData } from './details'; */
 
@@ -205,18 +205,27 @@ export class AttributeDetailComponent implements OnInit {
           const parentId = this.type.find(
             (t) => t.ID === this.equimId
           )?.parent_id;
+          console.log(parentId);
 
           // get all of the attributes of the parent of the current attribute
           const attributes = this.type.find(
             (t) => t.ID === parentId
           )?.attributes;
 
+          this.reuseKeyName = this.reuseKeyName.map((key) => {
+            return {
+              name: attributes.find((a) => a.name === key)?.schema_name,
+              mappedTo: attributes.find((a) => a.name === key)?.mapped_to,
+            };
+          });
           // change the key with it's schema_name
-          this.reuseKeyName = this.reuseKeyName.map(
-            (key) => attributes.find((a) => a.name === key)?.schema_name
-          );
+          // this.   = this.reuseKeyName.map(
+          //   (key) => attributes.find((a) => a.name === key)?.schema_name
+          // );
+
           this.reuseKeyName.shift();
           this.reuseValueName = parentObj;
+
           this._loading = false;
         },
         (error) => {
@@ -225,7 +234,7 @@ export class AttributeDetailComponent implements OnInit {
         }
       );
   }
-  tabClick(tab) { }
+  tabClick(tab) {}
   getFilterData(testData: any): string {
     return testData.filteredData;
   }
@@ -446,14 +455,14 @@ export class AttributeDetailComponent implements OnInit {
   }
 
   openEditorDialog(data: any) {
-    console.log("working")
+    console.log('working');
     this.dialogRef1 = this.dialog.open(ViewEditorDetailsEquipComponent, {
       width: '1300px',
       disableClose: true,
-      data: data
+      data: data,
     });
 
-    this.dialogRef1.afterClosed().subscribe((result) => { });
+    this.dialogRef1.afterClosed().subscribe((result) => {});
   }
   getProductPaginatorData(event) {
     const page_num = event.pageIndex;

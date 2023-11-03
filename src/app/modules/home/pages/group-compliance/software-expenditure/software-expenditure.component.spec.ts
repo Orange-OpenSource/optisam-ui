@@ -4,6 +4,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { ProductService } from '@core/services';
 import { TranslateModule } from '@ngx-translate/core';
 import { SoftwareExpenditureComponent } from './software-expenditure.component';
+import { FrenchNumberPipe } from '@shared/common-pipes/french-number.pipe';
 
 describe('SoftwareExpenditureComponent', () => {
   let component: SoftwareExpenditureComponent;
@@ -16,7 +17,7 @@ describe('SoftwareExpenditureComponent', () => {
         MatDialogModule,
         TranslateModule.forRoot(),
       ],
-      declarations: [SoftwareExpenditureComponent],
+      declarations: [SoftwareExpenditureComponent, FrenchNumberPipe],
       providers: [ProductService],
     }).compileComponents();
   });

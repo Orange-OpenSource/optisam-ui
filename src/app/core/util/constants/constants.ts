@@ -1,3 +1,4 @@
+import { HttpHeaders } from '@angular/common/http';
 import {
   FileAnalysisStatus,
   UploadTypes,
@@ -7,6 +8,7 @@ import {
   CommonRegex,
   MenuRouterLinks,
   ProductColumn,
+  UserActivationQueryParams,
 } from '@core/modals';
 import { pieChartDataLabelFormatter } from '../common.functions';
 import Chart from 'chart.js';
@@ -20,6 +22,8 @@ const allowedScopes = (): boolean => {
 };
 
 export const PROHIBIT_SCOPES: string[] = ['GENERIC'];
+
+
 export const UPLOAD_TYPES: UploadTypes = {
   ANALYSIS: 'analysis',
   DATA: 'data',
@@ -46,6 +50,7 @@ export const LOCAL_KEYS = {
   FUTURE: 'future',
   VERSION: 'version',
   COPYRIGHT: 'copyright',
+  DASHBOARD_TABS: 'dashboardTab'
 };
 
 export const METRIC_TYPES: MetricTypes = {
@@ -135,6 +140,7 @@ export const MONTH_COLOR_SET: {
   December: '#33aa33',
 };
 export enum PRODUCT_CATALOG_TABS {
+  DASHBOARD = 'PRODUCT_CATALOG_TAB_DASHBOARD',
   EDITOR = 'PRODUCT_CATALOG_TAB_EDITORS',
   PRODUCT = 'PRODUCT_CATALOG_TAB_PRODUCTS',
   EDITOR_DETAIL = 'PRODUCT_CATALOG_TAB_EDITOR_DETAIL',
@@ -364,6 +370,15 @@ export enum ProductUserType {
   concurrent = 'CONCURRENT',
 }
 
+export const QP: UserActivationQueryParams = {
+  user: "user",
+  token: 'token'
+}
+
+export const defaultHeaders: HttpHeaders = new HttpHeaders({
+  'Content-Type': 'application/json',
+});
+
 export const CHART_COLORS = {
   totalCost: '#3dcbff',
   counterfeiting: '#ee4646',
@@ -374,7 +389,8 @@ export const CHART_COLORS = {
   sharedLicense: "#354e82",
   receivedLicense: "#ec583a",
   saas: "#3376bd",
-  onPremise: "#edae49"
+  onPremise: "#edae49",
+  remainingLicenseCost: "#3d6b64"
 
 }
 
@@ -413,6 +429,7 @@ export const TREE_MAP_COMMON_MAX_DATA = 100;
 export const EQUIPMENT_COLORS = {
   desktop: '#fcbf49',
   virtualMachines: '#2a9d8f',
+  virtualmachine: '#2a9d8f',
   server: '#f765a3',
   cluster: '#a155b9',
   vcenter: '#165baa',
@@ -420,3 +437,36 @@ export const EQUIPMENT_COLORS = {
 
 }
 
+export const customTooltipTreeMap: ApexTooltip = {
+  custom: ({ seriesIndex, dataPointIndex, w }) => {
+    return `<div class="dashboard-map-custom-tooltip">
+              <div class="custom-tooltip--category">
+                <span class="custom-tooltip--category--color" style="background-color: ${w.globals.colors[dataPointIndex]}"></span> 
+                <span class="custom-tooltip--category--name">${w.globals.categoryLabels[dataPointIndex]}:</span>
+              </div>
+              <div class="custom-tooltip--value">${w.globals.series[seriesIndex][dataPointIndex].toLocaleString()}</div>
+            </div>`;
+  }
+}
+export const DEFAULT_LANGUAGE: string = 'en';
+export const DEFAULT_LANGUAGES: string[] = ['en', 'fr'];
+export const TREE_MAP_COLOR_LIST: string[] = ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b", "#e377c2", "#7f7f7f", "#bcbd22", "#17becf", "#1a9850", "#66c2a5", "#fc8d62", "#8da0cb", "#e78ac3", "#a6d854", "#ffbb78", "#98df8a", "#ff9896", "#c5b0d5", "#f7b6d2", "#c7c7c7", "#dbdb8d", "#9edae5", "#393b79", "#637939", "#8c6d31", "#843c39", "#7b4173", "#5254a3", "#6b6ecf", "#9c9ede", "#bd9e39", "#e7ba52", "#ad494a", "#d6616b", "#e7969c", "#a55194", "#ce6dbd", "#de9ed6", "#3182bd", "#6baed6", "#9ecae1", "#c6dbef", "#e6550d", "#fd8d3c", "#fdae6b", "#fee6ce", "#31a354", "#74c476", "#a1d99b", "#c7e9c0", "#756bb1", "#9e9ac8", "#bcbddc", "#dadaeb", "#636363", "#969696", "#525252", "#737373", "#bdbdbd", "#d9d9d9", "#fdd0a2", "#a63603", "#ee3b3b", "#458b74", "#cdb79e", "#7ffcd4", "#0327cd", "#8a30e2", "#a52a2a", "#018b8b", "#b8860c", "#eead0d", "#8a1550", "#8b3a62", "#556b2e", "#ff6eb4", "#8470ff", "#90ee90", "#00cdcd", "#cd8162", "#011480", "#6b8e23", "#2e8b57", "#eee5de", "#698b22", "#551a8b", "#eeee01", "#548b53", "#d0288f", "#a7a63f", "#d8bfd8", "#d2b48b", "#8b668b", "#ee9a00", "#6e7b8b", "#8b8970", "#fff0f5", "#efe2e7"];
+
+export const TYPES_DISABLED_LIST: string[] =
+  [
+    'user.nominative.standard',
+    'user.concurrent.standard',
+    'oracle.nup.standard',
+    'oracle.processor.standard',
+    'microsoft.sql.enterprise',
+    'microsoft.sql.standard',
+    'windows.server.datacenter',
+    'windows.server.standard',
+  ];
+
+export const METRIC_SELECTION_ALLOWED_LIMIT: number = 5;
+
+export const METRIC_TYPE_LIST_FOR_COST_OPTIMIZATION: string[] = [
+  'attribute.sum.standard',
+  'instance.number.standard',
+];

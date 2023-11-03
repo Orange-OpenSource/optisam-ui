@@ -111,7 +111,6 @@ export class LoginComponent implements OnInit {
       this.loading = true;
       this.authservice.login(email, val.password).subscribe(
         (res) => {
-          console.log(res);
 
           token = res.access_token;
           const decodedToken = jwt_decode(token);
@@ -150,7 +149,7 @@ export class LoginComponent implements OnInit {
                 localStorage.setItem('firstLogin', this.firstLogInFlag);
                 this.updateUserLanguage(this.currLang);
                 if (this.firstLogInFlag) {
-                  this.router.navigate(['/optisam/changePassword']);
+                  this.router.navigate(['/optisam/settings'], { state: { tab: 'Change Password' } });
                 } else if (
                   !this.decodedScopes ||
                   this.decodedScopes.length === 0

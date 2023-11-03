@@ -33,10 +33,11 @@
       <mat-label>{{ "Metric " | translate }}*</mat-label>
       <mat-select
         multiple
+        #aggMetrics
         id="acqMetrics"
         formControlName="productsMetrics"
         [compareWith]="metricCompare"
-        (selectionChange)="metricSelectChange($event.value)"
+      
       >
         <mat-option
           *ngFor="let metric of metricsList"
@@ -49,7 +50,7 @@
         "Metric to be used in OpTISAM for license computation" | translate
       }}</mat-hint>
       <mat-error
-        *ngIf="productsMetrics.invalid && productsMetrics.hasError('required')"
+        *ngIf="metrics.invalid && metrics.hasError('required')"
       >
         {{ "Metric is mandatory" | translate }}
       </mat-error>

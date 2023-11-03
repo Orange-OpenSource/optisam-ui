@@ -1,0 +1,13 @@
+<app-header-without-login></app-header-without-login>
+
+<ng-container *ngIf="!invalidRequest; else invalidLink">
+  <app-user-change-password
+    [user]="user"
+    [token]="token"
+    [type]="type"
+  ></app-user-change-password>
+</ng-container>
+
+<ng-template #invalidLink>
+  <app-invalid-link [isLoggedIn]="loginStatus"></app-invalid-link>
+</ng-template>

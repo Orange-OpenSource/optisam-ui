@@ -1,0 +1,18 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+
+  header {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #025786;
+    height: max-content;
+    text-align: center;
+  }
+  .chart-box {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+  }
+}

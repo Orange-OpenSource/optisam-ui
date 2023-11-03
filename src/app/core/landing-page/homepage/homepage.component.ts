@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, OnDestroy, ViewChild, AfterViewChecked } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { AuthService } from '@core/auth/auth.service';
@@ -23,19 +23,20 @@ import { AboutsComponent } from '../abouts/abouts.component';
   templateUrl: './homepage.component.html',
   styleUrls: ['./homepage.component.scss'],
 })
-export class HomepageComponent implements OnInit {
+export class HomepageComponent implements OnInit, AfterViewChecked {
   currLang = 'en';
   userLang: string;
   releaseNotes: string[];
   future: AboutFuture[];
   copyRight: string;
   loginStatus: boolean = false;
-  selectedTab: PRODUCT_CATALOG_TABS = PRODUCT_CATALOG_TABS.EDITOR;
+  selectedTab: PRODUCT_CATALOG_TABS = PRODUCT_CATALOG_TABS.DASHBOARD;
   selectedProductId: string = '';
   selectedEditorId: string = '';
   editorData: ProductCatalogEditor = null;
 
   productCatalogTabs: ProductCatalogTabs[] = [
+    { title: PRODUCT_CATALOG_TABS.DASHBOARD, alias: null },
     { title: PRODUCT_CATALOG_TABS.EDITOR, alias: null },
     { title: PRODUCT_CATALOG_TABS.PRODUCT, alias: null },
   ];
@@ -72,6 +73,9 @@ export class HomepageComponent implements OnInit {
     this.loginStatus = this.getLoginStatus();
     this.fetchAboutData();
     this.allStream();
+  }
+
+  ngAfterViewChecked(): void {
   }
 
   login() {
@@ -139,6 +143,10 @@ export class HomepageComponent implements OnInit {
 
   get isEditor(): boolean {
     return this.selectedTab === PRODUCT_CATALOG_TABS.EDITOR;
+  }
+
+  get isDashboard(): boolean {
+    return this.selectedTab === PRODUCT_CATALOG_TABS.DASHBOARD;
   }
 
   get isEditorDetail(): boolean {

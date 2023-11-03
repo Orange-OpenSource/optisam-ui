@@ -1,0 +1,28 @@
+:host{
+  ::ng-deep mat-checkbox label{
+    margin-bottom: 0;
+  }
+}
+
+.action-button-container {
+  width: 100%;
+}
+
+.mat-header-cell{
+  justify-content: space-between;
+  align-items: center;
+  
+}
+
+.mat-column-all{
+  flex: 0 0 80px;
+}
+
+.mat-column-metricName{
+  white-space: pre-line;
+  white-space: nowrap;
+}
+
+.mat-column-metricTypes{
+  flex: 0 0 180px;
+}

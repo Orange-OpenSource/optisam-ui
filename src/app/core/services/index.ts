@@ -4,3 +4,4 @@ export { ProductService } from './product.service';
 export { ReportService } from './report.service';
 export { AccountService } from './account.service';
 export { ProductCatalogService } from './product-catalog.service';
+export { AuthService } from '@core/auth/auth.service'

@@ -105,7 +105,7 @@ export class EditorsListComponent implements OnInit, OnDestroy {
       sortOrder: this.sortOrder,
 
       ...(this.searchFields?.editor?.trim() && {
-        'search_params.name.filteringkey': this.searchFields.editor?.trim(),
+        'search_params.name.filteringkey': encodeURIComponent(this.searchFields.editor?.trim()),
       }),
     };
   }

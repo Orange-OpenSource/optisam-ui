@@ -1,0 +1,28 @@
+table {
+    width: 100%;
+  }
+  
+.productsHeader {
+    font-size: 16px;
+    font-weight: 700;
+  }
+  .mat-header-row,
+  .mat-row {
+    display: flex;
+    border-bottom: 1px solid #cfcfcf
+    
+  }
+  .closeButton{
+    margin-top: 10px;
+  }
+
+  .mat-column-version{
+    flex: 0 0 100px;
+  }
+
+  mat-header-row{
+    position: sticky;
+    top: initial;
+    z-index: 100;
+    background: white;
+    }

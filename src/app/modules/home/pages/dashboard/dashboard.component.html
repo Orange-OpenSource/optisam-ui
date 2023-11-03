@@ -431,11 +431,30 @@
                 tooltip="{{ 'Scope Expense' | translate }}"
               >
                 <div class="tileBody">
+                  <div
+                    class="tileText"
+                    *ngIf="scopeExpense$ | async as scopeExpense"
+                  >
+                    {{ scopeExpense | floor }}
+                  </div>
 
-                  <ng-container *ngIf="(scopeExpense$ | async) as scopeExpense; else expenseFallback" >
-                      <div class="tileText">
-                        {{ scopeExpense | floor }}
+                  <div
+                    class="tileText"
+                    *ngIf="!(scopeExpense$ | async) && !scopeErrorMsg"
+                  >
+                    0
+                  </div>
+
+                  <ng-container *ngIf="scopeErrorMsg">
+                    <div class="tileImage">
+                      <div class="errorIcon">
+                        <mat-icon>error</mat-icon>
                       </div>
+
+                      <div class="errorMsg">
+                        {{ scopeErrorMsg | translate }}
+                      </div>
+                    </div>
                   </ng-container>
                 </div>
               </app-kpi-tile>
@@ -1587,6 +1606,109 @@
         </mat-grid-tile>
       </mat-grid-list>
     </div>
+    <div id="maintenanceSection" *ngIf="currentTab == 'Maintenance'">
+      <!-- <mat-grid-list [cols]="2" rowHeight="3:2" [gutterSize]="'16px'">
+        <mat-grid-tile [rowspan]="1" id="deployedProducts" class="contentTile">
+          <div class="tileHeader">
+            {{ "% of Products with Maintenance Covered" | translate
+            }}<mat-icon
+              class="mat-icon-info"
+              matTooltipClass="alertTooltip"
+              matTooltip="{{
+                'Percentage Change of Deployed and Non Deployed Products'
+                  | translate
+              }}"
+              >info</mat-icon
+            >
+          </div>
+          <div class="loader" *ngIf="!ProductsWithMaintenance"></div>
+          <div class="tileLoadingMsg" *ngIf="!ProductsWithMaintenance">
+            {{ "Wait a moment while we set things up for you!" | translate }}
+          </div>
+          <div class="noDataImgContainer" *ngIf="emptyProductMaintenanceData">
+            <img class="noDataImg" src="assets/images/NoDataFound.PNG" />
+          </div>
+          <div class="noDataMsg" *ngIf="emptyProductMaintenanceData">
+            {{ "Unfortunately no data could be found." | translate }}
+          </div>
+          <div class="noDataImgContainer" *ngIf="maintenanceDataFailed">
+            <img class="noDataImg" src="assets/images/ConnectionError.PNG" />
+          </div>
+          <canvas id="deployedProductsChart" width="400" height="270"></canvas>
+        </mat-grid-tile>
+        <mat-grid-tile class="contentTile">
+          <div class="tileHeader">
+            {{ "products without Maintenance" | translate
+            }}<mat-icon
+              class="mat-icon-info"
+              matTooltipClass="alertTooltip"
+              matTooltip="{{
+                'Number of products for which maintenance has expired is displayed, or those who dont have a maintenance.'
+                  | translate
+              }}"
+              >info</mat-icon
+            >
+          </div>
+          <div class="tileBody">
+            <div
+              class="tileText productsNo"
+              matTooltip="{{ 'Click to view details' | translate }}"
+              matTooltipClass="alertTooltip"
+              (click)="openProductsNoMaintenanceInfo(ProductsWithNoMaintenance)"
+            >
+              {{ ProductsWithNoMaintenance?.total_products }}
+            </div>
+            <div class="tileImage" *ngIf="!ProductsWithNoMaintenance">
+              <div class="errorIcon" *ngIf="alertQualityDbErr">
+                <mat-icon>error</mat-icon>
+              </div>
+              <div *ngIf="alertQualityDbErr" class="errorMsg">
+                {{ "Server Error" | translate }}
+              </div>
+              <div *ngIf="alertQualityNetworkErr" class="errorMsg">
+                {{ "No Data Found" | translate }}
+              </div>
+            </div>
+          </div>
+        </mat-grid-tile>
+        <mat-grid-tile
+          [rowspan]="1"
+          [colspan]="2"
+          id="softExpByEditor"
+          class="contentTile"
+        >
+          <app-software-expenditure></app-software-expenditure>
+        </mat-grid-tile>
+      </mat-grid-list> -->
+      <app-software-maintenance></app-software-maintenance>
+    </div>
+    <div
+      id="softwareUsageExpenditure"
+      *ngIf="currentTab == 'Software Usage Expenditure'"
+    >
+      <!-- <mat-grid-list [cols]="2" rowHeight="3:2" [gutterSize]="'16px'">
+        <mat-grid-tile
+          [rowspan]="1"
+          [colspan]="2"
+          id="softExpByEditor"
+          class="contentTile"
+        > -->
+      <app-software-expenditure></app-software-expenditure>
+      <!-- </mat-grid-tile>
+      </mat-grid-list> -->
+    </div>
+    <div id="parkSoftware" *ngIf="currentTab == 'Park'">
+      <!-- <mat-grid-list [cols]="2" rowHeight="3:2" [gutterSize]="'16px'">
+        <mat-grid-tile
+          [rowspan]="1"
+          [colspan]="2"
+          id="softExpByEditor"
+          class="contentTile"
+        > -->
+      <app-park></app-park>
+      <!-- </mat-grid-tile>
+      </mat-grid-list> -->
+    </div>
   </div>
 </div>
 <ng-template #notDeployedProductsInfoDialog>
@@ -1678,26 +1800,4 @@
       {{ "OK" | translate }}
     </button>
   </mat-dialog-actions>
-</ng-template>
-
-
-<ng-template #expenseFallback >
-  <div
-      class="tileText"
-      *ngIf="!scopeErrorMsg"
-    >
-      0
-    </div>
-
-    <ng-container *ngIf="scopeErrorMsg">
-      <div class="tileImage">
-        <div class="errorIcon">
-          <mat-icon>error</mat-icon>
-        </div>
-
-        <div class="errorMsg">
-          {{ scopeErrorMsg | translate }}
-        </div>
-      </div>
-    </ng-container>
 </ng-template>

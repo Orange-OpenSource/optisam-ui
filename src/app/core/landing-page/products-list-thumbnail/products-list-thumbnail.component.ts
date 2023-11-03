@@ -111,7 +111,7 @@ export class ProductsListThumbnailComponent
       sort_by: this.sortBy,
       sort_order: this.sortOrder,
       ...(this.searchControl.value?.trim() && {
-        'search_params.name.filteringkey': this.searchControl.value.trim(),
+        'search_params.name.filteringkey': encodeURIComponent(this.searchControl.value.trim()),
       }),
       ...(!!this.productFilters?.filters?.deploymentType?.length && {
         'search_params.deploymentType.filteringkey':

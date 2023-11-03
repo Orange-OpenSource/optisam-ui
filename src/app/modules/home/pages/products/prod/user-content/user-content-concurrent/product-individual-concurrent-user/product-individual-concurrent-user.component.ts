@@ -394,15 +394,7 @@ export class ProductIndividualConcurrentUserComponent
                 scaleLabel: {
                   display: true,
                   labelString: 'Months',
-                  // suggestedMin: 0, // minimum will be 0, unless there is a lower value.
                   // OR //
-                  // beginAtZero: true, // minimum value will be 0.
-                  // userCallback: function (label, index, labels) {
-                  //   // when the floored value is the same as the value we have a whole number
-                  //   if (Math.floor(label) === label) {
-                  //     return label;
-                  //   }
-                  // },
                 },
               },
             ],

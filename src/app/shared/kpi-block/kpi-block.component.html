@@ -1,0 +1,49 @@
+<ng-container
+  [ngTemplateOutlet]="templateRef || default"
+  [ngTemplateOutletContext]="{ $implicit: options }"
+>
+</ng-container>
+<ng-template #default let-options>
+  <div class="kpi-block scope-expenditure mat-elevation-z3" [style]="style">
+    <div class="kpi-block--container">
+      <div class="kpi-block--icon">
+        <mat-icon>{{ options?.icon }}</mat-icon>
+      </div>
+      <div class="kpi-block--content">
+        <div class="kpi-block--content--number"
+          matTooltip="{{ options?.number | numberFr }}"
+        >
+          {{ options?.number | checkForMillion }}
+        </div>
+        <div class="kpi-block--content--description">
+          <span class="description">{{
+            options?.description | translate
+          }}</span>
+          <mat-icon
+            *ngIf="options?.titleTooltip"
+            matTooltip="{{ options.titleTooltip | translate }}"
+            matTooltipClass="alertTooltip"
+            >info</mat-icon
+          >
+        </div>
+        <div *ngIf="options?.showToggle">
+          <mat-slide-toggle
+            [disableRipple]="true"
+            color="primary"
+            [checked]="checked"
+            (change)="changeToggle($event.checked)"
+            [disabled]="disabled"
+          >
+            {{ options?.toggleText || "" | translate }}
+          </mat-slide-toggle>
+        </div>
+        <div
+          class="kpi-block--content--meta-description"
+          *ngIf="options?.metaDescription"
+        >
+          {{ options?.metaDescription | translate }}
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>

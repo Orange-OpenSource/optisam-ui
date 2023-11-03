@@ -34,8 +34,7 @@ import { ISOFormat } from '@core/util/common.functions';
   styleUrls: ['./create-acquired-right-aggregation.component.scss'],
 })
 export class CreateAcquiredRightAggregationComponent
-  implements OnInit, AfterContentChecked, AfterContentInit
-{
+  implements OnInit, AfterContentChecked, AfterContentInit {
   @ViewChild(ContractStepComponent) contractStep: ContractStepComponent;
   @ViewChild(TopSectionComponent) topSection: TopSectionComponent;
   @ViewChild(ProductsStepComponent) productsStep: ProductsStepComponent;
@@ -81,7 +80,7 @@ export class CreateAcquiredRightAggregationComponent
     @Inject(MAT_DIALOG_DATA) public data,
     private sharedService: SharedService,
     private cd: ChangeDetectorRef
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.loadingSubscription = this.sharedService
@@ -249,8 +248,8 @@ export class CreateAcquiredRightAggregationComponent
   validatePattern(input) {
     return input?.value?.includes('_')
       ? {
-          hasUnderscore: true,
-        }
+        hasUnderscore: true,
+      }
       : null;
   }
 
@@ -301,7 +300,7 @@ export class CreateAcquiredRightAggregationComponent
       file_data: this.file_data.value,
     };
 
-    console.log(body);
+
 
     this.productService.createAcquiredRightAggregation(body).subscribe(
       (res) => {

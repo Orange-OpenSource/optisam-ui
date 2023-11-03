@@ -101,7 +101,7 @@
                   }}
                 </th>
                 <td *ngIf="data?.locationType" class="last-child">
-                  {{ data?.locationType === "NONE" ? "-" : data?.locationType }}
+                  {{ data?.locationType }}
                 </td>
                 <td *ngIf="!data?.locationType" class="last-child">-</td>
               </tr>
@@ -117,17 +117,15 @@
                 <td *ngIf="data?.licensing === 'OPENSOURCE'" class="last-child">
                   Open Source
                 </td>
-                <td *ngIf="data?.licensing === 'NONE'" class="last-child">-</td>
+                <td *ngIf="data?.licensing === 'NONE'" class="last-child">
+                  NONE
+                </td>
                 <td *ngIf="!data?.licensing" class="last-child">-</td>
               </tr>
               <tr *ngIf="data?.openSource?.openSourceType" class="width-20">
                 <th>Open Source Type</th>
                 <td class="last-child">
-                  {{
-                    data?.openSource?.openSourceType === "NONE"
-                      ? "-"
-                      : data?.openSource?.openSourceType
-                  }}
+                  {{ data?.openSource?.openSourceType }}
                 </td>
               </tr>
               <tr *ngIf="data?.openSource?.openLicences" class="width-20">

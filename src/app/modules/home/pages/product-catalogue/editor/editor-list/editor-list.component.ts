@@ -106,7 +106,7 @@ export class EditorListComponent implements OnInit {
       sortBy: this.sortBy,
       sortOrder: this.sortOrder,
       ...(this.searchFields.editor?.trim() && {
-        'search_params.name.filteringkey': this.searchFields.editor?.trim(),
+        'search_params.name.filteringkey': encodeURIComponent(this.searchFields.editor?.trim()),
       }),
       ...(this.searchFields.groupContract?.trim() && {
         'search_params.group_contract.filteringkey':

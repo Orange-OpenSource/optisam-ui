@@ -263,18 +263,16 @@
                   <mat-label>{{ "Metric " | translate }}*</mat-label>
                   <mat-select
                     multiple
+                    #metrics
                     id="metrics"
                     formControlName="metrics"
-                    (selectionChange)="changed($event.value)"
+                    [compareWith]="metricCompare"
                   >
                     <mat-option
                       *ngFor="let metric of metricsList"
-                      [value]="metric.name"
+                      [value]="metric"
                       [disabled]="disabledMetricNameList.includes(metric.name)"
                       #option
-                      (click)="
-                        metricClickHandler(option._selected, metric.type)
-                      "
                       >{{ metric.name }}</mat-option
                     >
                   </mat-select>
@@ -332,8 +330,7 @@
                   />
                   <mat-hint>{{
                     "Number of licenses acquired for the product at the specified price and for the selected
-                    metric"
-                      | translate
+                    metric" | translate
                   }}</mat-hint>
                   <mat-error
                     *ngIf="
@@ -559,11 +556,21 @@
                   <mat-label>{{ "Support number" | translate }}</mat-label>
                   <input
                     id="supportNumber"
-                    maxlength="16"
                     matInput
                     placeholder="{{ 'Support number' | translate }}"
                     formControlName="supportNumber"
                   />
+
+                  <mat-error *ngIf="supportNumber.hasError('maxSupportLength')">
+                    {{
+                      "SUPPORT_NUMBER_ERROR"
+                        | translate
+                          : {
+                              length: supportNumber.errors.maxSupportLength.requiredLength,
+                              index: supportNumber.errors.maxSupportLength.index
+                            }
+                    }}
+                  </mat-error>
                 </mat-form-field>
                 <mat-form-field appearance="outline" fxFlex>
                   <mat-label>{{

@@ -1,4 +1,11 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  ChangeDetectorRef,
+  ViewChild,
+  AfterViewInit,
+} from '@angular/core';
 import {
   FormGroup,
   FormBuilder,
@@ -21,6 +28,7 @@ import {
   EditorsListParams,
   EditorsListResponse,
 } from '@core/modals';
+import { MatSelect } from '@angular/material/select';
 
 function validateAggregationName(c: FormControl) {
   const EMAIL_REGEXP = /[^a-zA-Z\d_]/g;
@@ -51,8 +59,13 @@ export class CreateAggregationComponent implements OnInit, OnDestroy {
   acqrights_products: any[] = [];
   searchLoading: boolean = false;
   delayLoader: any = null;
+  delayProductLoader: any = null;
   searchText: string = '';
+  searchProductText: string = '';
   filteredEditor: string[] = [];
+  filteredProduct: string[] = [];
+  searchProductLoading: boolean = false;
+  @ViewChild('productInput') productSelect: MatSelect;
 
   constructor(
     private fb: FormBuilder,
@@ -144,6 +157,9 @@ export class CreateAggregationComponent implements OnInit, OnDestroy {
             return -1;
           return 0;
         });
+        this.filteredProduct = this.productList?.map((pr: ProductDetails) => {
+          return pr?.product_name.toLowerCase();
+        });
       },
       (error) => {
         this.errorMessage = error && error.error ? error.error.message : '';
@@ -170,23 +186,40 @@ export class CreateAggregationComponent implements OnInit, OnDestroy {
       case 'product':
         this.selectedSwidList = this.selectedSwidList || [];
         const selectedSwidtags = this.selectedSwidList.map((s) => s.swidtag);
-        this.swidList =
-          this.acqrights_products.filter(
-            (ap) =>
-              this.createForm.value.product_names.includes(ap.product_name) &&
-              !selectedSwidtags.includes(ap.swidtag)
-          ) || [];
+        // this.swidList =
+        //   this.acqrights_products.filter(
+        //     (ap) =>
+        //       this.createForm.value.product_names.includes(
+        //         ap.product_name.toLowerCase()
+        //       ) && !selectedSwidtags.includes(ap.swidtag)
+        //   ) || [];
+
+        this.swidList = this.acqrights_products.filter(
+          (ap) =>
+            this.createForm.value.product_names.includes(
+              ap.product_name.toLowerCase()
+            ) && !selectedSwidtags.includes(ap.swidtag)
+        );
+        // this.swidList = this.swidList.concat(filteredProducts);
         this.swidList = this.swidList?.map((x) => {
           return {
             ...x,
             swidVersion: x.product_name + ' ' + x.product_version,
           };
         });
-
-
-        this.selectedSwidList = this.selectedSwidList.filter((s) =>
+        const selectedSwidListFilter = this.selectedSwidList.filter((s) =>
           (this.createForm.value.product_names || []).includes(s.product_name)
         );
+        this.selectedSwidList = this.selectedSwidList.concat(
+          selectedSwidListFilter
+        );
+
+        // setTimeout(() => {
+        //   if (this.productSelect?.panelOpen) {
+        //     this.productSelect.close();
+        //   }
+        // }, 5000);
+
         break;
     }
   }
@@ -263,10 +296,17 @@ export class CreateAggregationComponent implements OnInit, OnDestroy {
     e.preventDefault();
   }
 
+  searchProduct(e: Event): void {
+    e.stopImmediatePropagation();
+    e.preventDefault();
+  }
   searchKeydown(e: Event): void {
     e.stopPropagation();
   }
 
+  searchProductKeyDown(e: Event): void {
+    e.stopPropagation();
+  }
   searchInputEvent(e: KeyboardEvent): void {
     this.searchLoading = true;
     if (this.delayLoader !== null) clearTimeout(this.delayLoader);
@@ -285,6 +325,36 @@ export class CreateAggregationComponent implements OnInit, OnDestroy {
       );
       this.delayLoader = null;
       this.searchLoading = false;
+      this.cd.detectChanges();
+    }, 500);
+  }
+
+  searchProductInputEvent(e: KeyboardEvent): void {
+    this.searchProductLoading = true;
+    if (this.delayProductLoader !== null) clearTimeout(this.delayProductLoader);
+    this.delayProductLoader = setTimeout(() => {
+      this.searchProductText = (e.target as HTMLInputElement).value
+        .trim()
+        .toLowerCase();
+
+      if (this.searchProductText === '') {
+        this.filteredProduct = this.productList?.map((pr: ProductDetails) => {
+          return pr.product_name.toLowerCase();
+        });
+      } else {
+        const filteredProducts = this.productList
+          ?.map((pr: ProductDetails) => {
+            return pr?.product_name.toLowerCase();
+          })
+          ?.filter((pr: string) => pr.includes(this.searchProductText));
+
+        // Merge filtered products with selected products
+        const selectedProducts = this.createForm.value.product_names || [];
+        this.filteredProduct = [...filteredProducts, ...selectedProducts];
+      }
+
+      this.delayProductLoader = null;
+      this.searchProductLoading = false;
       this.cd.detectChanges();
     }, 500);
   }

@@ -6,7 +6,7 @@ export interface Metric {
   name: string;
   description: string;
   type: string;
-  default:boolean;
+  default: boolean;
 }
 
 export interface MetricTypes {
@@ -120,7 +120,7 @@ export interface IbmPvuStandardParams {
   scopes: string[];
 }
 
-export interface SagProcessorStandardParams extends IbmPvuStandardParams {}
+export interface SagProcessorStandardParams extends IbmPvuStandardParams { }
 
 export interface AttributeCounterStandardParams {
   ID: string;
@@ -193,8 +193,19 @@ export interface MetricType {
   href: string;
   name: string;
   type_id: string;
+  is_exist?: boolean;
+  default_metrics: string[];
 }
 
 export interface MetricList {
   metrices: Metric[];
 }
+
+export interface MetricTypeResponse {
+  types: MetricType[];
+}
+export interface ImportMetricsParams {
+  metric: string[];
+  scope: string;
+}
+

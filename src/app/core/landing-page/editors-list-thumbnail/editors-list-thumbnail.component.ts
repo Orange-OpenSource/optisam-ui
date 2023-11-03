@@ -37,8 +37,7 @@ const THUMBNAIL_MIN_WIDTH: number = 300; // In pixel
   styleUrls: ['./editors-list-thumbnail.component.scss'],
 })
 export class EditorsListThumbnailComponent
-  implements OnInit, OnDestroy, AfterViewChecked
-{
+  implements OnInit, OnDestroy, AfterViewChecked {
   @ViewChild('itemContainer') container: ElementRef<HTMLElement>;
   defaultItemGap: string = '10px';
   gap: string = this.defaultItemGap;
@@ -72,7 +71,7 @@ export class EditorsListThumbnailComponent
     private cd: ChangeDetectorRef,
     private pc: ProductCatalogService,
     private fb: FormBuilder
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.formInit();
@@ -102,7 +101,7 @@ export class EditorsListThumbnailComponent
       sortBy: this.sortBy,
       sortOrder: this.sortOrder,
       ...(this.searchControl.value?.trim() && {
-        'search_params.name.filteringkey': this.searchControl.value?.trim(),
+        'search_params.name.filteringkey': encodeURIComponent(this.searchControl.value?.trim()),
       }),
       ...(!!this.editorFilters?.filters?.audit?.length && {
         'search_params.audityears.filteringkey':
@@ -230,9 +229,8 @@ export class EditorsListThumbnailComponent
   }
 
   private allStreams(): void {
-    this.valueChanges = this.filterForm.valueChanges
-      .pipe(debounceTime(400))
-      .subscribe((filters: EditorFilters) => {
+    this.valueChanges = this.filterForm.valueChanges.pipe(debounceTime(400)).subscribe(
+      (filters: EditorFilters) => {
         const searchChanged: boolean =
           filters.search !== (this.editorFilters?.search || '');
         for (const filter in filters.filters)
@@ -245,14 +243,15 @@ export class EditorsListThumbnailComponent
           this.resetPage();
           this.getEditorList();
         }
-      });
+      }
+    );
   }
 
   editorDetails(editor: ProductCatalogEditor): void {
     this.pc.addNewTab({
       tabName: PRODUCT_CATALOG_TABS.EDITOR_DETAIL,
       from: PRODUCT_CATALOG_TABS.EDITOR,
-      alias: editor.name,
+      alias: editor.name
     });
     this.editorInfo.next(editor);
   }

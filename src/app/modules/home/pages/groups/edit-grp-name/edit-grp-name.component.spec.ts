@@ -72,7 +72,7 @@ describe('EditGrpNameComponent', () => {
     component.data.item = editNode;
     component.ngOnInit();
     component.group.name = 'group1';
-    component.name.setValue('groupNew');
+    component.name?.setValue('groupNew');
     component.name.markAsDirty();
     fixture.detectChanges();
     const resetButton =
@@ -94,7 +94,7 @@ describe('EditGrpNameComponent', () => {
     component.data.item = editNode;
     component.ngOnInit();
     component.name.setValue('groupNew');
-    component.groupCompliance.setValue(true);
+    component.groupCompliance?.setValue(true);
     component.scopes.setValue(['abc', 'bcd']);
     component.name.markAsDirty();
     fixture.detectChanges();

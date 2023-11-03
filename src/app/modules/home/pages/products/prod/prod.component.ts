@@ -50,7 +50,7 @@ export class ProdComponent implements OnInit {
     'version',
     'editor',
     'location',
-    'category',
+    // 'category',
     'totalCost',
     'numofUsers',
     'numOfApplications',
@@ -87,7 +87,7 @@ export class ProdComponent implements OnInit {
   ) {
     this._loading = true;
     this.current_page_num = 1;
-    const state = window.history.state || {};
+    const state = {}; //window.history.state || {};
     if (
       state['swidTag'] != undefined ||
       state['name'] != undefined ||

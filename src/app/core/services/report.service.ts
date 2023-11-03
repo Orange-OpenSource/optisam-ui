@@ -18,6 +18,7 @@ import { format } from 'date-fns';
 import { TranslateService } from '@ngx-translate/core';
 import { SheetAOAOpts, WorkBook, WorkSheet, utils, write } from 'xlsx';
 import * as FileSaver from 'file-saver';
+import { frenchNumber } from '@core/util/common.functions';
 
 @Injectable({
   providedIn: 'root',
@@ -29,7 +30,7 @@ export class ReportService {
   constructor(
     private http: HttpClient,
     private cs: CommonService,
-    private translate: TranslateService
+    private translate: TranslateService,
   ) { }
 
   getReportTypes(): Observable<any> {
@@ -173,7 +174,9 @@ export class ReportService {
         let contentLine = [];
         for (let index in headerList) {
           let head = headerList[index];
-          contentLine.push((contentBody[i][head] ?? ''));
+          let content = this.checkForCurrency(head, contentBody[i][head] ?? '');
+
+          contentLine.push(content);
         }
         rows.push(contentLine);
       }
@@ -256,5 +259,12 @@ export class ReportService {
   saveAsExcelFile(buffer: any, fileName: string) {
     const data: Blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8' });
     FileSaver.saveAs(data, fileName + '_' + new Date().getTime() + '.xlsx');
+  }
+
+  private checkForCurrency(header: string, value: number | string): string | number {
+    if (/cost|price/gmi.test(header)) {
+      return frenchNumber(value);
+    }
+    return value;
   }
 }

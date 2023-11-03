@@ -90,12 +90,8 @@
                 type="text"
                 [value]="scope?.expenditure || 0"
                 #inputExp
-                (blur)="onBlur(inputExp, scope)"
-                (click)="editExp(editBox)"
-                (keydown.enter)="enterExp(inputExp, scope, editBox)"
-                (keydown)="restrictNonDigit($event)"
               />
-              <div class="edit-exp-box edit-btn" (click)="editExp(editBox)">
+              <div class="edit-exp-box edit-btn" (click)="setExp(scope)">
                 <mat-icon>edit</mat-icon>
               </div>
 

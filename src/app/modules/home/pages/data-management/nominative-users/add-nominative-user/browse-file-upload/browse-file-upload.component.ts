@@ -1,3 +1,4 @@
+import { FilterType } from './../../../../../../../core/modals/product-catalog.modal';
 import { CommonService } from '@core/services/common.service';
 import { LOCAL_KEYS, UPLOAD_TYPES } from '@core/util/constants/constants';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
@@ -9,9 +10,13 @@ import {
   ElementRef,
   AfterViewInit,
 } from '@angular/core';
-import { NominativeUserType, ProductType } from '@core/modals';
+import { NominativeUserProductBody, NominativeUserType, ProductType } from '@core/modals';
 import { DataManagementService } from '@core/services/data-management.service';
 import { Subscription } from 'rxjs';
+import * as JSZip from 'jszip';
+import * as XLSX from 'xlsx';
+import * as pako from 'pako';
+import * as ExcelJS from 'exceljs';
 
 interface ProductFormType {
   productEditor: string;
@@ -31,6 +36,7 @@ interface AggregationFormType {
   styleUrls: ['./browse-file-upload.component.scss'],
 })
 export class BrowseFileUploadComponent implements OnInit, AfterViewInit {
+
   @ViewChild('hiddenInput') fileInput: ElementRef<HTMLInputElement>;
   uploadedPercent: number = 40;
   progressPercent: number = 0;
@@ -66,12 +72,65 @@ export class BrowseFileUploadComponent implements OnInit, AfterViewInit {
     this.errorMessage = null;
   }
 
-  uploadFile(): void {
+  fileToArrayBuffer(file: File): Promise<ArrayBuffer> {
+    return new Promise<ArrayBuffer>((resolve, reject) => {
+      const reader = new FileReader();
+
+      reader.onload = () => {
+        const arrayBuffer = reader.result as ArrayBuffer;
+        resolve(arrayBuffer);
+      };
+
+      reader.onerror = () => {
+        reject(reader.error);
+      };
+
+      reader.readAsArrayBuffer(file);
+    });
+  }
+
+  optimizeAndDownload(): Promise<any> {
+
+    return new Promise((resolve, reject) => {
+
+      const workbook = new ExcelJS.Workbook();
+      const reader = new FileReader();
+
+      reader.onload = function (e) {
+
+        try {
+          const buffer = e.target.result as ArrayBuffer;
+          workbook.xlsx.load(buffer).then(function () {
+            // Save the optimized workbook
+            workbook.xlsx.writeBuffer().then(function (buffer) {
+              // Create a link to download the optimized XLSX file
+              const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+              resolve(blob);
+            });
+          });
+        }
+
+        catch (e) {
+          reject(e);
+        }
+      }
+      reader.readAsArrayBuffer(this.selectedFile);
+    })
+  }
+
+
+  async uploadFile(): Promise<void> {
     if (this.processing) return;
     this.processing = true;
     const formData: FormData = new FormData();
     const dataGroup = this.data?.formData?.[this.data?.type || ''] || null;
-    formData.append('file', this.selectedFile);
+    // convert file in zip
+
+    const fileBlob = await this.optimizeAndDownload();
+    const file = new File([fileBlob], this.selectedFile.name, { type: this.selectedFile.type })
+
+
+    formData.append('file', file);
     formData.append('scope', this.cs.getLocalData(LOCAL_KEYS.SCOPE));
     if (this.data.type === NominativeUserType.product) {
       formData.append('editor', dataGroup?.productEditor);

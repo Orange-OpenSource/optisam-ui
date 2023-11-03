@@ -1,0 +1,57 @@
+<div class="alert alert-primary" role="alert">
+  <div>
+    {{
+      "The dashboard data is updated once every 24 hours and after each inventory update."
+        | translate
+    }}
+  </div>
+  <div *ngIf="lastUpdatedDate && nextUpdateDate">
+    {{ "Last updated: " | translate }}
+    {{ lastUpdatedDate }} &nbsp;&nbsp;&nbsp; {{ "Next update: " | translate
+    }}{{ nextUpdateDate }}
+  </div>
+</div>
+<div class="main-container">
+  <mat-card class="main-container">
+    <nav mat-tab-nav-bar class="dashboard-scroll-nav">
+      <a
+        mat-tab-link
+        #customTab
+        class="tab-anchor"
+        *ngFor="let tab of tabList"
+        (click)="isFirstLoad = false; scrollToView(tab.fragment)"
+        [routerLink]="['./']"
+        [fragment]="tab.fragment"
+        [active]="currentTab == tab.fragment"
+      >
+        {{ tab.translate | translate }}
+      </a>
+    </nav>
+    <!-- <router-outlet></router-outlet> -->
+    <div class="main-tab">
+      <ng-container *ngFor="let tab of tabList">
+        <div [id]="tab?.fragment" class="scroll-tab">
+          <app-dashboard-kpi-wrapper [title]="tab?.translate">
+            <div [ngSwitch]="tab?.fragment">
+              <div *ngSwitchCase="'overview'">
+                <app-software-expenditure-dashboard></app-software-expenditure-dashboard>
+              </div>
+              <div *ngSwitchCase="'effective-license-position'">
+                <app-effective-license-position-dashboard></app-effective-license-position-dashboard>
+              </div>
+              <div *ngSwitchCase="'software-usage-and-expenditure'">
+                <app-software-expenditure></app-software-expenditure>
+              </div>
+              <div *ngSwitchCase="'maintenance'">
+                <app-software-maintenance></app-software-maintenance>
+              </div>
+              <div *ngSwitchCase="'park'">
+                <app-park></app-park>
+              </div>
+            </div>
+          </app-dashboard-kpi-wrapper>
+        </div>
+      </ng-container>
+    </div>
+  </mat-card>
+</div>

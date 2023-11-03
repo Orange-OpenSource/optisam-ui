@@ -1,0 +1,120 @@
+<mat-card>
+  <mat-grid-list [cols]="3" rowHeight="1:1" [gutterSize]="'16px'">
+    <mat-grid-tile class="contentTile">
+      <div class="tileHeader">
+        {{ "TOTAL_MAINTENANCE_COST" | translate
+        }}<mat-icon
+          class="mat-icon-info"
+          matTooltipClass="alertTooltip"
+          matTooltip="{{ 'TOTAL_MAINTENANCE_COST_INFO' | translate }}"
+          >info</mat-icon
+        >
+      </div>
+
+      <div class="loader" *ngIf="_loadingMaintenanceData"></div>
+      <div class="tileLoadingMsg" *ngIf="_loadingMaintenanceData">
+        {{ "Wait a moment while we set things up for you!" | translate }}
+      </div>
+
+
+      <ng-container 
+      *ngIf="!totalCostMaintenanceDataFlag && !getProductsNetworkError && !_loadingMaintenanceData"
+      >
+    
+      <div class="tileBody">
+        <div
+          class="tileText productsNo"
+          matTooltipClass="alertTooltip"
+        >
+          {{ TotalMaintenanceCost | numberFr }}
+        </div>
+        
+      </div>
+      <div class="image-box">
+        <img src="assets/images/cost-round.svg" />
+      </div>
+    </ng-container>
+      <ng-template [ngTemplateOutlet]="(totalCostMaintenanceDataFlag || getProductsNetworkError) && !_loadingMaintenanceData ? noDataTemplate : null" ></ng-template>
+    </mat-grid-tile>
+
+
+    <mat-grid-tile class="contentTile">
+      <div class="tileHeader">
+        {{ "PRODUCT_WITH_MAINTENANCE" | translate
+        }}<mat-icon
+          class="mat-icon-info"
+          matTooltipClass="alertTooltip"
+          matTooltip="{{
+            'PRODUCT_WITH_MAINTENANCE_INFO'
+              | translate
+          }}"
+          >info</mat-icon
+        >
+      </div>
+      <div class="loader" *ngIf="_loadingMaintenanceData"></div>
+      <div class="tileLoadingMsg" *ngIf="_loadingMaintenanceData">
+        {{ "Wait a moment while we set things up for you!" | translate }}
+      </div>
+      <div
+      [ngClass]="{ 'display-none': productsWithMaintenanceNoDataFlag || _loadingMaintenanceData || alertQualityNetworkErr }"
+      class="piechart-maintenance"
+      >
+      <canvas id="deployedProductsChart" width="100%" height="70px"></canvas>
+    </div>
+    <ng-template [ngTemplateOutlet]="(productsWithMaintenanceNoDataFlag || alertQualityNetworkErr)  && !_loadingMaintenanceData? noDataTemplate : null" ></ng-template>  
+    </mat-grid-tile>
+
+    <!-- Product Without Maintenance -->
+    <mat-grid-tile class="contentTile">
+      <div class="tileHeader">
+        {{ "PRODUCTS_WITHOUT_MAINTENANCE" | translate
+        }}<mat-icon
+          class="mat-icon-info"
+          matTooltipClass="alertTooltip"
+          matTooltip="{{
+            'PRODUCTS_WITHOUT_MAINTENANCE_INFO'
+              | translate
+          }}"
+          >info</mat-icon
+        >
+      </div>
+      <ng-container 
+      *ngIf="!productsWithoutMaintenanceFlag && !alertQualityDbErr"
+      >
+
+    </ng-container>
+      <div class="tileBody">
+        <div
+          class="tileText productsNo"
+          matTooltip="{{ 'Click to view details' | translate }}"
+          matTooltipClass="alertTooltip"
+          (click)="openProductsNoMaintenanceInfo(ProductsWithNoMaintenance)"
+          *ngIf="!_loadingProductWithoutMaintenance"
+        >
+          {{ productsWithoutMaintenance }}
+        </div>
+      </div>
+
+      <div class="loader" *ngIf="_loadingProductWithoutMaintenance"></div>
+      <div class="tileLoadingMsg" *ngIf="_loadingProductWithoutMaintenance">
+        {{ "Wait a moment while we set things up for you!" | translate }}
+      </div>
+
+      
+      <div class="image-box" *ngIf="!(productsWithoutMaintenanceFlag || alertQualityDbErr) && !_loadingProductWithoutMaintenance">
+        <img src="assets/images/expire-solid.svg" />
+      </div>
+      <ng-template [ngTemplateOutlet]="(productsWithoutMaintenanceFlag || alertQualityDbErr) && !_loadingProductWithoutMaintenance ? noDataTemplate : null " ></ng-template>
+    </mat-grid-tile>
+  </mat-grid-list>
+</mat-card>
+
+
+<ng-template #noDataTemplate  >
+  <div class="noDataImgContainer" >
+    <img class="noDataImg" src="assets/images/NoDataFound.PNG" />
+  </div>
+  <div class="noDataMsg" >
+    {{ "Unfortunately no data could be found." | translate }}
+  </div>
+</ng-template>

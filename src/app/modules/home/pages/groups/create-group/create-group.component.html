@@ -19,9 +19,9 @@
           >
             {{ "NAME_REQUIRED_ALPHA_NUMERIC" | translate }}
           </mat-error>
-          <mat-error *ngIf="name?.hasError('minLength')">
-            {{ "Group name should have at least 1 character" | translate }}
-          </mat-error>
+          <!-- <mat-error *ngIf="name?.hasError('minLength')">
+            {{ "GROUP_NAME_MIN_LENGTH" | translate : { length: name.errors.minLength} }}
+          </mat-error> -->
         </mat-form-field>
         <mat-form-field appearance="outline">
           <mat-label>{{ "Parent Name" | translate }}</mat-label>
@@ -49,7 +49,7 @@
             }}</mat-option>
           </mat-select>
           <mat-error *ngIf="scopes?.hasError('required')">
-            {{ "Scopes field is mandatory" | translate }}
+            {{ "GROUP_ENTITY_MANDATORY_ERROR" | translate }}
           </mat-error>
         </mat-form-field>
         <div fxLayout="row" *ngIf="isSuperAdmin">

@@ -1,5 +1,5 @@
 import { PRODUCT_CATALOG_TABS } from '@core/util/constants/constants';
-import { fixErrorResponse } from '@core/util/common.functions';
+import { fixedErrorResponse, getParams } from '@core/util/common.functions';
 import { Observable } from 'rxjs';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
@@ -27,6 +27,7 @@ import { BehaviorSubject, Subject, throwError, of } from 'rxjs';
 import { catchError, debounceTime } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import * as EDITOR_FILTER_MOCK from '@core/util/mock-data/editor-filters.json';
+import { NoEncodingHttpParameterCodec } from '@core/util/NoEncodingHttpParameterCodec';
 
 interface URL {
   productList: string;
@@ -109,16 +110,14 @@ export class ProductCatalogService {
   getProductsList(
     input: any
   ): Observable<ProductCatalogProductsListResponse | ErrorResponse> {
-    let params = new HttpParams();
-    for (let key in input) params = params.set(key, input[key]);
     return this.http
       .get<ProductCatalogProductsListResponse | ErrorResponse>(
         this.URLs.productList,
         {
-          params,
+          params: getParams(input, false)
         }
       )
-      .pipe(catchError(fixErrorResponse));
+      .pipe(catchError(fixedErrorResponse));
   }
 
   addProduct(
@@ -128,7 +127,7 @@ export class ProductCatalogService {
       .post<ProductCatalogProduct>(this.URLs.addProduct, body, {
         headers: this.defaultHeaders,
       })
-      .pipe(catchError(fixErrorResponse));
+      .pipe(catchError(fixedErrorResponse));
   }
 
   getEditorList(
@@ -138,47 +137,40 @@ export class ProductCatalogService {
     for (const key in input) params = params.set(key, input[key]);
     return this.http
       .get<ProductCatalogEditorListResponse>(this.URLs.editorList, { params })
-      .pipe(catchError(fixErrorResponse));
+      .pipe(catchError(fixedErrorResponse));
   }
 
   getEditors(
     inputs: ProductCatalogManagementEditorListParams
   ): Observable<ProductCatalogEditorListResponse | ErrorResponse> {
-    let params = new HttpParams();
-    for (let key in inputs) params = params.set(key, inputs[key]);
-
     return this.http
       .get<ProductCatalogEditorListResponse | ErrorResponse>(
         this.URLs.editorsList,
-        { params }
+        { params: getParams(inputs, false) }
       )
-      .pipe(catchError(fixErrorResponse));
+      .pipe(catchError(fixedErrorResponse));
   }
 
   getEditorsLanding(
     inputs: LandingEditorParams
   ): Observable<ErrorResponse | ProductCatalogEditorListResponse> {
-    let params: HttpParams = new HttpParams();
-    for (let key in inputs) params = params.set(key, inputs[key]);
     return this.http
       .get<ErrorResponse | ProductCatalogEditorListResponse>(
         this.URLs.editorsList,
-        { params }
+        { params: getParams(inputs, false) }
       )
-      .pipe(catchError(fixErrorResponse));
+      .pipe(catchError(fixedErrorResponse));  
   }
 
   getProductLanding(
     inputs: LandingProductParams
   ): Observable<ErrorResponse | ProductCatalogProductListResponse> {
-    let params: HttpParams = new HttpParams();
-    for (let key in inputs) params = params.set(key, inputs[key]);
     return this.http
       .get<ErrorResponse | ProductCatalogProductListResponse>(
         this.URLs.productList,
-        { params }
+        { params: getParams(inputs, false) }
       )
-      .pipe(catchError(fixErrorResponse));
+      .pipe(catchError(fixedErrorResponse));
   }
 
   filterEditors(input: any) {
@@ -187,12 +179,12 @@ export class ProductCatalogService {
 
     return this.http
       .get<any>(this.URLs.editorsList, { params })
-      .pipe(catchError(fixErrorResponse));
+      .pipe(catchError(fixedErrorResponse));
   }
 
   getEditorById(id: any) {
     const url = `${this.URLs.editorByIdList}?id=${id}`;
-    return this.http.get<any>(url).pipe(catchError(fixErrorResponse));
+    return this.http.get<any>(url).pipe(catchError(fixedErrorResponse));
   }
 
   createEditor(editor: Editor) {
@@ -204,12 +196,12 @@ export class ProductCatalogService {
     });
     return this.http
       .post<any>(url, editor, { headers })
-      .pipe(catchError(fixErrorResponse));
+      .pipe(catchError(fixedErrorResponse));
   }
 
   updateProduct(data: any) {
     const url = this.URLs.addProduct;
-    return this.http.put<any>(url, data).pipe(catchError(fixErrorResponse));
+    return this.http.put<any>(url, data).pipe(catchError(fixedErrorResponse));
   }
 
   updateEditor(editor: Editor) {
@@ -222,12 +214,12 @@ export class ProductCatalogService {
 
     return this.http
       .put<any>(url, editor, { headers })
-      .pipe(catchError(fixErrorResponse));
+      .pipe(catchError(fixedErrorResponse));
   }
 
   deleteEditor(id: any) {
     const url = `${this.URLs.deleteEditor}/${id}`;
-    return this.http.delete<any>(url).pipe(catchError(fixErrorResponse));
+    return this.http.delete<any>(url).pipe(catchError(fixedErrorResponse));
   }
 
   uploadFile(formData: any): Observable<any> {
@@ -239,14 +231,14 @@ export class ProductCatalogService {
   deleteProduct(id: any) {
     console.log(id);
     const url = `${this.URLs.addProduct}/${id}`;
-    return this.http.delete<any>(url).pipe(catchError(fixErrorResponse));
+    return this.http.delete<any>(url).pipe(catchError(fixedErrorResponse));
   }
 
   getProductById(id: any): Observable<ProductCatalogProduct | ErrorResponse> {
     const url = `${this.URLs.addProduct}/${id}`;
     return this.http
       .get<ProductCatalogProduct>(url)
-      .pipe(catchError(fixErrorResponse));
+      .pipe(catchError(fixedErrorResponse));
   }
 
   getProductByIdV2(id: string): Observable<ProductCatalogProduct> {
@@ -289,7 +281,7 @@ export class ProductCatalogService {
     const params: HttpParams = new HttpParams().set('id', id);
     return this.http
       .get<ProductCatalogProduct>(this.URLs.getProduct, { params })
-      .pipe(catchError(fixErrorResponse));
+      .pipe(catchError(fixedErrorResponse));
   }
 
   setActivityLogError(string: string): void {
@@ -322,18 +314,18 @@ export class ProductCatalogService {
   getEditorNames(): Observable<EditorNamesResponse | ErrorResponse> {
     return this.http
       .get<EditorNamesResponse | ErrorResponse>(this.URLs.editorNames)
-      .pipe(catchError(fixErrorResponse));
+      .pipe(catchError(fixedErrorResponse));
   }
 
   getEditorFilters(): Observable<ErrorResponse | EditorFiltersResponse> {
     return this.http
       .get<EditorFiltersResponse | ErrorResponse>(this.URLs.editorFilter)
-      .pipe(catchError(fixErrorResponse));
+      .pipe(catchError(fixedErrorResponse));
   }
 
   getProductFilters(): Observable<ErrorResponse | ProductFiltersResponse> {
     return this.http
       .get<ProductFiltersResponse | ErrorResponse>(this.URLs.productFilter)
-      .pipe(catchError(fixErrorResponse));
+      .pipe(catchError(fixedErrorResponse));
   }
 }

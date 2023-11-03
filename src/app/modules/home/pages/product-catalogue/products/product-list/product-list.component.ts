@@ -158,11 +158,11 @@ export class ProductListComponent implements OnInit {
       sort_order: this.sortOrder,
 
       ...(this.searchField.name?.trim() && {
-        'search_params.name.filteringkey': this.searchField.name?.trim(),
+        'search_params.name.filteringkey': encodeURIComponent(this.searchField.name?.trim()),
       }),
       ...(this.searchField.editor_name?.trim() && {
         'search_params.editorName.filteringkey':
-          this.searchField.editor_name?.trim(),
+          encodeURIComponent(this.searchField.editor_name?.trim()),
       }),
       ...(this.searchField.licensing?.trim() && {
         'search_params.licensing.filteringkey':

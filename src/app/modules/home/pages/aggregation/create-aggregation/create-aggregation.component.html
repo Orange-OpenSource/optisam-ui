@@ -69,11 +69,27 @@
             #productInput
             multiple
           >
-            <mat-option
-              *ngFor="let product of productList"
-              [value]="product.product_name"
-              >{{ product.product_name }}</mat-option
-            >
+            <input
+              autocomplete="off"
+              class="search-product"
+              #searchProductInput
+              cdkFocusInitial
+              placeholder="Search Product..."
+              matInput
+              (click)="searchProduct($event)"
+              (keydown)="searchProductKeyDown($event)"
+              (input)="searchProductInputEvent($event)"
+            />
+            <app-loading-spinner
+              *ngIf="searchProductLoading"
+            ></app-loading-spinner>
+            <ng-container *ngIf="!searchProductLoading">
+              <mat-option
+                *ngFor="let product of filteredProduct"
+                [value]="product"
+                >{{ product }}</mat-option
+              >
+            </ng-container>
           </mat-select>
         </mat-form-field>
       </div>

@@ -1,20 +1,24 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
   FormGroup,
   Validators,
 } from '@angular/forms';
+import { MatOptionSelectionChange } from '@angular/material/core';
+import { MatSelect } from '@angular/material/select';
 import { Aggregation, Metric, MetricList } from '@core/modals';
 import { MetricService } from '@core/services/metric.service';
 import { ProductService } from '@core/services/product.service';
+import { SubSink } from 'subsink';
 
 @Component({
   selector: 'app-edit-license-step',
   templateUrl: './edit-license-step.component.html',
   styleUrls: ['./edit-license-step.component.scss'],
 })
-export class EditLicenseStepComponent implements OnInit {
+export class EditLicenseStepComponent implements OnInit, AfterViewInit, OnDestroy {
+  @ViewChild('aggMetrics') metricsEl: MatSelect;
   licenseForm: FormGroup;
   private data: Aggregation;
   metricsList: Metric[];
@@ -22,6 +26,7 @@ export class EditLicenseStepComponent implements OnInit {
   disabledMetricNameList: string[] = [];
   temporarydisabledMetricList: string[] = [];
   mySelections: Metric[] = [];
+  subs: SubSink = new SubSink();
 
   constructor(
     private fb: FormBuilder,
@@ -36,6 +41,14 @@ export class EditLicenseStepComponent implements OnInit {
 
       this.listMetrics();
     });
+  }
+
+  ngAfterViewInit(): void {
+    this.subs.add(
+      this.metricsEl.optionSelectionChanges.subscribe((option: MatOptionSelectionChange) => {
+        this.productService.metricOptionsChange.call(this, option, false);
+      })
+    )
   }
 
   formInit(): void {
@@ -71,7 +84,7 @@ export class EditLicenseStepComponent implements OnInit {
           ),
         });
 
-        this.metricSelectChange(this.productsMetrics.value);
+        this.productService.metricOptionsChange.call(this, null, false)
       },
       (err) => {
         console.log('Some error occured! Could not fetch metrics list.');
@@ -87,7 +100,7 @@ export class EditLicenseStepComponent implements OnInit {
     return this.licenseForm.get('unit_price') as FormControl;
   }
 
-  get productsMetrics(): FormControl {
+  get metrics(): FormControl {
     return this.licenseForm.get('productsMetrics') as FormControl;
   }
 
@@ -103,16 +116,16 @@ export class EditLicenseStepComponent implements OnInit {
       : null;
 
     const ORACLE_TYPES = ['oracle.nup.standard', 'oracle.processor.standard'];
-    if (!this.productsMetrics.value.length) this.disabledMetricNameList = [];
+    if (!this.metrics.value.length) this.disabledMetricNameList = [];
     // condition for if metric type is in the oracle block list-- ORACLE_TYPES
     const nominativeUserType = 'user.nominative.standard';
     const concurrentUserType = 'user.concurrent.standard';
     if (
-      this.productsMetrics.value.length &&
+      this.metrics.value.length &&
       this.currentMetricType === nominativeUserType
     ) {
       const selectedMetricName: Metric =
-        this.productsMetrics.value[this.productsMetrics.value.length - 1];
+        this.metrics.value[this.metrics.value.length - 1];
       this.disabledMetricNameList = this.metricsList
         .filter(
           (m) =>
@@ -124,11 +137,11 @@ export class EditLicenseStepComponent implements OnInit {
     }
 
     if (
-      this.productsMetrics.value.length &&
+      this.metrics.value.length &&
       this.currentMetricType === concurrentUserType
     ) {
       const selectedMetricName: Metric =
-        this.productsMetrics.value[this.productsMetrics.value.length - 1];
+        this.metrics.value[this.metrics.value.length - 1];
       this.disabledMetricNameList = this.metricsList
         .filter(
           (m) =>
@@ -139,11 +152,11 @@ export class EditLicenseStepComponent implements OnInit {
       return;
     }
     if (
-      this.productsMetrics.value.length &&
+      this.metrics.value.length &&
       ORACLE_TYPES.includes(this.currentMetricType)
     ) {
       const selectedMetricName: Metric =
-        this.productsMetrics.value[this.productsMetrics.value.length - 1];
+        this.metrics.value[this.metrics.value.length - 1];
 
       this.disabledMetricNameList = this.metricsList
         .filter(
@@ -156,7 +169,7 @@ export class EditLicenseStepComponent implements OnInit {
     }
 
     if (
-      this.productsMetrics.value.length &&
+      this.metrics.value.length &&
       !ORACLE_TYPES.includes(this.currentMetricType) &&
       this.currentMetricType !== nominativeUserType &&
       this.currentMetricType !== concurrentUserType
@@ -176,10 +189,14 @@ export class EditLicenseStepComponent implements OnInit {
       return;
     }
 
-    if (this.productsMetrics.value.length <= 5) {
-      this.mySelections = this.productsMetrics.value;
+    if (this.metrics.value.length <= 5) {
+      this.mySelections = this.metrics.value;
     } else {
-      this.productsMetrics.setValue(this.mySelections);
+      this.metrics.setValue(this.mySelections);
     }
+  }
+
+  ngOnDestroy(): void {
+    this.subs.unsubscribe();
   }
 }

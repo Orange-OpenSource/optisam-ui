@@ -32,7 +32,9 @@
         <span
           class="file-status"
           *ngIf="[statusPartial, statusFailed].includes(file.file_status)"
-          ><mat-icon
+        >
+          {{ "FILE_STATUS." + file.file_status | translate }}
+          <mat-icon
             *ngIf="!file?.errorFileDownloadingStatus"
             (click)="downloadFile(file, errorDownloadType)"
             matTooltip="{{
@@ -44,11 +46,11 @@
             *ngIf="file?.errorFileDownloadingStatus"
             class="error-file-download-spinner"
           ></mat-spinner>
-
-          {{ "FILE_STATUS." + file.file_status | translate }}</span
+        </span>
+        <span
+          *ngIf="[statusCompleted, statusPending].includes(file.file_status)"
         >
-        <span *ngIf="file.file_status == statusCompleted">
-          {{ file.file_status }}
+          {{ "FILE_STATUS." + file.file_status | translate }}
         </span>
       </mat-cell>
     </ng-container>

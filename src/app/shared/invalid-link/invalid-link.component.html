@@ -1,0 +1,27 @@
+<div class="main-invalid-link">
+  <img
+    src="assets/images/invalid-link.png"
+    alt="{{ 'INVALID_LINK' | translate }}"
+  />
+
+  <div class="info">
+    {{ "INVALID_LINK_INFO" | translate }}
+  </div>
+  <div class="sub-info">
+    {{ "INVALID_LINK_SUB_INFO" | translate }}
+  </div>
+
+  <div class="action">
+    <button
+      *ngIf="!isLoggedIn"
+      matButton
+      class="btn btn-two"
+      [routerLink]="['/login']"
+    >
+      {{ "LOGIN_BUTTON" | translate }}
+    </button>
+    <button matButton class="btn btn-one btn-border" [routerLink]="['/']">
+      {{ "GO_HOME" | translate }}
+    </button>
+  </div>
+</div>

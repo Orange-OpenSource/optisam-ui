@@ -63,7 +63,7 @@
     <div fxFlex>
       <div fxLayout="column" fxFlex>
         <span class="header-label">{{ "PERIOD_FROM" | translate }}</span>
-        <mat-form-field appearance="outline" class="formField" fxFlex>
+        <mat-form-field appearance="outline" class="formField">
           <mat-label>{{ "Start of maintenance" | translate }}</mat-label>
           <input
             matInput
@@ -91,6 +91,35 @@
             {{ "Invalid Start Date" | translate }}</mat-error
           >
         </mat-form-field>
+        <!-- <span class="header-label">{{ "PERIOD_FROM" | translate }}</span>
+        <mat-form-field appearance="outline" class="formField">
+          <mat-label>{{ "Start of maintenance" | translate }}</mat-label>
+          <input
+            matInput
+            [disabled]="allowDate"
+            readonly="allowDate"
+            [matDatepicker]="picker1"
+            (click)="picker1.open()"
+            id="startMaintenanceDate"
+            placeholder="{{ 'Start of maintenance' | translate }}"
+            formControlName="startMaintenanceDate"
+            (dateChange)="orgStartValueChange()"
+          />
+          <mat-datepicker-toggle
+            matffix
+            [for]="picker1"
+          ></mat-datepicker-toggle>
+          <mat-datepicker #picker1></mat-datepicker>
+          <mat-error
+            *ngIf="
+              startMaintenanceDate.invalid &&
+              (startMaintenanceDate.dirty || startMaintenanceDate.touched) &&
+              startMaintenanceDate.errors.required
+            "
+          >
+            {{ "Invalid Start Date" | translate }}</mat-error
+          >
+        </mat-form-field> -->
       </div>
     </div>
     <div fxFlex>
@@ -156,8 +185,18 @@
         matInput
         placeholder="{{ 'SUPPORT_NUMBER' | translate }}"
         formControlName="supportNumber"
-        [maxLength]="charLength"
       />
+
+      <mat-error *ngIf="supportNumber.hasError('maxSupportLength')">
+        {{
+          "SUPPORT_NUMBER_ERROR"
+            | translate
+              : {
+                  length: supportNumber.errors.maxSupportLength.requiredLength,
+                  index: supportNumber.errors.maxSupportLength.index
+                }
+        }}
+      </mat-error>
     </mat-form-field>
 
     <mat-form-field appearance="outline" fxFlex>

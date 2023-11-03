@@ -87,4 +87,15 @@ export class CustomValidators {
             return null;
         }
     }
+
+    static defaultMetricName(metricNames: string[]): ValidatorFn {
+
+        return (control: AbstractControl): ValidationErrors | null => {
+            if (!control.value) return null;
+            if (metricNames.some((metricName) => metricName.trim().toLowerCase() == control.value.trim().toLowerCase()))
+                return { isDefaultName: true };
+            return null;
+        }
+
+    }
 }

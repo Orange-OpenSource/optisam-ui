@@ -1,0 +1,25 @@
+<div class="product-true-up-header" mat-dialog-title>
+  <mat-icon>my_location</mat-icon>
+  <div class="header-figure">
+    <span class="header-figure-name"
+      >{{ editor?.editor }} {{ "TRUE_UP" | translate }} : </span
+    ><span class="header-figure-number">{{ editor?.editor_cost | abs | numberFr }}</span>
+  </div>
+</div>
+
+<mat-dialog-content>
+  <div class="close-btn" mat-dialog-close><mat-icon>close</mat-icon></div>
+  <div class="chart-container">
+    <apx-chart
+      [series]="chartOption?.series"
+      [chart]="chartOption?.chart"
+      [title]="chartOption?.title"
+      [plotOptions]="chartOption?.plotOptions"
+      [dataLabels]="chartOption?.dataLabels"
+      [tooltip]="customTooltip"
+    >
+    </apx-chart>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions> </mat-dialog-actions>

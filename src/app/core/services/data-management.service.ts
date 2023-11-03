@@ -1,4 +1,4 @@
-import { fixErrorResponse } from '@core/util/common.functions';
+import { fixedErrorResponse } from '@core/util/common.functions';
 import { Injectable } from '@angular/core';
 import {
   HttpClient,
@@ -11,13 +11,17 @@ import {
 import { environment } from 'src/environments/environment';
 import { Observable, of, Subject, throwError } from 'rxjs';
 import { catchError, delay, map } from 'rxjs/operators';
-import { NominativeUserDownloadParams } from '@core/modals';
+import { CancelInjectionParams, DefaultResponse, ErrorResponse, GlobalDataListingParams, GlobalDataListingResponse, NominativeUserDownloadParams, NominativeUserProductBody } from '@core/modals';
+import { defaultHeaders } from '@core/util/constants/constants';
+import * as XLSX from 'xlsx';
 
 type URL = {
   nominativeUser: string;
   importUrl: string;
   nominativeUserImport: string;
   nominativeUserDownload: string;
+  dataInjectionListing: string;
+  cancelInjection: string;
 };
 
 @Injectable({
@@ -29,6 +33,8 @@ export class DataManagementService {
     importUrl: `${environment.API_IMPORT_URL}/import/upload`,
     nominativeUserImport: `${environment.API_IMPORT_URL}/import/nominative/user`,
     nominativeUserDownload: `${environment.API_IMPORT_URL}/import/download/nominative`,
+    dataInjectionListing: `${environment.API_DPS_URL}/dps/uploads/globaldata`,
+    cancelInjection: `${environment.API_DPS_URL}/dps/uploads/cancel`
   };
   private removeUser: Subject<number> = new Subject<number>();
   private triggerUpdateUserDetails: Subject<boolean> = new Subject<boolean>();
@@ -91,7 +97,6 @@ export class DataManagementService {
 
   uploadDataManagementFilesNew(data: any): Observable<any> {
     const url = environment.API_IMPORT_URL + '/import/upload';
-    // const url = 'http://10.238.143.137:9093/api/v1/import/upload';
     return this.http
       .post(url, data, {
         reportProgress: true,
@@ -104,9 +109,11 @@ export class DataManagementService {
     switch (event.type) {
       case HttpEventType.UploadProgress:
         return this.fileUploadProgress(event);
+        break;
 
       case HttpEventType.Response:
         return this.apiResponse(event);
+        break;
 
       case HttpEventType.Sent:
         return {
@@ -116,9 +123,6 @@ export class DataManagementService {
         break;
 
       default:
-        // throw new Error(
-        //   `File "${(data.get('file') as File).name}" has an error`
-        // );
         const res = {
           status: 'DEFAULT',
           description: `File "${(data.get('file') as File).name}" has an error`,
@@ -133,7 +137,7 @@ export class DataManagementService {
     return { status: 'progress', message: progress };
   }
   private apiResponse(event) {
-    return event.body;
+    return event?.body || event;
   }
 
   downloadAnalysisFile(api: string): Observable<any> {
@@ -188,14 +192,12 @@ export class DataManagementService {
     return this.http.get(url);
   }
 
-  getUploadedGlobalData(query): Observable<any> {
-    const url =
-      environment.API_DPS_URL +
-      '/dps/uploads/globaldata' +
-      query +
-      '&scope=' +
-      localStorage.getItem('scope');
-    return this.http.get(url);
+  getUploadedGlobalData(inputs: GlobalDataListingParams): Observable<GlobalDataListingResponse | ErrorResponse> {
+    let params = new HttpParams();
+    for (let key in inputs) params = params.set(key, inputs[key]);
+    return this.http.get<GlobalDataListingResponse | ErrorResponse>(this.URLs.dataInjectionListing, { params }).pipe(
+      catchError(fixedErrorResponse)
+    );
   }
 
   getGlobalDataFailedRecords(api): Observable<any> {
@@ -252,7 +254,7 @@ export class DataManagementService {
         observe: 'events',
       })
       .pipe(
-        catchError(fixErrorResponse),
+        catchError(fixedErrorResponse),
         map((event) => this.getEventMessage(event, data))
       );
   }
@@ -265,5 +267,37 @@ export class DataManagementService {
     return this.http.post(this.URLs.nominativeUserDownload, formData, {
       responseType: 'blob',
     });
+  }
+
+
+  cancelInjection(body: CancelInjectionParams): Observable<ErrorResponse | DefaultResponse> {
+    return this.http.post<ErrorResponse | DefaultResponse>(
+      this.URLs.cancelInjection,
+      body,
+      { headers: defaultHeaders }
+    )
+      .pipe(
+        catchError(fixedErrorResponse)
+      )
+  }
+
+  exportToExcelBlob(data: any[], fileName: string, sheetName: string): File {
+    const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(data);
+    const wb: XLSX.WorkBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, sheetName);
+    const excelBlob: Blob = new Blob([this.s2ab(XLSX.write(wb, { bookType: 'xlsx', type: 'binary' }))], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    });
+    return new File([excelBlob], `${fileName}.xlsx`, { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  }
+
+
+  private s2ab(s: string): ArrayBuffer {
+    const buf = new ArrayBuffer(s.length);
+    const view = new Uint8Array(buf);
+    for (let i = 0; i !== s.length; ++i) {
+      view[i] = s.charCodeAt(i) & 0xFF;
+    }
+    return buf;
   }
 }

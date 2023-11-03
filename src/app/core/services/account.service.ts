@@ -3,6 +3,7 @@ import {
   HttpClient,
   HttpErrorResponse,
   HttpHeaders,
+  HttpParams,
 } from '@angular/common/http';
 import { Observable, of, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment';
@@ -10,14 +11,21 @@ import { catchError, delay, map } from 'rxjs/operators';
 import {
   ErrorResponse,
   ExpenseBodyParams,
+  ResendActivationLinkParams,
   ScopeExpenseResponse,
+  SetPasswordBody,
+  SetPasswordResponse,
+  DefaultResponse
 } from '@core/modals';
 import { GroupCompliance } from './group-compliance';
-import { fixErrorResponse } from '@core/util/common.functions';
+import { fixedErrorResponse } from '@core/util/common.functions';
 
 interface URL {
   expenses: string;
   groups: string;
+  changePassword: string;
+  setPassword: string;
+  resendActivationLink: string;
 }
 @Injectable({
   providedIn: 'root',
@@ -25,6 +33,7 @@ interface URL {
 export class AccountService {
   apiAccount = environment.API_ACCOUNT_URL;
   apiMeta = environment.API_META_URL;
+  apiAuth: string = environment.API_AUTH_URL;
   public name: string;
   public email: string;
   public userName;
@@ -34,11 +43,14 @@ export class AccountService {
     'Content-Type': 'application/json',
   });
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   URLs: URL = {
     expenses: `${this.apiAccount}/account/scopes/expenses`,
     groups: `${this.apiAccount}/account/complience/groups`,
+    changePassword: `${this.apiAccount}/account/changepassword`,
+    setPassword: `${this.apiAuth}/set_password`,
+    resendActivationLink: `${this.apiAccount}/account/resend_activation_token`
   };
 
   updateLang(res: any) {
@@ -116,24 +128,18 @@ export class AccountService {
   }
 
   getGroups(): Observable<ErrorResponse | GroupCompliance> {
-    // return of<GroupCompliance>({
-    //   complience_groups: [
-    //     {
-    //       group_id: '12',
-    //       name: 'test',
-    //       scope_code: ['AAK','OFR','BUG'],
-    //       scope_name: ['AAKName','OFRName','BUGName']
-    //     },
-    //     {
-    //       group_id: '34',
-    //       name: 'test2',
-    //       scope_code: ['BAK','OJO'],
-    //       scope_name: ['BAKName','OJOName']
-    //     }
-    //   ]
-    // });
     return this.http
       .get<ErrorResponse | GroupCompliance>(this.URLs.groups)
-      .pipe(catchError(fixErrorResponse));
+      .pipe(catchError(fixedErrorResponse));
+  }
+
+
+
+
+  resendActivationLink(body: ResendActivationLinkParams): Observable<ErrorResponse | DefaultResponse> {
+    return this.http.post<ErrorResponse | DefaultResponse>(this.URLs.resendActivationLink, body).pipe(
+      catchError(fixedErrorResponse)
+    )
   }
 }
+

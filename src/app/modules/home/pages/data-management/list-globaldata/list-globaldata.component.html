@@ -81,21 +81,31 @@
         </ng-container>
 
         <ng-container matColumnDef="action">
-          <mat-header-cell *matHeaderCellDef mat-sort-header="action">{{
+          <mat-header-cell *matHeaderCellDef>{{
             "Action" | translate
           }}</mat-header-cell>
-          <mat-cell *matCellDef="let file">      
-            <span *ngIf="file.status === 'COMPLETED' || 'PARTIAL' || 'FAILED' ">  
-          <a
-            id="downloadLinkText"
-            class="mat-button-link"
-            (click)="downloadFile(file, errorDialog)"
-           
-          >
-          <img id="downloadIcon" src="assets/images/DownloadIcon.svg" />
-          </a>
-        </span>  
-         </mat-cell>
+          <mat-cell *matCellDef="let file">
+            <div class="action-row">
+              <span
+                *ngIf="file.status === 'COMPLETED' || 'PARTIAL' || 'FAILED'"
+              >
+                <a
+                  id="downloadLinkText"
+                  class="mat-button-link"
+                  (click)="downloadFile(file, errorDialog)"
+                >
+                  <img id="downloadIcon" src="assets/images/DownloadIcon.svg" />
+                </a>
+              </span>
+              <mat-icon
+                *ngIf="file.status === 'UPLOADED'"
+                (click)="cancelInjection(file.upload_id, file.file_name)"
+                class="errorIcon big"
+                matTooltip="{{ 'CANCEL_INJECTION' | translate }}"
+                >cancel</mat-icon
+              >
+            </div>
+          </mat-cell>
         </ng-container>
 
         <mat-header-row

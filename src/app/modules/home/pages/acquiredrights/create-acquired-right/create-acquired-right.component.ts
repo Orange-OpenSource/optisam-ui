@@ -1,3 +1,4 @@
+import { ValidatorFn, ValidationErrors, AbstractControl, Form } from '@angular/forms';
 import { SubSink } from 'subsink';
 import {
   Component,
@@ -6,6 +7,7 @@ import {
   OnDestroy,
   OnInit,
   ViewChild,
+  AfterViewInit
 } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -15,7 +17,7 @@ import { Subscription, Observable } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { MetricService } from 'src/app/core/services/metric.service';
 import { ProductService } from 'src/app/core/services/product.service';
-import { ISOFormat } from '@core/util/common.functions';
+import { ISOFormat, metricCompare, supportNumberMax } from '@core/util/common.functions';
 import {
   DashboardEditorListParams,
   DashboardEditorListResponse,
@@ -24,23 +26,20 @@ import {
   ProductListResponse,
   Metric,
 } from '@core/modals';
+import { MatSelect } from '@angular/material/select';
+import { MatOptionSelectionChange } from '@angular/material/core';
+import { METRIC_SELECTION_ALLOWED_LIMIT, METRIC_TYPE_LIST_FOR_COST_OPTIMIZATION, TYPES_DISABLED_LIST } from '@core/util/constants/constants';
 
-const METRIC_SELECTION_ALLOWED_LIMIT: number = 5;
 
-const METRIC_TYPE_LIST_FOR_COST_OPTIMIZATION: string[] = [
-  'attribute.sum.standard',
-  'instance.number.standard',
-];
-
-const ORACLE_TYPES = ['oracle.nup.standard', 'oracle.processor.standard'];
 
 @Component({
   selector: 'app-create-acquired-right',
   templateUrl: './create-acquired-right.component.html',
   styleUrls: ['./create-acquired-right.component.scss'],
 })
-export class CreateAcquiredRightComponent implements OnInit, OnDestroy {
+export class CreateAcquiredRightComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('fileInput') fileInput: ElementRef<HTMLInputElement>;
+  @ViewChild('metrics', { static: true }) metricEl: MatSelect;
   selectedFile: File;
   showActivityLogs$: Observable<boolean>;
   submitSub: Subscription;
@@ -49,7 +48,7 @@ export class CreateAcquiredRightComponent implements OnInit, OnDestroy {
     // 'application/vnd.ms-excel',
     'application/pdf',
   ];
-  metricsList: any[] = [];
+  metricsList: Metric[] = [];
   skuForm: FormGroup;
   productForm: FormGroup;
   contractForm: FormGroup;
@@ -129,10 +128,6 @@ export class CreateAcquiredRightComponent implements OnInit, OnDestroy {
     this.subs.add(
       this.maintenanceForm.valueChanges.subscribe((data) => {
         if (this.startMaintenanceDate.value) {
-          console.log(this.startMaintenanceDate.value.toISOString());
-          console.log(this.startMaintenanceDate.value);
-          console.log(new Date(this.startMaintenanceDate.value.toISOString()));
-          console.log('---new line---');
         }
       })
     );
@@ -145,6 +140,15 @@ export class CreateAcquiredRightComponent implements OnInit, OnDestroy {
         })
     );
   }
+
+  ngAfterViewInit(): void {
+    this.subs.add(
+      this.metricEl.optionSelectionChanges.subscribe((option: MatOptionSelectionChange) => {
+        this.productService.metricOptionsChange.call(this, option)
+      })
+    )
+  }
+
 
   // Get editors list
   listEditors() {
@@ -236,7 +240,7 @@ export class CreateAcquiredRightComponent implements OnInit, OnDestroy {
       ]),
       product_version: new FormControl('', [
         Validators.pattern(/^\S+(?: \S+)*$/),
-        this.validatePattern,
+        // this.validatePattern,
       ]),
       product_editor: new FormControl('', [
         Validators.required,
@@ -264,7 +268,7 @@ export class CreateAcquiredRightComponent implements OnInit, OnDestroy {
       ),
       maintenance_price: new FormControl(null, this.maintenancePriceValidation),
       lastPurchasedOrder: new FormControl(''),
-      supportNumber: new FormControl(''),
+      supportNumber: new FormControl('', [supportNumberMax(16)]),
       maintenanceProvider: new FormControl(''),
     });
     this.commentForm = new FormGroup({
@@ -307,8 +311,8 @@ export class CreateAcquiredRightComponent implements OnInit, OnDestroy {
   get product_editor() {
     return this.productForm.get('product_editor');
   }
-  get metrics() {
-    return this.productForm.get('metrics');
+  get metrics(): FormControl {
+    return this.productForm.get('metrics') as FormControl;
   }
   get licenses_acquired() {
     return this.licenseForm.get('licenses_acquired');
@@ -359,6 +363,25 @@ export class CreateAcquiredRightComponent implements OnInit, OnDestroy {
   }
 
   // Return filtered list for autocomplete options
+
+  // private supportNumberValidation(number: number): ValidatorFn {
+  //   return (control: AbstractControl): ValidationErrors | null => {
+  //     const supportNumbers: string = control.value;
+  //     const supportNumberArray = supportNumbers.split(',');
+  //     const isValid: boolean = supportNumberArray.every((num: string) => num.length <= number);
+  //     if (!isValid) {
+  //       return <ValidationErrors>{
+  //         maxSupportLength: {
+  //           requiredLength: number,
+  //           index: supportNumberArray.findIndex((num: string) => (num.length > number)) + 1
+  //         }
+  //       }
+  //     }
+  //     return null;
+  //   }
+  // }
+
+
   private _filter(type, value): string[] {
     let list;
     switch (type) {
@@ -445,8 +468,8 @@ export class CreateAcquiredRightComponent implements OnInit, OnDestroy {
   validatePattern(input) {
     return input?.value?.includes('_')
       ? {
-          hasUnderscore: true,
-        }
+        hasUnderscore: true,
+      }
       : null;
   }
 
@@ -482,7 +505,7 @@ export class CreateAcquiredRightComponent implements OnInit, OnDestroy {
       product_name: this.product_name.value,
       version: this.product_version.value,
       product_editor: this.product_editor.value,
-      metric_name: this.metrics.value.join(','),
+      metric_name: this.metrics.value.map((m: Metric) => m.name).join(','),
       num_licenses_acquired: Number(this.licenses_acquired.value),
       avg_unit_price: Number(this.unit_price.value),
       start_of_maintenance: ISOFormat(this.startMaintenanceDate.value),
@@ -501,9 +524,7 @@ export class CreateAcquiredRightComponent implements OnInit, OnDestroy {
       file_data: this.currentSelectedFile,
     };
 
-    // const formData = new FormData();
-    // formData.append('sku',this.sku.value);
-    // formData.append('file_data', this.selectedFile);
+
 
     this.productService.createAcquiredRight(body).subscribe(
       (res) => {
@@ -567,103 +588,15 @@ export class CreateAcquiredRightComponent implements OnInit, OnDestroy {
     });
   }
 
-  changed(values: any) {
-    setTimeout(() => {
-      if (!values.length) this.disabledMetricNameList = [];
 
-      const nominativeUserType = 'user.nominative.standard';
-      const concurrentUserType = 'user.concurrent.standard';
-
-      if (!this.metrics.value.length) this.disabledMetricNameList = [];
-      // condition for if metric type is in the oracle block list-- ORACLE_TYPES
-      if (
-        this.metrics.value.length &&
-        ORACLE_TYPES.includes(this.currentMetricType)
-      ) {
-        const selectedMetricName =
-          this.metrics.value[this.metrics.value.length - 1];
-
-        this.disabledMetricNameList = this.metricsList
-          .filter(
-            (m) =>
-              m.type !== this.currentMetricType || m.name !== selectedMetricName
-          )
-          .map((m) => m.name);
-        this.enableCostOptimization();
-        return;
-      }
-
-      //condition for restricting user selecting other metrics when user type is nominative user
-      if (
-        this.metrics.value.length &&
-        this.currentMetricType === nominativeUserType
-      ) {
-        console.log(this.metrics.value, this.metricsList);
-        const selectedMetricName =
-          this.metrics.value[this.metrics.value.length - 1];
-        this.disabledMetricNameList = this.metricsList
-          .filter(
-            (m) =>
-              m.type !== nominativeUserType || m.name !== selectedMetricName
-          )
-          .map((m) => m.name);
-        this.enableCostOptimization();
-        return;
-      }
-
-      if (
-        this.metrics.value.length &&
-        this.currentMetricType === concurrentUserType
-      ) {
-        const selectedMetricName =
-          this.metrics.value[this.metrics.value.length - 1];
-        this.disabledMetricNameList = this.metricsList
-          .filter(
-            (m) =>
-              m.type !== concurrentUserType || m.name !== selectedMetricName
-          )
-          .map((m) => m.name);
-        this.enableCostOptimization();
-        return;
-      }
-
-      if (
-        this.metrics.value.length &&
-        !ORACLE_TYPES.includes(this.currentMetricType) &&
-        this.currentMetricType !== nominativeUserType &&
-        this.currentMetricType !== concurrentUserType
-      ) {
-        this.disabledMetricNameList = this.metricsList
-          .filter((m) => ORACLE_TYPES.includes(m.type))
-          .map((m) => m?.name);
-        this.temporarydisabledMetricList = this.metricsList
-          .filter(
-            (x) =>
-              x.type === nominativeUserType || x.type === concurrentUserType
-          )
-          .map((m) => m?.name);
-        this.temporarydisabledMetricList.forEach((x) => {
-          this.disabledMetricNameList.push(x);
-        });
-        this.enableCostOptimization();
-        return;
-      }
-
-      if (this.metrics.value.length <= METRIC_SELECTION_ALLOWED_LIMIT) {
-        this.mySelections = this.metrics.value;
-      } else {
-        this.metrics.setValue(this.mySelections);
-      }
-      this.enableCostOptimization();
-    }, 0);
+  get metricCompare(): Function {
+    return metricCompare;
   }
 
+
+
   enableCostOptimization(): void {
-    const metricTypeList = this.metricsList
-      .filter((metric: Metric) =>
-        (this.metrics.value || []).includes(metric.name)
-      )
-      .map((metric: Metric) => metric.type);
+    const metricTypeList = (this.metrics.value || []).map((m: Metric) => m.type);
     // Check for enabling cost optimization for METRIC_TYPE_LIST_FOR_COST_OPTIMIZATION
     if (!metricTypeList.length) {
       // disable cost optimization
@@ -729,16 +662,6 @@ export class CreateAcquiredRightComponent implements OnInit, OnDestroy {
       }
     });
   }
-
-  // fileInvalid(file: File): boolean {
-  //   this.fileError = '';
-  //   if (!this.allowedInventoryFiles.includes(file.type)) {
-  //     this.fileError = 'Invalid file type!';
-  //     return true;
-  //   }
-  //   return false;
-  // }
-
   resetHandler(): void {
     this.fileInput.nativeElement.value = '';
     this.selectedFile = null;
@@ -758,14 +681,6 @@ export class CreateAcquiredRightComponent implements OnInit, OnDestroy {
 
   onFileChangeHandler(): void {
     this.selectedFile = this.fileInput.nativeElement.files[0];
-
-    // if (!this.allowedInventoryFiles.includes(this.selectedFile.type)) {
-    // console.log("Hello");
-    // this.errorMsg =
-    // this.commentForm.markAsPristine();
-    //   return;
-    // }
-
     this.commentForm.patchValue({ file_name: this.selectedFile.name });
     this.handleUpload(this.selectedFile);
 

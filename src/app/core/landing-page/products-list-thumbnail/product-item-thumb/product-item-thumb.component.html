@@ -57,7 +57,8 @@
   <div fxLayout="row" class="license" fxLayoutGap="3px">
     <div class="license-icon">
       <mat-icon
-        *ngIf="(product?.licensing | productLicense) === 'CLOSED_SOURCE'"
+        *ngIf="['CLOSED_SOURCE' , 'NONE'].includes(product?.licensing | productLicense) "
+        [ngClass]="{'none-license': (product?.licensing | productLicense) === 'NONE'}"
         >remove_circle</mat-icon
       >
       <img
@@ -65,6 +66,7 @@
         class="license-img"
         src="assets/images/open-source-icon.png"
       />
+
     </div>
     <div class="license-label">
       {{ product?.licensing | productLicense | translate }}

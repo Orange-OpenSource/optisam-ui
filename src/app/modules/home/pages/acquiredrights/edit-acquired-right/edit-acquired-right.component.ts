@@ -1,3 +1,4 @@
+import { MatOptionSelectionChange } from '@angular/material/core';
 import { SubSink } from 'subsink';
 import {
   Component,
@@ -26,11 +27,12 @@ import {
   ProductListResponse,
 } from '@core/modals';
 import { TranslateService } from '@ngx-translate/core';
-import { ISOFormat } from '@core/util/common.functions';
+import { ISOFormat, metricCompare, supportNumberMax } from '@core/util/common.functions';
 import {
   DashboardEditorListParams,
   DashboardEditorListResponse,
 } from '@core/modals';
+import { MatSelect } from '@angular/material/select';
 
 @Component({
   selector: 'app-edit-acquired-right',
@@ -39,6 +41,7 @@ import {
 })
 export class EditAcquiredRightComponent implements OnInit, AfterViewInit {
   @ViewChild('fileInput') fileInput: ElementRef<HTMLInputElement>;
+  @ViewChild('metrics', { static: true }) metricEl: MatSelect;
   selectedFile: File;
   submitSub: Subscription;
   allowedInventoryFiles: string[] = [
@@ -99,6 +102,49 @@ export class EditAcquiredRightComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
+
+    this.formInit();
+
+    this.subscriptions();
+  }
+
+
+  private subscriptions(): void {
+    // Filter autocomplete options for 'Editor'
+    this.product_editor.valueChanges
+      .pipe(map((value) => this._filter('editor', value)))
+      .subscribe((res) => {
+        this.filteredEditorsList = res;
+        this.filteredProductsList = [];
+      });
+    // Filter autocomplete options for 'Product'
+    this.subs.add(
+      this.product_name.valueChanges
+        .pipe(map((value) => this._filter('product', value)))
+        .subscribe((res) => {
+          this.filteredProductsList = res;
+          this.filteredVersionsList = [];
+        })
+    )
+    // Filter autocomplete options for 'Version'
+    this.subs.add(
+      this.product_version.valueChanges
+        .pipe(map((value) => this._filter('version', value)))
+        .subscribe((res) => {
+          this.filteredVersionsList = res;
+        })
+    )
+
+    this.subs.add(
+      this.productService
+        .isCostOptimizationVisible()
+        .subscribe((status: boolean) => {
+          this.isCostOptimizationVisible = status;
+        })
+    );
+  }
+
+  private formInit(): void {
     this.skuForm = new FormGroup({
       sku: new FormControl({ value: '', disabled: true }),
     });
@@ -115,16 +161,16 @@ export class EditAcquiredRightComponent implements OnInit, AfterViewInit {
       product_name: new FormControl('', [
         Validators.required,
         Validators.pattern(/^\S+(?: \S+)*$/),
-        this.validatePattern,
+        // this.validatePattern,
       ]),
       product_version: new FormControl('', [
         Validators.pattern(/^\S+(?: \S+)*$/),
-        this.validatePattern,
+        // this.validatePattern,
       ]),
       product_editor: new FormControl('', [
         Validators.required,
         Validators.pattern(/^\S+(?: \S+)*$/),
-        this.validatePattern,
+        // this.validatePattern,
       ]),
       metrics: new FormControl([], [Validators.required]),
     });
@@ -146,47 +192,24 @@ export class EditAcquiredRightComponent implements OnInit, AfterViewInit {
       ),
       maintenance_price: new FormControl(null, this.maintenancePriceValidation),
       lastPurchasedOrder: new FormControl(''),
-      supportNumber: new FormControl(''),
+      supportNumber: new FormControl('', [supportNumberMax(16)]),
       maintenanceProvider: new FormControl(''),
     });
     this.commentForm = new FormGroup({
       comment: new FormControl(''),
       file_name: new FormControl(''),
     });
-    this.setFormData();
-    // Filter autocomplete options for 'Editor'
-    this.product_editor.valueChanges
-      .pipe(map((value) => this._filter('editor', value)))
-      .subscribe((res) => {
-        this.filteredEditorsList = res;
-        this.filteredProductsList = [];
-      });
-    // Filter autocomplete options for 'Product'
-    this.product_name.valueChanges
-      .pipe(map((value) => this._filter('product', value)))
-      .subscribe((res) => {
-        this.filteredProductsList = res;
-        this.filteredVersionsList = [];
-      });
-    // Filter autocomplete options for 'Version'
-    this.product_version.valueChanges
-      .pipe(map((value) => this._filter('version', value)))
-      .subscribe((res) => {
-        this.filteredVersionsList = res;
-      });
-
-    this.subs.add(
-      this.productService
-        .isCostOptimizationVisible()
-        .subscribe((status: boolean) => {
-          this.isCostOptimizationVisible = status;
-        })
-    );
   }
 
   ngAfterViewInit(): void {
-    // this.metricClickHandler(true, )
+    this.subs.add(
+      this.metricEl.optionSelectionChanges.subscribe((option: MatOptionSelectionChange) => {
+        this.productService.metricOptionsChange.call(this, option);
+      })
+    )
   }
+
+
 
   downloadFile() {
     // const filePath = file.error_file_api.slice(8);
@@ -270,7 +293,7 @@ export class EditAcquiredRightComponent implements OnInit, AfterViewInit {
   }
 
   // Get metrics list
-  listMetrics() {
+  listMetrics(): void {
     this.metricService.getMetricList().subscribe(
       (res) => {
         this.metricsList = res.metrices.sort((a, b) => {
@@ -278,9 +301,12 @@ export class EditAcquiredRightComponent implements OnInit, AfterViewInit {
           if (a.name.toLowerCase() < b.name.toLowerCase()) return -1;
           return 0;
         });
+        this.setFormData();
+        this.productService.metricOptionsChange.call(this, null);
         this.currentMetricType =
           this.metricsList.find((m) => m.name === this.data.metric)?.type || '';
-        this.changed([]);
+
+
       },
       (err) => {
         console.log('Some error occured! Could not fetch metrics list.');
@@ -299,7 +325,7 @@ export class EditAcquiredRightComponent implements OnInit, AfterViewInit {
       this.corporateSource.setValue(this.data.corporate_sourcing_contract);
       this.softwareProvider.setValue(this.data.software_provider);
       this.listProducts();
-      this.metrics.setValue((this.data.metric || '').split(','));
+      this.metrics.setValue(this.getMetricObjects(this.data.metric));
       this.licenses_acquired.setValue(this.data.acquired_licenses_number);
       this.unit_price.setValue(this.data.avg_licenes_unit_price);
       this.maintenance_price.setValue(this.data.avg_maintenance_unit_price);
@@ -340,6 +366,13 @@ export class EditAcquiredRightComponent implements OnInit, AfterViewInit {
     }
   }
 
+  private getMetricObjects(metrics: string): Metric[] {
+    const metricArray: string[] = metrics?.length ? (metrics).split(',') : [];
+    if (!metricArray.length || !this.metricsList.length) return [];
+    const metricsList: Metric[] = this.metricsList.filter((metric: Metric) => metricArray.includes(metric.name));
+    return metricsList;
+  }
+
   get sku() {
     return this.skuForm.get('sku');
   }
@@ -364,8 +397,8 @@ export class EditAcquiredRightComponent implements OnInit, AfterViewInit {
   get product_editor() {
     return this.productForm.get('product_editor');
   }
-  get metrics() {
-    return this.productForm.get('metrics');
+  get metrics(): FormControl {
+    return this.productForm.get('metrics') as FormControl;
   }
   get licenses_acquired() {
     return this.licenseForm.get('licenses_acquired');
@@ -502,8 +535,8 @@ export class EditAcquiredRightComponent implements OnInit, AfterViewInit {
   validatePattern(input) {
     return input?.value?.includes('_')
       ? {
-          hasUnderscore: true,
-        }
+        hasUnderscore: true,
+      }
       : null;
   }
 
@@ -548,7 +581,7 @@ export class EditAcquiredRightComponent implements OnInit, AfterViewInit {
       product_name: this.product_name.value,
       version: this.product_version.value,
       product_editor: this.product_editor.value,
-      metric_name: this.metrics.value.join(','),
+      metric_name: this.metrics.value.map((m: Metric) => m.name).join(','),
       num_licenses_acquired: Number(this.licenses_acquired.value),
       avg_unit_price: Number(this.unit_price.value),
       start_of_maintenance: ISOFormat(this.startMaintenanceDate.value),
@@ -691,6 +724,10 @@ export class EditAcquiredRightComponent implements OnInit, AfterViewInit {
     this.currentMetricType = metricType;
   }
 
+  get metricCompare(): Function {
+    return metricCompare;
+  }
+
   valueChange(event: Event) {
     const val = (event.target as HTMLInputElement).value;
     const s = this.maintenanceForm.get('startMaintenanceDate');
@@ -811,15 +848,10 @@ export class EditAcquiredRightComponent implements OnInit, AfterViewInit {
       'attribute.sum.standard',
       'instance.number.standard',
     ];
-    const metricTypeList = this.metricsList
-      .filter((metric: Metric) =>
-        (this.metrics.value || []).includes(metric.name)
-      )
-      .map((metric: Metric) => metric.type);
+    const metricTypeList = this.metrics.value.map((m: Metric) => m.type);
     // Check for enabling cost optimization for METRIC_TYPE_LIST_FOR_COST_OPTIMIZATION
     if (!metricTypeList.length) {
       // disable cost optimization
-      console.log('disable cost optimization');
       this.productService.hideCostOptimization();
       return;
     }

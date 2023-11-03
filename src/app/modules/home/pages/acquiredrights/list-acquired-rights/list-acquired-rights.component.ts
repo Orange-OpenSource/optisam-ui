@@ -569,11 +569,11 @@ export class ListAcquiredRightsComponent implements OnInit, AfterViewInit {
       }),
       ...(this.searchFields.editorName?.trim() && {
         'search_params.editor.filteringkey':
-          this.searchFields.editorName?.trim(),
+          encodeURIComponent(this.searchFields.editorName?.trim()),
       }),
       ...(this.searchFields.productName?.trim() && {
         'search_params.productName.filteringkey':
-          this.searchFields.productName?.trim(),
+          encodeURIComponent(this.searchFields.productName?.trim()),
       }),
       ...(this.searchFields.metric?.trim() && {
         'search_params.metric.filteringkey': this.searchFields.metric?.trim(),
@@ -598,14 +598,14 @@ export class ListAcquiredRightsComponent implements OnInit, AfterViewInit {
       sort_order: this.sortOrder,
       ...(this.searchFields.aggregationName?.trim() && {
         'search_params.name.filteringkey':
-          this.searchFields.aggregationName?.trim(),
+          encodeURIComponent(this.searchFields.aggregationName?.trim()),
       }),
       ...(this.searchFields.sku?.trim() && {
         'search_params.SKU.filteringkey': this.searchFields.sku?.trim(),
       }),
       ...(this.searchFields.editorName?.trim() && {
         'search_params.editor.filteringkey':
-          this.searchFields.editorName?.trim(),
+          encodeURIComponent(this.searchFields.editorName?.trim()),
       }),
       ...(this.searchFields.metric?.trim() && {
         'search_params.metric.filteringkey': this.searchFields.metric?.trim(),

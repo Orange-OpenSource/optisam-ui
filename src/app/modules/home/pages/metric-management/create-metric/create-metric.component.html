@@ -31,6 +31,10 @@
             <mat-error *ngIf="name.invalid && name.hasError('duplicateName')">
               {{ "Type name already exists" | translate }}
             </mat-error>
+            <mat-error *ngIf="name.invalid && name.hasError('isDefaultName')">
+              {{ "DEFAULT_NAME_ERROR" | translate : { name: name.value} }}
+            </mat-error>
+
           </mat-form-field>
         </div>
         <!-- Metric Type based on scope selected -->
@@ -39,6 +43,7 @@
             <mat-label>{{ "Metric Type" | translate }}</mat-label>
             <mat-select
               id="metricType"
+              disableRipple
               placeholder="{{ 'Metric Type' }}"
               (selectionChange)="metricSelected($event.value)"
               [disabled]="metricTypesList.length === 0"

@@ -151,12 +151,21 @@
                     }}
                   </div>
                   <div>
-                    <strong>{{ "End of maintenance" | translate }} : </strong
-                    >{{
-                      maintenanceInfo?.end_of_maintenance
-                        ? (maintenanceInfo?.end_of_maintenance | date : "d/M/y")
-                        : " - "
-                    }}
+                    <strong>{{ "End of maintenance" | translate }} : </strong>
+                    <!-- conditional error message -->
+                    <span
+                      [ngClass]="{
+                        'error-msg': isDateLessThanToday(
+                          maintenanceInfo?.end_of_maintenance
+                        )
+                      }"
+                      >{{
+                        maintenanceInfo?.end_of_maintenance
+                          ? (maintenanceInfo?.end_of_maintenance
+                            | date : "d/M/y")
+                          : " - "
+                      }}</span
+                    >
                   </div>
                   <div>
                     <strong>{{ "Support number" | translate }} : </strong
@@ -310,7 +319,7 @@
                               >
                             </div>
                             <div *ngSwitchCase="'totalCost'">
-                              {{ product.totalCost || 0 | formatCost }}
+                              {{ product.totalCost || 0 }}
                             </div>
 
                             <span *ngSwitchDefault>{{

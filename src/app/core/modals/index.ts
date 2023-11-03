@@ -12,3 +12,5 @@ export * from './account.modal';
 export * from './header.modal';
 export * from './product-catalog.modal';
 export * from './product.modal';
+export * from './dashboard.modal';
+export * from './entity.modal';

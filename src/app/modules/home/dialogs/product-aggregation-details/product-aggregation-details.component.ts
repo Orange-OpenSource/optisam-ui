@@ -142,7 +142,7 @@ export class ProductAggregationDetailsComponent implements OnInit, OnDestroy {
       sort_order: 'asc',
       scope: this.cs.getLocalData(LOCAL_KEYS.SCOPE),
       'search_params.name.filteringkey': this.data.aggregationName,
-      // 'search_params.SKU.filteringkey': this.data.aggregationSKU,
+      'search_params.SKU.filteringkey': this.data.aggregationSKU,
     };
 
     this.productsService.getAggregationAcquiredRights(params).subscribe(
@@ -178,8 +178,8 @@ export class ProductAggregationDetailsComponent implements OnInit, OnDestroy {
           this.alertColor = anyNegativeDelta
             ? ALERT_COLOR.red
             : !!res.acq_rights?.length
-            ? ALERT_COLOR.green
-            : '';
+              ? ALERT_COLOR.green
+              : '';
 
           if (this.acquireRight?.filteredData?.length > 0) {
             for (var i = 0; i < this.acquireRight.filteredData.length; i++) {

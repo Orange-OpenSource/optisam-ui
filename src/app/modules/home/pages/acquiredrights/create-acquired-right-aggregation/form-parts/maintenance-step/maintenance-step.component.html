@@ -156,8 +156,18 @@
         matInput
         placeholder="{{ 'SUPPORT_NUMBER' | translate }}"
         formControlName="supportNumber"
-        maxlength="16"
       />
+
+      <mat-error *ngIf="supportNumber.hasError('maxSupportLength')">
+        {{
+          "SUPPORT_NUMBER_ERROR"
+            | translate
+              : {
+                  length: supportNumber.errors.maxSupportLength.requiredLength,
+                  index: supportNumber.errors.maxSupportLength.index
+                }
+        }}
+      </mat-error>
     </mat-form-field>
 
     <mat-form-field appearance="outline" fxFlex>

@@ -14,13 +14,14 @@ import {
 } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ɵangular_packages_router_router_h } from '@angular/router';
-import { MetricType } from '@core/modals';
+import { ErrorResponse, MetricType, MetricTypeResponse } from '@core/modals';
 import { CommonService } from '@core/services/common.service';
 import { Observable } from 'rxjs';
 import { filter, pluck } from 'rxjs/operators';
 import { EquipmentTypeManagementService } from 'src/app/core/services/equipmenttypemanagement.service';
 import { MetricService } from 'src/app/core/services/metric.service';
 import { SharedService } from '@shared/shared.service';
+import { CustomValidators } from '@core/custom-validators';
 
 const TRANSFORM_METRIC_TYPES = ['oracle.processor.standard'];
 
@@ -125,8 +126,8 @@ export class CreateMetricComponent
     });
   }
 
-  get name() {
-    return this.metricForm.get('name');
+  get name(): FormControl {
+    return this.metricForm.get('name') as FormControl;
   }
 
   get type() {
@@ -195,7 +196,7 @@ export class CreateMetricComponent
   }
 
   // Validators
-  duplicateName(input) {
+  private duplicateName(input) {
     const value = input.value.toLowerCase().trim();
     const metricsList = (
       JSON.parse(localStorage.getItem('existingMetricNames')) || []
@@ -245,15 +246,28 @@ export class CreateMetricComponent
   }
   // Get metric types
   getMetricTypes() {
-    this.metricService.getMetricType(this.selectedScope).subscribe((res) => {
+    this.metricService.getMetricType(this.selectedScope).subscribe((res: MetricTypeResponse) => {
       this.metricTypesList = this.cs.customSort(res.types, 'asc', 'name') || [];
-    });
+      this.setMetricNameValidation(this.metricTypesList);
+
+    },
+      (error: ErrorResponse) => {
+        this.ss.commonPopup({
+          title: "ERROR_TITLE",
+          singleButton: true,
+          buttonText: "OK",
+          message: error.message
+        })
+      }
+
+    );
   }
 
   // Get Equipment Types
   getEquipmentsTypes() {
     this.equipmentTypeService.getTypes(this.selectedScope).subscribe(
       (res: any) => {
+
         // For Attr_Sum, only consider equipment with numeric attributes('INT' and 'FLOAT')
         if (this.selectedMetricTypeId === 'Attr_Sum') {
           this.equipmentsTypesList = res.equipment_types
@@ -274,6 +288,8 @@ export class CreateMetricComponent
         }
 
         this.firstEquipmentsList = this.equipmentsTypesList;
+
+
       },
       (error) => {
         console.log(
@@ -423,7 +439,8 @@ export class CreateMetricComponent
         });
         break;
     }
-    this.addControls(configControls);
+
+    configControls && this.addControls(configControls);
   }
 
   // add controls depending on type selected
@@ -751,6 +768,18 @@ export class CreateMetricComponent
       width: '30%',
       disableClose: true,
     });
+  }
+
+  private setMetricNameValidation(metricTypes: MetricType[]): void {
+    let defaultMetricNames = metricTypes
+      .map((type: MetricType) => type.default_metrics)
+      .join(',')
+      .split(',');
+    defaultMetricNames = [... new Set(defaultMetricNames)];
+    if (!defaultMetricNames.length) return;
+    this.name.setValidators([CustomValidators.defaultMetricName(defaultMetricNames)])
+    this.name.updateValueAndValidity();
+
   }
 
   ngOnDestroy() {

@@ -1,0 +1,44 @@
+<h2 mat-dialog-title>
+  {{ "PRODUCT_WITHOUT_MAINTENANCE" | translate }}
+</h2>
+<mat-dialog-content>
+  <mat-table [dataSource]="data.product_no_main" class="mat-elevation-z8">
+    <!-- SKU Column -->
+    <ng-container matColumnDef="sku">
+      <mat-header-cell *matHeaderCellDef>SKU</mat-header-cell>
+      <mat-cell *matCellDef="let element">{{ element.sku }}</mat-cell>
+    </ng-container>
+
+    <!-- Product Name Column -->
+    <ng-container matColumnDef="product_name">
+      <mat-header-cell *matHeaderCellDef>{{'PRODUCT_NAME' | translate }}</mat-header-cell>
+      <mat-cell *matCellDef="let element">{{ element.product_name }}</mat-cell>
+    </ng-container>
+
+    <!-- Version Column -->
+    <ng-container matColumnDef="version">
+      <mat-header-cell *matHeaderCellDef>{{'VERSION' | translate }}</mat-header-cell>
+      <mat-cell *matCellDef="let element">{{ element.version }}</mat-cell>
+    </ng-container>
+
+    <!-- Table Header -->
+    <mat-header-row
+      *matHeaderRowDef="displayedColumns; sticky: true"
+    ></mat-header-row>
+
+    <!-- Table Rows -->
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+  </mat-table>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <div class="closeButton" fxLayoutAlign="end center" fxFill>
+    <button
+      mat-button
+      [mat-dialog-close]="true"
+      class="btn-two"
+      cdkFocusInitial
+    >
+      {{ "OK" | translate }}
+    </button>
+  </div>
+</mat-dialog-actions>

@@ -155,6 +155,8 @@ export class EditAggregationDialogComponent implements OnInit {
         swidVersion: x.product_name + ' ' + x.product_version,
       };
     });
+    console.log(this.swidList);
+    console.log(this.selectedSwidList);
     this.selectedSwidList = this.cs.customSort(
       this.selectedSwidList.filter((s) =>
         productNames.includes(s.product_name)

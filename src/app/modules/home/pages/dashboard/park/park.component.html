@@ -1,0 +1,107 @@
+<mat-card>
+  <mat-grid-list cols="3" rowHeight="1:1" gutterSize="16px">
+    <mat-grid-tile class="contentTile">
+      <div class="tileHeader">
+        {{ "PRODUCTS_BY_LICENSING" | translate
+        }}<mat-icon
+          class="mat-icon-info"
+          matTooltipClass="alertTooltip"
+          matTooltip="{{
+            'PRODUCTS_BY_LICENSING_INFO'
+              | translate
+          }}"
+          >info</mat-icon
+        >
+      </div>
+      
+      
+
+      <div class="loader" *ngIf="_loadingProductsLicensing"></div>
+      <div class="tileLoadingMsg" *ngIf="_loadingProductsLicensing">
+        {{ "Wait a moment while we set things up for you!" | translate }}
+      </div>
+
+
+
+      <div
+        class="piechart-park"
+        [ngClass]="{ 'display-none': productsLicensingDataFlag || licensingDataFailed || _loadingProductsLicensing}"
+      >
+        <canvas id="ProductsLicensingChart" width="100%" height="80px"></canvas>
+      </div>
+      <ng-template [ngTemplateOutlet]="productsLicensingDataFlag || licensingDataFailed ? noDataTemplate : null" ></ng-template>
+     
+    </mat-grid-tile>
+
+    <mat-grid-tile class="contentTile">
+      <div class="tileHeader">
+        {{ "PRODUCTS_BY_LOCATION" | translate
+        }}<mat-icon
+          class="mat-icon-info"
+          matTooltipClass="alertTooltip"
+          matTooltip="{{
+            'PRODUCTS_BY_LOCATION_INFO' | translate
+          }}"
+          >info</mat-icon
+        >
+      </div>
+
+      <div class="loader" *ngIf="_loadingProductLocation"></div>
+      <div class="tileLoadingMsg" *ngIf="_loadingProductLocation">
+        {{ "Wait a moment while we set things up for you!" | translate }}
+      </div>
+      <div
+        class="piechart-park"
+        [ngClass]="{ 'display-none': productsDataLocationFlag || locationDataFailed || _loadingProductLocation }"
+      >
+      <canvas id="ProductsLocationChart" width="100%" height="80px"></canvas>
+    </div>
+    <ng-template [ngTemplateOutlet]="productsDataLocationFlag || locationDataFailed ? noDataTemplate : null" ></ng-template>
+
+
+    </mat-grid-tile>
+
+    <mat-grid-tile class="contentTile">
+      <div class="tileHeader">
+        {{ "EQUIPMENT_STATISTICS" | translate
+        }}<mat-icon
+          class="mat-icon-info"
+          matTooltipClass="alertTooltip"
+          matTooltip="{{ 
+            'EQUIPMENT_STATISTICS_INFO' | translate : { equipments: equipmentList?.join(', ')}
+          }}"
+          >info</mat-icon
+        >
+      </div>
+      <div
+        class="loader"
+        *ngIf="_loadingEquipmentDetails"
+      ></div>
+      <div
+        class="tileLoadingMsg"
+        *ngIf="_loadingEquipmentDetails"
+      >
+        {{ "Wait a moment while we set things up for you!" | translate }}
+      </div>
+
+      
+      
+      <div class="equipment-park" 
+      [ngClass]="{ 'display-none': emptyequipsDataFlag || getEquipsFailed || _loadingEquipmentDetails }"
+      id="equipmentDetailsContainer">
+        <canvas id="equipmentDetails" width="100%" height="80px"></canvas>
+      </div>
+      <ng-template [ngTemplateOutlet]="(emptyequipsDataFlag || getEquipsFailed) && !_loadingEquipmentDetails ? noDataTemplate : null" ></ng-template>
+    </mat-grid-tile>
+  </mat-grid-list>
+</mat-card>
+
+
+<ng-template #noDataTemplate >
+  <div class="noDataImgContainer" >
+        <img class="noDataImg" src="assets/images/NoDataFound.PNG" />
+      </div>
+      <div class="noDataMsg" >
+        {{ "Unfortunately no data could be found." | translate }}
+      </div>
+</ng-template>

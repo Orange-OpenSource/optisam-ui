@@ -32,6 +32,7 @@ import { ProductContentComponent } from './product-detail/product-content/produc
 import { TrimTextRangePipe } from './editors-list-thumbnail/editor-item-thumb/pipes/trim-text-range.pipe';
 import { JoinVendorsPipe } from './editor-detail/editor-info/join-vendors.pipe';
 import { EditorInfoV2Component } from './editor-detail/editor-info-v2/editor-info-v2.component';
+import { ProductCatalogDashboardComponent } from './product-catalog-dashboard/product-catalog-dashboard.component';
 
 @NgModule({
   declarations: [
@@ -63,6 +64,7 @@ import { EditorInfoV2Component } from './editor-detail/editor-info-v2/editor-inf
     TrimTextRangePipe,
     JoinVendorsPipe,
     EditorInfoV2Component,
+    ProductCatalogDashboardComponent,
   ],
   imports: [
     CommonModule,
@@ -73,4 +75,4 @@ import { EditorInfoV2Component } from './editor-detail/editor-info-v2/editor-inf
     SharedModule,
   ],
 })
-export class LandingPageModule {}
+export class LandingPageModule { }

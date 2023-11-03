@@ -16,7 +16,7 @@ import {
   DeleteAttributeParams,
   ErrorResponse,
 } from '@core/modals';
-import { fixErrorResponse } from '@core/util/common.functions';
+import { fixedErrorResponse } from '@core/util/common.functions';
 
 type Urls = {
   allocatedMetric: string;
@@ -35,7 +35,7 @@ export class EquipmentTypeManagementService {
   dataChange: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
   dialogData: any;
 
-  constructor(private httpClient: HttpClient) {}
+  constructor(private httpClient: HttpClient) { }
 
   getDialogData() {
     return this.dialogData;
@@ -473,6 +473,6 @@ export class EquipmentTypeManagementService {
       .delete<{ success: boolean }>(`${this.URLs.equipmentTypeAttribute}`, {
         params,
       })
-      .pipe(catchError(fixErrorResponse));
+      .pipe(catchError(fixedErrorResponse));
   }
 }

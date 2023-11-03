@@ -5,18 +5,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { AccountService } from 'src/app/core/services/account.service';
 import { CreateScopeComponent } from '../create-scope/create-scope.component';
 import { COMMON_REGEX } from '@core/util/constants/constants';
-import { ExpenseBodyParams } from '@core/modals';
+import { ErrorResponse, ExpenseBodyParams, Scope } from '@core/modals';
 import { Role } from 'src/app/utils/roles.config';
-
-interface Scope {
-  expenditure?: string;
-  created_by: string;
-  created_on: string;
-  group_names: string[];
-  scope_code: string;
-  scope_name: string;
-  scope_type: string;
-}
+import { SetExpenditureComponent } from '../set-expenditure/set-expenditure.component';
 
 @Component({
   selector: 'app-list-scopes',
@@ -49,7 +40,8 @@ export class ListScopesComponent implements OnInit {
 
   constructor(
     private accountService: AccountService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private ss: SharedService
   ) {
     this.role = localStorage.getItem('role');
   }
@@ -154,6 +146,64 @@ export class ListScopesComponent implements OnInit {
       .forEach((block: HTMLElement) => block.classList.remove('active'));
     el.classList.add('active');
   }
+
+  setExp(entity: Scope): void {
+    const entityExpenditure = this.dialog.open(SetExpenditureComponent, {
+      maxWidth: "80vw",
+      data: entity,
+      disableClose: true
+    });
+
+    entityExpenditure.afterClosed().subscribe((response: "close" | number | string) => {
+      if (response === 'close') return;
+      this.editExpenditure(response, entity)
+    })
+  }
+
+  private editExpenditure(value: number | string, activeScope: Scope): void {
+    const params: ExpenseBodyParams = {
+      expenses: +value,
+      scope_code: activeScope.scope_code,
+    };
+
+    this.accountService.updateExpenditure(params).subscribe(
+      (res: any) => {
+        this.scopeData = this.scopeData.map((scope: Scope) => {
+          if (activeScope.scope_code === scope.scope_code)
+            scope.expenditure = value.toString();
+          return scope;
+        });
+        this.updateListValue(activeScope, value);
+
+        this.ss.commonPopup({
+          title: "SUCCESS_TITLE",
+          singleButton: true,
+          buttonText: "OK",
+          message: "EXPENDITURE_UPDATED",
+          messageVariable: { entity: activeScope.scope_code }
+        })
+      },
+      (error: ErrorResponse) => {
+        this.ss.commonPopup({
+          title: "ERROR_TITLE",
+          singleButton: true,
+          buttonText: "OK",
+          message: error.message
+        })
+      }
+    );
+  }
+
+
+  private updateListValue(entity: Scope, value: number | string): void {
+    this.scopeData = this.scopeData.map((en: Scope, index) => {
+      if (en.scope_code === entity.scope_code)
+        en.expenditure = value.toString();
+      return en;
+    })
+  }
+
+
 
   onBlur(input: HTMLInputElement, scope: Scope): void {
     this.blur = setTimeout(() => {

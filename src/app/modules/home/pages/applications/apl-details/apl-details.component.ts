@@ -31,7 +31,7 @@ export class AplDetailsComponent implements OnInit {
     // 'swidTag',
     'name',
     'Editor',
-    'Edition',
+    // 'Edition',
     'Version',
     'totalCost',
     'numofEquipments',

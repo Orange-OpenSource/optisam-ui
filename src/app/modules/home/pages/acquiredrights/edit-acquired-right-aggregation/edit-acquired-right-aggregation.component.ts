@@ -34,8 +34,7 @@ import { ISOFormat } from '@core/util/common.functions';
   styleUrls: ['./edit-acquired-right-aggregation.component.scss'],
 })
 export class EditAcquiredRightAggregationComponent
-  implements OnInit, AfterContentChecked
-{
+  implements OnInit, AfterContentChecked {
   @ViewChild('errorDialog') errorDialog: TemplateRef<HTMLElement>;
   @ViewChild(EditTopSectionComponent) editTopSection: EditTopSectionComponent;
   @ViewChild(EditContractStepComponent)
@@ -87,7 +86,7 @@ export class EditAcquiredRightAggregationComponent
     private sharedService: SharedService,
     private cs: CommonService,
     private cd: ChangeDetectorRef
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.initForm();
@@ -266,6 +265,8 @@ export class EditAcquiredRightAggregationComponent
       file_name: this.file_name.value,
       file_data: this.file_data.value,
     };
+
+
 
     this.productService
       .updateAcquiredRightAggregation(this.data.sku, body)

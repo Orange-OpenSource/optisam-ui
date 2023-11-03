@@ -75,7 +75,6 @@ export class AdvanceSearchComponent
   }
 
   ngAfterViewChecked() {
-    // console.log(this.model)
     this.model.other.map((model) => {
       model.type = model?.type || 'text';
       model.show = model?.show === undefined ? true : model?.show;
@@ -123,7 +122,6 @@ export class AdvanceSearchComponent
 
   focusout(ev) {
     if (ev.relatedTarget) {
-      console.log(ev.relatedTarget.closest(`.${this.customFocusClass}`));
       if (
         ev.relatedTarget.id === 'toggleKeyUp' ||
         ev.relatedTarget.className.indexOf('advanceChild') !== -1 ||
@@ -214,5 +212,6 @@ export class AdvanceSearchComponent
 
   ngOnDestroy() {
     this.searchSubscription.unsubscribe();
+
   }
 }

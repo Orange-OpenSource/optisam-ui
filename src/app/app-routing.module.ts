@@ -2,6 +2,9 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AuthGuard } from './core/guards/auth.guard';
 import { NoAuthGuard } from './core/guards/no-auth.guard';
+import { IsValidLinkResolver } from '@core/user-activation/is-valid-link.resolver';
+import { PasswordAction } from '@core/modals';
+// import { ForgotPasswordComponent } from 'src/app/modules/forgot-password/forgot-password/forgot-password.component';
 
 const routes: Routes = [
   {
@@ -17,6 +20,30 @@ const routes: Routes = [
     canActivate: [NoAuthGuard],
   },
   {
+    path: 'user-activation',
+    loadChildren: () =>
+      import('./core/user-activation/user-activation.module').then((m) => m.UserActivationModule),
+    resolve: {
+      data: IsValidLinkResolver
+    },
+    data: { type: PasswordAction.activation }
+  },
+  {
+    path: 'forgot-password',
+    loadChildren: () => import('./modules/forgot-password/forgot-password.module').then((m) => m.ForgotPasswordModule)
+  },
+
+  {
+    path: 'reset-password',
+    loadChildren: () =>
+      import('./core/reset-password/reset-password.module').then((m) => m.ResetPasswordModule),
+    resolve: {
+      data: IsValidLinkResolver
+    },
+    data: { type: PasswordAction.reset }
+  },
+
+  {
     path: '',
     loadChildren: () =>
       import('./core/landing-page/landing-page.module').then(
@@ -26,11 +53,7 @@ const routes: Routes = [
   },
   {
     path: '**',
-    loadChildren: () =>
-      import('./core/landing-page/landing-page.module').then(
-        (m) => m.LandingPageModule
-      ),
-    canActivate: [NoAuthGuard],
+    redirectTo: '/',
   },
 ];
 
@@ -38,4 +61,4 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }

@@ -358,3 +358,13 @@ export enum RecommendationTypes {
 }
 
 export interface ProductCatalogTabs { title: PRODUCT_CATALOG_TABS; alias: string; }
+
+
+
+
+export interface PCDashboardOverviewResponse {
+  total_editor: number;
+  total_product: number;
+  total_opensource_product: number;
+  total_saas_product: number;
+}

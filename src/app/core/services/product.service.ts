@@ -4,8 +4,8 @@ import {
   HttpHeaders,
   HttpParams,
 } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, Subject, of, throwError } from 'rxjs';
+import { ElementRef, Injectable } from '@angular/core';
+import { BehaviorSubject, Observable, ReplaySubject, Subject, of, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import {
   Products,
@@ -20,13 +20,26 @@ import {
   AggregationProductsInformation,
   MetricComputationDetails,
   AggregationComputationDetails,
-  Product,
-  ProductType,
   UserCountDetailData,
   ConcurrentUserHistoryParams,
   ConcurrentUserHistoryResponse,
   UploadedFilesParams,
   UploadedFiles,
+  EntitySoftExpenseResponse,
+  ProductCatalogOverview,
+  DashboardOverviewResponse,
+  TrueUpDashboardResponse,
+  TrueUpDashboardParams,
+  WasteDashboardParams,
+  WasteDashboardResponse,
+  SoftwareWithNoMaintenance,
+  DeploymentType,
+  SoftwareExpenditure,
+  SoftwareExpenditureProduct,
+  SoftwareMaintenance,
+  DashboardLocationResponse,
+  SoftwareExpenditureByProductParams,
+  PCDashboardOverviewResponse
 } from '@core/modals';
 import { Applications } from './application';
 import {
@@ -76,8 +89,8 @@ import {
   takeLast,
   throttleTime,
 } from 'rxjs/operators';
-import { LOCAL_KEYS } from '@core/util/constants/constants';
-import { fixErrorResponse } from '@core/util/common.functions';
+import { LOCAL_KEYS, METRIC_SELECTION_ALLOWED_LIMIT, TYPES_DISABLED_LIST } from '@core/util/constants/constants';
+import { fixedErrorResponse, getParams } from '@core/util/common.functions';
 import { Expenditure } from './expenditure';
 import { GroupComplianceEditors } from './group-compliance-editor';
 import { GroupComplianceProducts } from './group-compliance-product';
@@ -85,6 +98,9 @@ import {
   ComplianceUnderUsage,
   UnderUsageComplianceParams,
 } from './underusage-compliance';
+import { MatOptionSelectionChange } from '@angular/material/core';
+
+import { Metric } from '@core/modals'
 
 export interface CommonURL {
   acquiredRightAggregationAdmin: string;
@@ -109,15 +125,27 @@ export interface CommonURL {
   groupComplianceEditors: string;
   complianceProductList: string;
   groupComplianceProducts: string;
+  getProductsWithMaintenance: string;
+  getProductsWithNoMaintenance: string;
+  getProductsWithDeploymentType: string;
+  getProductsWithLocationType: string;
+  getEditorExpenses: string;
+  getProductExpenses: string;
   uploadedNominativeFiles: string;
+  pcDashboardOverview: string;
+  productOverview: string;
+  trueUpDashboard: string;
+  wasteDashboard: string
 }
 
 @Injectable()
 export class ProductService {
   apiUrl = environment.API_PRODUCT_URL;
+  importUrl = environment.API_IMPORT_URL;
   apiLicenseUrl = environment.API_URL;
   apiApplicationUrl = environment.API_APPLICATION_URL;
   apiSimulationUrl = environment.API_CONFIG_URL;
+  catalogUrl = environment.API_PRODUCT_CATALOG;
   defaultHeaders: HttpHeaders = new HttpHeaders({
     'Content-Type': 'application/json',
   });
@@ -128,6 +156,10 @@ export class ProductService {
     new BehaviorSubject<UserCountDetailData | null>(null);
 
   private groupComplianceSelectedEditor$: Subject<string> = new Subject();
+
+  private overviewDashboardData: ReplaySubject<DashboardOverviewResponse | ErrorResponse> = new ReplaySubject<DashboardOverviewResponse | ErrorResponse>()
+
+  public overviewDashboardData$: Observable<DashboardOverviewResponse | ErrorResponse> = this.overviewDashboardData.asObservable();
 
   private URLs: CommonURL = {
     acquiredRightAggregationAdmin: `${this.apiUrl}/product/aggregated_acqrights`,
@@ -152,7 +184,17 @@ export class ProductService {
     groupComplianceEditors: `${this.apiUrl}/product/dashboard/groupcompliance/editor`,
     complianceProductList: `${this.apiUrl}/product/dashboard/groupcompliance/editor/product`,
     groupComplianceProducts: `${this.apiUrl}/product/dashboard/groupcompliance/product`,
-    uploadedNominativeFiles: `${this.apiUrl}/product/nominative/users/fileupload`,
+    getProductsWithNoMaintenance: `${this.apiUrl}/product/dashboard/product/no_maintenance`,
+    getProductsWithMaintenance: `${this.apiUrl}/product/dashboard/product/maintenance`,
+    getProductsWithDeploymentType: `${this.apiUrl}/product/dashboard/product/deployment_type`,
+    getProductsWithLocationType: `${this.apiUrl}/product/dashboard/product/open_close_source`,
+    getEditorExpenses: `${this.apiUrl}/product/dashboard/editor_expenses`,
+    getProductExpenses: `${this.apiUrl}/product/dashboard/product_expenses`,
+    uploadedNominativeFiles: `${this.importUrl}/import/nominative/users/fileupload`,
+    pcDashboardOverview: `${this.catalogUrl}/catalog/dashboard`,
+    productOverview: `${this.apiUrl}/product/dashboard/overview`,
+    trueUpDashboard: `${this.apiUrl}/product/dashboard/trueup`,
+    wasteDashboard: `${this.apiUrl}/product/dashboard/wasteup`,
   };
 
   constructor(private http: HttpClient, private cs: CommonService) { }
@@ -278,7 +320,7 @@ export class ProductService {
       filteringCondition =
         filteringCondition +
         '&search_params.editor.filteringkey=' +
-        filteringkey3;
+        encodeURIComponent(filteringkey3);
     }
     if (filteringkey4 !== '' && filteringkey4 !== undefined) {
       filteringCondition =
@@ -769,16 +811,14 @@ export class ProductService {
   }
 
   getAcqRightsAggregations(
-    paramsObj: AcquiredRightsAggregationParams
+    inputs: AcquiredRightsAggregationParams
   ): Observable<ErrorResponse | AggregationGetResponse> {
-    let params = new HttpParams();
-    for (const key in paramsObj) params = params.set(key, paramsObj[key]);
 
     return this.http
       .get<ErrorResponse | AggregationGetResponse>(
         this.URLs.AggregationAcquiredRights,
         {
-          params,
+          params: getParams(inputs, false)
         }
       )
       .pipe(
@@ -833,15 +873,11 @@ export class ProductService {
   }
 
   filteredDataAcqRights(
-    aquiredRightsIndividualParams: AcquiredRightsIndividualParams
+    inputs: AcquiredRightsIndividualParams
   ): Observable<AcquiredRightsResponse | ErrorResponse> {
-    let params = new HttpParams();
-    for (let key in aquiredRightsIndividualParams)
-      params = params.set(key, aquiredRightsIndividualParams[key]);
-
     return this.http
       .get<AcquiredRightsResponse | ErrorResponse>(this.URLs.AcquiredRights, {
-        params,
+        params: getParams(inputs, false)
       })
       .pipe(
         catchError((e) => (e?.error ? throwError(e.error) : throwError(e)))
@@ -904,9 +940,15 @@ export class ProductService {
     return this.http.get<any>(url);
   }
   // Dashboard- Overview
-  getProductsOverview(scope) {
-    const url = this.apiUrl + '/product/dashboard/overview?scope=' + scope;
-    return this.http.get<any>(url);
+  getProductsOverview(scope): Observable<DashboardOverviewResponse | ErrorResponse> {
+    const params = (new HttpParams()).set('scope', scope);
+    return this.http.get<DashboardOverviewResponse | ErrorResponse>(this.URLs.productOverview, { params }).pipe(catchError(fixedErrorResponse));
+  }
+
+  fetchDashboardOverviewData(scope: string): void{
+    this.getProductsOverview(scope).subscribe((res: DashboardOverviewResponse)=>{
+      this.overviewDashboardData.next(res)
+    })
   }
 
   getProductsPerEditor(scope) {
@@ -1378,21 +1420,27 @@ export class ProductService {
         `${this.URLs.concurrentUsersHistory}/${inputs.scope}`,
         { params }
       )
-      .pipe(catchError(fixErrorResponse));
+      .pipe(catchError(fixedErrorResponse));
   }
 
-  getSoftwareExpenditure(scopes: any): Observable<ErrorResponse | Expenditure> {
+  getSoftwareExpenditure(
+    scopes: string | string[]
+  ): Observable<ErrorResponse | EntitySoftExpenseResponse> {
     let params = new HttpParams();
-    if (Array.isArray(scopes) && scopes.length)
+    if (Array.isArray(scopes) && scopes.length) {
       for (let scope of scopes) {
         params = params.append('scope', scope);
-      };
+      }
+    } else {
+      params = params.append('scope', scopes as string);
+    }
+
     return this.http
-      .get<ErrorResponse | Expenditure>(
+      .get<ErrorResponse | EntitySoftExpenseResponse>(
         this.URLs.complianceSoftwareExpenditure,
         { params }
       )
-      .pipe(catchError(fixErrorResponse));
+      .pipe(catchError(fixedErrorResponse));
   }
 
   //new APIS
@@ -1491,7 +1539,7 @@ export class ProductService {
         this.URLs.groupComplianceEditors,
         { params }
       )
-      .pipe(catchError(fixErrorResponse));
+      .pipe(catchError(fixedErrorResponse));
   }
 
   getProductsList(
@@ -1528,7 +1576,7 @@ export class ProductService {
         this.URLs.complianceProductList,
         { params }
       )
-      .pipe(catchError(fixErrorResponse));
+      .pipe(catchError(fixedErrorResponse));
   }
 
   getGroupComplianceByProducts(
@@ -1629,7 +1677,7 @@ export class ProductService {
         this.URLs.groupComplianceProducts,
         { params }
       )
-      .pipe(catchError(fixErrorResponse));
+      .pipe(catchError(fixedErrorResponse));
   }
 
   getUnderUsageCompliance(
@@ -1663,6 +1711,505 @@ export class ProductService {
       .get<UploadedFiles | ErrorResponse>(this.URLs.uploadedNominativeFiles, {
         params,
       })
-      .pipe(catchError(fixErrorResponse));
+      .pipe(catchError(fixedErrorResponse));
+  }
+
+  getSoftwareExpenditureByEditor(
+    scope: string
+  ): Observable<ErrorResponse | SoftwareExpenditure> {
+    // return of<ErrorResponse | SoftwareExpenditure>({
+    //   editorExpensesByScope: [
+    //     {
+    //       editor_name: 'Oracle',
+    //       total_purchase_cost: 75,
+    //       total_maintenance_cost: 30,
+    //       total_cost: 40,
+    //     },
+    //     {
+    //       editor_name: 'IBM',
+    //       total_purchase_cost: 30,
+    //       total_maintenance_cost: 50,
+    //       total_cost: 20,
+    //     },
+    //     {
+    //       editor_name: 'Adobe',
+    //       total_purchase_cost: 20,
+    //       total_maintenance_cost: 50,
+    //       total_cost: 70,
+    //     },
+    //     {
+    //       editor_name: 'TCS',
+    //       total_purchase_cost: 25,
+    //       total_maintenance_cost: 10,
+    //       total_cost: 80,
+    //     },
+    //     {
+    //       editor_name: 'Orange',
+    //       total_purchase_cost: 70,
+    //       total_maintenance_cost: 80,
+    //       total_cost: 90,
+    //     },
+    //   ],
+    // }).pipe(delay(2000));
+
+    let params = new HttpParams();
+    params = params.set('scope', scope);
+    return this.http.get<ErrorResponse | SoftwareExpenditure>(
+      this.URLs.getEditorExpenses,
+      {
+        params,
+      }
+    )
+      .pipe(
+        catchError((e) => (e?.error ? throwError(e.error) : throwError(e)))
+      );
+  }
+
+  getUsageCostByProduct(
+    input: SoftwareExpenditureByProductParams
+  ): Observable<ErrorResponse | SoftwareExpenditureProduct> {
+    // return of<ErrorResponse | SoftwareExpenditureProduct>({
+    //   editorProductExpensesByScope: [
+    //     {
+    //       name: 'IBM',
+    //       total_purchase_cost: 70,
+    //       total_maintenance_cost: 70,
+    //       total_cost: 80,
+    //       type: 'product',
+    //     },
+    //     {
+    //       name: 'Adobe',
+    //       total_purchase_cost: 120,
+    //       total_maintenance_cost: 70,
+    //       total_cost: 80,
+    //       type: 'product',
+    //     },
+    //   ],
+    // }).pipe(delay(2000));
+
+    let params = new HttpParams();
+    for (const key in input)
+      params = params.set(key, input[key]);
+
+
+    return this.http
+      .get<ErrorResponse | SoftwareExpenditureProduct>(
+        this.URLs.getProductExpenses,
+        { params }
+      )
+      .pipe(
+        catchError((e) => (e?.error ? throwError(e.error) : throwError(e)))
+      );
+  }
+
+  getProductsWithNoMaintenance(
+    scope: any
+  ): Observable<ErrorResponse | SoftwareWithNoMaintenance> {
+    let params = new HttpParams();
+    params = params.set('scope', scope);
+
+    // return of<ErrorResponse | SoftwareWithNoMaintenance>({
+    //   total_products: 25,
+    //   product_no_main: [
+    //     {
+    //       sku: 'Adobe_sku',
+    //       product_name: 'Adobe',
+    //       version: '1.1',
+    //     },
+    //     {
+    //       sku: 'IBM_sku',
+    //       product_name: 'IBM',
+    //       version: '2.1',
+    //     },
+    //     {
+    //       sku: 'Oracle_sku',
+    //       product_name: 'Oracle',
+    //       version: '1.1',
+    //     },
+    //     {
+    //       sku: 'TCS_sku',
+    //       product_name: 'TCS',
+    //       version: '3.1',
+    //     },
+    //   ],
+    // }).pipe(delay(2000));
+
+    return this.http
+      .get<ErrorResponse | SoftwareWithNoMaintenance>(
+        this.URLs.getProductsWithNoMaintenance,
+        {
+          params,
+        }
+      )
+      .pipe(
+        catchError((e) => (e?.error ? throwError(e.error) : throwError(e)))
+      );
+  }
+
+  getProductsWithMaintenance(
+    scope: string
+  ): Observable<ErrorResponse | SoftwareMaintenance> {
+    // let params = new HttpParams();
+    // params = params.set('scope', scope);
+    // return of<ErrorResponse | SoftwareMaintenance>({
+    //   product_with_maintenance_percentage: 60,
+    //   product_without_maintenance_percentage: 40,
+    //   ProductPerc: [
+    //     {
+    //       swidtag: 'Oracle_sku',
+    //       precentage_covered: 57,
+    //     },
+    //     {
+    //       swidtag: 'Adobe_sku',
+    //       precentage_covered: 33,
+    //     },
+    //   ],
+    // }).pipe(delay(2000));
+
+    let params = new HttpParams();
+    params = params.set('scope', scope);
+    return this.http.get<ErrorResponse | SoftwareMaintenance>(
+      this.URLs.getProductsWithMaintenance,
+      { params }
+    );
+  }
+
+  getProductsLocation(
+    scope: string
+  ): Observable<ErrorResponse | DeploymentType> {
+    // return of<ErrorResponse | DeploymentType>({
+    //   saas_percentage: 70,
+    //   on_premise_percentage: 30,
+    // }).pipe(delay(2000));
+
+    let params = new HttpParams();
+    params = params.set('scope', scope);
+    return this.http.get<ErrorResponse | DeploymentType>(
+      this.URLs.getProductsWithDeploymentType,
+      { params }
+    );
+  }
+
+  //swagger not ready //mocked the data
+  getProductsLicensing(scope: string): Observable<ErrorResponse | DashboardLocationResponse> {
+    // return of<ErrorResponse | Location>({
+    //   open_source: 44,
+    //   closed_source: 56,
+    // }).pipe(delay(2000));
+
+    let params = new HttpParams();
+    params = params.set('scope', scope);
+    return this.http.get<ErrorResponse | DashboardLocationResponse>(
+      this.URLs.getProductsWithLocationType,
+      { params }
+    );
+  }
+
+  getPcDashboardOverview(): Observable<ErrorResponse | PCDashboardOverviewResponse> {
+    return this.http.get<PCDashboardOverviewResponse | ErrorResponse>(this.URLs.pcDashboardOverview).pipe(
+      catchError(fixedErrorResponse)
+    )
+  }
+
+  getTrueUpDashboardData(input: TrueUpDashboardParams): Observable<TrueUpDashboardResponse | ErrorResponse> {
+    // return of<TrueUpDashboardResponse>({
+    //   total_true_up_cost: 4000045,
+    //   editors_true_up_cost: [
+    //     {
+    //       editor_cost: 3434,
+    //       editor: 'Oracle',
+    //       products_true_up_cost: [
+    //         {
+    //           product_cost: 450,
+    //           product: 'sql',
+    //         }
+    //       ]
+    //     },
+    //     {
+    //       editor_cost: 2453,
+    //       editor: 'IBM',
+    //       products_true_up_cost: [
+    //         {
+    //           product_cost: 450,
+    //           product: 'sql',
+    //         }
+    //       ]
+    //     },
+    //     {
+    //       editor_cost: 34545,
+    //       editor: 'Orange',
+    //       products_true_up_cost: [
+    //         {
+    //           product_cost: 450,
+    //           product: 'Optisam',
+    //         }
+    //       ]
+    //     },
+    //     {
+    //       editor_cost: 2653,
+    //       editor: 'Adobe',
+    //       products_true_up_cost: [
+    //         {
+    //           product_cost: 450,
+    //           product: 'Photoshope',
+    //         }
+    //       ]
+    //     },
+    //     {
+    //       editor_cost: 2473,
+    //       editor: 'Red Hat',
+    //       products_true_up_cost: [
+    //         {
+    //           product_cost: 450,
+    //           product: 'wine',
+    //         }
+    //       ]
+    //     },
+    //     {
+    //       editor_cost: 2459,
+    //       editor: 'Microsoft',
+    //       products_true_up_cost: [
+    //         {
+    //           product_cost: 450,
+    //           product: 'Windows',
+    //         }
+    //       ]
+    //     },
+    //     {
+    //       editor_cost: 2453,
+    //       editor: 'Apple',
+    //       products_true_up_cost: [
+    //         {
+    //           product_cost: 450,
+    //           product: 'PhotoStudio',
+    //         }
+    //       ]
+    //     },
+    //     {
+    //       editor_cost: 2453,
+    //       editor: 'Hewlett-Packarded',
+    //       products_true_up_cost: [
+    //         {
+    //           product_cost: 650,
+    //           product: 'aC++',
+    //         },
+    //         {
+    //           product_cost: 850,
+    //           product: 'ALM Explorer',
+    //         }
+    //       ]
+    //     },
+    //     {
+    //       editor_cost: 2453,
+    //       editor: 'Open sourceware',
+    //       products_true_up_cost: [
+    //         {
+    //           product_cost: 450,
+    //           product: '3CDaemon',
+    //         },
+    //         {
+    //           product_cost: 430,
+    //           product: '3 Internet',
+    //         }
+    //       ]
+    //     }
+    //   ]
+    // })
+
+    let params = new HttpParams();
+    for (const key in input) params = params.set(key, input[key]);
+    return this.http.get<TrueUpDashboardResponse | ErrorResponse>(this.URLs.trueUpDashboard, { params }).pipe(
+      catchError(fixedErrorResponse)
+    )
+  }
+
+
+  getWasteDashboardData(input: WasteDashboardParams): Observable<WasteDashboardResponse | ErrorResponse> {
+    // return of<WasteDashboardResponse>({
+    //   total_waste_up_cost: 4000045,
+    //   editors_waste_up_cost: [
+    //     {
+    //       editor_cost: 3434,
+    //       editor: 'Oracle',
+    //       products_waste_up_cost: [
+    //         {
+    //           product_cost: 450,
+    //           product: 'sql',
+    //         }
+    //       ]
+    //     },
+    //     {
+    //       editor_cost: 2453,
+    //       editor: 'IBM',
+    //       products_waste_up_cost: [
+    //         {
+    //           product_cost: 450,
+    //           product: 'sql',
+    //         }
+    //       ]
+    //     },
+    //     {
+    //       editor_cost: 34545,
+    //       editor: 'Orange',
+    //       products_waste_up_cost: [
+    //         {
+    //           product_cost: 450,
+    //           product: 'Optisam',
+    //         }
+    //       ]
+    //     },
+    //     {
+    //       editor_cost: 2653,
+    //       editor: 'Adobe',
+    //       products_waste_up_cost: [
+    //         {
+    //           product_cost: 450,
+    //           product: 'Photoshope',
+    //         }
+    //       ]
+    //     },
+    //     {
+    //       editor_cost: 2473,
+    //       editor: 'Red Hat',
+    //       products_waste_up_cost: [
+    //         {
+    //           product_cost: 450,
+    //           product: 'wine',
+    //         }
+    //       ]
+    //     },
+    //     {
+    //       editor_cost: 2459,
+    //       editor: 'Microsoft',
+    //       products_waste_up_cost: [
+    //         {
+    //           product_cost: 450,
+    //           product: 'Windows',
+    //         }
+    //       ]
+    //     },
+    //     {
+    //       editor_cost: 2453,
+    //       editor: 'Apple',
+    //       products_waste_up_cost: [
+    //         {
+    //           product_cost: 450,
+    //           product: 'PhotoStudio',
+    //         }
+    //       ]
+    //     },
+    //     {
+    //       editor_cost: 2453,
+    //       editor: 'Hewlett-Packarded',
+    //       products_waste_up_cost: [
+    //         {
+    //           product_cost: 650,
+    //           product: 'aC++',
+    //         },
+    //         {
+    //           product_cost: 850,
+    //           product: 'ALM Explorer',
+    //         }
+    //       ]
+    //     },
+    //     {
+    //       editor_cost: 2453,
+    //       editor: 'Open sourceware',
+    //       products_waste_up_cost: [
+    //         {
+    //           product_cost: 450,
+    //           product: '3CDaemon',
+    //         },
+    //         {
+    //           product_cost: 430,
+    //           product: '3 Internet',
+    //         }
+    //       ]
+    //     }
+    //   ]
+    // })
+
+    let params = new HttpParams();
+    for (const key in input) params = params.set(key, input[key]);
+    return this.http.get<WasteDashboardResponse | ErrorResponse>(this.URLs.wasteDashboard, { params }).pipe(
+      catchError(fixedErrorResponse)
+    )
+  }
+
+
+
+  checkMapSizeChange(message?: string): boolean {
+    if (!this?.['containers']?.length) return false;
+    let height: number = 0;
+    let width: number = 0;
+    this?.['containers'].forEach((chartContainer: ElementRef, index: number) => {
+      if (chartContainer) {
+        const cHeight: number = chartContainer.nativeElement?.clientHeight || 0;
+        const cWidth: number = chartContainer.nativeElement?.clientWidth || 0;
+        height = cHeight >= height ? cHeight : height;
+        width = cWidth >= width ? cWidth : width;
+      }
+    })
+    if (this?.['containerHeight'] === height && this?.['containerWidth'] === width) return false;
+    this['containerHeight'] = this?.['containerHeight'] === height ? this?.['containerHeight'] : height;
+    this['containerWidth'] = this?.['containerWidth'] === width ? this?.['containerWidth'] : width;
+    this?.['resetHeight']();
+    return true;
+
+  }
+
+
+  metricOptionsChange(option: MatOptionSelectionChange, costOptimization: boolean = true): void {
+    let fallbackOption: Metric;
+    let metricArray: string[];
+    const value = this['metrics']?.value;
+    const constructorName = value.constructor.name;
+    if (!option) {
+      if (value) {
+        switch (value.constructor.name) {
+
+          case 'String':
+            metricArray = value?.length ? value.split(',') : [];
+            fallbackOption = this['metricsList'].filter((metric: Metric) => metricArray.includes(metric.name)).pop();
+            break;
+
+          case 'Array':
+            fallbackOption = value[value.length - 1];
+            break;
+        }
+
+      } else {
+        fallbackOption = null;
+      }
+    }
+
+    const selectedMetricName = option?.source?.viewValue || (fallbackOption?.name || '');
+    const currentMetricType = option ? option?.source?.value?.type : (fallbackOption?.type || '');
+    this['disabledMetricNameList'] = [];
+    const isSelected: boolean = option ? option?.source?.selected : true;
+    const isDeselected: boolean = !isSelected;
+
+    if (TYPES_DISABLED_LIST.includes(currentMetricType)) {
+      this['disabledMetricNameList'] = this['metricsList'].reduce((disabledMetricList: string[], metric: Metric) => {
+        if (currentMetricType !== metric.type && (isSelected || (isDeselected && this['metrics'].value.length)))
+          disabledMetricList.push(metric.name);
+        return disabledMetricList;
+      }, [])
+
+      costOptimization && this['enableCostOptimization']();
+      return;
+    }
+
+    this['disabledMetricNameList'] = this['metricsList'].reduce((disabledMetricList: string[], metric: Metric) => {
+      if (TYPES_DISABLED_LIST.includes(metric.type) && (isSelected || (isDeselected && this['metrics'].value.length)))
+        disabledMetricList.push(metric.name);
+      return disabledMetricList;
+    }, [])
+    if (this['metrics'].value.length <= METRIC_SELECTION_ALLOWED_LIMIT) {
+      this['mySelections'] = this['metrics'].value;
+    } else {
+      this['metrics'].setValue(this['mySelections']);
+    }
+    costOptimization && this['enableCostOptimization']();
   }
 }

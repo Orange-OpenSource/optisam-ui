@@ -9,7 +9,7 @@ import { AccountService } from '../services/account.service';
 import { AboutComponent } from 'src/app/modules/home/pages/about/about/about.component';
 import { AboutFuture, MenuItemImg, MenuItemMat } from '@core/modals';
 import { CommonService } from '@core/services';
-import { LOCAL_KEYS, MENU_ROUTER_LINKS } from '@core/util/constants/constants';
+import { DEFAULT_LANGUAGES, LOCAL_KEYS, MENU_ROUTER_LINKS } from '@core/util/constants/constants';
 import { isSpecificScopeType } from '@core/util/common.functions';
 
 @Component({
@@ -149,7 +149,7 @@ export class HeaderComponent implements OnInit {
     private groupService: GroupService,
     private cs: CommonService
   ) {
-    translate.addLangs(['en', 'fr']);
+    translate.addLangs(DEFAULT_LANGUAGES);
     this.userLang = localStorage.getItem('language')
       ? localStorage.getItem('language')
       : 'en';

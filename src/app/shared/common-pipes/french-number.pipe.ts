@@ -1,20 +1,17 @@
 import { Pipe, PipeTransform } from '@angular/core';
+import { frenchNumber } from '@core/util/common.functions';
 
 @Pipe({
   name: 'numberFr'
 })
 export class FrenchNumberPipe implements PipeTransform {
 
-  transform(value: number | string): string | number {
-    debugger;
-    if (!value) return value;
-    console.log(value);
-    let number: number;
-    if (value.constructor.name === 'String') {
-      number = Number(value);
-      if (isNaN(number)) return value;
-    }
-    return number?.toLocaleString() || '';
+  transform(value: number | string, decimalCount: number = 2): string | number {
+    return frenchNumber(value, decimalCount)
   }
 
+
+
 }
+
+

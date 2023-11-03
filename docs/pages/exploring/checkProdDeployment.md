@@ -14,7 +14,7 @@ In order to know, which products are not deployed in your inventory (and for whi
 
 ![select APM](../../img/exploring/checkProdDeployment2.jpg){: .zoom}
 
-The not deployed products will be displayed as below : 
+This screen will be shown : 
 
 ![select APM](../../img/exploring/checkProdDeployment3.jpg){: .zoom}
 
@@ -24,7 +24,7 @@ In order to know, which products are not licensed (and are deployed on some equi
 
 ![select APM](../../img/exploring/checkProdDeployment4.jpg){: .zoom}
 
-This screen will be displayed : 
+This screen will be shown : 
 
 ![select APM](../../img/exploring/checkProdDeployment5.jpg){: .zoom}
 

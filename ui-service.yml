@@ -70,8 +70,8 @@ objects:
                   failureThreshold: 5
               resources:
                 requests:
-                  cpu: "5m"
-                  memory: "10Mi"
+                  cpu: "40m"
+                  memory: "64Mi"
                 limits:
                   cpu: "80m"
                   memory: "128Mi"

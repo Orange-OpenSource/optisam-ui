@@ -1,0 +1,114 @@
+:host {
+  --minWidth: 330px;
+  width: 100%;
+}
+
+.main {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.block {
+  border: 1px solid #ccc;
+  margin-bottom: 10px;
+}
+.main-software-expenditure {
+  flex: 1;
+  gap: 20px;
+  .software-product-spend {
+    min-width: var(--minWidth);
+    max-width: var(--minWidth);
+    padding: 10px;
+  }
+  .shared-received-licenses {
+    min-width: var(--minWidth);
+    max-width: var(--minWidth);
+    padding: 10px;
+  }
+  .kpi-block {
+    width: 100%;
+    min-height: 100px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    &:not(:last-child) {
+      margin-bottom: 10px;
+    }
+
+    .kpi-block--container {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      width: 100%;
+      padding: 0 10px;
+      gap: 15px;
+      .kpi-block--icon {
+        flex: 0 0 50px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        mat-icon {
+          font-size: 60px;
+          color: #025786;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+      }
+      .kpi-block--content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: space-around;
+        .kpi-block--content--number {
+          font-size: 2.4em;
+          font-weight: 900;
+          color: var(--primary);
+          line-height: 1;
+        }
+
+        .kpi-block--content--description {
+          font-size: 1.3em;
+          font-weight: bold;
+          color: #025786;
+          line-height: 1.5;
+        }
+
+        .kpi-block--content--meta-description {
+          font-size: 0.9em;
+          font-weight: bold;
+          color: #424242;
+        }
+      }
+    }
+  }
+
+  .main-kpi-block {
+    margin-bottom: 10px;
+    min-width: 240px;
+    max-width: var(--minWidth);
+  }
+}
+
+.noDataImgContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.noDataImg {
+  // width: 250px;
+  height: 240px;
+}
+
+.noDataMsg {
+  display: flex;
+  justify-content: center;
+  padding: 8px;
+  font-size: 12px;
+  font-weight: 500;
+}

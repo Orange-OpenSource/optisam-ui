@@ -1,26 +1,41 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
   FormGroup,
   Validators,
 } from '@angular/forms';
+import { MatOptionSelectionChange } from '@angular/material/core';
+import { MatSelect } from '@angular/material/select';
 import { MetricList, Metric } from '@core/modals';
+import { ProductService } from '@core/services';
 import { MetricService } from '@core/services/metric.service';
+import { SubSink } from 'subsink';
 
 @Component({
   selector: 'app-license-step',
   templateUrl: './license-step.component.html',
   styleUrls: ['./license-step.component.scss'],
 })
-export class LicenseStepComponent implements OnInit {
+export class LicenseStepComponent implements OnInit, AfterViewInit {
+  @ViewChild('aggMetrics', { static: true }) metricsEl: MatSelect;
   licenseForm: FormGroup;
   metricsList: Metric[] = [];
   disabledMetricNameList: string[] = [];
   temporarydisabledMetricList: string[] = [];
   currentMetricType: string = '';
   mySelections: Metric[] = [];
-  constructor(private fb: FormBuilder, private metricService: MetricService) {}
+  subs: SubSink = new SubSink();
+
+
+  constructor(private fb: FormBuilder, private metricService: MetricService, private ps: ProductService) { }
+  ngAfterViewInit(): void {
+    this.subs.add(
+      this.metricsEl.optionSelectionChanges.subscribe((option: MatOptionSelectionChange) => {
+        this.ps.metricOptionsChange.call(this, option, false);
+      })
+    )
+  }
 
   ngOnInit(): void {
     this.formInit();
@@ -47,7 +62,7 @@ export class LicenseStepComponent implements OnInit {
     return this.licenseForm.get('unit_price') as FormControl;
   }
 
-  get productsMetrics(): FormControl {
+  get metrics(): FormControl {
     return this.licenseForm.get('productsMetrics') as FormControl;
   }
 
@@ -78,14 +93,14 @@ export class LicenseStepComponent implements OnInit {
       : null;
 
     const ORACLE_TYPES = ['oracle.nup.standard', 'oracle.processor.standard'];
-    if (!this.productsMetrics.value.length) this.disabledMetricNameList = [];
+    if (!this.metrics.value.length) this.disabledMetricNameList = [];
     // condition for if metric type is in the oracle block list-- ORACLE_TYPES
     if (
-      this.productsMetrics.value.length &&
+      this.metrics.value.length &&
       ORACLE_TYPES.includes(this.currentMetricType)
     ) {
       const selectedMetricName: Metric =
-        this.productsMetrics.value[this.productsMetrics.value.length - 1];
+        this.metrics.value[this.metrics.value.length - 1];
 
       this.disabledMetricNameList = this.metricsList
         .filter(
@@ -100,11 +115,11 @@ export class LicenseStepComponent implements OnInit {
     const nominativeUserType = 'user.nominative.standard';
     const concurrentUserType = 'user.concurrent.standard';
     if (
-      this.productsMetrics.value.length &&
+      this.metrics.value.length &&
       this.currentMetricType === nominativeUserType
     ) {
       const selectedMetricName: Metric =
-        this.productsMetrics.value[this.productsMetrics.value.length - 1];
+        this.metrics.value[this.metrics.value.length - 1];
       this.disabledMetricNameList = this.metricsList
         .filter(
           (m) =>
@@ -115,11 +130,11 @@ export class LicenseStepComponent implements OnInit {
     }
 
     if (
-      this.productsMetrics.value.length &&
+      this.metrics.value.length &&
       this.currentMetricType === concurrentUserType
     ) {
       const selectedMetricName: Metric =
-        this.productsMetrics.value[this.productsMetrics.value.length - 1];
+        this.metrics.value[this.metrics.value.length - 1];
       this.disabledMetricNameList = this.metricsList
         .filter(
           (m) =>
@@ -131,7 +146,7 @@ export class LicenseStepComponent implements OnInit {
     }
 
     if (
-      this.productsMetrics.value.length &&
+      this.metrics.value.length &&
       !ORACLE_TYPES.includes(this.currentMetricType) &&
       this.currentMetricType !== nominativeUserType &&
       this.currentMetricType !== concurrentUserType
@@ -152,10 +167,10 @@ export class LicenseStepComponent implements OnInit {
       return;
     }
 
-    if (this.productsMetrics.value.length <= 5) {
-      this.mySelections = this.productsMetrics.value;
+    if (this.metrics.value.length <= 5) {
+      this.mySelections = this.metrics.value;
     } else {
-      this.productsMetrics.setValue(this.mySelections);
+      this.metrics.setValue(this.mySelections);
     }
   }
 }

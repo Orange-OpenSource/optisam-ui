@@ -15,11 +15,13 @@ import {
 import { LOCAL_KEYS } from '@core/util/constants/constants';
 import { MatTableDataSource } from '@angular/material/table';
 import { CommonService } from '@core/services/common.service';
+import { ChopValuePipe } from '@shared/common-pipes';
 
 @Component({
   selector: 'app-product-simulation',
   templateUrl: './product-simulation.component.html',
   styleUrls: ['./product-simulation.component.scss'],
+  providers: [ChopValuePipe]
 })
 export class ProductSimulationComponent implements OnInit {
   editorList: any[] = [];
@@ -58,7 +60,8 @@ export class ProductSimulationComponent implements OnInit {
     private sharedService: SharedService,
     private productService: ProductService,
     private metricService: MetricService,
-    private cs: CommonService
+    private cs: CommonService,
+    private chop: ChopValuePipe
   ) {
     this.loadingSubscription = this.sharedService
       .httpLoading()
@@ -281,7 +284,7 @@ export class ProductSimulationComponent implements OnInit {
               (metric) => metric.name === right.metric
             );
             if (idx !== -1) {
-              this.metricList[idx].avgUnitPrice = right.avgUnitPrice;
+              this.metricList[idx].avgUnitPrice = this.chop.transform(right.avgUnitPrice);
               this.metricList[idx].simulationExists = true;
               this.metricList[idx].numCptLicences = right.numCptLicences;
             }
@@ -315,7 +318,7 @@ export class ProductSimulationComponent implements OnInit {
             (metric) => metric.name === right.metric
           );
           if (idx !== -1) {
-            this.metricList[idx].avgUnitPrice = right.avgUnitPrice;
+            this.metricList[idx].avgUnitPrice = this.chop.transform(right.avgUnitPrice);
             this.metricList[idx].simulationExists = true;
             this.metricList[idx].numCptLicences = right.numCptLicences;
           }
@@ -429,7 +432,7 @@ export class ProductSimulationComponent implements OnInit {
         this.simulatedResults.push({
           num_cpt_licences: metric.numCptLicences,
           metric_name: metric.name,
-          total_cost: metric.numCptLicences * Number(metric.avgUnitPrice), //TODO: remove license calculation
+          total_cost: metric.numCptLicences * this.chop.transform(metric.avgUnitPrice), //TODO: remove license calculation
           success: true,
           exists: true,
         });
@@ -437,7 +440,7 @@ export class ProductSimulationComponent implements OnInit {
         indexArray.push(idx);
         this.body.metric_details.push({
           metric_name: this.simulationMetrics[idx].name,
-          unit_cost: this.simulationMetrics[idx].avgUnitPrice,
+          unit_cost: this.chop.transform(this.simulationMetrics[idx].avgUnitPrice),
         });
       }
     });
@@ -487,7 +490,7 @@ export class ProductSimulationComponent implements OnInit {
         this.simulatedResults.push({
           num_cpt_licences: metric.numCptLicences,
           metric_name: metric.name,
-          total_cost: metric.numCptLicences * Number(metric.avgUnitPrice), //TODO: remove license calculation
+          total_cost: metric.numCptLicences * this.chop.transform(metric.avgUnitPrice), //TODO: remove license calculation
           success: true,
           exists: true,
         });
@@ -495,7 +498,7 @@ export class ProductSimulationComponent implements OnInit {
         indexArray.push(idx);
         this.body.metric_details.push({
           metric_name: this.simulationMetrics[idx].name,
-          unit_cost: this.simulationMetrics[idx].avgUnitPrice,
+          unit_cost: this.chop.transform(this.simulationMetrics[idx].avgUnitPrice),
         });
       }
     });
@@ -540,7 +543,7 @@ export class ProductSimulationComponent implements OnInit {
     const body: MetricSimulationRequest = {
       swid_tag: this.simulateObj.product.swidTag,
       metric_name: currentSimulationObj.name,
-      unit_cost: Number(currentSimulationObj.avgUnitPrice) || 0,
+      unit_cost: this.chop.transform(currentSimulationObj.avgUnitPrice) || 0,
     };
 
     this.productService.metricSimulation(body).subscribe(

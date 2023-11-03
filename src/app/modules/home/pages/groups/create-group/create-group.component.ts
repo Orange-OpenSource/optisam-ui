@@ -8,6 +8,8 @@ import {
 import { GroupService } from 'src/app/core/services/group.service';
 import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { GroupComplianceAddParams } from '@core/modals';
+import { CommonService } from '@core/services';
+import { LOCAL_KEYS } from '@core/util/constants/constants';
 
 @Component({
   selector: 'app-create-group',
@@ -19,24 +21,24 @@ export class CreateGroupComponent implements OnInit {
   _loading: Boolean;
   errorMsg: any;
   actionSuccessful: Boolean;
-  getRole: string;
+  role: string;
   isSuperAdmin: boolean = false;
 
   constructor(
     private groupService: GroupService,
     private dialog: MatDialog,
+    private cs: CommonService,
     @Inject(MAT_DIALOG_DATA) public data
   ) { }
 
   ngOnInit() {
-    this.getRole = localStorage.getItem('role');
-    if (this.getRole === 'SUPER_ADMIN') {
+    this.role = this.cs.getLocalData(LOCAL_KEYS.ROLE);
+    if (this.role === 'SUPER_ADMIN') {
       this.isSuperAdmin = true;
     }
     this.groupForm = new FormGroup({
       name: new FormControl('', [
         Validators.required,
-        Validators.minLength(1),
         Validators.pattern(/^[a-zA-Z0-9_]*$/),
       ]),
       groupName: new FormControl(

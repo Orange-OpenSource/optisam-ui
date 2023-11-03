@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { CommonPopupSetting } from '@core/modals';
+import { CommonPopupSetting, DownloadFileInput } from '@core/modals';
 import { Subject, Observable, BehaviorSubject } from 'rxjs';
 import { CommonPopupComponent } from './dialog/common-popup/common-popup.component';
 
@@ -74,5 +74,17 @@ export class SharedService {
       width: 'max-content',
       data,
     });
+  }
+
+  downloadFile({ data, prefix, filename }: DownloadFileInput): void {
+    prefix ||= '';
+    const url = URL.createObjectURL(data);
+    const link: HTMLAnchorElement = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', prefix + filename);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   }
 }

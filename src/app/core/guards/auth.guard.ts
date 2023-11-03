@@ -11,7 +11,8 @@ import { AuthService } from '../auth/auth.service';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  constructor(private router: Router) {}
+  constructor(private router: Router) {
+  }
 
   canActivate(route: ActivatedRouteSnapshot) {
     const currentRole = localStorage.getItem('role');
@@ -31,6 +32,7 @@ export class AuthGuard implements CanActivate {
         return true;
       }
     }
+    console.log('less')
     this.router.navigate(['/']);
     return false;
   }
@@ -38,7 +40,7 @@ export class AuthGuard implements CanActivate {
 
 @Injectable()
 export class RoleGuard implements CanActivate {
-  constructor(private router: Router) {}
+  constructor(private router: Router) { }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     const token = localStorage.getItem('token');

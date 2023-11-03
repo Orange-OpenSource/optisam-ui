@@ -40,7 +40,9 @@
           <mat-header-cell *matHeaderCellDef mat-sort-header="status"
             >{{ "Status" | translate }}
           </mat-header-cell>
-          <mat-cell *matCellDef="let file"> {{ file.status }} </mat-cell>
+          <mat-cell *matCellDef="let file">
+            {{ "FILE_STATUS." + file.status | translate }}
+          </mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="uploaded_by">

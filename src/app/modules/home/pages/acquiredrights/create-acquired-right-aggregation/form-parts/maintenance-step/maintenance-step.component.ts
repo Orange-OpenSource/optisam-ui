@@ -5,6 +5,7 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
+import { supportNumberMax } from '@core/util/common.functions';
 
 @Component({
   selector: 'app-maintenance-step',
@@ -21,7 +22,7 @@ export class MaintenanceStepComponent implements OnInit {
     Validators.pattern(/^[0-9]+(\.[0-9]{1,2})*$/),
   ];
 
-  constructor(private fb: FormBuilder) {}
+  constructor(private fb: FormBuilder) { }
 
   ngOnInit(): void {
     this.formInit();
@@ -32,7 +33,7 @@ export class MaintenanceStepComponent implements OnInit {
       startMaintenanceDate: this.fb.control(null),
       endMaintenanceDate: this.fb.control(null),
       lastPurchasedOrder: this.fb.control(''),
-      supportNumber: this.fb.control(''),
+      supportNumber: this.fb.control('', [supportNumberMax(16)]),
       maintenanceProvider: this.fb.control(''),
       licenses_maintenance: this.fb.control(
         null,
@@ -40,6 +41,10 @@ export class MaintenanceStepComponent implements OnInit {
       ),
       maintenance_price: this.fb.control(null, this.maintenancePriceValidation),
     });
+  }
+
+  get supportNumber(): FormControl {
+    return this.maintenanceForm.get('supportNumber') as FormControl;
   }
 
   get startMaintenanceDate() {

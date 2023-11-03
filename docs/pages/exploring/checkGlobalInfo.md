@@ -24,14 +24,11 @@ The Quality : State of the default products (A product for which at least one li
 - <span style='color : red'> Red : more than 30% of  products in default</span>   
 
 The "Editors" : The number of editors of differents products    
-The "Products" : The number of products    
-The "Owned Licenses" : The amount of licenses owned     
+The "Products" : The number of products 
+The "Owned Licenses" : The amount of licenses owned 
 The "Maintenance Licenses" : The amount of licenses under maintenance   
-The "Shared Licenses" : The number of licenses shared
-The "Received Licenses" : The number of licenses received
 The "Underusage Amount" : The amount of licenses underused  
-The "Conterfeiting Amount" : The amount of licences overused
-The "Scope Expense" : The amount of the expenses of the entity
-The "Software License composition" : The percentage of metrics used  
+The "Conterfeiting Amount" : The amount of licences overused    
+The "Software License composition" : The percentage of metrics used 
 The "Equipment Details" : The parts of equipment used   
 The "Number of products Per Editor" : The percentage of product used by editors.    

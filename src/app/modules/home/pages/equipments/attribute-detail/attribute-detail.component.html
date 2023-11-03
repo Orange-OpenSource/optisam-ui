@@ -86,7 +86,7 @@
                     <thead>
                       <tr>
                         <th *ngFor="let tabelHead of reuseKeyName">
-                          {{ tabelHead }}
+                          {{ tabelHead?.name }}
                         </th>
                       </tr>
                     </thead>
@@ -98,7 +98,7 @@
                         "
                       >
                         <td *ngFor="let keyName of reuseKeyName">
-                          {{ item[keyName] }}
+                          {{ item[keyName?.mappedTo] }}
                         </td>
                       </tr>
                       <tr></tr>

@@ -79,3 +79,35 @@ export interface PaginationEvent {
   pageSize: number;
   length: number;
 }
+
+
+export interface UserActivationQueryParams {
+  user: string;
+  token: string;
+}
+
+export interface ForgotPasswordParams {
+  user: string;
+}
+
+export interface DefaultResponse {
+  success: boolean;
+}
+
+export interface DownloadFileInput {
+  data: any;
+  prefix?: string;
+  filename: string;
+}
+
+export enum ChartTypeSoft {
+  softExpChartOption = 'softExpChartOption',
+  usageCostChartOption = 'usageCostChartOption',
+  both = 'both'
+}
+
+export enum ChartTypeEffective {
+  wasteChartOption = 'wasteChartOption',
+  trueUpChartOption = 'trueUpChartOption',
+  both = 'both'
+}

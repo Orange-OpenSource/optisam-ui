@@ -18,7 +18,7 @@
           {{ "Group name should have at least 1 character" | translate }}
         </mat-error>
       </mat-form-field>
-      <ng-container *ngIf="!isRoot && isAdmin">
+      <ng-container *ngIf="!isRoot">
         <mat-form-field appearance="outline">
           <mat-select
             id="scope"
@@ -44,7 +44,7 @@
             {{ "Scopes field is mandatory" | translate }}
           </mat-error>
         </mat-form-field>
-        <div fxLayout="row">
+        <div fxLayout="row" *ngIf="isSuperAdmin">
           <mat-checkbox
             class="example-margin"
             color="primary"

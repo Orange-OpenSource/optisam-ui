@@ -50,6 +50,7 @@ import { ISOFormat, updateValidity } from '@core/util/common.functions';
 import { BrowseFileUploadComponent } from './browse-file-upload/browse-file-upload.component';
 import { FileProcessedComponent } from './file-processed/file-processed.component';
 import { AddConcurrentUsersDialogComponent } from '../../concurrent-users/add-concurrent-users-dialog/add-concurrent-users-dialog.component';
+import { HighlightSpanKind } from 'typescript';
 
 type NominativeUserTypeList = { name: string; value: NominativeUserType };
 
@@ -79,6 +80,7 @@ export class AddNominativeUserComponent
   ];
   isSaving: boolean = false;
   userUploading$: Subscription;
+  fileUploading$: Subscription;
   get isEdit(): boolean {
     return this.editData !== null;
   }
@@ -181,7 +183,7 @@ export class AddNominativeUserComponent
 
   constructor(
     private fb: FormBuilder,
-    private dataManagement: DataManagementService,
+    private dm: DataManagementService,
     private productService: ProductService,
     private cs: CommonService,
     private cd: ChangeDetectorRef,
@@ -198,17 +200,8 @@ export class AddNominativeUserComponent
     this.formInit();
     this.changeEvents();
     this.subs.add(
-      this.dataManagement.isRemoveUserTriggered().subscribe((index: number) => {
+      this.dm.isRemoveUserTriggered().subscribe((index: number) => {
         this.userDetails.removeAt(index);
-        //   if (this.userDetails.length > 1) {
-        //   } else {
-        //     this.sharedService.commonPopup({
-        //       title: 'ALERT',
-        //       message: 'NOMINATIVE_USER.MESSAGE.AT_LEAST_A_USER',
-        //       singleButton: true,
-        //       buttonText: 'OK',
-        //     });
-        //   }
       })
     );
   }
@@ -327,12 +320,23 @@ export class AddNominativeUserComponent
     });
   }
 
+  private gotResponse(res: any): void {
+    this.sharedService.commonPopup({
+      title: "SUCCESS",
+      singleButton: true,
+      buttonText: "OK",
+      message: 'The user(s) has been added!',
+    }).afterClosed().subscribe(() => {
+      this.dialogRef.close(true);
+    });
+  }
+
   onSubmit(): void {
     if (this.isSaving) return;
     this.isSaving = true;
     if (this.nominativeUserForm.invalid) {
       this.nominativeUserForm.markAllAsTouched();
-      this.dataManagement.updateUserDetailsValidity();
+      this.dm.updateUserDetailsValidity();
       return;
     }
     const body: NominativeUserBody = {
@@ -345,6 +349,43 @@ export class AddNominativeUserComponent
       product_version: this.isProductType ? this.productVersion.value : '',
       user_details: this.getUserDetails(),
     };
+
+    // create data into file
+    const xlsxData: File = this.dm.exportToExcelBlob(body.user_details, 'nominative_user', 'Nominative_User');
+    let formData = new FormData();
+    formData.append('file', xlsxData);
+    formData.append('scope', this.cs.getLocalData(LOCAL_KEYS.SCOPE));
+    if (this.type.value === NominativeUserType.product) {
+      formData.append('editor', this.productEditor.value);
+      formData.append('product_name', this.productName.value);
+      formData.append('product_version', this.productVersion.value);
+    }
+
+    if (this.type.value === NominativeUserType.aggregation) {
+      this.aggregationName.value &&
+        formData.append('aggregation_id', String(this.aggregationName.value));
+    }
+
+    this.fileUploading$ = this.dm.uploadNominativeUserData(formData).subscribe(
+      (res: any) => {
+        if (res === true)
+          this.gotResponse(res);
+
+      },
+      (e) => {
+        this.sharedService.commonPopup({
+          title: "ERROR",
+          buttonText: "OK",
+          singleButton: true,
+          message: e.message
+        })
+      }
+    );
+
+
+    return;
+
+
     const actionFunction: Function = this.editData
       ? this.productService.updateNominativeUser.bind(this.productService)
       : this.productService.createNominativeUser.bind(this.productService);
@@ -469,7 +510,7 @@ export class AddNominativeUserComponent
       })
       .afterClosed()
       .subscribe((res: boolean) => {
-        res && this.dataManagement.triggerNavToLog(res);
+        res && this.dm.triggerNavToLog(res);
         this.dialogRef.close(true);
       });
   }

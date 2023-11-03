@@ -1,0 +1,21 @@
+<h2 mat-dialog-title>{{ (data?.expenditure ? 'UPDATE_EXPENDITURE' : 'ADD_EXPENDITURE') | translate : { entity: data.scope_code} }} </h2>  
+
+<mat-dialog-content>
+    <form [formGroup]="entityExpenditureGroup">
+        <mat-form-field appearance="outline">
+            <mat-label>{{ 'EXPENDITURE' | translate }} </mat-label>
+            <input matInput 
+            (keydown)="onlyNumber($event)"
+                formControlName="expenditure"
+            />
+            <mat-error *ngIf="expenditure.invalid && expenditure.hasError('max')">
+                {{ "EXPENDITURE_MAX_ERROR" | translate : { max: maxValueExpenditure}  }}
+            </mat-error>
+        </mat-form-field>
+    </form>
+</mat-dialog-content>   
+
+<mat-dialog-actions fxLayout="row" fxLayoutAlign="center">
+    <button [disabled]="expenditure.invalid" mat-raised-button class="btn-two" [mat-dialog-close]="expenditure.value" > {{ (data?.expenditure ? 'UPDATE' : 'ADD') | translate }}</button>
+    <button mat-raised-button class="btn-four" mat-dialog-close="close" > {{ 'CLOSE' | translate }}</button>
+</mat-dialog-actions>

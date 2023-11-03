@@ -7,7 +7,22 @@
     <div
       class="form add-btn-bx"
       *ngIf="role === 'ADMIN' || role === 'SUPER_ADMIN'"
+      fxLayout="row"
+      fxLayoutAlign="end center"
+      fxLayoutGap="10px"
     >
+      <!-- import button -->
+      <button
+        *ngIf="role === 'ADMIN' || role === 'SUPER_ADMIN'"
+        id="import-metrics-button"
+        mat-raised-button
+        (click)="importMetrics()"
+        class="btn-two"
+      >
+        <mat-icon color="panel">arrow_downward</mat-icon>
+        {{ "IMPORT" | translate }}
+      </button>
+      <!-- create metrics button -->
       <button
         id="addNewMetricButton"
         mat-raised-button
@@ -67,8 +82,8 @@
               id="editBtn_{{ i }}"
               class="action-icon"
               matTooltip="{{ 'Edit Metric' | translate }}"
-              (click)="editMetrics(element)" 
-              [ngClass]="{'disable': element.default}"           
+              (click)="editMetrics(element)"
+              [ngClass]="{ disable: element.default }"
               >edit</mat-icon
             >
             <mat-icon
@@ -78,7 +93,7 @@
               (click)="
                 deleteMetricConfirmation(element, deleteConfirmationDialog)
               "
-              [ngClass]="{'disable':element.default}"
+              [ngClass]="{ disable: element.default }"
               >delete</mat-icon
             >
           </mat-cell>

@@ -1,5 +1,5 @@
 export interface ExpenseBodyParams {
-  expenses: number;
+  expenses: number | string;
   scope_code: string;
 }
 
@@ -18,3 +18,33 @@ export interface GroupComplianceAddParams {
   num_of_users?: number;
   group_compliance?: boolean;
 }
+
+export enum PasswordAction {
+  activation = '0',
+  reset = '1'
+}
+
+
+export interface SetPasswordBody {
+  user: string;
+  passwordConfirmation: string;
+  password: string;
+  token: string;
+  action: PasswordAction;
+}
+
+
+export interface SetPasswordResponse {
+  success: boolean;
+}
+
+export enum UserStatus {
+  active = "Active",
+  inactive = "Inactive",
+}
+
+export interface ResendActivationLinkParams {
+  user: string;
+}
+
+

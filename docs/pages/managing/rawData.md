@@ -4,7 +4,7 @@
 
 <span style="color:red">First, make sure that you are an admin and that you are working on the good scope :</span>
 
-![select APM](../../img/goodScope.jpg){: .zoom}
+![select APM](../../img/goodScopeu.jpg){: .zoom}
 
 **You can click [here](#access-to-the-page) if you already have your files completed.**
 

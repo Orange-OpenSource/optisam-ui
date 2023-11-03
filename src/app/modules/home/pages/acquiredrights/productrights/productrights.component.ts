@@ -101,7 +101,7 @@ export class ProductrightsComponent implements OnInit {
     public dialog: MatDialog,
     private router: Router,
     private cs: CommonService
-  ) {}
+  ) { }
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: false }) sort: MatSort;
 
@@ -125,11 +125,11 @@ export class ProductrightsComponent implements OnInit {
       }),
       ...(this.searchFields.editorName?.trim() && {
         'search_params.editor.filteringkey':
-          this.searchFields.editorName?.trim(),
+          encodeURIComponent(this.searchFields.editorName?.trim()),
       }),
       ...(this.searchFields.productName?.trim() && {
         'search_params.productName.filteringkey':
-          this.searchFields.productName?.trim(),
+          encodeURIComponent(this.searchFields.productName?.trim()),
       }),
       ...(this.searchFields.metric?.trim() && {
         'search_params.metric.filteringkey': this.searchFields.metric?.trim(),
@@ -166,7 +166,7 @@ export class ProductrightsComponent implements OnInit {
   getToolTipDataAcc(data) {
     let tooltipContent = `Available Licenses Left:${data?.available_licenses},\n Received Licenses in Current Entity:${data?.recieved_licenses},\n Shared Licenses in Current Entity:${data?.shared_licenses},\n`;
     data?.shared_data?.forEach((sl) => {
-      tooltipContent += `Shared Licenses in Entity ${sl?.scope} : ${sl?.shared_licenses},\nReceived Licenses from Entity ${sl?.scope}:${sl?.recieved_licenses}\n`;
+      tooltipContent += `Shared Licences in Entity ${sl?.scope} : ${sl?.shared_licenses},\nReceived Licences from Entity ${sl?.scope}:${sl?.recieved_licenses}\n`;
     });
     return tooltipContent;
   }
@@ -194,7 +194,7 @@ export class ProductrightsComponent implements OnInit {
       data: data,
     });
 
-    this.dialogRef.afterClosed().subscribe((result) => {});
+    this.dialogRef.afterClosed().subscribe((result) => { });
   }
   getPaginatorData(event) {
     const page_num = event.pageIndex;
@@ -365,6 +365,6 @@ export class ProductrightsComponent implements OnInit {
       },
     });
 
-    dialogRef.afterClosed().subscribe((result) => {});
+    dialogRef.afterClosed().subscribe((result) => { });
   }
 }

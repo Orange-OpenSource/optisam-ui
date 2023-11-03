@@ -1,0 +1,43 @@
+.alert-primary {
+  color: rgba(0, 95, 147, 1);
+  background-color: rgba(58, 179, 218, 0.24);
+  border-color: rgba(204, 229, 255, 1);
+  text-align: center;
+  font-size: 12px;
+  margin-top: -16px;
+  border-radius: unset;
+  padding: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+.main-container {
+  position: relative;
+  height: max-content;
+}
+
+.scroll-tab {
+  width: 100%;
+  scroll-margin: 45px;
+  min-height: 400px;
+}
+::ng-deep {
+  .main-tab {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 15px 0;
+    .mat-tab-link {
+      min-width: max-content;
+    }
+  }
+}
+
+nav.dashboard-scroll-nav {
+  position: sticky;
+  top: 0;
+  background-color: #fff;
+  z-index: 2;
+}

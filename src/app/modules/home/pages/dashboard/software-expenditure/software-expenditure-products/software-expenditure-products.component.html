@@ -1,0 +1,44 @@
+<div class="product-soft-exp-header" mat-dialog-title>
+  <mat-icon svgIcon="money-deck"></mat-icon>
+  <div class="header-figure">
+    <span class="header-figure-name"
+      >{{ editorName }} {{ "SOFTWARE_EXPENDITURE_AMOUNT" | translate }} : </span
+    ><span class="header-figure-number">{{ currentEditorTotal | abs | numberFr }}</span>
+  </div>
+</div>
+
+<mat-dialog-content>
+  <div class="close-btn" mat-dialog-close><mat-icon>close</mat-icon></div>
+  <ng-container *ngIf="!productList?.length; else softExpenditureProduct;">
+    <ng-template [ngTemplateOutlet]="noDataTemplate"></ng-template>
+  </ng-container>
+  
+</mat-dialog-content>
+
+<mat-dialog-actions> </mat-dialog-actions>
+
+
+<ng-template #noDataTemplate >
+  <div class="no-data-container">
+    <div class="noDataImgContainer" >
+      <img class="noDataImg" src="assets/images/NoDataFound.PNG" />
+    </div>
+    <div class="noDataMsg" >
+      {{ "Unfortunately no data could be found." | translate }}
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #softExpenditureProduct>
+  <div class="chart-container">
+    <apx-chart
+      [series]="chartOption?.series"
+      [chart]="chartOption?.chart"
+      [title]="chartOption?.title"
+      [plotOptions]="chartOption?.plotOptions"
+      [dataLabels]="chartOption?.dataLabels"
+      [tooltip]="customTooltip"
+    >
+    </apx-chart>
+  </div>
+</ng-template>

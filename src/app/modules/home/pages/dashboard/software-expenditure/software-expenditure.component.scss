@@ -1,0 +1,145 @@
+:host {
+  --secondary-color: #005f93;
+  --primary-color: #359cd5;
+  --header-bottom-margin: 20px;
+  width: 100%;
+}
+
+.main-effective-licenses-position {
+  .chart-block-tile {
+    border: 1px solid #ccc;
+    padding: 10px;
+    width: 100%;
+    figure {
+      justify-content: flex-start !important;
+      align-items: flex-start !important;
+    }
+  }
+
+  .chart-block {
+    width: 100%;
+    height: 100%;
+    .chart-block--map {
+      min-height: unset !important;
+      height: unset !important;
+      flex: 1;
+      overflow: hidden;
+      .tree-map-chart-container {
+        height: calc(100% + var(--header-bottom-margin));
+      }
+    }
+    .chart-block--header {
+      min-height: 80px;
+      padding: 10px 20px 0px 20px;
+      display: flex;
+      flex-direction: row;
+      gap: 20px;
+      .chart-block--header--icon {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 70px;
+        height: 70px;
+        mat-icon {
+          width: 100%;
+          height: 100%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          color: var(--secondary-color);
+          ::ng-deep svg {
+            path {
+              fill: var(--secondary-color) !important;
+            }
+          }
+        }
+      }
+
+      .chart-block--header--content {
+        display: flex;
+        flex-direction: column;
+
+        .chart-block--header--content--title {
+          font-size: 1.5em;
+          font-weight: bold;
+          line-height: 1.5;
+          color: var(--secondary-color);
+          display: flex;
+          justify-content: flex-start;
+          align-items: center;
+          mat-icon {
+            display: flex;
+            justify-content: flex-start;
+            align-items: flex-start;
+            font-size: 0.9rem;
+            color: var(--primary);
+            cursor: pointer;
+          }
+        }
+        .chart-block--header--content--number {
+          font-size: 2.2em;
+          font-weight: bold;
+          line-height: 1;
+          color: var(--primary);
+        }
+        .chart-block--header--content---meta-description {
+          font-size: 1em;
+          font-weight: bold;
+        }
+      }
+    }
+  }
+}
+
+.chart-container {
+  position: relative;
+  padding-bottom: 100%; /* Maintain 1:1 aspect ratio */
+  height: 0;
+  overflow: hidden;
+}
+
+.chart-container apx-chart {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+@media screen and (max-width: 768px) {
+  .chart-container {
+    padding-bottom: 114%; /* Increase padding for smaller screens */
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .chart-container {
+    padding-bottom: 114%; /* Increase padding for even smaller screens */
+  }
+}
+
+@media screen and (min-width: 1920px) {
+  .chart-container {
+    padding-bottom: calc(
+      100% + 14%
+    ); /* Increase padding by 2% for 1920x1080 screen */
+  }
+}
+
+.noDataImgContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.noDataImg {
+  // width: 250px;
+  height: 240px;
+}
+
+.noDataMsg {
+  display: flex;
+  justify-content: center;
+  padding: 8px;
+  font-size: 12px;
+  font-weight: 500;
+}

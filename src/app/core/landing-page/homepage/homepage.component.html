@@ -144,7 +144,7 @@
         >
           {{ tab?.alias || tab?.title | translate }}
           {{ tab?.alias && "(" + (tab?.title | translate) + ")" }}
-          <div class="close-tab" *ngIf="i > 1" (click)="closeTab(i)">
+          <div class="close-tab" *ngIf="i > 2" (click)="closeTab(i)">
             <mat-icon>close</mat-icon>
           </div>
         </a>
@@ -153,27 +153,36 @@
   </mat-card>
 
   <div class="content">
-    <app-editors-list-thumbnail
-      (editorInfo)="editorInfo = $event"
-      [ngStyle]="{ display: isEditor ? 'initial' : 'none' }"
-    ></app-editors-list-thumbnail>
-    <app-editor-detail
-      [data]="editorInfo"
-      [ngStyle]="{ display: isEditorDetail ? 'initial' : 'none' }"
-      class="editor-details"
-    ></app-editor-detail>
-
-    <app-products-list-thumbnail
-      *ngIf="isInProductSet"
-      (productDetail)="productInfo = $event"
-      [ngStyle]="{ display: isProduct ? 'initial' : 'none' }"
-    ></app-products-list-thumbnail>
-    <app-product-detail
-      class="product-details"
-      [data]="productInfo"
-      [ngStyle]="{
-        display: isProductDetail ? 'initial' : 'none'
-      }"
-    ></app-product-detail>
+    <ng-template
+      [ngTemplateOutlet]="isDashboard ? dashboard : notDashboard"
+    ></ng-template>
   </div>
 </div>
+<ng-template #notDashboard>
+  <app-editors-list-thumbnail
+    (editorInfo)="editorInfo = $event"
+    [ngStyle]="{ display: isEditor ? 'initial' : 'none' }"
+  ></app-editors-list-thumbnail>
+  <app-editor-detail
+    [data]="editorInfo"
+    [ngStyle]="{ display: isEditorDetail ? 'initial' : 'none' }"
+    class="editor-details"
+  ></app-editor-detail>
+
+  <app-products-list-thumbnail
+    *ngIf="isInProductSet"
+    (productDetail)="productInfo = $event"
+    [ngStyle]="{ display: isProduct ? 'initial' : 'none' }"
+  ></app-products-list-thumbnail>
+  <app-product-detail
+    class="product-details"
+    [data]="productInfo"
+    [ngStyle]="{
+      display: isProductDetail ? 'initial' : 'none'
+    }"
+  ></app-product-detail>
+</ng-template>
+
+<ng-template #dashboard>
+  <app-product-catalog-dashboard></app-product-catalog-dashboard>
+</ng-template>

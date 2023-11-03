@@ -1,4 +1,5 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 @Component({
   selector: 'app-settings',
   templateUrl: './settings.component.html',
@@ -6,10 +7,11 @@ import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 })
 export class SettingsComponent implements OnInit {
   currentTab: any;
-  
-  constructor() { }
 
-  ngOnInit() {
-    this.currentTab = 'Profile Settings';
+  constructor(private router: Router) {
+    this.currentTab = this.router.getCurrentNavigation()?.extras?.state?.tab || 'Profile Settings';
   }
+
+  ngOnInit() { }
+
 }

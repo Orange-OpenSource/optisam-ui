@@ -1,15 +1,15 @@
 .mat-card {
-    width: 440px;
-    height: 400px;
-    background-color: rgba(255,255,255,0.95);
-    padding: 30px;
-    color: #333;
-    font-size: 0.875rem;
-    line-height: 1.5;
+  width: 440px;
+  height: 400px;
+  background-color: rgba(255, 255, 255, 0.95);
+  padding: 30px;
+  color: #333;
+  font-size: 0.875rem;
+  line-height: 1.5;
 }
 
-.bg{
-  background-image: url(/assets/images/login-bg3.jpg) ;
+.bg {
+  background-image: url(/assets/images/login-bg3.jpg);
   background-size: cover;
   min-height: 100%;
   padding-top: 8vh;
@@ -28,13 +28,13 @@
 
 div#cookieBanner {
   display: flex;
-    width: 500px;
-    justify-content: space-between;
-    padding: 16px 16px 16px 8px;
-    color: white;
-    background: black;
-    border-radius: 6px;
-    margin: 16px;
+  width: 500px;
+  justify-content: space-between;
+  padding: 16px 16px 16px 8px;
+  color: white;
+  background: black;
+  border-radius: 6px;
+  margin: 16px;
 }
 
 #bannerContent {
@@ -50,7 +50,7 @@ div#cookieBanner {
   border-radius: 12px;
   font-size: 14px;
   padding: 2px;
-  color: #F1F1F1;
+  color: #f1f1f1;
 }
 
 .loginTopHeading {
@@ -79,15 +79,30 @@ mat-card-content {
   margin-right: 7px;
 }
 
-.spinner-border-sm{
+.spinner-border-sm {
   height: 1rem !important;
 }
 
-.diableClick{pointer-events: none; cursor: not-allowed;}
+.diableClick {
+  pointer-events: none;
+  cursor: not-allowed;
+}
 
-.alert{height: inherit;}
-mat-icon{vertical-align: middle;}
+.alert {
+  height: inherit;
+}
+mat-icon {
+  vertical-align: middle;
+}
 #version {
   display: flex;
   justify-content: center;
+}
+
+.forgot-password-link {
+  &:hover {
+    color: var(--primary);
+    text-decoration: underline;
+    cursor: pointer;
+  }
 }

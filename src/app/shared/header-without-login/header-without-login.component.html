@@ -1,0 +1,73 @@
+<div>
+  <mat-toolbar color="ThemePalette" class="main-nav-bar">
+    <mat-toolbar-row>
+      <span id="app-logo" class="optisam-logo" (click)="navigate('/')">
+        <img src="assets/images/OpTISAM-Logo.svg" />
+      </span>
+      <span class="example-spacer"></span>
+      <div fxShow="true" fxHide.lt-md="true">
+        <button
+          *ngIf="!loginStatus"
+          class="btn-two file"
+          (click)="login()"
+          mat-raised-button
+        >
+          {{ "Login" | translate }}
+        </button>
+        <!-- <a id="nav-admin-menu" mat-button [routerLink]="'/'">
+                      <mat-icon class="mat-icon-header" matsuffix>face</mat-icon>
+                  </a> -->
+
+        <a
+          id="nav-language-menu"
+          mat-button
+          [matMenuTriggerFor]="menu1"
+          (click)="checkLanguage()"
+        >
+          <mat-icon class="mat-icon-header" matsuffix>language</mat-icon>
+          {{ "language" | translate }}
+          <mat-icon>arrow_drop_down</mat-icon>
+        </a>
+        <mat-menu #menu1="matMenu">
+          <button
+            id="nav-language-en"
+            mat-menu-item
+            *ngIf="currLang == 'fr'"
+            (click)="updateUserLanguage('en')"
+          >
+            <img class="flags" src="assets/images/en.png" />English
+          </button>
+          <button
+            id="nav-language-fr"
+            mat-menu-item
+            *ngIf="currLang == 'en'"
+            (click)="updateUserLanguage('fr')"
+          >
+            <img class="flags" src="assets/images/fr.png" />French
+          </button>
+        </mat-menu>
+
+        <a
+          id="nav-help"
+          matTooltip="{{ 'USER_GUIDE' | translate }}"
+          mat-button
+          href="https://optisam.pages.gitlab.tech.orange/optisam-it/optisam-ui/"
+          target="_blank"
+        >
+          <mat-icon class="mat-icon-header" matsuffix>help_outline</mat-icon>
+        </a>
+        <mat-menu #menu3="matMenu">
+          <a
+            id="nav-user-guide"
+            mat-menu-item
+            href="https://optisam.pages.gitlab.tech.orange/optisam-it/optisam-ui/"
+            target="_blank"
+          >
+            <mat-icon class="mat-icon-menu">help_outline</mat-icon
+            >{{ "User Guide" | translate }}
+          </a>
+        </mat-menu>
+      </div>
+    </mat-toolbar-row>
+  </mat-toolbar>
+</div>

@@ -8,6 +8,8 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
+import { CommonService } from '@core/services';
+import { LOCAL_KEYS } from '@core/util/constants/constants';
 
 @Component({
   selector: 'app-edit-grp-name',
@@ -22,21 +24,22 @@ export class EditGrpNameComponent implements OnInit {
   cannotUpdateFlag: Boolean;
   actionSuccessful: Boolean;
   scopeList: string[] = [];
-  isAdmin: boolean = false;
+  isSuperAdmin: boolean = false;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data,
     private fb: FormBuilder,
     private dialog: MatDialog,
-    private groupService: GroupService
-  ) {}
+    private groupService: GroupService,
+    private cs: CommonService
+  ) { }
 
   ngOnInit() {
     this.group = this.data?.item;
     this.scopeList = this.data?.scopes;
-    const role = localStorage.getItem('role');
+    const role = this.cs.getLocalData(LOCAL_KEYS.ROLE);
     if (role === 'SUPER_ADMIN') {
-      this.isAdmin = true;
+      this.isSuperAdmin = true;
     }
     this.initForm();
   }
@@ -48,15 +51,19 @@ export class EditGrpNameComponent implements OnInit {
         Validators.minLength(1),
         Validators.pattern(/^[a-zA-Z0-9_]*$/),
       ]),
-      ...(!this.isRoot && {
-        scopes: this.fb.control([], [Validators.required]),
+      scopes: this.fb.control([], [Validators.required]),
+      ...(!this.isRoot && this.isSuperAdmin && {
         groupCompliance: this.fb.control(false, []),
       }),
     });
+
     this.groupForm.patchValue({
       name: this.group?.name,
       scopes: this.group?.scopes,
-      groupCompliance: this.group?.group_compliance || false,
+      ...(this.isSuperAdmin &&
+      {
+        groupCompliance: this.group?.group_compliance || false,
+      })
     });
   }
 
@@ -89,7 +96,7 @@ export class EditGrpNameComponent implements OnInit {
       group: {
         name: this.name.value,
         scopes: this.scopes.value,
-        group_compliance: this.groupCompliance.value,
+        ...(this.isSuperAdmin && { group_compliance: this.groupCompliance.value }),
       },
     };
     this.groupService.updateGroup(this.group.ID, body).subscribe(

@@ -19,31 +19,36 @@ describe('CreateMetricComponent', () => {
       "name": "oracle.processor.standard",
       "description": "Number of processor licenses required = CPU nb x Core(per CPU) nb x CoreFactor",
       "href": "/api/v1/metric/ops",
-      "type_id": "Oracle_Processor"
+      "type_id": "Oracle_Processor",
+      default_metrics: ["oracle.processor"]
     },
     {
       "name": "sag.processor.standard",
       "description": "Number of processor licenses required = MAX(Prod_licenses, NonProd_licenses) : licenses = CPU nb x Core(per CPU) nb x CoreFactor",
       "href": "/api/v1/metric/sps",
-      "type_id": "SAG_Processor"
+      "type_id": "SAG_Processor",
+      default_metrics: ["sag.processor"]
     },
     {
       "name": "ibm.pvu.standard",
       "description": "Number of licenses required = CPU nb x Core(per CPU) nb x CoreFactor",
       "href": "/api/v1/metric/ips",
-      "type_id": "IBM_PVU"
+      "type_id": "IBM_PVU",
+      default_metrics: ["ibm.pvu"]
     },
     {
       "name": "user.sum.standard",
       "description": "Number of licenses required = Sum of all users using the product.",
       "href": "/api/v1/metric/uss",
-      "type_id": "User_Sum"
+      "type_id": "User_Sum",
+      default_metrics: ["user"]
     },
     {
       "name": "oracle.nup.standard",
       "description": "Named User Plus licenses required = MAX(A,B) : A = CPU nb x Core(per CPU) nb x CoreFactor x minimum number of NUP per processor, B = total number of current users with access to the Oracle product",
       "href": "/api/v1/metric/oracle_nup",
-      "type_id": "Oracle_NUP"
+      "type_id": "Oracle_NUP",
+      default_metrics: ["oracle.nup"]
     }]
   beforeEach(async () => {
     await TestBed.configureTestingModule({

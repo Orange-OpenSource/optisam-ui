@@ -1,81 +1,150 @@
 <div class="bg">
-    <div id="loginFormContainer">
-      <mat-card>
-        <mat-card-title>
-            <div class="loginTopHeading">
-              <img src="assets/images/OpTISAM-Logo-2.png">
-              <div class="headerBtns">
-                <a mat-button [matMenuTriggerFor]="menu">
-                  <mat-icon>language</mat-icon>
-                  {{ 'language' | translate }}
-                </a>
-                <a id="user-guide" href="https://optisam.pages.gitlab.tech.orange/optisam-it/optisam-ui/" target="_blank" mat-button  matTooltip="{{'User Guide'|translate}}">
-                  <mat-icon>help_outline</mat-icon>
-                </a>
-              </div>
-            </div>
-            <mat-menu #menu="matMenu">
-              <a mat-menu-item *ngIf="currLang=='fr'"
-                (click)="updateUserLanguage('en')"><img class="flags" src="assets/images/en.png">English</a>
-              <a mat-menu-item *ngIf="currLang=='en'"
-                (click)="updateUserLanguage('fr')"><img class="flags" src="assets/images/fr.png">French</a>
-            </mat-menu>
-            <div class="loginHeading">{{'Sign in'| translate}}</div>
-        </mat-card-title>
-        <mat-card-content>
-          <form [formGroup]="loginForm">
-            <div class="example-container">
-              <mat-form-field floatPlaceholder="never" color="primary">
-                <input type="text" matInput id="email" formControlName="email"
-                  placeholder="{{'username' | translate}}">
-              </mat-form-field>
-
-              <mat-form-field floatPlaceholder="never" color="primary">
-                <input type="password" matInput id="password" [type]="isPasswordShow ?
-                  'text' : 'password'"
-                  formControlName="password" placeholder="{{'Password' | translate
-                  }}">
-                <mat-icon *ngIf="isPasswordShow" matSuffix
-                  data-automation-id="hide_password" (click)="toggleShowPassword()"
-                  (keyup.enter)="toggleShowPassword()">
-                  visibility
-                </mat-icon>
-                <mat-icon *ngIf="!isPasswordShow" matSuffix
-                  data-automation-id="show_password" (click)="toggleShowPassword()"
-                  (keyup.enter)="toggleShowPassword()">
-                  visibility_off
-                </mat-icon>
-              </mat-form-field>
-            </div>
-            <div class="alert alert-danger" role="alert" *ngIf="errorMsg">
-              <mat-icon>warning</mat-icon>{{errorMsg | translate }}
-            </div>
-            <div class="login-btn">
-              <button mat-raised-button class="btn-two" [ngClass]="{'diableClick': loading}"
-                (click)='onSubmit()' [disabled]="!loginForm.valid"
-                mat-button>
-                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" *ngIf="loading"></span>
-                {{'Login' | translate}}
-              </button>
-            </div>
-            <span class="forgot-pass" hidden><a href="#">{{'Forgot username or password?'|
-                translate}}</a></span>
-            <span class="forgot-pass" hidden><a href="#">{{'OPTISAM acceptable use policy'|
-                translate}}</a></span>
-          </form>
-        </mat-card-content>
-        <mat-card-actions>
-          <span id="version" *ngIf="version && version != 'undefined'">v{{version}}</span>
-        </mat-card-actions>
-    </mat-card>
-    </div>
-    <div id="cookieBannerContainer">
-      <div id="cookieBanner" *ngIf="!cookieInfoAcknowledged" class="mat-elevation-z8">
-        <div id="bannerContent">
-          <img src="assets/images/cookieImage.png" style="height: 32px; margin-right:4px;">
-          {{'COOKIE-BANNER-TEXT'|translate}}
+  <div id="loginFormContainer">
+    <mat-card>
+      <mat-card-title>
+        <div class="loginTopHeading">
+          <img src="assets/images/OpTISAM-Logo-2.png" />
+          <div class="headerBtns">
+            <a mat-button [matMenuTriggerFor]="menu">
+              <mat-icon>language</mat-icon>
+              {{ "language" | translate }}
+            </a>
+            <a
+              id="user-guide"
+              href="https://optisam.pages.gitlab.tech.orange/optisam-it/optisam-ui/"
+              target="_blank"
+              mat-button
+              matTooltip="{{ 'User Guide' | translate }}"
+            >
+              <mat-icon>help_outline</mat-icon>
+            </a>
+          </div>
         </div>
-        <mat-icon id="closeBannerIcon" (click)="closeInfoBanner()">close</mat-icon>
+        <mat-menu #menu="matMenu">
+          <a
+            mat-menu-item
+            *ngIf="currLang == 'fr'"
+            (click)="updateUserLanguage('en')"
+            ><img class="flags" src="assets/images/en.png" />English</a
+          >
+          <a
+            mat-menu-item
+            *ngIf="currLang == 'en'"
+            (click)="updateUserLanguage('fr')"
+            ><img class="flags" src="assets/images/fr.png" />French</a
+          >
+        </mat-menu>
+        <div class="loginHeading">{{ "Sign in" | translate }}</div>
+      </mat-card-title>
+      <mat-card-content>
+        <form [formGroup]="loginForm">
+          <div class="example-container">
+            <mat-form-field floatPlaceholder="never" color="primary">
+              <input
+                type="text"
+                matInput
+                id="email"
+                formControlName="email"
+                placeholder="{{ 'username' | translate }}"
+              />
+            </mat-form-field>
+
+            <mat-form-field floatPlaceholder="never" color="primary">
+              <input
+                type="password"
+                matInput
+                id="password"
+                [type]="isPasswordShow ? 'text' : 'password'"
+                formControlName="password"
+                placeholder="{{ 'Password' | translate }}"
+              />
+              <mat-icon
+                *ngIf="isPasswordShow"
+                matSuffix
+                data-automation-id="hide_password"
+                (click)="toggleShowPassword()"
+                (keyup.enter)="toggleShowPassword()"
+              >
+                visibility
+              </mat-icon>
+              <mat-icon
+                *ngIf="!isPasswordShow"
+                matSuffix
+                data-automation-id="show_password"
+                (click)="toggleShowPassword()"
+                (keyup.enter)="toggleShowPassword()"
+              >
+                visibility_off
+              </mat-icon>
+            </mat-form-field>
+            <div
+              class="forget-password"
+              fxLayout="row"
+              fxLayoutAlign="end start"
+            >
+              <span
+                class="forgot-password-link"
+                [routerLink]="['/forgot-password']"
+                >{{ "FORGOT_PASSWORD" | translate }}</span
+              >
+            </div>
+          </div>
+          <div class="alert alert-danger" role="alert" *ngIf="errorMsg">
+            <mat-icon>warning</mat-icon>{{ errorMsg | translate }}
+          </div>
+          <div class="login-btn">
+            <button
+              mat-raised-button
+              class="btn-two"
+              [ngClass]="{ diableClick: loading }"
+              (click)="onSubmit()"
+              [disabled]="!loginForm.valid"
+              mat-button
+            >
+              <span
+                class="spinner-border spinner-border-sm"
+                role="status"
+                aria-hidden="true"
+                *ngIf="loading"
+              ></span>
+              {{ "Login" | translate }}
+            </button>
+          </div>
+          <span class="forgot-pass" hidden
+            ><a href="#">{{
+              "Forgot username or password?" | translate
+            }}</a></span
+          >
+          <span class="forgot-pass" hidden
+            ><a href="#">{{
+              "OPTISAM acceptable use policy" | translate
+            }}</a></span
+          >
+        </form>
+      </mat-card-content>
+      <mat-card-actions>
+        <span id="version" *ngIf="version && version != 'undefined'"
+          >v{{ version }}</span
+        >
+      </mat-card-actions>
+    </mat-card>
+  </div>
+  <div id="cookieBannerContainer">
+    <div
+      id="cookieBanner"
+      *ngIf="!cookieInfoAcknowledged"
+      class="mat-elevation-z8"
+    >
+      <div id="bannerContent">
+        <img
+          src="assets/images/cookieImage.png"
+          style="height: 32px; margin-right: 4px"
+        />
+        {{ "COOKIE-BANNER-TEXT" | translate }}
       </div>
+      <mat-icon id="closeBannerIcon" (click)="closeInfoBanner()"
+        >close</mat-icon
+      >
     </div>
+  </div>
 </div>

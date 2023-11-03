@@ -1,0 +1,87 @@
+<h2 mat-dialog-title>{{ "IMPORT_METRICS" | translate }}</h2>
+<mat-dialog-content>
+  <mat-card>
+    <mat-table [dataSource]="metricTypeList" class="mat-elevation-z8">
+      <!-- All - start -->
+      <ng-container matColumnDef="all">
+        <mat-header-cell *matHeaderCellDef>
+          <mat-checkbox
+            color="primary"
+            #selectAll
+            [disabled]="allDisabled"
+            [checked]="allActiveChecked"
+            [disableRipple]="true"
+            (change)="changeAll($event.checked)"
+            >{{ "ALL" | translate }}</mat-checkbox
+          >
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          <mat-checkbox
+            #checkBox
+            color="primary"
+            disableRipple
+            [attr.data-name]="element.name"
+            [disabled]="element?.is_exist"
+            [checked]="selectedMetricList.includes(element.name)"
+            (change)="selectedMetricTypeList(checkBox, element)"
+          >
+          </mat-checkbox>
+        </mat-cell>
+      </ng-container>
+      <!-- All - end -->
+
+      <!-- Metric Name - start -->
+      <ng-container matColumnDef="metricName">
+        <mat-header-cell *matHeaderCellDef>
+          <span >{{ "METRIC_NAME" | translate }}</span>
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+            {{element.default_metrics | arrayToString: true}}
+        </mat-cell>
+      </ng-container>
+      <!-- Metric Name - end -->
+
+      <!-- Metric Type - start -->
+      <ng-container matColumnDef="metricTypes">
+        <mat-header-cell *matHeaderCellDef>
+          <span>{{ "METRIC_TYPE" | translate }}</span>
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          <span>{{ element.name }}</span>
+        </mat-cell>
+      </ng-container>
+      <!-- Metric Type - end -->
+
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+    </mat-table>
+    <app-loading-spinner *ngIf="_loading"></app-loading-spinner>
+    <div *ngIf="metricTypeList?.filteredData?.length == 0" id="noData">
+      <mat-icon>error</mat-icon> no data found
+    </div>
+  </mat-card>
+</mat-dialog-content>
+<mat-dialog-actions fxFill>
+  <div
+    class="action-button-container"
+    fxLayout="row"
+    fxLayoutAlign="end center"
+    fxLayoutGap="8px"
+  >
+    <button
+      class="btn-four"
+      mat-raised-button
+      [mat-dialog-close]="refreshTable"
+    >
+      {{ "CANCEL" | translate }}
+    </button>
+    <button
+      [disabled]="_loading || selectedMetricList.length == 0"
+      class="btn-two"
+      mat-raised-button
+      (click)="submitImport()"
+    >
+      {{ "SUBMIT" | translate }}
+    </button>
+  </div>
+</mat-dialog-actions>

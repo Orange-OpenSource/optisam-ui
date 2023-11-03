@@ -7,6 +7,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { CreateMetricComponent } from '../create-metric/create-metric.component';
 import { Metric } from '@core/modals';
 import { EditMetricsComponent } from '../edit-metrics/edit-metrics.component';
+import { ImportMetricsComponent } from './import-metrics/import-metrics.component';
+import { AdminLevel } from '@core/util/constants/constants';
 
 @Component({
   selector: 'app-metric-view',
@@ -18,7 +20,7 @@ export class MetricViewComponent implements OnInit, AfterViewInit {
   index: number;
   id: string;
   equipment_types = [];
-  role: String;
+  role: string;
   _loading: Boolean;
   MyDataSource: MatTableDataSource<{}>;
   noDataAvailableFlag: Boolean;
@@ -26,7 +28,7 @@ export class MetricViewComponent implements OnInit, AfterViewInit {
   errorMessage: string;
   _deleteLoading: Boolean;
 
-  constructor(public metricService: MetricService, public dialog: MatDialog) {}
+  constructor(public metricService: MetricService, public dialog: MatDialog) { }
   @ViewChild(MatSort, { static: false }) sort: MatSort;
 
   ngOnInit() {
@@ -37,7 +39,7 @@ export class MetricViewComponent implements OnInit, AfterViewInit {
     this.loadData();
   }
 
-  ngAfterViewInit(): void {}
+  ngAfterViewInit(): void { }
 
   addNew() {
     const dialogRef = this.dialog.open(CreateMetricComponent, {
@@ -63,6 +65,7 @@ export class MetricViewComponent implements OnInit, AfterViewInit {
 
   loadData() {
     this._loading = true;
+    this.MyDataSource = new MatTableDataSource([]);
     this.metricService.getMetricList().subscribe(
       (res: any) => {
         this.MyDataSource = new MatTableDataSource(res.metrices);
@@ -120,7 +123,7 @@ export class MetricViewComponent implements OnInit, AfterViewInit {
 
   editMetrics(metric: Metric): void {
     if (metric.default) {
-       return
+      return
     }
     let editDialog = this.dialog.open(EditMetricsComponent, {
       width: '800px',
@@ -132,6 +135,17 @@ export class MetricViewComponent implements OnInit, AfterViewInit {
     editDialog.afterClosed().subscribe(() => {
       this.loadData();
     });
+  }
+
+  importMetrics(): void {
+    if (!(Object.values(AdminLevel) as string[]).includes(this.role)) return;
+    this.dialog.open(ImportMetricsComponent, {
+      disableClose: true,
+      width: "max-content",
+      minWidth: "450px"
+    }).afterClosed().subscribe((status: boolean) => {
+      if (status) this.loadData();
+    })
   }
 
   ngOnDestroy() {
